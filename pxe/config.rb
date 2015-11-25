@@ -1,0 +1,12 @@
+
+# Vagrant Network CIDR
+$network_range="192.168.32.0/24"
+
+# PXE Server IP, must be from the network_range
+$pxe_server_ip="192.168.32.10"
+
+# DHCP range dnsmasq should serve, must be a subset of network_range
+$dhcp_range="192.168.32.2,192.168.32.254,12h"
+
+# SSH Authorized Key for client CoreOS instances
+$ssh_authorized_key="AAAAB3NzaC1yc2EAAAADAQABAAACAQDp9dypy87zDQgoMm9tk9aKVNDXemN2bp+taQzY4I2BS74H850SjvxVqMHbTcZVi+gMmUev9DPo5xfDOeTPeaT5fnNaKTLNGLezGM0pjMtKWOrZSQqK2YywjT/VdnBvNG6zKHE/MgpexLdkqiPJGPSHhRB+rQ5JX1FL3Qpt9prD2tW8audLmZ6PorC8/HLIwgBIrlh8JFbVFYGEy4dFImz2eyTqNUxDhP2hx17Drvssy/D6HR4zehgP1MGJWOKGfFlE2xe+hy+S6fjkPK5Nc7MR0uqhCkJHpCfVFjbHyZsQK3oi30Afe9t/CdRfPgQW+daeA7yBd1d/56A8QEbRf7W8wO5/CaSBoomA3bufJwwtT50oQwi3r0+hapivvmlUo3WhXwFoPV/XLyQUNGMWKmOWEqqmREFpi/NVnfItU8CenowvDoly0FkreztO4bAAhMd0w4/bAUisRHlucXXifqFEZr5NUt0BIaZmjavbXDadajzhwbK5mWpijuLoiuYCsa+5pQjFVlZRo5f3F3dQ5nREgRSWJPkxzllHygdEeKqxcE4slZJwZbrBgV4OT2nwGjBpfHsbBKBZRM6eKOiDIOVf/hh4+9+GirHWKosv3HRKHH9TisfIFlZoxzxY6E87oPvlf+7rEwHhuaPUoThSXxB6JS9LiOcqxjgL1ltfapgLqQ== dghubble@gmail.com"

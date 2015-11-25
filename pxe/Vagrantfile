@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'fileutils'
+
+CONFIG = File.join(File.dirname(__FILE__), "config.rb")
+
+if File.exist?(CONFIG)
+  require CONFIG
+end
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "fedora/23-cloud-base"
+
+  # Create a public network with a static IP address
+  config.vm.network "public_network", ip: $pxe_server_ip, dev: "wlp3s0"
+
+  # Provider Specific Configuration
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.cpus = 1
+    libvirt.memory = 1024
+    libvirt.management_network_name = "vagrant-libvirt"
+    libvirt.management_network_address = $network_range
+  end
+
+  # Provision a PXE Server
+  config.vm.provision :shell do |s|
+    s.privileged = true
+    s.path = "scripts/pxe.sh"
+    s.args = [$pxe_server_ip, $dhcp_range, $ssh_authorized_key]
+  end
+
+end

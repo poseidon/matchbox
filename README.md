@@ -23,13 +23,13 @@ Launch `virt-manager` to create a new virtual machine. When prompted, select Net
 
 If you see "Nothing" to boot, try force resetting the client VM.
 
-Use SSH to connect to a client VM if booting and parsing the cloud-config succeeded. The CLIENT_IP will be visible in the virt-manager console.
+Use SSH to connect to a client VM after boot and cloud-config succeed. The CLIENT_IP will be visible in the virt-manager console.
 
     ssh core@CLIENT_IP  # requires ssh_authorized_keys entry in cloud-config
 
 ### Configuration
 
-TODO
+The Vagrantfile parses the `config.rb` file for several variables you can use to configure network settings.
 
 ### Reload
 
