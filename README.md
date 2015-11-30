@@ -1,25 +1,27 @@
 
-`pxe` provides a Vagrantfile and scripts for setting up a PXE server in libvirt or on physical hardware.
+## Development
 
-`pixiecore` provides a Vagrantfile and scripts for setting up a Pixiecore server in libvirt or on physical hardware.
+`pxe` and `pixiecore` provide Vagrantfiles and scripts for setting up a PXE or Pixiecore provisioning server in libvirt for development.
 
-## Setup
-
-To develop with Vagrant, install the dependencies
+To get started, install the dependencies
 
 	# Fedora 22/23
 	dnf install vagrant vagrant-libvirt virt-manager
 
 ## Usage
 
-The Vagrantfile will setup a `pxe_default` VM running a PXE server with a configured static IP address, DHCP range, CoreOS kernel image, and cloud-config. The VM will be connected to a network called `vagrant-pxe`.
-
-### libvirt Provider
+Create a PXE or Pixiecore server VM with `vagrant up`.
 
     vagrant up --provider libivrt
     vagrant ssh
 
-Once the PXE server has started, you can start client VMs within the `vagrant-libvirt` network which should boot as PXE clients.
+The PXE server will allocate DHCP leases, run a TFTP server with a CoreOS kernel image and init RAM fs, and host a cloud-config over HTTP. The Pixiecore server itself is a proxy DHCP, TFTP, and HTTP server for images.
+
+By default, the PXE server runs at 192.168.32.10 on the `vagrant-pxe` virtual network. The Pixiecore server runs at 192.168.33.10 on the `vagrant-pixiecore` virtual network.
+
+### Clients
+
+Once the provisioning server has started, PXE boot enabled client VMs in the same network should boot with CoreOS.
 
 Launch `virt-manager` to create a new virtual machine. When prompted, select Network Boot (PXE), skip adding a disk, and choose the `vagrant-libvirt` network.
 
