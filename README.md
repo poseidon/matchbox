@@ -1,16 +1,18 @@
 
 `pxe` provides a Vagrantfile and scripts for setting up a PXE server in libvirt or on physical hardware.
 
+`pixiecore` provides a Vagrantfile and scripts for setting up a Pixiecore server in libvirt or on physical hardware.
+
 ## Setup
 
-To develop with with Vagrant, install the dependencies
+To develop with Vagrant, install the dependencies
 
 	# Fedora 22/23
 	dnf install vagrant vagrant-libvirt virt-manager
 
 ## Usage
 
-The Vagrantfile will setup a `pxe_default` VM running a PXE server with a configured static IP address, DHCP range, CoreOS kernel image, and cloud-config. The VM will be connected to a network called `vagrant-libvirt`.
+The Vagrantfile will setup a `pxe_default` VM running a PXE server with a configured static IP address, DHCP range, CoreOS kernel image, and cloud-config. The VM will be connected to a network called `vagrant-pxe`.
 
 ### libvirt Provider
 
@@ -39,4 +41,4 @@ If you change the Vagrantfile or a configuration variable, reload the VM with
 
 To try a new cloud-config, you can also scp the file onto the dev PXE server.
 
-	scp new-config.yml core@NODE_IP:/var/www/html/pxe-cloud-config.yml
+	scp new-config.yml core@NODE_IP:/var/www/html/cloud-config.yml

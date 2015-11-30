@@ -40,7 +40,7 @@ display boot.msg
 label coreos
   menu default
   kernel coreos_production_pxe.vmlinuz
-  append initrd=coreos_production_pxe_image.cpio.gz cloud-config-url=http://$PXE_SERVER_IP/pxe-cloud-config.yml
+  append initrd=coreos_production_pxe_image.cpio.gz cloud-config-url=http://$PXE_SERVER_IP/cloud-config.yml
 EOF
 
 # TFTP ldlinux.c32 pxelinux.0
@@ -48,7 +48,7 @@ dnf install -yq syslinux
 ln -s /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/pxelinux.0
 ln -s /usr/share/syslinux/ldlinux.c32 /var/lib/tftpboot/ldlinux.c32
 
-# TFTP kernel image and options
+# TFTP kernel image and init RAM disk
 dnf install -yq wget
 wget -q -O /var/lib/tftpboot/coreos_production_pxe.vmlinuz http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz
 wget -q -O /var/lib/tftpboot/coreos_production_pxe_image.cpio.gz http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz
@@ -63,7 +63,7 @@ systemctl start dnsmasq
 # static cloud-config HTTP server
 dnf install -yq httpd
 
-cat << EOF > "/var/www/html/pxe-cloud-config.yml"
+cat << EOF > "/var/www/html/cloud-config.yml"
 #cloud-config
 coreos:
   units:
