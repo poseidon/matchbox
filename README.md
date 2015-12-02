@@ -1,4 +1,6 @@
 
+Boot and cloud config service for PXE, iPXE, and Pixiecore.
+
 ## Development
 
 `pxe` and `pixiecore` provide Vagrantfiles and scripts for setting up a PXE or Pixiecore provisioning server in libvirt for development.

@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+acbuild begin
+acbuild set-name dghubble.io/metapxe
+acbuild copy bin/server /bin/server
+acbuild set-exec /bin/server
+acbuild port add www tcp 8080
+acbuild label add version 0.0.1
+acbuild label add arch amd64
+acbuild label add os linux
+acbuild annotation add authors "Dalton Hubble <dalton.hubble@coreos.com>"
+acbuild write bin/metapxe-0.0.1-linux-amd64.aci
+acbuild end
