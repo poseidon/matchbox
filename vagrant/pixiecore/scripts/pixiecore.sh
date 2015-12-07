@@ -41,7 +41,6 @@ systemctl start httpd
 
 # Pixiecore
 docker pull danderson/pixiecore
-#docker run -v /var/lib/image:/image --net=host danderson/pixiecore -kernel /image/coreos_production_pxe.vmlinuz -initrd /image/coreos_production_pxe_image.cpio.gz --cmdline cloud-config-url=http://$PIXIECORE_SERVER_IP/cloud-config.yml
 
 cat << EOF > /etc/systemd/system/pixiecore.service
 [Unit]

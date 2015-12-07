@@ -10,9 +10,18 @@ docker-build:
 aci-build:
 	./acifile
 
-docker-run:
-	docker run -p 8080:8080 -v $(shell echo $$PWD)/static:/static dghubble.io/metapxe:latest
+run-docker:
+	docker run -p 8081:8081 -v $(shell echo $$PWD)/static:/static dghubble.io/metapxe:latest
 
-rkt-run:
-	# Fedora 23 issue https://github.com/coreos/rkt/issues/1727
+run-rkt:
 	rkt --insecure-options=image run --no-overlay bin/metapxe-0.0.1-linux-amd64.aci
+
+run-pixiecore:
+	docker run -v $(shell echo $$PWD)/static:/static danderson/pixiecore -api http://172.17.0.2:8081/
+
+run-dhcp:
+	./scripts/vethdhcp
+
+
+
+

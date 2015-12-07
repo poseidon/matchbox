@@ -1,0 +1,26 @@
+#!/bin/bash -e
+# Connect dnsmasq DHCP to the docker0 bridge via a veth
+
+BRIDGE=docker0
+VETH=vethdhcp
+VETH_ADDR=172.17.0.42/16
+
+# DHCP
+ADDR_RANGE_START=172.17.0.43
+ADDR_RANGE_END=172.17.0.99
+LEASE_TIME=30m
+
+# create and attach the veth if it is missing
+if ! ip link show $VETH; then
+	# create a virtual ethernet device (veth pair)
+	ip link add $VETH type veth peer name ${VETH}_b
+    # attach the "b" side of the veth to the bridge
+    brctl addif $BRIDGE ${VETH}_b
+    # assign an IP address to the veth
+    ip addr add $VETH_ADDR dev $VETH
+    # set both links to be up
+    ip link set $VETH up
+    ip link set $VETH_b up
+fi
+
+dnsmasq --no-daemon --port=0 -i $VETH --dhcp-range=$ADDR_RANGE_START,$ADDR_RANGE_END,$LEASE_TIME

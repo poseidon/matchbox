@@ -7,7 +7,7 @@ import (
 	"github.com/coreos/coreos-baremetal/server"
 )
 
-const address = ":8080"
+const address = ":8081"
 
 func main() {
 	bootConfigProvider := server.NewBootConfigProvider()

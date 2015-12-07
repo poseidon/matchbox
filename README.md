@@ -1,48 +1,44 @@
 
 Boot and cloud config service for PXE, iPXE, and Pixiecore.
 
-## Development
+## Validation
 
-`pxe` and `pixiecore` provide Vagrantfiles and scripts for setting up a PXE or Pixiecore provisioning server in libvirt for development.
+The config service can be validated in scenarios which use PXE, iPXE, or Pixiecore on a libvirt virtual network or on a physical network of bare metal machines. 
 
-To get started, install the dependencies
+### libvirt
 
-	# Fedora 22/23
-	dnf install vagrant vagrant-libvirt virt-manager
+A libvirt virtual network of containers and VMs can be used to validate PXE booting of VM clients in various scenarios (PXE, iPXE, Pixiecore).
 
-## Usage
+To do this, start the appropriate set of containered services for the scenario, then boot a VM configured to use the PXE boot method.
 
-Create a PXE or Pixiecore server VM with `vagrant up`.
+Docker starts containers with virtual ethernet connections to the `docker0` bridge
 
-    vagrant up --provider libivrt
-    vagrant ssh
+    $ brctl show
+    $ docker network inspect bridge  # docker client names the bridge "bridge"
 
-The PXE server will allocate DHCP leases, run a TFTP server with a CoreOS kernel image and init RAM fs, and host a cloud-config over HTTP. The Pixiecore server itself is a proxy DHCP, TFTP, and HTTP server for images.
+which uses the default subnet 172.17.0.0/16. It is also possible to create your own network bridge and reconfigure Docker to start containers on that bridge, but that approach is not used here.
 
-By default, the PXE server runs at 192.168.32.10 on the `vagrant-pxe` virtual network. The Pixiecore server runs at 192.168.33.10 on the `vagrant-pixiecore` virtual network.
+PXE boot client VMs can be started within the same subnet by attaching to the `docker0` bridge.
 
-### Clients
+Create a VM using the virt-manager UI, select Network Boot with PXE, and for the network selection, choose "Specify Shared Device" with bridge name `docker0`.
 
-Once the provisioning server has started, PXE boot enabled client VMs in the same network should boot with CoreOS.
+The VM should PXE boot using the boot config determined by the MAC address of the virtual network card which can be inspected in virt-manager.
 
-Launch `virt-manager` to create a new virtual machine. When prompted, select Network Boot (PXE), skip adding a disk, and choose the `vagrant-libvirt` network.
+### iPXE
 
-If you see "Nothing" to boot, try force resetting the client VM.
+#### Pixecore
 
-Use SSH to connect to a client VM after boot and cloud-config succeed. The CLIENT_IP will be visible in the virt-manager console.
+Run the config service container.
 
-    ssh core@CLIENT_IP  # requires ssh_authorized_keys entry in cloud-config
+    make run-docker
 
-### Configuration
+Run the Pixiecore server container which uses `api` mode to call through to the config service.
 
-The Vagrantfile parses the `config.rb` file for several variables you can use to configure network settings.
+    make run-pixiecore
 
-### Reload
+Finally, run the `vethdhcp` to create a virtual ethernet connection on the `docker0` bridge, assign an IP address, and run dnsmasq to provide DHCP service to VMs we'll add to the bridge.
 
-If you change the Vagrantfile or a configuration variable, reload the VM with
+    make run-dhcp
 
-    vagrant reload --provision
+Create a PXE boot client VM using virt-manager as described above. Let the VM PXE boot using the boot config determined the MAC address to config mapping set in the config service.
 
-To try a new cloud-config, you can also scp the file onto the dev PXE server.
-
-	scp new-config.yml core@NODE_IP:/var/www/html/cloud-config.yml
