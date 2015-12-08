@@ -7,14 +7,14 @@ import (
 	"github.com/coreos/coreos-baremetal/server"
 )
 
-const address = ":8081"
+const address = ":8080"
 
 func main() {
 	bootConfigProvider := server.NewBootConfigProvider()
 	bootConfigProvider.Add(server.DefaultAddr, server.CoreOSBootConfig)
 	srv := server.NewServer(bootConfigProvider)
 	h := srv.HTTPHandler()
-	log.Printf("Starting coreos-baremetal metadata server")
+	log.Printf("Starting boot config server")
 	err := http.ListenAndServe(address, h)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

@@ -1,0 +1,7 @@
+#!/bin/bash -e
+
+REPO=dghubble/bcs
+GIT_SHA=$(git rev-parse HEAD)
+
+docker build -q --rm=true -t $REPO:$GIT_SHA .
+docker tag -f $REPO:$GIT_SHA $REPO:latest
