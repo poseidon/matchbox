@@ -32,6 +32,15 @@ Finally, run the `vethdhcp` to create a virtual ethernet connection on the `dock
 
     make run-dhcp
 
+If you get an "address is already in use" error, try stopping the `default` network created in virt-manager. If you find that the `docker0` bridge receives DHCP Offers from dnsmasq, but the VM does not you may need to change an iptables rule.
+
+    $ ip tables -L -t nat
+    $ iptables -t nat -R POSTROUTING 1 -s 172.17.0.0/16 ! -d 172.17.0.0/16 -j MASQUERADE
+
+    POSTROUTING
+    MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0      (Original Rule 1)
+    MASQUERADE  all  --  172.17.0.0/16       !172.17.0.0/16  (Updated Rule 1)
+
 Create a PXE boot client VM using virt-manager as described above. Let the VM PXE boot using the boot config determined the MAC address to config mapping set in the config service.
 
 ## Clients
