@@ -47,6 +47,11 @@ dnf install -yq httpd
 
 cat << EOF > "/var/www/html/boot.ipxe"
 #!ipxe
+chain http://$IPXE_SERVER_IP/ipxe?mac=\${net0/mac}&uuid=\${uuid}
+EOF
+
+cat << EOF > "/var/www/html/ipxe"
+#!ipxe
 set base-url http://stable.release.core-os.net/amd64-usr/current
 kernel http://$IPXE_SERVER_IP/coreos_production_pxe.vmlinuz cloud-config-url=http://$IPXE_SERVER_IP/cloud-config.yml
 initrd http://$IPXE_SERVER_IP/coreos_production_pxe_image.cpio.gz
