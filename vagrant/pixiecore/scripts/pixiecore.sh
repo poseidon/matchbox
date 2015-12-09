@@ -1,7 +1,5 @@
 #!/bin/bash -e
 # Usage: Setup a Pixiecore Server
-
-# ./pxe.sh IP SSH_KEY
 # ./pixiecore.sh "192.168.33.10" "AABC.... name"
 
 PIXIECORE_SERVER_IP=$1
