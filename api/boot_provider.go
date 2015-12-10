@@ -1,19 +1,12 @@
-package server
+package api
 
 import (
 	"fmt"
 )
 
-// CoreOSBootConfig references a CoreOS pproduction image and initrd.
-var CoreOSBootConfig = &BootConfig{
-	Kernel: "/static/coreos_production_pxe.vmlinuz",
-	Initrd: []string{"/static/coreos_production_pxe_image.cpio.gz"},
-	Cmdline: map[string]interface{}{},
-}
-
 // BootConfig describes the boot configuration of a host.
 type BootConfig struct {
-	// the URL of the kernel boot image 
+	// the URL of the kernel boot image
 	Kernel string `json:"kernel"`
 	// the initrd URLs which will be flattened into a single filesystem
 	Initrd []string `json:"initrd"`
@@ -21,7 +14,7 @@ type BootConfig struct {
 	Cmdline map[string]interface{} `json:"cmdline"`
 }
 
-// A BootConfigProvider provides a mapping from MAC addresses to BootConfigs. 
+// A BootConfigProvider provides a mapping from MAC addresses to BootConfigs.
 type BootConfigProvider interface {
 	Add(addr string, config *BootConfig)
 	Get(addr string) (*BootConfig, error)
@@ -53,4 +46,3 @@ func (p *bootConfigProvider) Get(addr string) (*BootConfig, error) {
 	}
 	return nil, fmt.Errorf("no boot config for %s", addr)
 }
-
