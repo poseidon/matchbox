@@ -37,10 +37,10 @@ var CoreOSLocal = &api.BootConfig{
 
 func main() {
 	// initial boot configs
-	bootConfigs := api.NewBootConfigProvider()
-	bootConfigs.Add(api.DefaultAddr, CoreOSStable)
+	bootAdapter := api.NewMapBootAdapter()
+	bootAdapter.SetDefault(CoreOSStable)
 	// api server
-	server := api.NewServer(bootConfigs)
+	server := api.NewServer(bootAdapter)
 	h := server.HTTPHandler()
 	log.Printf("Starting boot config server")
 	err := http.ListenAndServe(address, h)

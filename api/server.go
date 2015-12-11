@@ -6,11 +6,11 @@ import (
 
 // Server serves iPXE/Pixiecore boot configs and hosts images.
 type Server struct {
-	bootConfigs BootConfigProvider
+	bootConfigs BootAdapter
 }
 
-// NewServer returns a new Server which uses the given BootConfigProvider.
-func NewServer(bootConfigs BootConfigProvider) *Server {
+// NewServer returns a new Server which uses the given BootAdapter.
+func NewServer(bootConfigs BootAdapter) *Server {
 	return &Server{
 		bootConfigs: bootConfigs,
 	}

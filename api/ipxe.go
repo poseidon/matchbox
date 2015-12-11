@@ -18,7 +18,7 @@ boot
 `))
 
 // ipxeMux handles iPXE requests for boot (config) scripts.
-func ipxeMux(bootConfigs BootConfigProvider) http.Handler {
+func ipxeMux(bootConfigs BootAdapter) http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/ipxe/boot.ipxe", ipxeInspect())
 	mux.Handle("/ipxe/config", ipxeBoot(bootConfigs))
@@ -36,11 +36,11 @@ func ipxeInspect() http.Handler {
 
 // ipxeBoot returns a handler which renders an iPXE boot config script based
 // on the machine attribtue query parameters.
-func ipxeBoot(bootConfigs BootConfigProvider) http.Handler {
+func ipxeBoot(bootConfigs BootAdapter) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		params := req.URL.Query()
-		UUID := params.Get("uuid")
-		bootConfig, err := bootConfigs.Get(UUID)
+		attrs := MachineAttrs{UUID: params.Get("uuid")}
+		bootConfig, err := bootConfigs.Get(attrs)
 		if err != nil {
 			http.Error(w, err.Error(), 404)
 			return
