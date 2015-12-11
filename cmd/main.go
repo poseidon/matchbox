@@ -30,20 +30,28 @@ var CoreOSAlpha = &api.BootConfig{
 }
 
 var CoreOSLocal = &api.BootConfig{
-	Kernel:  "/images/kernel/coreos_production_pxe.vmlinuz",
-	Initrd:  []string{"/images/initrd/coreos_production_pxe_image.cpio.gz"},
+	Kernel: "/images/coreos_production_pxe.vmlinuz",
+	Initrd: []string{"/images/coreos_production_pxe_image.cpio.gz"},
 	Cmdline: map[string]interface{}{},
 }
 
+var CoreOSLocalAutoLogin = &api.BootConfig{
+	Kernel: "/images/coreos_production_pxe.vmlinuz",
+	Initrd: []string{"/images/coreos_production_pxe_image.cpio.gz"},
+	Cmdline: map[string]interface{}{
+		"coreos.autologin": "",
+	},
+}
+
 func main() {
-	// initial boot configs
+	// load some boot configs
 	bootAdapter := api.NewMapBootAdapter()
-	bootAdapter.SetDefault(CoreOSStable)
+	bootAdapter.AddUUID("8a549bf5-075c-4372-8b0d-ce7844faa48c", CoreOSLocalAutoLogin )
+	bootAdapter.SetDefault(CoreOSLocal)
 	// api server
 	server := api.NewServer(bootAdapter)
-	h := server.HTTPHandler()
 	log.Printf("Starting boot config server")
-	err := http.ListenAndServe(address, h)
+	err := http.ListenAndServe(address, server.HTTPHandler())
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}

@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+REPO=dghubble/ipxe
+
+docker build -q --rm=true -t $REPO:latest .
