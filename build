@@ -3,6 +3,7 @@
 # allow builds outside the standard GOPATH via symlink
 export GOPATH=${PWD}/Godeps/_workspace
 export GOBIN=${PWD}/bin
+
 mkdir -p $GOPATH/src/github.com/coreos
 # directory or symlink must be present
 [ -d $GOPATH/src/github.com/coreos/coreos-baremetal ] || ln -s ${PWD} $GOPATH/src/github.com/coreos/coreos-baremetal

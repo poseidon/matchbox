@@ -8,4 +8,4 @@ mkdir -p $GOPATH/src/github.com/coreos
 # directory or symlink must be present
 [ -d $GOPATH/src/github.com/coreos/coreos-baremetal ] || ln -s ${PWD} $GOPATH/src/github.com/coreos/coreos-baremetal
 
-go run cmd/main.go
+go run cmd/main.go "$@"

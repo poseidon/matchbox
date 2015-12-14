@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-REPO=dghubble/bcs
-QUAY_REPO=quay.io/dghubble/bcs
+REPO=dghubble/bootcfg
+QUAY_REPO=quay.io/dghubble/bootcfg
 GIT_SHA=$(git rev-parse HEAD)
 
 # quay.io
