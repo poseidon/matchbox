@@ -26,4 +26,4 @@ _testmain.go
 bin/
 coverage/
 Godeps/_workspace/src/github.com/coreos/coreos-baremetal
-static/
+images/

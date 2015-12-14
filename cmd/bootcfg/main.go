@@ -14,38 +14,10 @@ import (
 
 var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/bootcfg", "main")
 
-// Example Boot Configs
-
-var CoreOSStable = &api.BootConfig{
-	Kernel:  "http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz",
-	Initrd:  []string{"http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz"},
-	Cmdline: map[string]interface{}{},
-}
-
-var CoreOSBeta = &api.BootConfig{
-	Kernel:  "http://beta.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz",
-	Initrd:  []string{"http://beta.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz"},
-	Cmdline: map[string]interface{}{},
-}
-
-var CoreOSAlpha = &api.BootConfig{
-	Kernel:  "http://alpha.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz",
-	Initrd:  []string{"http://alpha.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz"},
-	Cmdline: map[string]interface{}{},
-}
-
 var CoreOSLocal = &api.BootConfig{
-	Kernel: "/images/coreos_production_pxe.vmlinuz",
-	Initrd: []string{"/images/coreos_production_pxe_image.cpio.gz"},
+	Kernel: "/images/stable/coreos_production_pxe.vmlinuz",
+	Initrd: []string{"/images/stable/coreos_production_pxe_image.cpio.gz"},
 	Cmdline: map[string]interface{}{},
-}
-
-var CoreOSLocalAutoLogin = &api.BootConfig{
-	Kernel: "/images/coreos_production_pxe.vmlinuz",
-	Initrd: []string{"/images/coreos_production_pxe_image.cpio.gz"},
-	Cmdline: map[string]interface{}{
-		"coreos.autologin": "",
-	},
 }
 
 func main() {
@@ -81,7 +53,6 @@ func main() {
 
 	// load some boot configs
 	bootAdapter := api.NewMapBootAdapter()
-	bootAdapter.SetUUID("8a549bf5-075c-4372-8b0d-ce7844faa48c", CoreOSLocalAutoLogin )
 	bootAdapter.SetDefault(CoreOSLocal)
 
 	config := &api.Config{

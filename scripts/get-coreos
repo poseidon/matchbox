@@ -1,0 +1,22 @@
+#!/bin/bash -e
+
+CHANNEL="stable"
+VERSION="current"
+DEST=${PWD}/images/$CHANNEL
+
+mkdir -p $DEST
+echo "Downloading CoreOS kernel and initrd"
+
+# kernel and sig
+BASE_URL=http://$CHANNEL.release.core-os.net/amd64-usr/$VERSION
+curl $BASE_URL/coreos_production_pxe.vmlinuz -o $DEST/coreos_production_pxe.vmlinuz
+curl $BASE_URL/coreos_production_pxe.vmlinuz.sig -o $DEST/coreos_production_pxe.vmlinuz.sig
+
+# initrd and sig
+curl $BASE_URL/coreos_production_pxe_image.cpio.gz -o $DEST/coreos_production_pxe_image.cpio.gz
+curl $BASE_URL/coreos_production_pxe_image.cpio.gz.sig -o $DEST/coreos_production_pxe_image.cpio.gz.sig
+
+# verify signatures
+# https://coreos.com/security/image-signing-key/
+gpg --verify $DEST/coreos_production_pxe.vmlinuz.sig
+gpg --verify $DEST/coreos_production_pxe_image.cpio.gz.sig
