@@ -21,8 +21,8 @@ Start the container services specific to the scenario you wish to test, followin
 Run the boot config service container.
 
     ./build
-    make build-docker
-    make run-docker
+    ./docker-build
+    ./docker-run
 
 Run the included `ipxe` Docker image which runs DHCP and sends options to point iPXE clients to the boot config service and to chainload PXE clients to iPXE.
 

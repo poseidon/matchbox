@@ -1,0 +1,7 @@
+{
+    "kernel": "/images/stable/coreos_production_pxe.vmlinuz",
+    "initrd": ["/images/stable/coreos_production_pxe_image.cpio.gz"],
+    "cmdline": {
+        "coreos.autologin": ""
+    }
+}

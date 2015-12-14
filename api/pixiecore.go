@@ -2,27 +2,31 @@ package api
 
 import (
 	"encoding/json"
-	"net"
 	"net/http"
-	"strings"
+	"path/filepath"
 )
-
-const pixiecorePath = "/v1/boot/"
 
 // pixiecoreHandler returns a handler that renders Boot Configs as JSON to
 // implement the Pixiecore API specification.
 // https://github.com/danderson/pixiecore/blob/master/README.api.md
-func pixiecoreHandler(bootConfigs BootAdapter) http.Handler {
+func pixiecoreHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		mac := strings.TrimPrefix(req.URL.String(), pixiecorePath)
-		attrs := MachineAttrs{MAC: net.HardwareAddr(mac)}
+		macAddr, err := parseMAC(filepath.Base(req.URL.Path))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+		// pixiecore only provides MAC addresses
+		attrs := MachineAttrs{MAC: macAddr}
 		log.Infof("pixiecore boot config request for %+v", attrs)
-		bootConfig, err := bootConfigs.Get(attrs)
+
+		config, err := store.BootConfig(attrs)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-		json.NewEncoder(w).Encode(bootConfig)
+		if err := json.NewEncoder(w).Encode(config); err != nil {
+			log.Infof("error writing to response, %s", err)
+		}
 	}
 	return http.HandlerFunc(fn)
 }

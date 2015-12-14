@@ -8,22 +8,14 @@ import (
 )
 
 const ipxeBootstrap = `#!ipxe
-chain config?uuid=${uuid}
+chain ipxe?uuid=${uuid}
 `
 
 var ipxeTemplate = template.Must(template.New("ipxe boot").Parse(`#!ipxe
-kernel {{.Kernel}} cloud-config-url=cloud/config?uuid=${uuid} {{range $key, $value := .Cmdline}} {{if $value}}{{$key}}={{$value}}{{else}}{{$key}}{{end}}{{end}}
-initrd {{ range $element := .Initrd }} {{$element}}{{end}}
+kernel {{.Kernel}} cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}{{range $key, $value := .Cmdline}} {{if $value}}{{$key}}={{$value}}{{else}}{{$key}}{{end}}{{end}}
+initrd {{ range $element := .Initrd }}{{$element}}{{end}}
 boot
 `))
-
-// ipxeMux handles iPXE requests for boot (config) scripts.
-func ipxeMux(bootConfigs BootAdapter) http.Handler {
-	mux := http.NewServeMux()
-	mux.Handle("/ipxe/boot.ipxe", ipxeInspect())
-	mux.Handle("/ipxe/config", ipxeBoot(bootConfigs))
-	return mux
-}
 
 // ipxeInspect returns a handler that responds with an iPXE script to gather
 // client machine data and chain load the real boot script.
@@ -37,25 +29,27 @@ func ipxeInspect() http.Handler {
 
 // ipxeBoot returns a handler which renders an iPXE boot config script based
 // on the machine attribtue query parameters.
-func ipxeBoot(bootConfigs BootAdapter) http.Handler {
+func ipxeHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		params := req.URL.Query()
-		attrs := MachineAttrs{UUID: params.Get("uuid")}
+		attrs := attrsFromRequest(req)
 		log.Infof("iPXE boot config request for %+v", attrs)
-		bootConfig, err := bootConfigs.Get(attrs)
+
+		config, err := store.BootConfig(attrs)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
 
 		var buf bytes.Buffer
-		err = ipxeTemplate.Execute(&buf, bootConfig)
+		err = ipxeTemplate.Execute(&buf, config)
 		if err != nil {
 			log.Errorf("iPXE template render error: %s", err)
 			http.NotFound(w, req)
 			return
 		}
-		buf.WriteTo(w)
+		if _, err := buf.WriteTo(w); err != nil {
+			log.Infof("error writing to response, %s", err)
+		}
 	}
 	return http.HandlerFunc(fn)
 }
