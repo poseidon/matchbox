@@ -2,7 +2,11 @@ package api
 
 import (
 	"net/http"
+
+	"github.com/coreos/pkg/capnslog"
 )
+
+var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal", "api")
 
 // Config configures the api Server.
 type Config struct {

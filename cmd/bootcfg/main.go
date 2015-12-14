@@ -1,16 +1,18 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"flag"
 	"os"
-	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/coreos/coreos-baremetal/api"
 	"github.com/coreos/pkg/flagutil"
+	"github.com/coreos/pkg/capnslog"
 )
+
+var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/bootcfg", "main")
 
 // Example Boot Configs
 
@@ -50,14 +52,15 @@ func main() {
 	flags := flag.NewFlagSet("bootcfg", flag.ExitOnError)
 	address := flags.String("address", "127.0.0.1:8080", "HTTP listen address")
 	imagesPath := flags.String("images-path", "./images", "Path to static image assets")
+	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
+	logLevel := flags.String("log-level", "info", "Set the logging level")
 
+	// parse command-line and environment variable arguments
 	if err := flags.Parse(os.Args[1:]); err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Fatal(err.Error())
 	}
 	if err := flagutil.SetFlagsFromEnv(flags, "BOOTCFG"); err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		log.Fatal(err.Error())
 	}
 
 	// validate arguments
@@ -68,9 +71,17 @@ func main() {
 		log.Fatal("A path to an image assets directory is required")
 	}
 
+	// logging setup
+	lvl, err := capnslog.ParseLevel(strings.ToUpper(*logLevel))
+	if err != nil {
+		log.Fatalf("Invalid log-level: %s", err.Error())
+	}
+	capnslog.SetGlobalLogLevel(lvl)
+	capnslog.SetFormatter(capnslog.NewPrettyFormatter(os.Stdout, false))
+
 	// load some boot configs
 	bootAdapter := api.NewMapBootAdapter()
-	bootAdapter.AddUUID("8a549bf5-075c-4372-8b0d-ce7844faa48c", CoreOSLocalAutoLogin )
+	bootAdapter.SetUUID("8a549bf5-075c-4372-8b0d-ce7844faa48c", CoreOSLocalAutoLogin )
 	bootAdapter.SetDefault(CoreOSLocal)
 
 	config := &api.Config{
@@ -80,9 +91,9 @@ func main() {
 
 	// API server
 	server := api.NewServer(config)
-	log.Printf("Starting boot config server on %s", *address)
-	err := http.ListenAndServe(*address, server.HTTPHandler())
+	log.Infof("Starting bootcfg API Server on %s", *address)
+	err = http.ListenAndServe(*address, server.HTTPHandler())
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		log.Fatalf("failed to start listening: %s", err)
 	}
 }

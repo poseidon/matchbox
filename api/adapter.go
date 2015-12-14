@@ -32,22 +32,21 @@ func (a *MapBootAdapter) Get(attrs MachineAttrs) (*BootConfig, error) {
 	if a.fallback != nil {
 		return a.fallback, nil
 	}
+	log.Infof("No boot config found for %+v", attrs)
 	return nil, fmt.Errorf("no matching boot configuration")
 }
 
-// AddUUID adds a BootConfig for the machine with the given UUID.
-func (a *MapBootAdapter) AddUUID(uuid string, config *BootConfig) {
+// SetUUID sets the BootConfig for the machine with the given UUID.
+func (a *MapBootAdapter) SetUUID(uuid string, config *BootConfig) {
 	a.uuids[uuid] = config
 }
 
-// AddMAC adds a BootConfig for the machine with NIC with the given MAC
-// address.
-func (a *MapBootAdapter) AddMAC(mac net.HardwareAddr, config *BootConfig) {
+// SetMAC sets the BootConfig for the NIC with the given MAC address.
+func (a *MapBootAdapter) SetMAC(mac net.HardwareAddr, config *BootConfig) {
 	a.macs[mac.String()] = config
 }
 
-// SetDefault sets the default or fallback BootConfig to use if no machine
-// attribute matches are found.
+// SetDefault sets the default BootConfig if no machine attributes match.
 func (a *MapBootAdapter) SetDefault(config *BootConfig) {
 	a.fallback = config
 }

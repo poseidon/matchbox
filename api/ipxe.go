@@ -29,6 +29,7 @@ func ipxeMux(bootConfigs BootAdapter) http.Handler {
 // client machine data and chain load the real boot script.
 func ipxeInspect() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
+		log.Info("iPXE boot script request")
 		fmt.Fprintf(w, ipxeBootstrap)
 	}
 	return http.HandlerFunc(fn)
@@ -40,16 +41,18 @@ func ipxeBoot(bootConfigs BootAdapter) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		params := req.URL.Query()
 		attrs := MachineAttrs{UUID: params.Get("uuid")}
+		log.Infof("iPXE boot config request for %+v", attrs)
 		bootConfig, err := bootConfigs.Get(attrs)
 		if err != nil {
-			http.Error(w, err.Error(), 404)
+			http.NotFound(w, req)
 			return
 		}
 
 		var buf bytes.Buffer
 		err = ipxeTemplate.Execute(&buf, bootConfig)
 		if err != nil {
-			http.Error(w, err.Error(), 404)
+			log.Errorf("iPXE template render error: %s", err)
+			http.NotFound(w, req)
 			return
 		}
 		buf.WriteTo(w)

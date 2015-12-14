@@ -14,11 +14,12 @@ const pixiecorePath = "/v1/boot/"
 // https://github.com/danderson/pixiecore/blob/master/README.api.md
 func pixiecoreHandler(bootConfigs BootAdapter) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		remainder := strings.TrimPrefix(req.URL.String(), pixiecorePath)
-		attrs := MachineAttrs{MAC: net.HardwareAddr(remainder)}
+		mac := strings.TrimPrefix(req.URL.String(), pixiecorePath)
+		attrs := MachineAttrs{MAC: net.HardwareAddr(mac)}
+		log.Infof("pixiecore boot config request for %+v", attrs)
 		bootConfig, err := bootConfigs.Get(attrs)
 		if err != nil {
-			http.Error(w, err.Error(), 404)
+			http.NotFound(w, req)
 			return
 		}
 		json.NewEncoder(w).Encode(bootConfig)
