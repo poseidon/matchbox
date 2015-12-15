@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
 CHANNEL="stable"
-VERSION="current"
-DEST=${PWD}/images/$CHANNEL
+VERSION="835.9.0"
+DEST=${PWD}/images/coreos/$VERSION
 
 mkdir -p $DEST
 echo "Downloading CoreOS kernel and initrd"

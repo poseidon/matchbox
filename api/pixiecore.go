@@ -14,6 +14,7 @@ func pixiecoreHandler(store Store) http.Handler {
 		macAddr, err := parseMAC(filepath.Base(req.URL.Path))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 		// pixiecore only provides MAC addresses
 		attrs := MachineAttrs{MAC: macAddr}

@@ -12,7 +12,7 @@ chain ipxe?uuid=${uuid}
 `
 
 var ipxeTemplate = template.Must(template.New("ipxe boot").Parse(`#!ipxe
-kernel {{.Kernel}} cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}{{range $key, $value := .Cmdline}} {{if $value}}{{$key}}={{$value}}{{else}}{{$key}}{{end}}{{end}}
+kernel {{.Kernel}}{{range $key, $value := .Cmdline}} {{if $value}}{{$key}}={{$value}}{{else}}{{$key}}{{end}}{{end}}
 initrd {{ range $element := .Initrd }}{{$element}}{{end}}
 boot
 `))

@@ -50,8 +50,8 @@ func main() {
 	capnslog.SetFormatter(capnslog.NewPrettyFormatter(os.Stdout, false))
 
 	config := &api.Config{
-		ImagePath: *imagesPath,
 		Store:     api.NewFileStore(http.Dir(*dataPath)),
+		ImagePath: *imagesPath,
 	}
 
 	// API server
