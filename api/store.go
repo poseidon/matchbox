@@ -104,8 +104,10 @@ func filter(inputs []string) (paths []string) {
 	return paths
 }
 
-// fileExists returns true if a file exists on the given path within the
-// specified Filesystem. Returns false otherwise.
+// openFile attempts to open the file within the specified Filesystem. If
+// successful, the http.File is returned and must be closed by the caller.
+// Otherwise, the path was not a regular file that could be opened and an
+// error is returned.
 func openFile(fs http.FileSystem, path string) (http.File, error) {
 	file, err := fs.Open(path)
 	if err != nil {
