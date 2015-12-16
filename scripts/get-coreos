@@ -1,7 +1,9 @@
 #!/bin/bash -e
+# USAGE: ./get-coreos
+# USAGE: ./get-coreos beta 877.1.0
 
-CHANNEL="stable"
-VERSION="835.9.0"
+CHANNEL=${1:-"stable"}
+VERSION=${2:-"835.9.0"}
 DEST=${PWD}/images/coreos/$VERSION
 
 mkdir -p $DEST

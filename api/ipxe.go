@@ -8,7 +8,7 @@ import (
 )
 
 const ipxeBootstrap = `#!ipxe
-chain ipxe?uuid=${uuid}
+chain ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&ip=${ip}&domain=${domain}&hostname=${hostname}&serial=${serial}
 `
 
 var ipxeTemplate = template.Must(template.New("ipxe boot").Parse(`#!ipxe
@@ -48,7 +48,7 @@ func ipxeHandler(store Store) http.Handler {
 			return
 		}
 		if _, err := buf.WriteTo(w); err != nil {
-			log.Infof("error writing to response, %s", err)
+			log.Errorf("error writing to response, %s", err)
 		}
 	}
 	return http.HandlerFunc(fn)

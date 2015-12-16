@@ -7,8 +7,12 @@ import (
 
 // MachineAttrs collects machine identifiers and attributes.
 type MachineAttrs struct {
-	UUID string
-	MAC  net.HardwareAddr
+	UUID     string
+	MAC      net.HardwareAddr
+	IP       net.IP
+	Domain   string
+	Hostname string
+	Serial   string
 }
 
 // attrsFromRequest returns MachineAttrs from request query parameters.
@@ -20,8 +24,12 @@ func attrsFromRequest(req *http.Request) MachineAttrs {
 		macAddr, _ = parseMAC(params.Get("mac"))
 	}
 	return MachineAttrs{
-		UUID: params.Get("uuid"),
-		MAC:  macAddr,
+		UUID:     params.Get("uuid"),
+		MAC:      macAddr,
+		IP:       net.ParseIP(params.Get("ip")),
+		Domain:   params.Get("domain"),
+		Hostname: params.Get("hostname"),
+		Serial:   params.Get("serial"),
 	}
 }
 

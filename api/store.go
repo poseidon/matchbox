@@ -47,7 +47,7 @@ func (s *fileStore) BootConfig(attrs MachineAttrs) (*BootConfig, error) {
 	config := new(BootConfig)
 	err = json.NewDecoder(file).Decode(config)
 	if err != nil {
-		log.Infof("error decoding boot config: %s", err)
+		log.Errorf("error decoding boot config: %s", err)
 	}
 	return config, err
 }
@@ -66,7 +66,7 @@ func (s *fileStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
 		return nil, err
 	}
 	if !cloudinit.IsCloudConfig(string(b)) {
-		log.Infof("read an invalid cloud config for machine %+v", attrs)
+		log.Errorf("read an invalid cloud config for machine %+v", attrs)
 		return nil, fmt.Errorf("read an invalid cloud config")
 	}
 	return &CloudConfig{
