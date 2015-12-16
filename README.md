@@ -18,7 +18,7 @@ or build the binary from source.
     ./build
     ./docker-build
 
-Next, prepare a [data config directory](#configs) or use the example in [data](data). Optionally create an [image assets](#assets) directory.
+Next, prepare a [data config directory](#configs) or use the example in [data](data). Optionally create an [image assets](#image assets) directory.
 
 Run the application on your host or as a Docker container with flag or environment variable [arguments](docs/config.md).
 
@@ -40,15 +40,15 @@ Prepare a config data directory. If you keep a versioned repository of declarati
         └── uuid
             └── 1cff2cd8-f00a-42c8-9426-f55e6a1847f6
         └── mac
-            └── 1cff2cd8-f00a-42c8-9426-f55e6a1847f6
+            └── 52:54:00:c7:b6:64
 
 To find boot configs and cloud configs, the `FileStore` searches the `uuid` directory for a file matching a client machine's UUID, then searches `mac` for file matching the client's MAC address, and finally falls back to using the `default` file if present.
 
 A typical boot config can be written as
 
     {
-        "kernel": "/images/stable/coreos_production_pxe.vmlinuz",
-        "initrd": ["/images/stable/coreos_production_pxe_image.cpio.gz"],
+        "kernel": "/images/coreos/835.9.0/coreos_production_pxe.vmlinuz",
+        "initrd": ["/images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
         "cmdline": {
             "cloud-config-url": "http://172.17.0.2:8080/cloud?uuid=${uuid}",
             "coreos.autologin": ""
