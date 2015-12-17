@@ -12,6 +12,7 @@ Boot configs (kernel, options) and cloud configs can be defined for machines wit
 Pull the container image
 
     docker pull quay.io/dghubble/bootcfg:latest
+    docker tag quay.io/dghubble/bootcfg:latest dghubble/bootcfg:latest
 
 or build the binary from source.
 
@@ -22,7 +23,7 @@ Next, prepare a [data config directory](#configs) or use the example in [data](d
 
 Run the application on your host or as a Docker container with flag or environment variable [arguments](docs/config.md).
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data -v $PWD/images:/images dghubble/bootcfg:latest -address=0.0.0.0:8080
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images dghubble/bootcfg:latest -address=0.0.0.0:8080
 
 You can quickly check that `/ipxe?uuid=val` and `/pixiecore/v1/boot/:mac` serve the expected boot config and `/cloud?uuid=val` serves the expected cloud config. Proceed to [Networking](#networking) for discussion about connecting clients to your new boot config service.
 
@@ -96,16 +97,20 @@ To use the hosted images, tweak `kernel` and `initrd` in a boot config file. For
 
 ## Networking
 
-The boot config service can be validated in PXE, iPXE, and Pixiecore scenarios using a libvirt virtual network with VM or bare metal PXE clients.
+Use PXE, iPXE, or Pixiecore with `bootcfg` to define kernel boot images, options, and cloud configs for machines within your network.
 
-An ethernet bridge can be used to connect container services and VM or bare metal boot clients on the same network. Docker starts containers with virtual ethernet connections to the `docker0` bridge
+To get started in a libvirt development environment (under Linux), you can run the `bootcfg` container on the docker0 virtual bridge, alongside either the included `ipxe` conatainer or `danderson/pixiecore` and `dhcp` containers. Then you'll be able to boot libvirt VMs on the same bridge or baremetal PXE clients that are attatched to your development machine via a network adapter and added to the bridge. `docker0` defaults to subnet 172.17.0.0/16. See [clients](#clients).
 
-    $ brctl show
-    $ docker network inspect bridge  # docker client names the bridge "bridge"
+List all your bridges with
 
-which uses the default subnet 172.17.0.0/16. Rather than reconfiguring Docker to start containers on a user defined bridge, it is easier to attach VMs and bare metal machines to `docker0`.
+    brctl show
 
-Start the container services specific to the scenario you wish to test, following the sections on PXE, iPXE, and Pixiecore below. Then create a client.
+and on docker 1.9+, you may inspect the bridge and its interfaces with
+
+    docker network inspect bridge   # docker calls the bridge "bridge"
+
+
+To get started on a baremetal, run the `bootcfg` container with the `--net=host` argument and configure PXE, iPXE, or Pixiecore. If you do not yet have any of these services running on your network, the [dnsmasq image](dockerfiles/dnsmasq) can be helpful.
 
 ### iPXE
 
