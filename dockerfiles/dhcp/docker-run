@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+docker run --rm --cap-add=NET_ADMIN dghubble/dhcp

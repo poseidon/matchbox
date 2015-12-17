@@ -117,15 +117,15 @@ Configure your iPXE server to chainload the `bootcfg` iPXE boot script hosted at
 
 #### docker0
 
-If you're running `bootcfg` on Docker an easy way to try PXE/iPXE booting is by running the included `ipxe` container on the same Docker bridge.
+Try running a PXE/iPXE server alongside `bootcfg` on the docker0 bridge. Use the included `ipxe` container to run an example PXE/iPXE server on that bridge.
 
-The `ipxe` Docker image runs DHCP and sends options to point PXE/iPXE clients to the boot config service (hardcoded to http://172.17.0.2:8080). For PXE clients, iPXE firmware is chainloaded.
+The `ipxe` Docker image uses dnsmasq DHCP to point PXE/iPXE clients to the boot config service (hardcoded to http://172.17.0.2:8080). It also runs a TFTP server to serve the iPXE firmware to older PXE clients via chainloading.
 
     cd dockerfiles/ipxe
     ./docker-build
     ./docker-run
 
-Create a PXE boot client VM or attach a bare metal PXE boot client to the `docker0` virtual bridge. See [clients](#Clients).
+Now create local PXE boot [clients](#clients) as libvirt VMs or by attaching bare metal machines to the docker0 bridge.
 
 ### PXE
 
@@ -139,33 +139,27 @@ To use `bootcfg` with PXE, you must [chainload iPXE](http://ipxe.org/howto/chain
 
 `bootcfg` does not respond to DHCP requests or serve files over TFTP.
 
-#### Pixecore
+### Pixecore
 
-Run the Pixiecore server container which uses `api` mode to call through to the config service.
+Pixiecore is a ProxyDHCP, TFTP, and HTTP server and calls through to the `bootcfg` API to get a boot config for `pxelinux` to boot. No modification of your existing DHCP server is required in production.
 
-    make run-pixiecore
+#### docker0
 
-Finally, run the `vethdhcp` script to create a virtual ethernet connection on the `docker0` bridge, assign an IP address, and run dnsmasq to provide DHCP service to VMs we'll add to the bridge.
+Try running a DHCP server, Pixiecore, and `bootcfg` on the docker0 bridge. Use the included `dhcp` container to run an example DHCP server and the official Pixiecore container image.
 
-    make run-dhcp
+    # DHCP
+    cd dockerfiles/dhcp
+    ./docker-build
+    ./docker-run
 
-Create a PXE boot client VM using virt-manager as described above.
+Start Pixiecore using the script which attempts to detect the IP and port of `bootcfg` on the Docker host or do it manually.
 
-### Troubleshooting
+    # Pixiecore
+    ./scripts/pixiecore
+    # manual
+    docker run -v $PWD/images:/images:Z danderson/pixiecore -api http://$BOOTCFG_HOST:$BOOTCFG_PORT/pixiecore
 
-* Check your firewall settings to ensure you've allowed DHCP to run.
-* On some platforms, SELinux prevents file serving unless contexts are changed appropriately.
-* If you get an "address is already in use" error, try stopping the `default` network created in virt-manager.
-* If you find that the `docker0` bridge receives DHCP Offers from dnsmasq, but the VM does not you may need to change an iptables rule.
-
-Change subnet MASQUERADE.
-
-    $ iptables -L -t nat
-    $ iptables -t nat -R POSTROUTING 1 -s 172.17.0.0/16 ! -d 172.17.0.0/16 -j MASQUERADE
-
-    POSTROUTING
-    MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0      (Original Rule 1)
-    MASQUERADE  all  --  172.17.0.0/16       !172.17.0.0/16  (Updated Rule 1)
+Now create local PXE boot [clients](#clients) as libvirt VMs or by attaching bare metal machines to the docker0 bridge.
 
 ## Clients
 
