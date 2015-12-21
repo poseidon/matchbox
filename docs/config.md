@@ -18,5 +18,5 @@ Binary
 
 Container
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data -v $PWD/images:/images coreos/bootcfg:latest -address=0.0.0.0:8080 -data-path=./data -images-path=./images
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -data-path=./data -images-path=./images
 

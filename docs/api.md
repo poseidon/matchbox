@@ -6,13 +6,14 @@
 Serves a static iPXE boot script which gathers client machine attributes and chain loads to the iPXE boot config endpoint. Configure your iPXE server or DHCP options to boot from this script (e.g. set `dhcp-boot:dhcp-boot=tag:ipxe,http://provisioner.example.com/ipxe/boot.ipxe` if using `dnsmasq`).
 
     GET http://bootcfg.example.com/boot.ipxe
+    GET http://bootcfg.example.com/boot.ipxe.0   // for dnsmasq
 
 **Response**
 
     #!ipxe
     chain config?uuid=${uuid}
 
-## iXPE Boot Config
+## iPXE Boot Config
 
 Renders an iPXE boot config script based on hardware attribute query parameters and registered boot configs. Hardware attributes are matched in priority order: UUID, MAC address, default (if set).
 

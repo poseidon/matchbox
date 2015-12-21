@@ -1,99 +1,16 @@
 
-# CoreOS on Hardware
+# CoreOS on Baremetal
 
-`bootcfg` serves configs to PXE/iPXE/Pixiecore network boot clients machines based on their hardware attributes, to declaratively setup clusters on virtual or physical hardware.
+CoreOS on Baremetal contains guides for booting and configuring CoreOS clusters on virtual or physical hardware. It includes Dockerfiles and Vagrantfiles for setting up a network boot environment and the `bootcfg` HTTP service for providing configs to machines based on their attributes.
 
-Boot configs (kernel, options) and cloud configs can be defined for machines with a specific UUID, a specific MAC address, or as the default. `bootcfg` serves configs as iPXE scripts and as JSON to implement the Pixiecore [API spec](https://github.com/danderson/pixiecore/blob/master/README.api.md).
+## Guides
 
-`bootcfg` can run as a container or on a provisioner machine directly and operates alongside your existing DHCP and PXE boot setups.
-
-## Usage
-
-Pull the container image
-
-    docker pull quay.io/dghubble/bootcfg:latest
-    docker tag quay.io/dghubble/bootcfg:latest dghubble/bootcfg:latest
-
-or build the binary from source.
-
-    ./build
-    ./docker-build
-
-Next, prepare a [data config directory](#configs) or use the example in [data](data). Optionally create an [image assets](#image assets) directory.
-
-Run the application on your host or as a Docker container with flag or environment variable [arguments](docs/config.md).
-
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images dghubble/bootcfg:latest -address=0.0.0.0:8080
-
-You can quickly check that `/ipxe?uuid=val` and `/pixiecore/v1/boot/:mac` serve the expected boot config and `/cloud?uuid=val` serves the expected cloud config. Proceed to [Networking](#networking) for discussion about connecting clients to your new boot config service.
-
-### Configs
-
-A `Store` maintains associations between machine attributes and different types of bootstrapping configurations. Currently, `bootcfg` includes a `FileStore` which can search a filesystem directory for `boot` and `cloud` configs.
-
-Prepare a config data directory. If you keep a versioned repository of declarative configs, consider keeping this directory there.
-
-    data
-    ├── boot
-    │   └── default
-    └── cloud
-        ├── default
-        └── uuid
-            └── 1cff2cd8-f00a-42c8-9426-f55e6a1847f6
-        └── mac
-            └── 52:54:00:c7:b6:64
-
-To find boot configs and cloud configs, the `FileStore` searches the `uuid` directory for a file matching a client machine's UUID, then searches `mac` for file matching the client's MAC address, and finally falls back to using the `default` file if present.
-
-A typical boot config can be written as
-
-    {
-        "kernel": "/images/coreos/835.9.0/coreos_production_pxe.vmlinuz",
-        "initrd": ["/images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
-        "cmdline": {
-            "cloud-config-url": "http://172.17.0.2:8080/cloud?uuid=${uuid}",
-            "coreos.autologin": ""
-        }
-    }
-
-Point kernel and initrd to either the URIs of images or to local [assets](#assets) served by `bootcfg`. If the OS in the boot config supports it, point `cloud-config-url` to the `/cloud` endpoint at the name or IP where you plan to run `bootcfg`.
-
-For this example, we use the internal IP Docker will assign to the first container on its bridge, because we'll attach PXE clients to the same bridge.
-
-A typical cloud config script:
-
-    #cloud-config
-    coreos:
-      units:
-        - name: etcd2.service
-          command: start
-        - name: fleet.service
-          command: start
-    write_files:
-      - path: "/home/core/welcome"
-        owner: "core"
-        permissions: "0644"
-        content: |
-          File added by the default cloud-config.
-
-See the [data](/data) directory for examples. Alternative `Store` backends and support for additional machine attributes is forthcoming.
-
-### Image Assets
-
-Optionally, `bootcfg` can serve free-form static assets (e.g. kernel and initrd images) if an `-images-path` argument to a mounted volume directory is provided.
-
-    images/
-    └── coreos
-        └── 835.9.0
-            ├── coreos_production_pxe.vmlinuz
-            └── coreos_production_pxe_image.cpio.gz
-
-Run the `get-coreos` script to quickly download kernel and initrd images from a recent CoreOS release into an `/images` directory.
-
-    ./scripts/get-coreos                 # stable, 835.9.0
-    ./scripts/get-coreos beta 877.1.0
-
-To use the hosted images, tweak `kernel` and `initrd` in a boot config file. For example, change `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/images/coreos/835.9.0/coreos_production_pxe.vmlinuz` so your client machines don't all download a remote image.
+[Getting Started](docs/getting-started.md)
+[Boot Config Service](docs/bootcfg.md)
+[Libvirt Guide](docs/virtual-hardware.md)
+[Baremetal Guide](docs/physical-hardware.md)
+[bootcfg Config](docs/config.md)
+[bootcfg API](docs/api.md)
 
 ## Networking
 
