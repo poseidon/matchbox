@@ -51,7 +51,7 @@ In these guides, PXE is used to load the iPXE boot file so iPXE can chainload sc
 
 [iPXE](http://ipxe.org/) is an enhanced implementation of the PXE client firmware and a network boot program which uses iPXE scripts rather than config files and can download scripts and images with HTTP.
 
-<img src='img/ipxe.png' class="img-center" alt="Basic PXE client server protocol flow"/>
+<img src='img/ipxe.png' class="img-center" alt="iPXE client server protocol flow"/>
 
 A DHCPOFFER to iPXE client firmware specifies an HTTP boot script such as `http://example.provisioner.net/boot.ipxe`.
 
@@ -86,7 +86,7 @@ Many networks have DHCP services which are impractical to modify or disable. Cor
 
 To address this, PXE client firmware listens for a DHCPOFFER from non-PXE DHCP server *and* a DHCPOFFER from a PXE-enabled **proxyDHCP server** which is configured to respond with just the next server and boot filename. The client firmware combines the two responses as if they had come from a single DHCP server which provided PXE Options.
 
-<img src='img/proxydhcp.png' class="img-center" alt="Basic PXE client server protocol flow"/>
+<img src='img/proxydhcp.png' class="img-center" alt="DHCP and proxyDHCP responses are merged to get PXE Options"/>
 
 The [libvirt guide](virtual-networking.md) shows how to setup a network environment with a standalone PXE-enabled DHCP server or with a separate DHCP server and proxyDHCP server.
 
