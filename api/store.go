@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
-
-	cloudinit "github.com/coreos/coreos-cloudinit/config"
 )
 
 // Store maintains associations between machine attributes and configs.
@@ -64,10 +62,6 @@ func (s *fileStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
 		return nil, err
-	}
-	if !cloudinit.IsCloudConfig(string(b)) {
-		log.Errorf("read an invalid cloud config for machine %+v", attrs)
-		return nil, fmt.Errorf("read an invalid cloud config")
 	}
 	return &CloudConfig{
 		Content: string(b),

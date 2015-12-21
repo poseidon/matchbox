@@ -35,6 +35,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 	// iPXE
 	mux.Handle("/boot.ipxe", ipxeInspect())
+	mux.Handle("/boot.ipxe.0", ipxeInspect())
 	mux.Handle("/ipxe", ipxeHandler(s.store))
 	// Pixiecore
 	mux.Handle("/pixiecore/v1/boot/", pixiecoreHandler(s.store))
