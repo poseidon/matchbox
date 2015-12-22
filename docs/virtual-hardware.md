@@ -1,5 +1,5 @@
 
-# Libvirt Virtual Hardware
+# CoreOS on Libvirt Virtual Hardware
 
 CoreOS can be booted and configured on virtual hardware within a libvirt environment (under Linux) with different network services running as Docker containers on the `docker0` virtual bridge. Client VMs or even baremetal hardware attached to the bridge can be booted and configured from the network.
 
@@ -41,7 +41,9 @@ Create a PXE/iPXE network environment by running the included `ipxe` container o
     ./docker-build
     ./docker-run
 
-The `ipxe` image uses `dnsmasq` to run DHCP and TFTP. It allocates IPs in the `docker0` subnet and sends options to chainload older PXE clients to iPXE. iPXE clients are pointed to the `bootcfg` service (assumed to be running on 172.17.0.2:8080) to get a boot script.
+The `ipxe` image uses `dnsmasq` to run DHCP and TFTP. It allocates IPs in the `docker0` subnet and sends options to chainload older PXE clients to iPXE. iPXE clients are pointed to the `bootcfg` service (assumed to be running on 172.17.0.2:8080) to get a boot script which loads configs.
+
+The `ipxe` image uses the following `dnsmasq.conf`.
 
 ```
 # dnsmasq.conf
@@ -101,3 +103,7 @@ Find the network interface and attach it to the virtual bridge.
     brctl addif docker0 enp0s20u2
 
 Restart the client machine and it should PXE boot using the boot config and cloud config based on its UUID, MAC address, or your configured defaults.
+
+## Next
+
+If you'd like to boot and configure a baremetal machine network, follow the [baremetal guide](physical-hardware.md).

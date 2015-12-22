@@ -5,7 +5,7 @@ QUAY_REPO=quay.io/coreos/bootcfg
 GIT_SHA=$(git rev-parse HEAD)
 
 # quay.io
-docker tag $REPO:$GIT_SHA $QUAY_REPO:latest
+docker tag -f $REPO:$GIT_SHA $QUAY_REPO:latest
 docker tag $REPO:$GIT_SHA $QUAY_REPO:$GIT_SHA
 docker push $QUAY_REPO:latest
 docker push $QUAY_REPO:$GIT_SHA

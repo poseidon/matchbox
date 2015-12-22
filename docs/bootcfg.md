@@ -107,3 +107,7 @@ Run the `get-coreos` script to quickly download kernel and initrd images from a 
     ./scripts/get-coreos beta 877.1.0
 
 To reference these local images, change the `kernel` and `initrd` in a boot config file. For example, change `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/images/coreos/835.9.0/coreos_production_pxe.vmlinuz`.
+
+## Virtual and Physical Machine Guides
+
+Next, setup a virtual machine network within libvirt or a baremetal machine network. Follow the [libvirt guide](virtual-hardware.md) or [baremetal guide](physical-hardware.md).
