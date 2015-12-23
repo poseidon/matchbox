@@ -1,15 +1,10 @@
 {
-	"ImportPath": "github.com/coreos-inc/coreos-baremetal",
+	"ImportPath": "github.com/coreos/coreos-baremetal",
 	"GoVersion": "go1.5.1",
 	"Packages": [
-		"cmd/bootcfg/main.go"
+		"./..."
 	],
 	"Deps": [
-		{
-			"ImportPath": "github.com/coreos/coreos-cloudinit/config",
-			"Comment": "v1.8.1",
-			"Rev": "08eb9bae3c4deb470b63c24c659f7c8659eadb27"
-		},
 		{
 			"ImportPath": "github.com/coreos/go-systemd/journal",
 			"Comment": "v4-8-gf164f43",
@@ -22,10 +17,6 @@
 		{
 			"ImportPath": "github.com/coreos/pkg/flagutil",
 			"Rev": "2c77715c4df99b5420ffcae14ead08f52104065d"
-		},
-		{
-			"ImportPath": "github.com/coreos/yaml",
-			"Rev": "6b16a5714269b2f70720a45406b1babd947a17ef"
 		}
 	]
 }

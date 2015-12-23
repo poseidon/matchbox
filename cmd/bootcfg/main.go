@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/coreos-inc/coreos-baremetal/api"
+	"github.com/coreos/coreos-baremetal/api"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/coreos/pkg/flagutil"
 )
