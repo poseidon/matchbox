@@ -1,13 +1,8 @@
 #!/bin/bash -e
 # Travis Deploy Docker Push
 
-if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_GO_VERSION" == "1.5" ]]; then
-    ./build
-    docker info
-    ./docker-build
-    docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p=$DOCKER_PASSWORD quay.io
-    ./docker-push
-else
-  echo "Skipping Docker image push."
-  echo "PR: $TRAVIS_PULL_REQUEST Go: $TRAVIS_GO_VERSION"
-fi
+./build
+docker info
+./docker-build
+docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p=$DOCKER_PASSWORD quay.io
+./docker-push

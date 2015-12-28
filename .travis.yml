@@ -16,8 +16,10 @@ script:
 deploy:
   provider: script
   script: scripts/travis-docker-push
+  skip_cleanup: true
   on:
     branch: master
-  skip_cleanup: true
+    go: '1.5'
+    condition: "$TRAVIS_PULL_REQUEST = false"
 notifications:
   email: false
