@@ -1,5 +1,7 @@
 language: go
-sudo: false
+sudo: required
+services:
+  - docker
 go:
   - 1.5
   - tip
@@ -11,5 +13,11 @@ script:
   - go test ./...
   - go vet ./...
   - golint ./...
+deploy:
+  provider: script
+  script: scripts/travis-docker-push
+  on:
+    branch: add-travis-builds
+  skip_cleanup: true
 notifications:
   email: false
