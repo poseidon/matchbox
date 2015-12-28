@@ -17,7 +17,7 @@ deploy:
   provider: script
   script: scripts/travis-docker-push
   on:
-    branch: add-travis-builds
+    branch: master
   skip_cleanup: true
 notifications:
   email: false
