@@ -19,9 +19,7 @@ func TestPixiecoreHandler(t *testing.T) {
 			"c": "",
 		},
 	}
-	store := &fixedStore{
-		BootCfg: bootcfg,
-	}
+	store := &fixedStore{BootCfg: bootcfg}
 	h := pixiecoreHandler(store)
 	req, _ := http.NewRequest("GET", "/"+validMAC, nil)
 	w := httptest.NewRecorder()

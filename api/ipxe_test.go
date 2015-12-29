@@ -26,20 +26,18 @@ func TestIPXEHandler(t *testing.T) {
 			"c": "",
 		},
 	}
-	expected := `#!ipxe
+	expectedScript := `#!ipxe
 kernel /images/kernel a=b c
 initrd /images/initrd_a /images/initrd_b 
 boot
 `
-	store := &fixedStore{
-		BootCfg: bootcfg,
-	}
+	store := &fixedStore{BootCfg: bootcfg}
 	h := ipxeHandler(store)
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, expected, w.Body.String())
+	assert.Equal(t, expectedScript, w.Body.String())
 }
 
 func TestIPXEHandler_MissingConfig(t *testing.T) {

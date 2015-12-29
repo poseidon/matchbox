@@ -8,8 +8,10 @@ import (
 	"path/filepath"
 )
 
-// Store maintains associations between machine attributes and configs.
+// Store provides Machine, Spec, and config resources.
 type Store interface {
+	Machine(id string) (*Machine, error)
+	Spec(id string) (*Spec, error)
 	// BootConfig returns the boot config (kernel, options) for the machine.
 	BootConfig(attrs MachineAttrs) (*BootConfig, error)
 	// CloudConfig returns the cloud config user data for the machine.
@@ -66,6 +68,40 @@ func (s *fileStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
 	return &CloudConfig{
 		Content: string(b),
 	}, nil
+}
+
+// Machine returns the configuration for the machine with the given id.
+func (s *fileStore) Machine(id string) (*Machine, error) {
+	file, err := openFile(s.root, filepath.Join("machines", id, "machine.json"))
+	if err != nil {
+		log.Infof("no machine config %s", id)
+		return nil, err
+	}
+	defer file.Close()
+
+	machine := new(Machine)
+	err = json.NewDecoder(file).Decode(machine)
+	if err != nil {
+		log.Errorf("error decoding machine config: %s", err)
+	}
+	return machine, err
+}
+
+// Spec returns the Spec with the given id.
+func (s *fileStore) Spec(id string) (*Spec, error) {
+	file, err := openFile(s.root, filepath.Join("specs", id, "spec.json"))
+	if err != nil {
+		log.Infof("no spec %s", id)
+		return nil, err
+	}
+	defer file.Close()
+
+	spec := new(Spec)
+	err = json.NewDecoder(file).Decode(spec)
+	if err != nil {
+		log.Errorf("error decoding spec: %s", err)
+	}
+	return spec, err
 }
 
 // find searches the prefix subdirectory of root for the first config file

@@ -1,0 +1,11 @@
+{
+    "id": "orion",
+    "boot": {
+        "kernel": "/images/coreos/835.9.0/coreos_production_pxe.vmlinuz",
+        "initrd": ["/images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
+        "cmdline": {
+            "cloud-config-url": "http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+            "coreos.autologin": ""
+        }
+    }
+}
