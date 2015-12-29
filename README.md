@@ -7,9 +7,9 @@ CoreOS on Baremetal contains guides for booting and configuring CoreOS clusters 
 
 ## Guides
 
-* [Getting Started](docs/getting-started.md)
-* [Boot Config Service](docs/bootcfg.md)
-* [Libvirt Guide](docs/virtual-hardware.md)
-* [Baremetal Guide](docs/physical-hardware.md)
-* [bootcfg Config](docs/config.md)
-* [bootcfg API](docs/api.md)
+* [Getting Started](Documentation/getting-started.md)
+* [Boot Config Service](Documentation/bootcfg.md)
+* [Libvirt Guide](Documentation/virtual-hardware.md)
+* [Baremetal Guide](Documentation/physical-hardware.md)
+* [bootcfg Config](Documentation/config.md)
+* [bootcfg API](Documentation/api.md)
