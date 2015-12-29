@@ -19,6 +19,9 @@ curl $BASE_URL/coreos_production_pxe_image.cpio.gz -o $DEST/coreos_production_px
 curl $BASE_URL/coreos_production_pxe_image.cpio.gz.sig -o $DEST/coreos_production_pxe_image.cpio.gz.sig
 
 # verify signatures
-# https://coreos.com/security/image-signing-key/
+curl https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.asc -o $DEST/CoreOS_Image_Signing_Key.asc
+gpg --import < "$DEST/CoreOS_Image_Signing_Key.asc"
+echo "Adding trust for CoreOS signing key:"
+echo "04127D0BFABEC8871FFB2CCE50E0885593D2DCB4:6:" | gpg --import-ownertrust
 gpg --verify $DEST/coreos_production_pxe.vmlinuz.sig
 gpg --verify $DEST/coreos_production_pxe_image.cpio.gz.sig
