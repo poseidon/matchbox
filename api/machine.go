@@ -29,7 +29,8 @@ func attrsFromRequest(req *http.Request) MachineAttrs {
 func parseMAC(s string) (net.HardwareAddr, error) {
 	macAddr, err := net.ParseMAC(s)
 	if err != nil {
-		log.Infof("error parsing MAC address: %s", err)
+		// invalid MAC arguments may be common
+		log.Debugf("error parsing MAC address: %s", err)
 		return nil, err
 	}
 	return macAddr, err

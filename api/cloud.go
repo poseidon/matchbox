@@ -16,8 +16,6 @@ type CloudConfig struct {
 func cloudHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		attrs := attrsFromRequest(req)
-		log.Infof("cloud config request for %+v", attrs)
-
 		config, err := store.CloudConfig(attrs)
 		if err != nil {
 			http.NotFound(w, req)

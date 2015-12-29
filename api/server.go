@@ -34,13 +34,14 @@ func NewServer(config *Config) *Server {
 func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 	// iPXE
-	mux.Handle("/boot.ipxe", ipxeInspect())
-	mux.Handle("/boot.ipxe.0", ipxeInspect())
-	mux.Handle("/ipxe", ipxeHandler(s.store))
+	mux.Handle("/boot.ipxe", logRequests(ipxeInspect()))
+	mux.Handle("/boot.ipxe.0", logRequests(ipxeInspect()))
+	mux.Handle("/ipxe", logRequests(ipxeHandler(s.store)))
 	// Pixiecore
-	mux.Handle("/pixiecore/v1/boot/", pixiecoreHandler(s.store))
+	mux.Handle("/pixiecore/v1/boot/", logRequests(pixiecoreHandler(s.store)))
+
 	// cloud configs
-	mux.Handle("/cloud", cloudHandler(s.store))
+	mux.Handle("/cloud", logRequests(cloudHandler(s.store)))
 	// Kernel and Initrd Images
 	mux.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(s.imagePath))))
 	return mux

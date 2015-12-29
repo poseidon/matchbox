@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 	"path/filepath"
 )
@@ -18,16 +17,12 @@ func pixiecoreHandler(store Store) http.Handler {
 		}
 		// pixiecore only provides MAC addresses
 		attrs := MachineAttrs{MAC: macAddr}
-		log.Infof("pixiecore boot config request for %+v", attrs)
-
 		config, err := store.BootConfig(attrs)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-		if err := json.NewEncoder(w).Encode(config); err != nil {
-			log.Infof("error writing to response, %s", err)
-		}
+		renderJSON(w, config)
 	}
 	return http.HandlerFunc(fn)
 }

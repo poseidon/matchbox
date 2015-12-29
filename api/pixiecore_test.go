@@ -1,9 +1,9 @@
 package api
 
 import (
-	"testing"
 	"net/http"
 	"net/http/httptest"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -22,13 +22,14 @@ func TestPixiecoreHandler(t *testing.T) {
 	store := &fixedStore{
 		BootCfg: bootcfg,
 	}
-	expected := `{"kernel":"/images/kernel","initrd":["/images/initrd_a","/images/initrd_b"],"cmdline":{"a":"b","c":""}}`
 	h := pixiecoreHandler(store)
-	req, _ := http.NewRequest("GET", "/" + validMAC, nil)
+	req, _ := http.NewRequest("GET", "/"+validMAC, nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
+	expectedJSON := `{"kernel":"/images/kernel","initrd":["/images/initrd_a","/images/initrd_b"],"cmdline":{"a":"b","c":""}}`
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, expected + "\n", w.Body.String())
+	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, expectedJSON, w.Body.String())
 }
 
 func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
@@ -44,12 +45,8 @@ func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
 func TestPixiecoreHandler_MissingConfig(t *testing.T) {
 	store := &emptyStore{}
 	h := pixiecoreHandler(store)
-	req, _ := http.NewRequest("GET", "/" + validMAC, nil)
+	req, _ := http.NewRequest("GET", "/"+validMAC, nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
-
-
-
-

@@ -37,7 +37,7 @@ const (
 func (s *fileStore) BootConfig(attrs MachineAttrs) (*BootConfig, error) {
 	file, err := s.find(bootPrefix, attrs)
 	if err != nil {
-		log.Infof("no boot config for machine %+v", attrs)
+		log.Debugf("no boot config for machine %+v", attrs)
 		return nil, err
 	}
 	defer file.Close()
@@ -45,7 +45,7 @@ func (s *fileStore) BootConfig(attrs MachineAttrs) (*BootConfig, error) {
 	config := new(BootConfig)
 	err = json.NewDecoder(file).Decode(config)
 	if err != nil {
-		log.Errorf("error decoding boot config: %s", err)
+		log.Errorf("error decoding boot config: %v", err)
 	}
 	return config, err
 }
@@ -54,7 +54,7 @@ func (s *fileStore) BootConfig(attrs MachineAttrs) (*BootConfig, error) {
 func (s *fileStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
 	file, err := s.find(cloudPrefix, attrs)
 	if err != nil {
-		log.Infof("no cloud config for machine %+v", attrs)
+		log.Debugf("no cloud config for machine %+v", attrs)
 		return nil, err
 	}
 	defer file.Close()
