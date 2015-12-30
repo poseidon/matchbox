@@ -3,36 +3,45 @@
 
 The `bootcfg` HTTP service provides configs to PXE, iPXE, and Pixiecore network boot clients based on their hardware attributes to boot and configure virtual or physical machines.
 
-Boot configs (i.e. kernel, initrd, kernel options) and cloud configs can be declared for machines by UUI, MAC address, or as the default for machines. The service renders boot configs as iPXE scripts and as JSON responses to implements the Pixiecore [API spec](https://github.com/danderson/pixiecore/blob/master/README.api.md).
+Boot configs (i.e. kernel, initrd, kernel options) and cloud configs can be declared for machines by UUID, MAC address, or as the default for machines. The service renders boot configs as iPXE scripts and as JSON responses to implement the Pixiecore [API spec](https://github.com/danderson/pixiecore/blob/master/README.api.md).
 
 Currently, `bootcfg` is a proof of concept, but it can make it easier to declare the desired state of network booted machines and get started with clusters of virtual or physical machines.
 
 ## Usage
 
-The `bootcfg` service can be run as a container to boot libvirt VMs or on a provisioner host to boot baremetal machines. Pull the container image,
+The `bootcfg` service can be run as a container to boot libvirt VMs or on a provisioner host to boot baremetal machines.
 
-    docker pull quay.io/coreos/bootcfg:latest
-    docker tag quay.io/coreos/bootcfg:latest coreos/bootcfg:latest
-
-or build it from source code,
+Build the binary and docker image from source
 
     ./build
     ./docker-build
 
-Prepare a directory with machine [configs](#configs) and then download CoreOS kernel and initrd image assets by
+Or pull a published container image from [quay.io/repository/coreoso/bootcfg](https://quay.io/repository/coreos/bootcfg?tab=tags).
+
+    docker pull quay.io/coreos/bootcfg:latest
+    docker tag quay.io/coreos/bootcfg:latest coreos/bootcfg:latest
+
+The latest image corresponds to the most recent `coreos-baremetal` master commit.
+
+Prepare a directory with machine [configs](#configs) and download CoreOS kernel and initrd images that `bootcfg` should serve (optional).
 
     ./scripts/get-coreos   # download CoreOS 835.9.0 to images/coreos/835.9.0
     ./scripts/get-coreos beta 877.1.0
 
 Run the container and mount the configs and images directories as volumes.
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images coreos/bootcfg -address=0.0.0.0:8080
-
-Mapping container port 8080 to host port 8080 allows the endpoints to be quickly checked. Visit `/ipxe?uuid=val` or `/pixiecore/v1/boot/:mac` to see that the correct boot iPXE script or JSON is served. Visit `/cloud?uuid=val` to see that the correct cloud config is served.
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg -address=0.0.0.0:8080
 
 ## Endpoints
 
 The [API](api.md) documents the iPXE and Pixiecore boot config endpoints, the cloud config endpoint, and image assets.
+
+Map container port 8080 to host port 8080 to quickly check endpoints:
+
+* iPXE Scripts: `/ipxe?uuid=val`
+* Pixiecore JSON: `/pixiecore/v1/boot/:mac`
+* Cloud Config: `/cloud?uuid=val`
+* Images: `/images`
 
 ## Configs
 
