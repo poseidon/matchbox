@@ -76,7 +76,7 @@ Continue to the [libvirt guide](virtual-hardware.md) or the [baremetal guide](ph
 
 [Pixiecore](https://github.com/danderson/pixiecore) is a newer service which implements a proxyDHCP server, TFTP server, and HTTP server all-in-one and calls through to an HTTP API. The [boot config service](bootcfg.md) implements the API spec to provide boot configs based on client MAC addresses.
 
-Continue to the [libvirt guide](virtual-networking.md) to use Pixiecore and `bootcfg` to provide a PXE network boot environment to PXE client machines.
+Continue to the [libvirt guide](virtual-hardware.md) to use Pixiecore and `bootcfg` to provide a PXE network boot environment to PXE client machines.
 
 ## Network Environments
 
@@ -88,7 +88,7 @@ To address this, PXE client firmware listens for a DHCPOFFER from non-PXE DHCP s
 
 <img src='img/proxydhcp.png' class="img-center" alt="DHCP and proxyDHCP responses are merged to get PXE Options"/>
 
-The [libvirt guide](virtual-networking.md) shows how to setup a network environment with a standalone PXE-enabled DHCP server or with a separate DHCP server and proxyDHCP server.
+The [libvirt guide](virtual-hardware.md) shows how to setup a network environment with a standalone PXE-enabled DHCP server or with a separate DHCP server and proxyDHCP server.
 
 The [baremetal guide](physical-hardware.md) shows how to check your network environment and run either a standalone PXE-enabled DHCP server or a proxyDHCP server to compliment your existing network DHCP service.
 
