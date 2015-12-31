@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"path/filepath"
 )
@@ -35,4 +36,15 @@ func (r *specResource) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	renderJSON(w, spec)
+}
+
+// getMatchingSpec returns the Spec matching the given attributes.
+func getMatchingSpec(store Store, attrs MachineAttrs) (*Spec, error) {
+	if machine, err := store.Machine(attrs.UUID); err == nil && machine.Spec != nil {
+		return machine.Spec, nil
+	}
+	if machine, err := store.Machine(attrs.MAC.String()); err == nil && machine.Spec != nil {
+		return machine.Spec, nil
+	}
+	return nil, fmt.Errorf("no spec matching %v", attrs)
 }

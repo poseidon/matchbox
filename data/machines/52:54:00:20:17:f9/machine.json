@@ -1,0 +1,15 @@
+{
+    "id": "52:54:00:20:17:f9",
+    "spec": {
+      "boot": {
+          "kernel": "/images/coreos/877.1.0/coreos_production_pxe.vmlinuz",
+          "initrd": ["/images/coreos/877.1.0/coreos_production_pxe_image.cpio.gz"],
+          "cmdline": {
+              "cloud-config-url": "http://172.17.0.2:8080/cloud?mac=52:54:00:20:17:f9",
+              "coreos.autologin": ""
+          }
+      },
+      "cloud_id": "node1-cloud.yml"
+    },
+    "spec_id": ""
+}

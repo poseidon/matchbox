@@ -68,15 +68,15 @@ boot
 
 A TFTP server is used only to provide the `undionly.kpxe` boot program to older PXE firmware in order to bootstrap into iPXE.
 
-In these guides, the [boot config service](bootcfg.md) implements an HTTP API which can serve boot configs as iPXE scripts to machines based on hardware attribtues iPXE can detect (UUID, MAC, etc.). Setup involves configuring DHCP to send iPXE clients the correct boot script endpoint.
+The [boot config service](bootcfg.md) can serve iPXE scripts to machines based on hardware attribtues. Setup involves configuring DHCP to send iPXE clients the correct boot script endpoint.
 
 Continue to the [libvirt guide](virtual-hardware.md) or the [baremetal guide](physical-hardware.md) to use iPXE to boot PXE/iPXE client machines. Consult [CoreOS with iPXE](https://coreos.com/os/docs/latest/booting-with-ipxe.html) for details about CoreOS support for iPXE.
 
 #### Pixiecore
 
-[Pixiecore](https://github.com/danderson/pixiecore) is a newer service which implements a proxyDHCP server, TFTP server, and HTTP server all-in-one and calls through to an HTTP API. The [boot config service](bootcfg.md) implements the API spec to provide boot configs based on client MAC addresses.
+[Pixiecore](https://github.com/danderson/pixiecore) is a newer service which implements a proxyDHCP server, TFTP server, and HTTP server all-in-one and calls through to an HTTP API. The [boot config service](bootcfg.md) implements the Pixiecore API spec to provide JSON boot configs to Pixiecore based on client MAC addresses.
 
-Continue to the [libvirt guide](virtual-hardware.md) to use Pixiecore and `bootcfg` to provide a PXE network boot environment to PXE client machines.
+Continue to the [libvirt guide](virtual-hardware.md) to use Pixiecore to network boot PXE client machines.
 
 ## Network Environments
 

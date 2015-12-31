@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -31,15 +30,4 @@ func cloudHandler(store Store) http.Handler {
 		http.ServeContent(w, req, "", time.Time{}, strings.NewReader(config.Content))
 	}
 	return http.HandlerFunc(fn)
-}
-
-// getMatchingSpec returns the Spec matching the given attributes.
-func getMatchingSpec(store Store, attrs MachineAttrs) (*Spec, error) {
-	if machine, err := store.Machine(attrs.UUID); err == nil && machine.Spec != nil {
-		return machine.Spec, nil
-	}
-	if machine, err := store.Machine(attrs.MAC.String()); err == nil && machine.Spec != nil {
-		return machine.Spec, nil
-	}
-	return nil, fmt.Errorf("no spec matching %v", attrs)
 }

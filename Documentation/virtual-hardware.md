@@ -8,25 +8,29 @@ Docker containers run on the `docker0` virtual bridge, typically on a subnet 172
     brctl show
     docker network inspect bridge
 
-## Boot Config Service
+## Config Service
 
-First, run the `bootcfg` container with your configs and images directories.
+Setup `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and cloud configs. Optionally, include a volume of downloaded image assets.
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -data-path=/data -images-path=/images
+Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
-or use `./docker-run`.
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
-## PXE Setups
+Note, the `Spec` examples in [data](../data) point `cloud-config-url` kernel options to 172.17.0.2, the first container IP Docker is likely to assign. Ensure your kernel option urls point to where `bootcfg` runs.
 
-As discussed in [getting started](getting-started.md), there are several variations of PXE network boot environments. We'll show how to setup and test each network environment.
+    docker inspect bootcfg   # look for Networks, bridge, IPAddress
 
-Several setups make use of the `dnsmasq` program which can run a PXE-enabled DHCP server, proxy DHCP server, and/or TFTP server.
+## Network Setups
+
+We'll show how to setup PXE, iPXE, or Pixiecore network boot environments on the `docker0` bridge and configure them to use `bootcfg`.
+
+The [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) program and included [coreos/dnsmasq](../dockerfiles/dnsmasq) docker image will be used to run DHCP and TFTP. Build the Docker image before continuing.
 
 ### PXE
 
 To boot PXE clients, configure a PXE network environment to [chainload iPXE](http://ipxe.org/howto/chainloading). The iPXE setup below configures DHCP to send `undionly.kpxe` over TFTP to older PXE clients for this purpose.
 
-With `dnsmasq`, the relevant `dnsmask.conf` settings would be:
+With `dnsmasq`, the relevant `dnsmasq.conf` settings would be:
 
     enable-tftp
     tftp-root=/var/lib/tftpboot
@@ -35,15 +39,15 @@ With `dnsmasq`, the relevant `dnsmask.conf` settings would be:
 
 ### iPXE
 
-Create a PXE/iPXE network environment by running the included `ipxe` container on the `docker0` bridge alongside `bootcfg`.
+Create a PXE/iPXE network environment by running a PXE-enabled DHCP server and TFTP server on the `docker0` bridge, alongside `bootcfg`.
 
-    cd dockerfiles/ipxe
-    ./docker-build
-    ./docker-run
+```
+sudo docker run --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://172.17.0.2:8080/boot.ipxe
+```
 
-The `ipxe` image uses `dnsmasq` to run DHCP and TFTP. It allocates IPs in the `docker0` subnet and sends options to chainload older PXE clients to iPXE. iPXE clients are pointed to the `bootcfg` service (assumed to be running on 172.17.0.2:8080) to get a boot script which loads configs.
+The `coreos/dnsmasq` image runs DHCP and TFTP as a container. It allocates IPs in the `docker0` subnet to VMs and sends options to chainload older PXE clients to iPXE. iPXE clients are pointed to the `bootcfg` service iPXE endpoint (assumed to be running on 172.17.0.2:8080).
 
-The `ipxe` image uses the following `dnsmasq.conf`.
+To run dnsmasq as a service, rather than from the commandline, the `dnsmasq.conf` might be:
 
 ```
 # dnsmasq.conf
@@ -64,20 +68,17 @@ Continue to [clients](#clients) to create a client VM or attach a baremetal mach
 
 ### Pixiecore
 
-Create a Pixiecore network environment by running the `danderson/pixiecore` container alongside `bootcfg`. Since Pixiecore is a proxyDHCP/TFTP/HTTP server and the `docker0` bridge does not run DHCP services, you'll need to run DHCP for your client machines.
+Create a Pixiecore network environment by running a DHCP server and `danderson/pixiecore` on the `docker0` bridge, alongside `bootcfg`. Pixiecore is a combined proxyDHCP/TFTP/HTTP server.
 
-The `dhcp` image uses `dnsmasq` just to provide DHCP to the `docker0` subnet.
+Run a DHCP server (not PXE-enabled)
 
-    cd dockerfiles/dhcp
-    ./docker-build
-    ./docker-run
+```
+sudo docker run --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99
+```
 
-Start Pixiecore using the script which attempts to detect IP:port `bootcfg` ss using on `docker0` or do it manually.
+Run Pixiecore, using a script which detects the `bootcfg` container IP:port on docker0.
 
-    # Pixiecore
     ./scripts/pixiecore
-    # manual
-    docker run -v $PWD/images:/images:Z danderson/pixiecore -api http://$BOOTCFG_HOST:$BOOTCFG_PORT/pixiecore
 
 Continue to [clients](#clients) to create a client VM or attach a baremetal machine to boot.
 

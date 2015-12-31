@@ -1,11 +1,13 @@
 
+# coreos/dnsmasq
 
-Use this container image to run the `dnsmasq` command on a host, in an isolated container which includes iPXE's undionly.kpxe boot file.
+The coreos/dnsmasq Docker image provides an entrypoint to [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) for running dnsmasq DHCP, proxyDHCP, and TFTP. This is useful for testing different network setups without requiring changes to `dnsmasq.conf` on your host. The image also bundles `undionly.kpxe` which can be used to chainload PXE clients to iPXE.
 
 ## Usage
 
 Build the image
 
+    cd dockerfiles/dnsmasq
     ./docker-build
 
 Run `dnsmasq` on a host in proxyDHCP mode to chainload iPXE.

@@ -15,24 +15,21 @@ Identify whether the network runs a DHCP service which can be configured or whet
 
     route -n        # e.g. Gateway 192.168.1.1
 
-## dnsmasq
+## Config Service
 
-A [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) Docker image [is included](../dockerfiles/dnsmasq) for running dnsmasq DHCP, proxyDHCP, and TFTP for trying different network setups without requiring changes to `dnsmasq.conf` on your host. It also bundles `undionly.kpxe`  which is used for chainloading PXE clients to iPXE.
-
-    cd dockerfiles/dnsmasq
-    ./docker-build         # build coreos/dnsmasq
-
-## Boot Config Service
-
-Setup `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare machine configs, and download image assets.
+Setup `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and cloud configs. Optionally, include a volume of downloaded image assets.
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
-    docker run -p 8080:8080 --net=host --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080
+    docker run -p 8080:8080 --net=host --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 [-log-level=debug]
 
-Note, that the examples in [data](../data) use `cloud-config-url` pointing to 172.17.0.2 (the libvirt case). Your machine boot configurations should point to the host where `bootcfg` runs via IP or DNS name.
+Note, the `Spec` examples in [data](../data) point `cloud-config-url` kernel options to 172.17.0.2 (the libvirt case). Your kernel cmdline option urls should point to where `bootcfg` runs via IP or DNS name.
 
-## PXE/iPXE
+## Network Setups
+
+Your network may already have a configurable PXE or iPXE server, configurable DHCP, a DHCP server you cannot modify, or no DHCP server at all. We'll show how to setup each network environment to talk to `bootcfg`, depending on your circumstances.
+
+Several setups use the [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) program and included [coreos/dnsmasq](../dockerfiles/dnsmasq) docker image to run a PXE-enabled DHCP server, proxy DHCP server, or TFTP server as needed. Build the Docker image if needed.
 
 ### Configurable iPXE
 
