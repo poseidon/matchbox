@@ -14,8 +14,8 @@ var (
 	testMachine = &Machine{
 		ID: "a1b2c3d4",
 		BootConfig: &BootConfig{
-			Kernel: "fake-kernel",
-			Initrd: []string{"fake-initrd"},
+			Kernel: "/image/kernel",
+			Initrd: []string{"/image/initrd_a", "/image/initrd_b"},
 			Cmdline: map[string]interface{}{
 				"a": "b",
 				"c": "",
@@ -27,8 +27,7 @@ var (
 		ID:     "a1b2c3d4",
 		SpecID: "g1h2i3j4",
 	}
-	expectedMachineJSON           = `{"id":"a1b2c3d4","boot":{"kernel":"fake-kernel","initrd":["fake-initrd"],"cmdline":{"a":"b","c":""}},"spec_id":""}`
-	expectedSharedSpecMachineJSON = `{"id":"a1b2c3d4","boot":{"kernel":"fake-kernel","initrd":["fake-initrd"],"cmdline":{"a":"b","c":""}},"spec_id":"g1h2i3j4"}`
+	expectedMachineJSON = `{"id":"a1b2c3d4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"spec_id":""}`
 )
 
 func TestMachineHandler(t *testing.T) {
@@ -44,23 +43,6 @@ func TestMachineHandler(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
 	assert.Equal(t, expectedMachineJSON, w.Body.String())
-}
-
-func TestMachineHandler_SharedSpec(t *testing.T) {
-	store := &fixedStore{
-		Machines: map[string]*Machine{"a1b2c3d4": testSharedSpecMachine},
-		Specs:    map[string]*Spec{"g1h2i3j4": testSpec},
-	}
-	h := machineResource{store: store}
-	req, _ := http.NewRequest("GET", "/a1b2c3d4", nil)
-	w := httptest.NewRecorder()
-	h.ServeHTTP(w, req)
-	// assert that:
-	// - machine config is rendered as JSON
-	// - boot config values from the spec are merged into the JSON response
-	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
-	assert.Equal(t, expectedSharedSpecMachineJSON, w.Body.String())
 }
 
 func TestMachineHandler_MissingConfig(t *testing.T) {

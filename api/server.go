@@ -33,11 +33,6 @@ func NewServer(config *Config) *Server {
 // HTTPHandler returns a HTTP handler for the server.
 func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
-	// machines
-	newMachineResource(mux, "/machine/", s.store)
-	// named specs
-	newSpecResource(mux, "/spec/", s.store)
-
 	// Baremetal
 	// iPXE
 	mux.Handle("/boot.ipxe", logRequests(ipxeInspect()))
@@ -46,6 +41,11 @@ func (s *Server) HTTPHandler() http.Handler {
 	// Pixiecore
 	mux.Handle("/pixiecore/v1/boot/", logRequests(pixiecoreHandler(s.store)))
 
+	// Resources
+	// machines
+	newMachineResource(mux, "/machine/", s.store)
+	// named specs
+	newSpecResource(mux, "/spec/", s.store)
 	// cloud configs
 	mux.Handle("/cloud", logRequests(cloudHandler(s.store)))
 	// Kernel and Initrd Images

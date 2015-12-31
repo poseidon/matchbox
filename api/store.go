@@ -12,8 +12,6 @@ import (
 type Store interface {
 	Machine(id string) (*Machine, error)
 	Spec(id string) (*Spec, error)
-	// BootConfig returns the boot config (kernel, options) for the machine.
-	BootConfig(attrs MachineAttrs) (*BootConfig, error)
 	// CloudConfig returns the cloud config user data for the machine.
 	CloudConfig(attrs MachineAttrs) (*CloudConfig, error)
 }
@@ -35,41 +33,6 @@ const (
 	cloudPrefix = "cloud"
 )
 
-// BootConfig returns the boot config (kernel, options) for the machine.
-func (s *fileStore) BootConfig(attrs MachineAttrs) (*BootConfig, error) {
-	file, err := s.find(bootPrefix, attrs)
-	if err != nil {
-		log.Debugf("no boot config for machine %+v", attrs)
-		return nil, err
-	}
-	defer file.Close()
-
-	config := new(BootConfig)
-	err = json.NewDecoder(file).Decode(config)
-	if err != nil {
-		log.Errorf("error decoding boot config: %v", err)
-	}
-	return config, err
-}
-
-// CloudConfig returns the cloud config for the machine.
-func (s *fileStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
-	file, err := s.find(cloudPrefix, attrs)
-	if err != nil {
-		log.Debugf("no cloud config for machine %+v", attrs)
-		return nil, err
-	}
-	defer file.Close()
-	// cloudinit requires reading the entire file
-	b, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, err
-	}
-	return &CloudConfig{
-		Content: string(b),
-	}, nil
-}
-
 // Machine returns the configuration for the machine with the given id.
 func (s *fileStore) Machine(id string) (*Machine, error) {
 	file, err := openFile(s.root, filepath.Join("machines", id, "machine.json"))
@@ -83,6 +46,14 @@ func (s *fileStore) Machine(id string) (*Machine, error) {
 	err = json.NewDecoder(file).Decode(machine)
 	if err != nil {
 		log.Errorf("error decoding machine config: %s", err)
+	}
+
+	if machine.BootConfig == nil && machine.SpecID != "" {
+		// machine references a Spec, attempt to add Spec properties
+		spec, err := s.Spec(machine.SpecID)
+		if err == nil {
+			machine.BootConfig = spec.BootConfig
+		}
 	}
 	return machine, err
 }
@@ -102,6 +73,24 @@ func (s *fileStore) Spec(id string) (*Spec, error) {
 		log.Errorf("error decoding spec: %s", err)
 	}
 	return spec, err
+}
+
+// CloudConfig returns the cloud config for the machine.
+func (s *fileStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
+	file, err := s.find(cloudPrefix, attrs)
+	if err != nil {
+		log.Debugf("no cloud config for machine %+v", attrs)
+		return nil, err
+	}
+	defer file.Close()
+	// cloudinit requires reading the entire file
+	b, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+	return &CloudConfig{
+		Content: string(b),
+	}, nil
 }
 
 // find searches the prefix subdirectory of root for the first config file

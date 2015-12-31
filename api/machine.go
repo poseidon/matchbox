@@ -22,7 +22,7 @@ type Machine struct {
 	SpecID string `json:"spec_id"`
 }
 
-// machineResource serves the configuration for a specific machine.
+// machineResource serves specific machine configurations.
 type machineResource struct {
 	store Store
 }
@@ -40,14 +40,6 @@ func (r *machineResource) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		http.NotFound(w, req)
 		return
-	}
-
-	if machine.BootConfig == nil && machine.SpecID != "" {
-		// machine references a Spec, attempt to add Spec properties
-		spec, err := r.store.Spec(machine.SpecID)
-		if err == nil {
-			machine.BootConfig = spec.BootConfig
-		}
 	}
 	renderJSON(w, machine)
 }

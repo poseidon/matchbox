@@ -18,24 +18,20 @@ func TestIPXEInspect(t *testing.T) {
 }
 
 func TestIPXEHandler(t *testing.T) {
-	bootcfg := &BootConfig{
-		Kernel: "/images/kernel",
-		Initrd: []string{"/images/initrd_a", "/images/initrd_b"},
-		Cmdline: map[string]interface{}{
-			"a": "b",
-			"c": "",
-		},
+	store := &fixedStore{
+		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
 	}
-	expectedScript := `#!ipxe
-kernel /images/kernel a=b c
-initrd /images/initrd_a /images/initrd_b 
-boot
-`
-	store := &fixedStore{BootCfg: bootcfg}
 	h := ipxeHandler(store)
 	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
+	// assert that:
+	// - machine config is rendered as an iPXE script
+	expectedScript := `#!ipxe
+kernel /image/kernel a=b c
+initrd /image/initrd_a /image/initrd_b 
+boot
+`
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, expectedScript, w.Body.String())
 }

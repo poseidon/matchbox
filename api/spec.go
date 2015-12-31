@@ -13,6 +13,7 @@ type Spec struct {
 	BootConfig *BootConfig `json:"boot"`
 }
 
+// specResource serves Spec resources by id.
 type specResource struct {
 	store Store
 }
@@ -26,10 +27,10 @@ func newSpecResource(mux *http.ServeMux, pattern string, store Store) {
 
 func (r *specResource) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	id := filepath.Base(req.URL.Path)
-	config, err := r.store.Spec(id)
+	spec, err := r.store.Spec(id)
 	if err != nil {
 		http.NotFound(w, req)
 		return
 	}
-	renderJSON(w, config)
+	renderJSON(w, spec)
 }

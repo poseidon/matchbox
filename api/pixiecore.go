@@ -17,12 +17,12 @@ func pixiecoreHandler(store Store) http.Handler {
 		}
 		// pixiecore only provides MAC addresses
 		attrs := MachineAttrs{MAC: macAddr}
-		config, err := store.BootConfig(attrs)
+		machine, err := store.Machine(attrs.MAC.String())
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-		renderJSON(w, config)
+		renderJSON(w, machine.BootConfig)
 	}
 	return http.HandlerFunc(fn)
 }

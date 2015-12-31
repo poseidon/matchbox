@@ -9,7 +9,6 @@ import (
 type fixedStore struct {
 	Machines map[string]*Machine
 	Specs    map[string]*Spec
-	BootCfg  *BootConfig
 	CloudCfg *CloudConfig
 }
 
@@ -27,10 +26,6 @@ func (s *fixedStore) Spec(id string) (*Spec, error) {
 	return nil, fmt.Errorf("no spec %s", id)
 }
 
-func (s *fixedStore) BootConfig(attrs MachineAttrs) (*BootConfig, error) {
-	return s.BootCfg, nil
-}
-
 func (s fixedStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
 	return s.CloudCfg, nil
 }
@@ -43,10 +38,6 @@ func (s *emptyStore) Machine(id string) (*Machine, error) {
 
 func (s *emptyStore) Spec(id string) (*Spec, error) {
 	return nil, fmt.Errorf("no group config %s", id)
-}
-
-func (s *emptyStore) BootConfig(attrs MachineAttrs) (*BootConfig, error) {
-	return nil, fmt.Errorf("no boot config for machine")
 }
 
 func (s emptyStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
