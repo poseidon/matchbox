@@ -13,20 +13,35 @@ func TestCloudHandler(t *testing.T) {
 		Content: "#cloud-config",
 	}
 	store := &fixedStore{
-		CloudCfg: cloudcfg,
+		Machines:     map[string]*Machine{"a1b2c3d4": testMachine},
+		CloudConfigs: map[string]*CloudConfig{"cloud-config.yml": cloudcfg},
 	}
 	h := cloudHandler(store)
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
+	// assert that:
+	// - match parameters to a Spec
+	// - render the Spec's cloud config
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, cloudcfg.Content, w.Body.String())
 }
 
-func TestCloudHandler_MissingConfig(t *testing.T) {
+func TestCloudHandler_NoMatchingSpec(t *testing.T) {
 	store := &emptyStore{}
 	h := cloudHandler(store)
 	req, _ := http.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
+func TestCloudHandler_MissingCloudConfig(t *testing.T) {
+	store := &fixedStore{
+		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
+	}
+	h := cloudHandler(store)
+	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)

@@ -22,7 +22,7 @@ func TestIPXEHandler(t *testing.T) {
 		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
 	}
 	h := ipxeHandler(store)
-	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)
+	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	// assert that:
@@ -36,11 +36,40 @@ boot
 	assert.Equal(t, expectedScript, w.Body.String())
 }
 
-func TestIPXEHandler_MissingConfig(t *testing.T) {
+func TestIPXEHandler_NoMatchingSpec(t *testing.T) {
 	store := &emptyStore{}
 	h := ipxeHandler(store)
 	req, _ := http.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
+func TestIPXEHandler_RenderTemplateError(t *testing.T) {
+	// machine spec has a nil BootConfig so template.Execute errors
+	store := &fixedStore{
+		Machines: map[string]*Machine{
+			"a1b2c3d4": &Machine{
+				ID:   "a1b2c3d4",
+				Spec: &Spec{BootConfig: nil},
+			},
+		},
+	}
+	h := ipxeHandler(store)
+	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
+func TestIPXEHandler_WriteError(t *testing.T) {
+	store := &fixedStore{
+		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
+	}
+	h := ipxeHandler(store)
+	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)
+	w := NewUnwriteableResponseWriter()
+	h.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+	assert.Empty(t, w.Body.String())
 }

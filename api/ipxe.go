@@ -31,14 +31,14 @@ func ipxeInspect() http.Handler {
 func ipxeHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		attrs := attrsFromRequest(req)
-		machine, err := store.Machine(attrs.UUID)
+		spec, err := getMatchingSpec(store, attrs)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
 
 		var buf bytes.Buffer
-		err = ipxeTemplate.Execute(&buf, machine.BootConfig)
+		err = ipxeTemplate.Execute(&buf, spec.BootConfig)
 		if err != nil {
 			log.Errorf("error rendering template: %v", err)
 			http.NotFound(w, req)
@@ -46,6 +46,7 @@ func ipxeHandler(store Store) http.Handler {
 		}
 		if _, err := buf.WriteTo(w); err != nil {
 			log.Errorf("error writing to response: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}
 	return http.HandlerFunc(fn)

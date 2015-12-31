@@ -11,6 +11,8 @@ type Spec struct {
 	ID string `json:"id"`
 	// boot kernel, initrd, and kernel options
 	BootConfig *BootConfig `json:"boot"`
+	// cloud config id
+	CloudConfig string `json:"cloud_id"`
 }
 
 // specResource serves Spec resources by id.

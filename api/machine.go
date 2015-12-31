@@ -16,8 +16,8 @@ type MachineAttrs struct {
 type Machine struct {
 	// machine identifier
 	ID string `json:"id"`
-	// boot kernel, initrd, and kernel options
-	BootConfig *BootConfig `json:"boot"`
+	// Spec defines machine configs
+	Spec *Spec `json:"spec"`
 	// reference a Spec
 	SpecID string `json:"spec_id"`
 }

@@ -10,24 +10,17 @@ import (
 )
 
 var (
-	// testMachine specifies its configuration.
+	// testMachine specifies its Spec.
 	testMachine = &Machine{
-		ID: "a1b2c3d4",
-		BootConfig: &BootConfig{
-			Kernel: "/image/kernel",
-			Initrd: []string{"/image/initrd_a", "/image/initrd_b"},
-			Cmdline: map[string]interface{}{
-				"a": "b",
-				"c": "",
-			},
-		},
+		ID:   "a1b2c3d4",
+		Spec: testSpec,
 	}
-	// testSharedSpecMachine references a Spec configuration.
+	// testSharedSpecMachine references a Spec.
 	testSharedSpecMachine = &Machine{
 		ID:     "a1b2c3d4",
 		SpecID: "g1h2i3j4",
 	}
-	expectedMachineJSON = `{"id":"a1b2c3d4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"spec_id":""}`
+	expectedMachineJSON = `{"id":"a1b2c3d4","spec":{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml"},"spec_id":""}`
 )
 
 func TestMachineHandler(t *testing.T) {

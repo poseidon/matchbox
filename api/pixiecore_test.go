@@ -36,7 +36,7 @@ func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
 	assert.Equal(t, "invalid MAC address /\n", w.Body.String())
 }
 
-func TestPixiecoreHandler_MissingConfig(t *testing.T) {
+func TestPixiecoreHandler_NoMatchingSpec(t *testing.T) {
 	store := &emptyStore{}
 	h := pixiecoreHandler(store)
 	req, _ := http.NewRequest("GET", "/"+validMAC, nil)

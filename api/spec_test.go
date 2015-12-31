@@ -9,19 +9,20 @@ import (
 )
 
 var (
-	// testSpec specifies a named group of configs.
+	// testSpec specifies a named group of configs for testing purposes.
 	testSpec = &Spec{
 		ID: "g1h2i3j4",
 		BootConfig: &BootConfig{
-			Kernel: "fake-kernel",
-			Initrd: []string{"fake-initrd"},
+			Kernel: "/image/kernel",
+			Initrd: []string{"/image/initrd_a", "/image/initrd_b"},
 			Cmdline: map[string]interface{}{
 				"a": "b",
 				"c": "",
 			},
 		},
+		CloudConfig: "cloud-config.yml",
 	}
-	expectedSpecJSON = `{"id":"g1h2i3j4","boot":{"kernel":"fake-kernel","initrd":["fake-initrd"],"cmdline":{"a":"b","c":""}}}`
+	expectedSpecJSON = `{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml"}`
 )
 
 func TestSpecHandler(t *testing.T) {

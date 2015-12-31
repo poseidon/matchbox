@@ -12,8 +12,7 @@ import (
 type Store interface {
 	Machine(id string) (*Machine, error)
 	Spec(id string) (*Spec, error)
-	// CloudConfig returns the cloud config user data for the machine.
-	CloudConfig(attrs MachineAttrs) (*CloudConfig, error)
+	CloudConfig(id string) (*CloudConfig, error)
 }
 
 // fileStore maps machine attributes to configs based on an http.Filesystem.
@@ -28,16 +27,11 @@ func NewFileStore(root http.FileSystem) Store {
 	}
 }
 
-const (
-	bootPrefix  = "boot"
-	cloudPrefix = "cloud"
-)
-
 // Machine returns the configuration for the machine with the given id.
 func (s *fileStore) Machine(id string) (*Machine, error) {
 	file, err := openFile(s.root, filepath.Join("machines", id, "machine.json"))
 	if err != nil {
-		log.Infof("no machine config %s", id)
+		log.Debugf("no machine config %s", id)
 		return nil, err
 	}
 	defer file.Close()
@@ -48,11 +42,11 @@ func (s *fileStore) Machine(id string) (*Machine, error) {
 		log.Errorf("error decoding machine config: %s", err)
 	}
 
-	if machine.BootConfig == nil && machine.SpecID != "" {
+	if machine.Spec == nil && machine.SpecID != "" {
 		// machine references a Spec, attempt to add Spec properties
 		spec, err := s.Spec(machine.SpecID)
 		if err == nil {
-			machine.BootConfig = spec.BootConfig
+			machine.Spec = spec
 		}
 	}
 	return machine, err
@@ -62,7 +56,7 @@ func (s *fileStore) Machine(id string) (*Machine, error) {
 func (s *fileStore) Spec(id string) (*Spec, error) {
 	file, err := openFile(s.root, filepath.Join("specs", id, "spec.json"))
 	if err != nil {
-		log.Infof("no spec %s", id)
+		log.Debugf("no spec %s", id)
 		return nil, err
 	}
 	defer file.Close()
@@ -71,56 +65,27 @@ func (s *fileStore) Spec(id string) (*Spec, error) {
 	err = json.NewDecoder(file).Decode(spec)
 	if err != nil {
 		log.Errorf("error decoding spec: %s", err)
+		return nil, err
 	}
 	return spec, err
 }
 
 // CloudConfig returns the cloud config for the machine.
-func (s *fileStore) CloudConfig(attrs MachineAttrs) (*CloudConfig, error) {
-	file, err := s.find(cloudPrefix, attrs)
+func (s *fileStore) CloudConfig(id string) (*CloudConfig, error) {
+	file, err := openFile(s.root, filepath.Join("cloud", id))
 	if err != nil {
-		log.Debugf("no cloud config for machine %+v", attrs)
+		log.Debugf("no cloud config %s", id)
 		return nil, err
 	}
 	defer file.Close()
-	// cloudinit requires reading the entire file
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
+		log.Errorf("error reading config: %s", err)
 		return nil, err
 	}
 	return &CloudConfig{
 		Content: string(b),
 	}, nil
-}
-
-// find searches the prefix subdirectory of root for the first config file
-// which matches the given machine attributes. If the error is non-nil, the
-// caller must be sure to close the matched http.File. Matches are searched
-// in priority order: uuid/<UUID>, mac/<MAC aaddress>, default.
-func (s *fileStore) find(prefix string, attrs MachineAttrs) (http.File, error) {
-	search := []string{
-		filepath.Join("uuid", attrs.UUID),
-		filepath.Join("mac", attrs.MAC.String()),
-		"/default",
-	}
-	for _, path := range filter(search) {
-		fullPath := filepath.Join(prefix, path)
-		if file, err := openFile(s.root, fullPath); err == nil {
-			return file, err
-		}
-	}
-	return nil, fmt.Errorf("no %s config for machine %+v", prefix, attrs)
-}
-
-// filter returns only paths which have non-empty directory paths. For example,
-// "uuid/123" has a directory path "uuid", while path "uuid" does not.
-func filter(inputs []string) (paths []string) {
-	for _, path := range inputs {
-		if filepath.Dir(path) != "." {
-			paths = append(paths, path)
-		}
-	}
-	return paths
 }
 
 // openFile attempts to open the file within the specified Filesystem. If
