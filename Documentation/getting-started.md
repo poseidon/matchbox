@@ -13,7 +13,7 @@ The Preboot eXecution Environment (PXE) defines requirements for consistent, har
 
 At power-on, if a client machine's BIOS or UEFI boot firmware is set to perform network booting, the network interface card's PXE firmware broadcasts a DHCPDISCOVER packet identifying itself as a PXEClient to the network environment.
 
-The network environment can be setup in a number of ways, which we'll discuss. In the simplest, a PXE-enabled DHCP Server responds with a DHCPOFFER with Options which include a TFTP server IP ("next server") and the name of an NBP ("boot filename") to download (e.g. pxelinux.0). PXE firmware downloads the NBP over TFTP and starts it load load configs, scripts, or images it required for installing an OS.
+The network environment can be set up in a number of ways, which we'll discuss. In the simplest, a PXE-enabled DHCP Server responds with a DHCPOFFER with Options, which include a TFTP server IP ("next server") and the name of an NBP ("boot filename") to download (e.g. pxelinux.0). PXE firmware then downloads the NBP over TFTP and starts it. Then, the NBP loads configs, scripts, and/or images it requires to run an OS.
 
 ### Network Boot Programs
 
@@ -68,7 +68,7 @@ boot
 
 A TFTP server is used only to provide the `undionly.kpxe` boot program to older PXE firmware in order to bootstrap into iPXE.
 
-The [boot config service](bootcfg.md) can serve iPXE scripts to machines based on hardware attribtues. Setup involves configuring DHCP to send iPXE clients the correct boot script endpoint.
+The [boot config service](bootcfg.md) can serve iPXE scripts to machines based on hardware attributes. Setup involves configuring DHCP to send iPXE clients the correct boot script endpoint.
 
 Continue to the [libvirt guide](virtual-hardware.md) or the [baremetal guide](physical-hardware.md) to use iPXE to boot PXE/iPXE client machines. Consult [CoreOS with iPXE](https://coreos.com/os/docs/latest/booting-with-ipxe.html) for details about CoreOS support for iPXE.
 

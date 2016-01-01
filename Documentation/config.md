@@ -3,7 +3,7 @@
 
 `bootcfg` arguments can be provided as flags or as environment variables.
 
-| flag | varaible | example |
+| flag | variable | example |
 |------|----------|---------|
 | -address | BOOTCFG_ADDRESS | 0.0.0.0:8080 |
 | -data-path | BOOTCFG_DATA_PATH | ./data |

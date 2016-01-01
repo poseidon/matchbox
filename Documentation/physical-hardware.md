@@ -46,7 +46,7 @@ If the DHCP server on your network is PXE-enabled and configurable, send the `bo
 
 Optionally, respond to older PXE client firmware with the location of the `undionly.kpxe` boot program on your TFTP server.
 
-With `dnsmasq`, here is an example `dnsmask.conf`
+With `dnsmasq`, here is an example `dnsmasq.conf`
 
     # dnsmasq.conf
     dhcp-range=192.168.1.1,192.168.1.254,30m
