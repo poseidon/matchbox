@@ -60,7 +60,7 @@ Finds the spec matching the hardware attribute query parameters and renders the 
 
 ## Cloud Config
 
-Finds the spec matchin the hardware attribute query parameters and returns the specified cloud config file. Attributes are matched in priority order (UUID, MAC).
+Finds the spec matching the hardware attribute query parameters and returns the specified cloud config file. Attributes are matched in priority order (UUID, MAC).
 
     GET http://bootcfg.example.com/cloud
 
