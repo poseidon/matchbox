@@ -92,7 +92,7 @@ Here is a `machine.json` which embeds `"spec"` properties.
         "spec_id": ""
     }
 
-and another``machine.json` which simplify references a `Spec` by id.
+and another `machine.json` which simplify references a `Spec` by id.
 
     {
         "id": "074fbe06-94a9-4336-9e8a-20b6f81efb6c",

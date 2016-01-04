@@ -29,7 +29,7 @@ Finds the spec matching the hardware attribute query parameters and renders the 
 **Response**
 
     #!ipxe
-    kernel /images/coreos/835.9.0/coreos_production_pxe.vmlinuz a=b coreos.autologin
+    kernel /images/coreos/835.9.0/coreos_production_pxe.vmlinuz cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
     initrd  /images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz
     boot
 
@@ -60,7 +60,7 @@ Finds the spec matching the hardware attribute query parameters and renders the 
 
 ## Cloud Config
 
-Finds the spec matchin the hardware attribute query parameters and returns the specified cloud config file. Attributes are matched in priority order (UUID, MAC).
+Finds the spec matching the hardware attribute query parameters and returns the specified cloud config file. Attributes are matched in priority order (UUID, MAC).
 
     GET http://bootcfg.example.com/cloud
 
