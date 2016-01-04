@@ -8,5 +8,6 @@
             "coreos.autologin": ""
         }
     },
-    "cloud_id": "orion-cloud-config.yml"
+    "cloud_id": "orion-cloud-config.yml",
+    "ignition_id": "hello-ignition.json"
 }

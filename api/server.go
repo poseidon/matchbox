@@ -41,6 +41,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux.Handle("/pixiecore/v1/boot/", logRequests(pixiecoreHandler(s.store)))
 	// cloud configs
 	mux.Handle("/cloud", logRequests(cloudHandler(s.store)))
+	// ignition configs
+	mux.Handle("/ignition", logRequests(ignitionHandler(s.store)))
 
 	// API Resources
 	// machines

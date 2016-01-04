@@ -20,9 +20,10 @@ var (
 				"c": "",
 			},
 		},
-		CloudConfig: "cloud-config.yml",
+		CloudConfig:    "cloud-config.yml",
+		IgnitionConfig: "ignition.json",
 	}
-	expectedSpecJSON = `{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml"}`
+	expectedSpecJSON = `{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml","ignition_id":"ignition.json"}`
 )
 
 func TestSpecHandler(t *testing.T) {

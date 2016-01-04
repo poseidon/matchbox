@@ -20,7 +20,7 @@ var (
 		ID:     "a1b2c3d4",
 		SpecID: "g1h2i3j4",
 	}
-	expectedMachineJSON = `{"id":"a1b2c3d4","spec":{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml"},"spec_id":""}`
+	expectedMachineJSON = `{"id":"a1b2c3d4","spec":{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml","ignition_id":"ignition.json"},"spec_id":""}`
 )
 
 func TestMachineHandler(t *testing.T) {

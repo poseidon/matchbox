@@ -9,7 +9,8 @@
               "coreos.autologin": ""
           }
       },
-      "cloud_id": "node1-cloud.yml"
+      "cloud_id": "node1-cloud.yml",
+      "ignition_id": ""
     },
     "spec_id": ""
 }

@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
+
+	ignition "github.com/coreos/ignition/src/config"
 )
 
 // Store provides Machine, Spec, and config resources.
@@ -13,6 +15,7 @@ type Store interface {
 	Machine(id string) (*Machine, error)
 	Spec(id string) (*Spec, error)
 	CloudConfig(id string) (*CloudConfig, error)
+	IgnitionConfig(id string) (*ignition.Config, error)
 }
 
 // fileStore maps machine attributes to configs based on an http.Filesystem.
@@ -70,7 +73,7 @@ func (s *fileStore) Spec(id string) (*Spec, error) {
 	return spec, err
 }
 
-// CloudConfig returns the cloud config for the machine.
+// CloudConfig returns the cloud config with the given id.
 func (s *fileStore) CloudConfig(id string) (*CloudConfig, error) {
 	file, err := openFile(s.root, filepath.Join("cloud", id))
 	if err != nil {
@@ -80,12 +83,28 @@ func (s *fileStore) CloudConfig(id string) (*CloudConfig, error) {
 	defer file.Close()
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Errorf("error reading config: %s", err)
+		log.Errorf("error reading cloud config: %s", err)
 		return nil, err
 	}
 	return &CloudConfig{
 		Content: string(b),
 	}, nil
+}
+
+// IgnitionConfig returns the ignition config with the given id.
+func (s *fileStore) IgnitionConfig(id string) (*ignition.Config, error) {
+	file, err := openFile(s.root, filepath.Join("ignition", id))
+	if err != nil {
+		log.Debugf("no ignition config %s", id)
+		return nil, err
+	}
+	defer file.Close()
+	config := new(ignition.Config)
+	err = json.NewDecoder(file).Decode(config)
+	if err != nil {
+		log.Errorf("error decoding ignition config: %s", err)
+	}
+	return config, err
 }
 
 // openFile attempts to open the file within the specified Filesystem. If
