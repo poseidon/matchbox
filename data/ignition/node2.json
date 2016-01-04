@@ -1,0 +1,20 @@
+{
+    "ignitionVersion": 1,
+    "systemd": {
+        "units": [
+            {
+                "name": "hello.service",
+                "enable": true,
+                "contents": "[Service]\nType=oneshot\nExecStart=/usr/bin/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
+            }
+        ]
+    },
+    "networkd": {
+        "units": [
+            {
+                "name": "00-ens3.network",
+                "contents": "[Match]\nName=ens3\n\n[Network]\nAddress=172.17.0.42"
+            }
+        ]
+    }
+}
