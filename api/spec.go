@@ -41,11 +41,15 @@ func (r *specResource) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // getMatchingSpec returns the Spec matching the given attributes.
+// If no matching Spec found, and a Spec called "default" exists, returns that Spec.
 func getMatchingSpec(store Store, attrs MachineAttrs) (*Spec, error) {
 	if machine, err := store.Machine(attrs.UUID); err == nil && machine.Spec != nil {
 		return machine.Spec, nil
 	}
 	if machine, err := store.Machine(attrs.MAC.String()); err == nil && machine.Spec != nil {
+		return machine.Spec, nil
+	}
+	if machine, err := store.Machine("default"); err == nil && machine.Spec != nil {
 		return machine.Spec, nil
 	}
 	return nil, fmt.Errorf("no spec matching %v", attrs)
