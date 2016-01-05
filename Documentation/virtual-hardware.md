@@ -84,26 +84,35 @@ Continue to [clients](#clients) to create a client VM or attach a baremetal mach
 
 ## Clients
 
-Once a network environment is prepared to boot client machines, create a libvirt VM configured to PXE boot or attach a baremetal machine to your Docker host.
+Create or attach PXE client machines to the network boot environment on the `docker0` bridge.
 
 ### libvirt VM
 
-Use `virt-manager` to create a new client VM. Select Network Boot with PXE and for the network selection, choose "Specify Shared Device" with the bridge name `docker0`.
+Create 5 VMs (`node1` to `node5`) with known hardware attributes, configured to PXE-boot. The `libvirt` script can manage these 5 nodes which are used throughout the [example](data) clusters.
 
-<img src='img/virt-manager.png' class="img-center" alt="Virt-Manager showing PXE network boot method"/>
+    sudo ./scripts/libivrt
+    USAGE: libvirt <command>
+    Commands:
+        create      create 5 libvirt nodes
+        reboot      reboot the 5 libvirt nodes
+        shutdown    shutdown the 5 libvirt nodes
+        poweroff    poweroff the 5 libvirt nodes
+        destroy     destroy the 5 libvirt nodes
 
-The VM should PXE boot using the boot and config settings based on its UUID or MAC address and your data volume. The `virt-manager` shows the UUID and the MAC address of the NIC on the shared bridge, which you can use when naming configs.
+You may use `virt-manager` to create your own VMs and view the console/state/attributes of existing VM nodes.
+
+When creating your own VMs, select "Network Boot with PXE" and for network selection use "Specify Shared Device" with the bridge name `docker0`.
 
 ### Bare Metal
 
-Connect a baremetal client machine to your libvirt Docker host machine and ensure that the client's boot firmware (probably BIOS) has been configured to prefer PXE booting.
+Connect a baremetal client machine to your host's `docker0` bridge and ensure the boot firmware (probably BIOS) is configured to prefer PXE booting.
 
 Find the network interface and attach it to the virtual bridge.
 
     ip link show                      # find new link e.g. enp0s20u2
     brctl addif docker0 enp0s20u2
 
-Restart the client machine and it should PXE boot using the boot and config settings based on its UUID or MAC address and your data volume.
+Restart the client machine and it should PXE boot using settings from `bootcfg`.
 
 ## Next
 

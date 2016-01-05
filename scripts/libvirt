@@ -1,0 +1,73 @@
+#!/bin/bash -e
+# Manage 5 VM nodes which have a specific set of hardware attributes.
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+function main {
+  case "$1" in
+    "create") create;;
+    "reboot") reboot;;
+    "shutdown") shutdown;;
+    "poweroff") poweroff;;
+    "destroy") destroy;;
+    *)
+      usage
+      exit 2
+      ;;
+  esac
+}
+
+function usage {
+  echo "USAGE: ${0##*/} <command>"
+  echo "Commands:"
+  echo -e "\tcreate\t\tcreate 5 libvirt nodes with specific hardware attributes"
+  echo -e "\treboot\t\treboot the 5 libvirt nodes"
+  echo -e "\tshutdown\tshutdown the 5 libvirt nodes"
+  echo -e "\tpoweroff\tpoweroff the 5 libvirt nodes"
+  echo -e "\tdestroy\t\tdestroy the 5 libvirt nodes"
+}
+
+function create {
+  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
+}
+
+function reboot {
+  virsh reboot node1
+  virsh reboot node2
+  virsh reboot node3
+  virsh reboot node4
+  virsh reboot node5
+}
+
+function shutdown {
+  virsh shutdown node1
+  virsh shutdown node2
+  virsh shutdown node3
+  virsh shutdown node4
+  virsh shutdown node5
+}
+
+function poweroff {
+  virsh destroy node1
+  virsh destroy node2
+  virsh destroy node3
+  virsh destroy node4
+  virsh destroy node5
+}
+
+function destroy {
+  virsh undefine node1
+  virsh undefine node2
+  virsh undefine node3
+  virsh undefine node4
+  virsh undefine node5
+}
+
+main $@
