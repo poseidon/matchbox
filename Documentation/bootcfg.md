@@ -1,9 +1,9 @@
 
 # Boot Config Service
 
-The `bootcfg` HTTP service provides virtual or physical machines with PXE, iPXE, or Pixiecore boot settings and cloud configs based on their hardware attributes.
+The `bootcfg` HTTP service provides virtual or physical machines with PXE, iPXE, or Pixiecore boot settings and igntion/cloud configs based on their hardware attributes.
 
-`bootcfg` maintains `Machine`, `Spec`, and cloud config resources and matches machines to `Spec` data based on their attributes. `Spec` resources define a named set of boot settings (kernel, options, initrd) and configuration settings (cloud config). `Machine` resources declare a machine by id (UUID, MAC) and the `Spec` that machine should use.
+The service maintains `Machine`, `Spec`, and ignition/cloud config resources and matches machines to `Spec`'s based on their attributes. `Spec` resources define a named set of boot settings (kernel, options, initrd) and configuration settings (ignition config, cloud config). `Machine` resources declare a machine by id (UUID, MAC) and the `Spec` that machine should use.
 
 Boot settings are presented as iPXE scripts or [Pixiecore JSON](https://github.com/danderson/pixiecore/blob/master/README.api.md) to support different network boot environments.
 
@@ -23,7 +23,7 @@ Or pull a published container image from [quay.io/repository/coreoso/bootcfg](ht
 
 The latest image corresponds to the most recent `coreos-baremetal` master commit.
 
-[Prepare a data volume](#data) with `Machine`, `Spec`, and cloud configs. Optionally, prepare a volume of downloaded CoreOS kernel and initrd image assets `bootcfg` should serve.
+[Prepare a data volume](#data) with `Machine`, `Spec`, and ignition/cloud configs. Optionally, prepare a volume of downloaded CoreOS kernel and initrd image assets that `bootcfg` should serve.
 
     ./scripts/get-coreos   # download CoreOS 835.9.0 to images/coreos/835.9.0
     ./scripts/get-coreos beta 877.1.0
@@ -41,34 +41,35 @@ Map container port 8080 to host port 8080 to quickly check endpoints:
 * iPXE Scripts: `/ipxe?uuid=val`
 * Pixiecore JSON: `/pixiecore/v1/boot/:mac`
 * Cloud Config: `/cloud?uuid=val`
+* Ignition Config: `/ignition?uuid=val`
 * Machines: `/machine/:id`
 * Spec: `/spec/:id`
 * Images: `/images`
 
 ## Data
 
-A `Store` maintains `Machine`, `Spec`, and cloud config resources. By default, `bootcfg` uses a `FileStore` to search a filesystem data directory for these resources. You may keep the config data directory in a separate location to keep it under version control with other declarative configs.
+A `Store` maintains `Machine`, `Spec`, and ignition/cloud config resources. By default, `bootcfg` uses a `FileStore` to search a filesystem data directory for these resources.
 
 Prepare a data directory or modify the example [data](../data) provided. The `FileStore` expects `Machine` JSON files to be located at `machines/:id/machine.json` where the id can be a UUID or MAC address. `Spec` JSON files should be located at `specs/:id/spec.json` with any unique spec identifier.
 
-It is a good idea to keep the data directory under version control with your other infrastructure configs, since it contains the declarative configuration of your hardware.
+You may wish to keep the data directory under version control with your other infrastructure configs, since it contains the declarative configuration of your hardware.
 
-Cloud configs can be dropped directly in the `cloud` subdirectory and named whatever you like.
+Ignition configs and cloud configs can be named whatever you like and dropped into `ignition` and `cloud`, respectively.
 
-    data/
-    ├── machines
-    │   ├── 074fbe06-94a9-4336-9e8a-20b6f81efb6c
-    │   │   └── machine.json
-    │   ├── 2d9354a2-e8db-4021-bff5-20ffdf443d6f
-    │   │   └── machine.json
-    │   └── 52:54:00:20:17:f9
-    │       └── machine.json
-    |── specs
-    |    └── orion
-    |       └── spec.json
-    └── cloud
-        ├── node1-cloud.yml
-        └── orion-cloud-config.yml
+     data
+     ├── cloud
+     │   ├── node1.yml
+     │   └── orion.yml
+     ├── ignition
+     │   └── node2.json
+     ├── machines
+     │   ├── 074fbe06-94a9-4336-9e8a-20b6f81efb6c
+     │   │   └── machine.json
+     │   ├── 2d9354a2-e8db-4021-bff5-20ffdf443d6f
+     │   │   └── machine.json
+     └── specs
+         └── orion
+             └── spec.json
 
 ### Machine
 
@@ -83,11 +84,14 @@ Here is a `machine.json` which embeds `"spec"` properties.
               "kernel": "/images/coreos/877.1.0/coreos_production_pxe.vmlinuz",
               "initrd": ["/images/coreos/877.1.0/coreos_production_pxe_image.cpio.gz"],
               "cmdline": {
-                  "cloud-config-url": "http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
-                  "coreos.autologin": ""
+                  "cloud-config-url": "http://bootcfg.foo/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+                  "coreos.autologin": "",
+                  "coreos.config.url": "http://bootcfg.foo/ignition?uuid=${uuid}",
+                  "coreos.first_boot": ""
               }
           },
-          "cloud_id": "node1-cloud.yml"
+          "cloud_id": "cloud-config.yml",
+          "ignition_id": "ignition.json"
         },
         "spec_id": ""
     }
@@ -115,12 +119,15 @@ Boot config files contain JSON referencing a kernel image, init RAM fileystems, 
                 "coreos.autologin": ""
             }
         },
-        "cloud_id": "orion-cloud-config.yml"
+        "cloud_id": "orion-cloud-config.yml",
+        "ignition_id": "ignition.json"
     }
 
 The `"boot"` section references the kernel image, init RAM filesystem, and kernel options to use. Point kernel and initrd to remote images or to local [image assets](#images).
 
-Point `boot.cmdline.cloud-config-url` to the `bootcfg` cloud endpoint to reference the cloud config for the machine.
+To use cloud-init, set the `cloud-config-url` kernel option to the `bootcfg` cloud endpoint to reference the cloud config named by `cloud_id`.
+
+To use ignition, set the `coreos.config.url` kernel option to the `bootcfg` ignition endpoint to refernce the ignition config named by `ignition_id`. Be sure to add the `coreos.first_boot` kernel argument when network booting.
 
 ### Cloud Config
 
@@ -141,6 +148,26 @@ Cloud config files are declarative configurations for customizing early initiali
           File added by the default cloud-config.
 
 See the CoreOS cloud config [docs](https://coreos.com/os/docs/latest/cloud-config.html), config [validator](https://coreos.com/validate/), and [implementation](https://github.com/coreos/coreos-cloudinit) for more details or [data](../data) for examples.
+
+## Ignition Config
+
+Ignition is a configuration system for provisioning CoreOS instances before userspace startup. Here is an example `ignition-config.json`.
+
+    {
+        "ignitionVersion": 1,
+        "systemd": {
+            "units": [
+                {
+                    "name": "hello.service",
+                    "enable": true,
+                    "contents": "[Service]\nType=oneshot\nExecStart=/usr/bin/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
+                }
+            ]
+        }
+    }
+
+
+See the Ignition [docs](https://coreos.com/ignition/docs/latest/) and [github](https://github.com/coreos/ignition) for the latest details.
 
 ## Images
 

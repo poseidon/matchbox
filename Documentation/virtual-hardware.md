@@ -10,13 +10,13 @@ Docker containers run on the `docker0` virtual bridge, typically on a subnet 172
 
 ## Config Service
 
-Setup `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and cloud configs. Optionally, include a volume of downloaded image assets.
+Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
     docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
-Note, the `Spec` examples in [data](../data) point `cloud-config-url` kernel options to 172.17.0.2, the first container IP Docker is likely to assign. Ensure your kernel option urls point to where `bootcfg` runs.
+Note, the kernel options in the [data](../data) `Spec` examples reference 172.17.0.2, the first container IP Docker is likely to assign to `bootcfg`. Ensure your kernel options point to where `bootcfg` runs.
 
     docker inspect bootcfg   # look for Networks, bridge, IPAddress
 
@@ -92,7 +92,7 @@ Use `virt-manager` to create a new client VM. Select Network Boot with PXE and f
 
 <img src='img/virt-manager.png' class="img-center" alt="Virt-Manager showing PXE network boot method"/>
 
-The VM should PXE boot using the boot config and cloud config based on its UUID, MAC address, or your configured defaults. The `virt-manager` shows the UUID and the MAC address of the NIC on the shared bridge, which you can use when naming configs.
+The VM should PXE boot using the boot and config settings based on its UUID or MAC address and your data volume. The `virt-manager` shows the UUID and the MAC address of the NIC on the shared bridge, which you can use when naming configs.
 
 ### Bare Metal
 
@@ -103,7 +103,7 @@ Find the network interface and attach it to the virtual bridge.
     ip link show                      # find new link e.g. enp0s20u2
     brctl addif docker0 enp0s20u2
 
-Restart the client machine and it should PXE boot using the boot config and cloud config based on its UUID, MAC address, or your configured defaults.
+Restart the client machine and it should PXE boot using the boot and config settings based on its UUID or MAC address and your data volume.
 
 ## Next
 
