@@ -10,15 +10,15 @@ import (
 )
 
 var (
-	// testMachine specifies its Spec.
+	validMACStr = "52:54:00:89:d8:10"
+	// testMachine embeds its Spec.
 	testMachine = &Machine{
 		ID:   "a1b2c3d4",
 		Spec: testSpec,
 	}
-	// testSharedSpecMachine references a Spec.
-	testSharedSpecMachine = &Machine{
-		ID:     "a1b2c3d4",
-		SpecID: "g1h2i3j4",
+	testMachineEmptySpec = &Machine{
+		ID:   "a1b2c3d4",
+		Spec: emptySpec,
 	}
 	expectedMachineJSON = `{"id":"a1b2c3d4","spec":{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml","ignition_id":"ignition.json"},"spec_id":""}`
 )
@@ -48,7 +48,7 @@ func TestMachineHandler_MissingConfig(t *testing.T) {
 }
 
 func TestAttrsFromRequest(t *testing.T) {
-	hwAddr, err := net.ParseMAC("52:54:00:89:d8:10")
+	hwAddr, err := net.ParseMAC(validMACStr)
 	assert.Nil(t, err)
 	cases := []struct {
 		urlString string

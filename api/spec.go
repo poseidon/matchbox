@@ -40,12 +40,16 @@ func (r *specResource) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	renderJSON(w, spec)
 }
 
-// getMatchingSpec returns the Spec matching the given attributes.
+// getMatchingSpec returns the Spec matching the given attributes. Attributes
+// are matched in priority order (UUID, MAC, default).
 func getMatchingSpec(store Store, attrs MachineAttrs) (*Spec, error) {
 	if machine, err := store.Machine(attrs.UUID); err == nil && machine.Spec != nil {
 		return machine.Spec, nil
 	}
 	if machine, err := store.Machine(attrs.MAC.String()); err == nil && machine.Spec != nil {
+		return machine.Spec, nil
+	}
+	if machine, err := store.Machine("default"); err == nil && machine.Spec != nil {
 		return machine.Spec, nil
 	}
 	return nil, fmt.Errorf("no spec matching %v", attrs)

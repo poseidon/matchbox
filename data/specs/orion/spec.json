@@ -11,5 +11,5 @@
         }
     },
     "cloud_id": "orion-cloud-config.yml",
-    "ignition_id": "hello-ignition.json"
+    "ignition_id": "node2.json"
 }

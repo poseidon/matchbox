@@ -1,6 +1,7 @@
 package api
 
 import (
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -22,6 +23,9 @@ var (
 		},
 		CloudConfig:    "cloud-config.yml",
 		IgnitionConfig: "ignition.json",
+	}
+	emptySpec = &Spec{
+		ID: "empty",
 	}
 	expectedSpecJSON = `{"id":"g1h2i3j4","boot":{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}},"cloud_id":"cloud-config.yml","ignition_id":"ignition.json"}`
 )
@@ -48,4 +52,59 @@ func TestSpecHandler_MissingConfig(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
+func TestGetMatchingSpec_ByUUID(t *testing.T) {
+	hwAddr, err := net.ParseMAC(validMACStr)
+	assert.Nil(t, err)
+	store := &fixedStore{
+		Machines: map[string]*Machine{
+			"a1b2c3d4":      testMachine,
+			hwAddr.String(): testMachineEmptySpec,
+		},
+		Specs: map[string]*Spec{"g1h2i3j4": testSpec},
+	}
+	spec, err := getMatchingSpec(store, MachineAttrs{UUID: "a1b2c3d4", MAC: hwAddr})
+	// assert that:
+	// - attributes match the testMachine's Spec
+	// - UUID attribute takes priority over MAC address
+	assert.Nil(t, err)
+	assert.Equal(t, testSpec, spec)
+}
+
+func TestGetMatchingSpec_ByMAC(t *testing.T) {
+	hwAddr, err := net.ParseMAC(validMACStr)
+	assert.Nil(t, err)
+	store := &fixedStore{
+		Machines: map[string]*Machine{
+			hwAddr.String(): testMachine,
+			"default":       testMachineEmptySpec,
+		},
+		Specs: map[string]*Spec{"g1h2i3j4": testSpec},
+	}
+	spec, err := getMatchingSpec(store, MachineAttrs{MAC: hwAddr})
+	// assert that:
+	// - attributes match the testMachine's Spec
+	// - MAC address attribute takes priority over default
+	assert.Nil(t, err)
+	assert.Equal(t, testSpec, spec)
+}
+
+func TestGetMatchingSpec_Default(t *testing.T) {
+	store := &fixedStore{
+		Machines: map[string]*Machine{"default": testMachine},
+		Specs:    map[string]*Spec{"g1h2i3j4": testSpec},
+	}
+	spec, err := getMatchingSpec(store, MachineAttrs{UUID: "any-uuid"})
+	assert.Nil(t, err)
+	assert.Equal(t, testSpec, spec)
+}
+
+func TestGetMatchingSpec_NoMatchingSpec(t *testing.T) {
+	store := &emptyStore{}
+	spec, err := getMatchingSpec(store, MachineAttrs{})
+	assert.Nil(t, spec)
+	if assert.Error(t, err) {
+		assert.Equal(t, err.Error(), "no spec matching { }")
+	}
 }

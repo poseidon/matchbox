@@ -8,14 +8,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var validMAC = "52:54:00:89:d8:10"
-
 func TestPixiecoreHandler(t *testing.T) {
 	store := &fixedStore{
-		Machines: map[string]*Machine{validMAC: testMachine},
+		Machines: map[string]*Machine{validMACStr: testMachine},
 	}
 	h := pixiecoreHandler(store)
-	req, _ := http.NewRequest("GET", "/"+validMAC, nil)
+	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	// assert that:
@@ -39,7 +37,7 @@ func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
 func TestPixiecoreHandler_NoMatchingSpec(t *testing.T) {
 	store := &emptyStore{}
 	h := pixiecoreHandler(store)
-	req, _ := http.NewRequest("GET", "/"+validMAC, nil)
+	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)

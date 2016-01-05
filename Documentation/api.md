@@ -15,7 +15,7 @@ Serves a static iPXE boot script which gathers client machine attributes and cha
 
 ## iPXE
 
-Finds the spec matching the attribute query parameters and renders the boot config as an iPXE script. Attributes are matched in priority order (UUID, MAC).
+Finds the spec matching the attribute query parameters and renders the boot config as an iPXE script. Attributes are matched in priority order (UUID, MAC, default).
 
     GET http://bootcfg.example.com/ipxe
 
@@ -60,7 +60,7 @@ Finds the spec matching the attribute query parameters and renders the boot conf
 
 ## Cloud Config
 
-Finds the spec matching the attribute query parameters and returns the corresponding cloud config file. Attributes are matched in priority order (UUID, MAC).
+Finds the spec matching the attribute query parameters and returns the corresponding cloud config file. Attributes are matched in priority order (UUID, MAC, default).
 
     GET http://bootcfg.example.com/cloud
 
@@ -83,7 +83,7 @@ Finds the spec matching the attribute query parameters and returns the correspon
 
 ## Ignition Config
 
-Finds the spec matching the attribute query parameters and returns the corresponding ignition config JSON. Attributes are matched in priority order (UUID, MAC).
+Finds the spec matching the attribute query parameters and returns the corresponding ignition config JSON. Attributes are matched in priority order (UUID, MAC, default).
 
     GET http://bootcfg.example.com/ignition
 

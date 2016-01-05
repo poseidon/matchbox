@@ -50,7 +50,7 @@ Map container port 8080 to host port 8080 to quickly check endpoints:
 
 A `Store` maintains `Machine`, `Spec`, and ignition/cloud config resources. By default, `bootcfg` uses a `FileStore` to search a filesystem data directory for these resources.
 
-Prepare a data directory or modify the example [data](../data) provided. The `FileStore` expects `Machine` JSON files to be located at `machines/:id/machine.json` where the id can be a UUID or MAC address. `Spec` JSON files should be located at `specs/:id/spec.json` with any unique spec identifier.
+Prepare a data directory or modify the example [data](../data) provided. The `FileStore` expects `Machine` JSON files to be located at `machines/:id/machine.json` where the id can be a UUID or MAC address or "default". `Spec` JSON files should be located at `specs/:id/spec.json` with any unique spec identifier.
 
 You may wish to keep the data directory under version control with your other infrastructure configs, since it contains the declarative configuration of your hardware.
 
@@ -67,6 +67,8 @@ Ignition configs and cloud configs can be named whatever you like and dropped in
      │   │   └── machine.json
      │   ├── 2d9354a2-e8db-4021-bff5-20ffdf443d6f
      │   │   └── machine.json
+     │   └── default
+     │       └── machine.json
      └── specs
          └── orion
              └── spec.json
