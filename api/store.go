@@ -43,6 +43,7 @@ func (s *fileStore) Machine(id string) (*Machine, error) {
 	err = json.NewDecoder(file).Decode(machine)
 	if err != nil {
 		log.Errorf("error decoding machine config: %s", err)
+		return nil, err
 	}
 
 	if machine.Spec == nil && machine.SpecID != "" {
@@ -99,12 +100,17 @@ func (s *fileStore) IgnitionConfig(id string) (*ignition.Config, error) {
 		return nil, err
 	}
 	defer file.Close()
-	config := new(ignition.Config)
-	err = json.NewDecoder(file).Decode(config)
+	b, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Errorf("error decoding ignition config: %s", err)
+		log.Errorf("error reading ignition config: %s", err)
+		return nil, err
 	}
-	return config, err
+	config, err := ignition.Parse(b)
+	if err != nil {
+		log.Errorf("error parsing ignition config: %s", err)
+		return nil, err
+	}
+	return &config, err
 }
 
 // openFile attempts to open the file within the specified Filesystem. If
