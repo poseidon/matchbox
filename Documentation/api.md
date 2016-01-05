@@ -15,7 +15,7 @@ Serves a static iPXE boot script which gathers client machine attributes and cha
 
 ## iPXE
 
-Finds the spec matching the hardware attribute query parameters and renders the boot config as an iPXE script. Attributes are matched in priority order (UUID, MAC).
+Finds the spec matching the attribute query parameters and renders the boot config as an iPXE script. Attributes are matched in priority order (UUID, MAC).
 
     GET http://bootcfg.example.com/ipxe
 
@@ -37,7 +37,7 @@ The kernel, cmdline kernel options, and initrd are populated from a `Spec`.
 
 ## Pixiecore
 
-Finds the spec matching the hardware attribute query parameters and renders the boot config as JSON to implement the Pixiecore API [spec](https://github.com/danderson/pixiecore/blob/master/README.api.md). Currently, Pixiecore only provides the machine's MAC address for matching specs.
+Finds the spec matching the attribute query parameters and renders the boot config as JSON to implement the Pixiecore API [spec](https://github.com/danderson/pixiecore/blob/master/README.api.md). Currently, Pixiecore only provides the machine's MAC address for matching specs.
 
     GET http://bootcfg.example.com/pixiecore/v1/boot/:MAC
 
@@ -60,7 +60,7 @@ Finds the spec matching the hardware attribute query parameters and renders the 
 
 ## Cloud Config
 
-Finds the spec matching the hardware attribute query parameters and returns the specified cloud config file. Attributes are matched in priority order (UUID, MAC).
+Finds the spec matching the attribute query parameters and returns the corresponding cloud config file. Attributes are matched in priority order (UUID, MAC).
 
     GET http://bootcfg.example.com/cloud
 
@@ -80,6 +80,38 @@ Finds the spec matching the hardware attribute query parameters and returns the 
           command: start
         - name: fleet.service
           command: start
+
+## Ignition Config
+
+Finds the spec matching the attribute query parameters and returns the corresponding ignition config JSON. Attributes are matched in priority order (UUID, MAC).
+
+    GET http://bootcfg.example.com/ignition
+
+**Query Parameters**
+
+| Name | Type   | Description   |
+|------|--------|---------------|
+| uuid | string | Hardware UUID |
+| mac  | string | MAC address   |
+
+**Response**
+
+    {
+      "ignitionVersion": 1,
+      "storage": {},
+      "systemd": {
+        "units": [
+          {
+            "name": "hello.service",
+            "enable": true,
+            "contents": "[Service]\nType=oneshot\nExecStart=\/usr\/bin\/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
+          }
+        ]
+      },
+      "networkd": {},
+      "passwd": {}
+    }
+
 
 ## API Resources
 

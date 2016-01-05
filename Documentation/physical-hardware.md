@@ -17,13 +17,13 @@ Identify whether the network runs a DHCP service which can be configured or whet
 
 ## Config Service
 
-Setup `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and cloud configs. Optionally, include a volume of downloaded image assets.
+Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
     docker run -p 8080:8080 --net=host --name=bootcfg --rm -v $PWD/data:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 [-log-level=debug]
 
-Note, the `Spec` examples in [data](../data) point `cloud-config-url` kernel options to 172.17.0.2 (the libvirt case). Your kernel cmdline option urls should point to where `bootcfg` runs via IP or DNS name.
+Note, the kernel options in the [data](../data) `Spec` examples reference 172.17.0.2 (the libvirt case). Your kernel cmdline options should reference the IP or DNS name where `bootcfg` runs.
 
 ## Network Setups
 

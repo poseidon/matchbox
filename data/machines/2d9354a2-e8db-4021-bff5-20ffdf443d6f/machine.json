@@ -2,14 +2,17 @@
     "id": "2d9354a2-e8db-4021-bff5-20ffdf443d6f",
     "spec": {
       "boot": {
-          "kernel": "/images/coreos/877.1.0/coreos_production_pxe.vmlinuz",
-          "initrd": ["/images/coreos/877.1.0/coreos_production_pxe_image.cpio.gz"],
+          "kernel": "/images/coreos/835.9.0/coreos_production_pxe.vmlinuz",
+          "initrd": ["/images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
           "cmdline": {
               "cloud-config-url": "http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
-              "coreos.autologin": ""
+              "coreos.config.url": "http://172.17.0.2:8080/ignition?uuid=${uuid}",
+              "coreos.autologin": "",
+              "coreos.first_boot": ""
           }
       },
-      "cloud_id": "node1-cloud.yml"
+      "cloud_id": "node1.yml",
+      "ignition_id": "node1.json"
     },
     "spec_id": ""
 }

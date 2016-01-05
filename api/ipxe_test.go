@@ -39,7 +39,7 @@ boot
 func TestIPXEHandler_NoMatchingSpec(t *testing.T) {
 	store := &emptyStore{}
 	h := ipxeHandler(store)
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
