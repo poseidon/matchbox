@@ -11,6 +11,21 @@
 			"Rev": "f164f437010a16e0443d2d1e68e8e001cdbf1226"
 		},
 		{
+			"ImportPath": "github.com/coreos/ignition/src/config",
+			"Comment": "v0.2.4-5-g9d5b476",
+			"Rev": "9d5b4766ae22e66b25702ffbdc94545f2e0d082c"
+		},
+		{
+			"ImportPath": "github.com/coreos/ignition/third_party/github.com/alecthomas/units",
+			"Comment": "v0.2.4-5-g9d5b476",
+			"Rev": "9d5b4766ae22e66b25702ffbdc94545f2e0d082c"
+		},
+		{
+			"ImportPath": "github.com/coreos/ignition/third_party/github.com/camlistore/camlistore/pkg/errorutil",
+			"Comment": "v0.2.4-5-g9d5b476",
+			"Rev": "9d5b4766ae22e66b25702ffbdc94545f2e0d082c"
+		},
+		{
 			"ImportPath": "github.com/coreos/pkg/capnslog",
 			"Rev": "2c77715c4df99b5420ffcae14ead08f52104065d"
 		},
