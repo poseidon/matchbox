@@ -1,0 +1,16 @@
+{
+    "id": "264cd073-ca62-44b3-98c0-50aad5b5f819",
+    "spec": {
+      "boot": {
+          "kernel": "/images/coreos/835.9.0/coreos_production_pxe.vmlinuz",
+          "initrd": ["/images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
+          "cmdline": {
+              "cloud-config-url": "http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+              "coreos.autologin": ""
+          }
+      },
+      "cloud_id": "etcd3.yml",
+      "ignition_id": ""
+    },
+    "spec_id": ""
+}

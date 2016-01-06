@@ -17,8 +17,8 @@ var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/boot
 func main() {
 	flags := flag.NewFlagSet("bootcfg", flag.ExitOnError)
 	address := flags.String("address", "127.0.0.1:8080", "HTTP listen address")
-	dataPath := flags.String("data-path", "./data", "Path to config data directory")
-	imagesPath := flags.String("images-path", "./images", "Path to static image assets")
+	dataPath := flags.String("data-path", "./data", "Path to data directory")
+	imagesPath := flags.String("images-path", "./images", "Path to static assets")
 	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
 	logLevel := flags.String("log-level", "info", "Set the logging level")
 
@@ -35,10 +35,10 @@ func main() {
 		log.Fatal("A valid HTTP listen address is required")
 	}
 	if finfo, err := os.Stat(*dataPath); err != nil || !finfo.IsDir() {
-		log.Fatal("A path to a config data directory is required")
+		log.Fatal("A path to a data directory is required")
 	}
 	if finfo, err := os.Stat(*imagesPath); err != nil || !finfo.IsDir() {
-		log.Fatal("A path to an image assets directory is required")
+		log.Fatal("A path to an assets directory is required")
 	}
 
 	// logging setup

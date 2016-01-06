@@ -1,0 +1,13 @@
+#cloud-config
+coreos:
+  etcd2:
+    proxy: on 
+    listen-client-urls: http://localhost:2379
+    initial-cluster: etcdserver=http://172.17.0.21:2380
+  fleet:
+    etcd_servers: "http://localhost:2379"
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start

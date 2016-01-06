@@ -1,0 +1,31 @@
+#cloud-config
+coreos:
+  etcd2:
+    name: node3
+    initial-cluster: node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380
+    initial-advertise-peer-urls: http://172.17.0.23:2380
+    initial-cluster-state: new
+    advertise-client-urls: http://172.17.0.23:2379
+    listen-client-urls: http://0.0.0.0:2379
+    listen-peer-urls: http://172.17.0.23:2380
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: 00-ens3.network
+      runtime: true
+      content: |
+        [Match]
+        Name=ens3
+        [Network]
+        Address=172.17.0.23/16
+    - name: down-interfaces.service
+      command: start
+      content: |
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/ip link set ens3 down
+        ExecStart=/usr/bin/ip addr flush dev ens3
+    - name: systemd-networkd.service
+      command: restart
