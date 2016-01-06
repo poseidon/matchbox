@@ -1,0 +1,14 @@
+#cloud-config
+coreos:
+  etcd2:
+    initial-cluster: node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380
+    proxy: on 
+    listen-client-urls: http://localhost:2379
+  fleet:
+    metadata: "role=worker"
+    etcd_servers: "http://localhost:2379"
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
