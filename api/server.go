@@ -6,6 +6,11 @@ import (
 	"github.com/coreos/pkg/capnslog"
 )
 
+const (
+	// APIVersion of the api server and its config types.
+	APIVersion = "v1alpha1"
+)
+
 var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal", "api")
 
 // Config configures the api Server.
