@@ -90,7 +90,7 @@ Create or attach PXE client machines to the network boot environment on the `doc
 
 Create 5 VMs (`node1` to `node5`) with known hardware attributes, configured to PXE-boot. The `libvirt` script can manage these 5 nodes which are used throughout the [example](data) clusters.
 
-    sudo ./scripts/libivrt
+    sudo ./scripts/libvirt
     USAGE: libvirt <command>
     Commands:
         create      create 5 libvirt nodes

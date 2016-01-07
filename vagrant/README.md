@@ -11,7 +11,7 @@ To get started, install the dependencies
 
 Select one of the boot servers and create a boot server VM with `vagrant up`.
 
-    vagrant up --provider libivrt
+    vagrant up --provider libvirt
     vagrant ssh
 
 The **PXE server** uses dnsmasq for DHCP and TFTP and an HTTP server. DHCP grants authoritative DHCP leases on 192.168.32.0/24 and the boot server has static IP 192.168.32.10. TFTP serves the `pxelinux.0` bootloader, default pxelinux cfg, kernel image, and init RAM filesystem image. The HTTP server hosts a cloud config with a configurable authorized SSH key.
