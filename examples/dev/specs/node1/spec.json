@@ -10,6 +10,6 @@
         "coreos.first_boot": ""
       }
     },
-  "cloud_id": "node1.yml",
+  "cloud_id": "node1.yaml",
   "ignition_id": "node1.json"
 }

@@ -1,0 +1,15 @@
+---
+api_version: v1alpha1
+groups:
+  - name: node1
+    spec: node1
+    require:
+      uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
+
+  - name: node2
+    spec: node2
+    require:
+      uuid: 264cd073-ca62-44b3-98c0-50aad5b5f819
+
+  - name: default
+    spec: default

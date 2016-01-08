@@ -1,14 +1,14 @@
 
 # Examples
 
-Examples contains `bootcfg` data directories showcasing different PXE-bootable baremetal clusters. These examples work with libvirt VMs setup with known hardware attributes by `scripts/libvirt`.
+Examples contains `bootcfg` data directories showcasing different network-bootable baremetal clusters. These examples work with libvirt VMs setup with known hardware attributes by `scripts/libvirt`.
 
 ## Clusters
 
 | Name       | Description | Type | Docs          |
 |------------|-------------|------|---------------|
-| etcd-small | Cluster with 1 etcd node, 4 proxies | cloud config | [cluster-architecture](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| etcd-large | Cluster with 3 etcd nodes, 2 proxies | cloud config | [cluster-architecture](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd-small | Cluster with 1 etcd node, 4 proxies | cloud config | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd-large | Cluster with 3 etcd nodes, 2 proxies | cloud config | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 
 ## Usage
 

@@ -10,7 +10,7 @@ import (
 	ignition "github.com/coreos/ignition/src/config"
 )
 
-// Store provides Machine, Spec, and config resources.
+// Store provides Group, Spec, and config resources.
 type Store interface {
 	BootstrapGroups([]Group) error
 	ListGroups() ([]Group, error)
@@ -20,7 +20,7 @@ type Store interface {
 	IgnitionConfig(id string) (*ignition.Config, error)
 }
 
-// fileStore maps machine attributes to configs based on an http.Filesystem.
+// fileStore provides configs from an http.Filesystem.
 type fileStore struct {
 	root   http.FileSystem
 	groups []Group
@@ -33,11 +33,13 @@ func NewFileStore(root http.FileSystem) Store {
 	}
 }
 
+// BootstrapGroups loads an initial collection of groups.
 func (s *fileStore) BootstrapGroups(groups []Group) error {
 	s.groups = groups
 	return nil
 }
 
+// ListGroups returns the list of groups with matchers.
 func (s *fileStore) ListGroups() ([]Group, error) {
 	return s.groups, nil
 }

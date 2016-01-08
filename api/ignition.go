@@ -4,8 +4,8 @@ import (
 	"net/http"
 )
 
-// ignitionHandler returns a handler that responds with the ignition json the
-// client machine should use.
+// ignitionHandler returns a handler that responds with the ignition config
+// for the requester.
 func ignitionHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		attrs := labelsFromRequest(req)

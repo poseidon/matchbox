@@ -27,7 +27,7 @@ func TestIPXEHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	// assert that:
-	// - machine config is rendered as an iPXE script
+	// - boot config is rendered as an iPXE script
 	expectedScript := `#!ipxe
 kernel /image/kernel a=b c
 initrd /image/initrd_a /image/initrd_b 

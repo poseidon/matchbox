@@ -8,6 +8,6 @@
             "coreos.autologin": ""
         }
     },
-    "cloud_id": "etcd2.yml",
+    "cloud_id": "etcd2.yaml",
     "ignition_id": ""
 }

@@ -18,7 +18,7 @@ var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/boot
 func main() {
 	flags := flag.NewFlagSet("bootcfg", flag.ExitOnError)
 	address := flags.String("address", "127.0.0.1:8080", "HTTP listen address")
-	configPath := flags.String("config", "", "Path to config file")
+	configPath := flags.String("config", "./data/config.yaml", "Path to config file")
 	dataPath := flags.String("data-path", "./data", "Path to data directory")
 	imagesPath := flags.String("images-path", "./images", "Path to static assets")
 	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel

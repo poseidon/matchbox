@@ -8,6 +8,6 @@
             "coreos.autologin": ""
         }
     },
-    "cloud_id": "worker.yml",
+    "cloud_id": "worker.yaml",
     "ignition_id": ""
 }

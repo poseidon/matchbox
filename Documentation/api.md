@@ -3,7 +3,7 @@
 
 ## iPXE Script
 
-Serves a static iPXE boot script which gathers client machine attributes and chain loads to the iPXE endpoint. Configure your DHCP server or iPXE server to boot from this script (e.g. set `dhcp-boot:dhcp-boot=tag:ipxe,http://bootcfg.domain.com/ipxe/boot.ipxe` if using `dnsmasq`).
+Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Configure your DHCP server or iPXE server to boot from this script (e.g. set `dhcp-boot:dhcp-boot=tag:ipxe,http://bootcfg.domain.com/ipxe/boot.ipxe` if using `dnsmasq`).
 
     GET http://bootcfg.example.com/boot.ipxe
     GET http://bootcfg.example.com/boot.ipxe.0   // for dnsmasq
@@ -11,11 +11,11 @@ Serves a static iPXE boot script which gathers client machine attributes and cha
 **Response**
 
     #!ipxe
-    chain config?uuid=${uuid}&mac=${net0/mac:hexhyp}
+    chain ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
 
 ## iPXE
 
-Finds the spec matching the attribute query parameters and renders the boot config as an iPXE script. Attributes are matched in priority order (UUID, MAC, default).
+Finds the spec matching the attribute query parameters and renders the boot config as an iPXE script.
 
     GET http://bootcfg.example.com/ipxe
 
@@ -60,7 +60,7 @@ Finds the spec matching the attribute query parameters and renders the boot conf
 
 ## Cloud Config
 
-Finds the spec matching the attribute query parameters and returns the corresponding cloud config file. Attributes are matched in priority order (UUID, MAC, default).
+Finds the spec matching the attribute query parameters and returns the corresponding cloud config file.
 
     GET http://bootcfg.example.com/cloud
 
@@ -83,7 +83,7 @@ Finds the spec matching the attribute query parameters and returns the correspon
 
 ## Ignition Config
 
-Finds the spec matching the attribute query parameters and returns the corresponding ignition config JSON. Attributes are matched in priority order (UUID, MAC, default).
+Finds the spec matching the attribute query parameters and returns the corresponding ignition config JSON.
 
     GET http://bootcfg.example.com/ignition
 
@@ -114,41 +114,6 @@ Finds the spec matching the attribute query parameters and returns the correspon
 
 
 ## API Resources
-
-### Machines
-
-Get a `Machine` definition by id (UUID, MAC).
-
-    http://bootcfg.domain.com/machine/:id
-
-**URL Parameters**
-
-| Name | Type   | Description |
-|------|--------|-------------|
-| id   | string | machine identifier |
-
-**Response**
-
-```json
-{
-  "id": "2d9354a2-e8db-4021-bff5-20ffdf443d6f",
-  "spec": {
-    "id": "",
-    "boot": {
-      "kernel": "\/images\/coreos\/877.1.0\/coreos_production_pxe.vmlinuz",
-      "initrd": [
-        "\/images\/coreos\/877.1.0\/coreos_production_pxe_image.cpio.gz"
-      ],
-      "cmdline": {
-        "cloud-config-url": "http:\/\/172.17.0.2:8080\/cloud?uuid=${uuid}&mac=${net0\/mac:hexhyp}",
-        "coreos.autologin": ""
-      }
-    },
-    "cloud_id": "node1-cloud.yml"
-  },
-  "spec_id": ""
-}
-```
 
 ### Specs
 
