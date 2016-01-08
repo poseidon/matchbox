@@ -60,10 +60,11 @@ func main() {
 		if err != nil {
 			log.Fatalf("error reading config file: %v", err)
 		}
-		_, err = api.ParseGroupConfig(data)
+		configGroup, err := api.ParseGroupConfig(data)
 		if err != nil {
 			log.Fatalf("error parsing group config: %v", err)
 		}
+		store.BootstrapGroups(configGroup.Groups)
 	}
 
 	config := &api.Config{

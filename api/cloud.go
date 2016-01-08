@@ -15,7 +15,7 @@ type CloudConfig struct {
 // client machine should use.
 func cloudHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		attrs := attrsFromRequest(req)
+		attrs := labelsFromRequest(req)
 		spec, err := getMatchingSpec(store, attrs)
 		if err != nil || spec.CloudConfig == "" {
 			http.NotFound(w, req)

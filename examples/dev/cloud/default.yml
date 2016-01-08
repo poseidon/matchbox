@@ -10,4 +10,4 @@ write_files:
     owner: "core"
     permissions: "0644"
     content: |
-      File added by orion-cloud-config.yml.
+      File added by the default cloud config.

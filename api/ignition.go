@@ -8,7 +8,7 @@ import (
 // client machine should use.
 func ignitionHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		attrs := attrsFromRequest(req)
+		attrs := labelsFromRequest(req)
 		spec, err := getMatchingSpec(store, attrs)
 		if err != nil || spec.IgnitionConfig == "" {
 			http.NotFound(w, req)

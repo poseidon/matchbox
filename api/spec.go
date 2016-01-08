@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"path/filepath"
 )
@@ -42,15 +41,11 @@ func (r *specResource) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 // getMatchingSpec returns the Spec matching the given attributes. Attributes
 // are matched in priority order (UUID, MAC, default).
-func getMatchingSpec(store Store, attrs MachineAttrs) (*Spec, error) {
-	if machine, err := store.Machine(attrs.UUID); err == nil && machine.Spec != nil {
-		return machine.Spec, nil
+func getMatchingSpec(store Store, labels Labels) (*Spec, error) {
+	groups := newGroupsResource(store)
+	group, err := groups.findMatch(labels)
+	if err != nil {
+		return nil, err
 	}
-	if machine, err := store.Machine(attrs.MAC.String()); err == nil && machine.Spec != nil {
-		return machine.Spec, nil
-	}
-	if machine, err := store.Machine("default"); err == nil && machine.Spec != nil {
-		return machine.Spec, nil
-	}
-	return nil, fmt.Errorf("no spec matching %v", attrs)
+	return store.Spec(group.Spec)
 }

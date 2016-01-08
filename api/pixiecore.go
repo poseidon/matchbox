@@ -16,7 +16,7 @@ func pixiecoreHandler(store Store) http.Handler {
 			return
 		}
 		// pixiecore only provides MAC addresses
-		attrs := MachineAttrs{MAC: macAddr}
+		attrs := LabelSet(map[string]string{"mac": macAddr.String()})
 		spec, err := getMatchingSpec(store, attrs)
 		if err != nil {
 			http.NotFound(w, req)

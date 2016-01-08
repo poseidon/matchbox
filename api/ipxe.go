@@ -30,7 +30,7 @@ func ipxeInspect() http.Handler {
 // on the machine attribtue query parameters.
 func ipxeHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		attrs := attrsFromRequest(req)
+		attrs := labelsFromRequest(req)
 		spec, err := getMatchingSpec(store, attrs)
 		if err != nil {
 			http.NotFound(w, req)

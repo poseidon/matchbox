@@ -13,8 +13,9 @@ func TestCloudHandler(t *testing.T) {
 		Content: "#cloud-config",
 	}
 	store := &fixedStore{
-		Machines:     map[string]*Machine{"a1b2c3d4": testMachine},
-		CloudConfigs: map[string]*CloudConfig{"cloud-config.yml": cloudcfg},
+		Groups:       []Group{testGroup},
+		Specs:        map[string]*Spec{testGroup.Spec: testSpec},
+		CloudConfigs: map[string]*CloudConfig{testSpec.CloudConfig: cloudcfg},
 	}
 	h := cloudHandler(store)
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
@@ -38,7 +39,8 @@ func TestCloudHandler_NoMatchingSpec(t *testing.T) {
 
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
 	store := &fixedStore{
-		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
+		Groups: []Group{testGroup},
+		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
 	}
 	h := cloudHandler(store)
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)

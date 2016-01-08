@@ -12,8 +12,9 @@ import (
 func TestIgnitionHandler(t *testing.T) {
 	ignitioncfg := &ignition.Config{}
 	store := &fixedStore{
-		Machines:        map[string]*Machine{"a1b2c3d4": testMachine},
-		IgnitionConfigs: map[string]*ignition.Config{"ignition.json": ignitioncfg},
+		Groups:          []Group{testGroup},
+		Specs:           map[string]*Spec{testGroup.Spec: testSpec},
+		IgnitionConfigs: map[string]*ignition.Config{testSpec.IgnitionConfig: ignitioncfg},
 	}
 	h := ignitionHandler(store)
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
@@ -39,7 +40,8 @@ func TestIgnitionHandler_NoMatchingSpec(t *testing.T) {
 
 func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
 	store := &fixedStore{
-		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
+		Groups: []Group{testGroup},
+		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
 	}
 	h := ignitionHandler(store)
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)

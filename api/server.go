@@ -50,8 +50,6 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux.Handle("/ignition", logRequests(ignitionHandler(s.store)))
 
 	// API Resources
-	// machines
-	newMachineResource(mux, "/machine/", s.store)
 	// specs
 	newSpecResource(mux, "/spec/", s.store)
 	// Kernel and Initrd Images

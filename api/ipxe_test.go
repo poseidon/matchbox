@@ -19,7 +19,8 @@ func TestIPXEInspect(t *testing.T) {
 
 func TestIPXEHandler(t *testing.T) {
 	store := &fixedStore{
-		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
+		Groups: []Group{testGroup},
+		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
 	}
 	h := ipxeHandler(store)
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
@@ -46,14 +47,10 @@ func TestIPXEHandler_NoMatchingSpec(t *testing.T) {
 }
 
 func TestIPXEHandler_RenderTemplateError(t *testing.T) {
-	// machine spec has a nil BootConfig so template.Execute errors
+	// nil BootConfig forces a template.Execute error
 	store := &fixedStore{
-		Machines: map[string]*Machine{
-			"a1b2c3d4": &Machine{
-				ID:   "a1b2c3d4",
-				Spec: &Spec{BootConfig: nil},
-			},
-		},
+		Groups: []Group{testGroup},
+		Specs:  map[string]*Spec{testGroup.Spec: &Spec{BootConfig: nil}},
 	}
 	h := ipxeHandler(store)
 	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)
@@ -64,7 +61,8 @@ func TestIPXEHandler_RenderTemplateError(t *testing.T) {
 
 func TestIPXEHandler_WriteError(t *testing.T) {
 	store := &fixedStore{
-		Machines: map[string]*Machine{"a1b2c3d4": testMachine},
+		Groups: []Group{testGroup},
+		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
 	}
 	h := ipxeHandler(store)
 	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)

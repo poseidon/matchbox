@@ -10,7 +10,8 @@ import (
 
 func TestPixiecoreHandler(t *testing.T) {
 	store := &fixedStore{
-		Machines: map[string]*Machine{validMACStr: testMachine},
+		Groups: []Group{testGroupWithMAC},
+		Specs:  map[string]*Spec{testGroupWithMAC.Spec: testSpec},
 	}
 	h := pixiecoreHandler(store)
 	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
