@@ -1,0 +1,10 @@
+---
+api_version: v1alpha1
+groups:
+  - name: node1
+    spec: etcd
+    require:
+      uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
+
+  - name: default
+    spec: worker

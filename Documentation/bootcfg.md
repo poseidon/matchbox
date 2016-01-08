@@ -1,9 +1,9 @@
 
-# Boot Config Service
+# Config Service
 
-The `bootcfg` HTTP service provides virtual or physical machines with PXE, iPXE, or Pixiecore boot settings and igntion/cloud configs based on their hardware attributes.
+The `bootcfg` HTTP service provides virtual or physical hardware with PXE, iPXE, or Pixiecore boot settings and igntion/cloud configs based on their attributes.
 
-The service maintains `Machine`, `Spec`, and ignition/cloud config resources and matches machines to `Spec`'s based on their attributes. `Spec` resources define a named set of boot settings (kernel, options, initrd) and configuration settings (ignition config, cloud config). `Machine` resources declare a machine by id (UUID, MAC) and the `Spec` that machine should use.
+The service maintains `Spec` definitions and ignition/cloud config resources and matches machines to `Spec`'s based on matcher groups you can declare. `Spec` resources define a named set of boot settings (kernel, options, initrd) and configuration settings (ignition config, cloud config). Group matchers associate zero or more machines to a `Spec` based on required attributes (e.g. UUID, MAC, region, free-form pairs).
 
 Boot settings are presented as iPXE scripts or [Pixiecore JSON](https://github.com/danderson/pixiecore/blob/master/README.api.md) to support different network boot environments.
 
@@ -23,7 +23,7 @@ Or pull a published container image from [quay.io/repository/coreoso/bootcfg](ht
 
 The latest image corresponds to the most recent `coreos-baremetal` master commit.
 
-[Prepare a data volume](#data) with `Machine`, `Spec`, and ignition/cloud configs. Optionally, prepare a volume of downloaded CoreOS kernel and initrd image assets that `bootcfg` should serve.
+[Prepare a data volume](#data) with `Spec` and ignition/cloud configs. Optionally, prepare a volume of downloaded CoreOS kernel and initrd image assets that `bootcfg` should serve.
 
     ./scripts/get-coreos   # download CoreOS 835.9.0 to images/coreos/835.9.0
     ./scripts/get-coreos beta 877.1.0
@@ -42,68 +42,70 @@ Map container port 8080 to host port 8080 to quickly check endpoints:
 * Pixiecore JSON: `/pixiecore/v1/boot/:mac`
 * Cloud Config: `/cloud?uuid=val`
 * Ignition Config: `/ignition?uuid=val`
-* Machines: `/machine/:id`
 * Spec: `/spec/:id`
 * Images: `/images`
 
 ## Data
 
-A `Store` maintains `Machine`, `Spec`, and ignition/cloud config resources. By default, `bootcfg` uses a `FileStore` to search a filesystem data directory for these resources.
+A `Store` maintains `Spec` definitions, matcher groups, and ignition/cloud config resources. By default, `bootcfg` uses a `FileStore` to search a filesystem data directory for these resources.
 
-Prepare a data directory or modify the example [data](../data) provided. The `FileStore` expects `Machine` JSON files to be located at `machines/:id/machine.json` where the id can be a UUID or MAC address or "default". `Spec` JSON files should be located at `specs/:id/spec.json` with any unique spec identifier.
+Prepare a data directory or modify the [examples](../examples) provided. The `FileStore` expects `Spec` JSON files to be located at `specs/:id/spec.json` with any unique spec identifier.
 
 You may wish to keep the data directory under version control with your other infrastructure configs, since it contains the declarative configuration of your hardware.
 
 Ignition configs and cloud configs can be named whatever you like and dropped into `ignition` and `cloud`, respectively.
 
      data
+     ├── config.yaml
      ├── cloud
-     │   ├── node1.yml
-     │   └── orion.yml
+     │   ├── etcd.yaml
+     │   └── worker.yaml
      ├── ignition
+     │   └── node1.json
      │   └── node2.json
-     ├── machines
-     │   ├── 074fbe06-94a9-4336-9e8a-20b6f81efb6c
-     │   │   └── machine.json
-     │   ├── 2d9354a2-e8db-4021-bff5-20ffdf443d6f
-     │   │   └── machine.json
-     │   └── default
-     │       └── machine.json
      └── specs
-         └── orion
+         └── etcd
+             └── spec.json
+         └── worker
              └── spec.json
 
-### Machine
+### Matcher Groups
 
-A machine file contains JSON describing a machine and the `Spec` that machine should use. Machines may embed `Spec` data or reference an existing (shared) spec by `spec_id`.
+Matcher groups define a set of requirements which match zero or more machines to a `Spec`. Groups have a human readable name, a `Spec` id, and a free-form map of key/value matcher requirements.
 
-Here is a `machine.json` which embeds `"spec"` properties.
+Baremetal clients network booted with `bootcfg` include hardware attributes in requests which make it simple to match baremetal instances.
 
-    {
-        "id": "2d9354a2-e8db-4021-bff5-20ffdf443d6f",
-        "spec": {
-          "boot": {
-              "kernel": "/images/coreos/877.1.0/coreos_production_pxe.vmlinuz",
-              "initrd": ["/images/coreos/877.1.0/coreos_production_pxe_image.cpio.gz"],
-              "cmdline": {
-                  "cloud-config-url": "http://bootcfg.foo/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
-                  "coreos.autologin": "",
-                  "coreos.config.url": "http://bootcfg.foo/ignition?uuid=${uuid}",
-                  "coreos.first_boot": ""
-              }
-          },
-          "cloud_id": "cloud-config.yml",
-          "ignition_id": "ignition.json"
-        },
-        "spec_id": ""
-    }
+* `uuid`
+* `mac`
+* `hostname`
+* `serial`
 
-and another `machine.json` which simplify references a `Spec` by id.
+Note that Pixiecore only provides MAC addresses and does not subsitute variables into later config requests.
 
-    {
-        "id": "074fbe06-94a9-4336-9e8a-20b6f81efb6c",
-        "spec_id": "orion"
-    }
+Currently, matcher groups are loaded from a YAML config file specified by the `-config` flag. With containers, it is easiest to keep the file in the data path they gets mounted.
+
+    ---
+    api_version: v1alpha1
+    groups:
+      - name: node1
+        spec: etcd1
+        require:
+          uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
+      - name: node2
+        spec: etcd2
+        require:
+          mac: 52:54:00:89:d8:10
+      - name: workers
+        spec: worker
+        require:
+          region: okla
+          zone: a1
+      - name: default
+        spec: default
+
+Machines are matched to a `Spec` by evaluating group matchers requirements by decreasing number of constraints, in deterministic order. In this example, a request to `/cloud?mac=52:54:00:89:d8:10` would serve the cloud config from the "etcd2" `Spec`.
+
+A default group matcher can be defined by omitting the `require` field. Avoid defining multiple default groups as resolution will not be deterministic.
 
 ### Spec
 
@@ -112,17 +114,19 @@ Specs can have any unique identifier you choose and specify boot settings (kerne
 Boot config files contain JSON referencing a kernel image, init RAM fileystems, and kernel options for booting a machine.
 
     {
-        "id": "orion",
+        "id": "etcd2",
         "boot": {
             "kernel": "/images/coreos/835.9.0/coreos_production_pxe.vmlinuz",
             "initrd": ["/images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
             "cmdline": {
-                "cloud-config-url": "http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
-                "coreos.autologin": ""
+                "cloud-config-url": "http://bootcfg.foo/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+                "coreos.autologin": "",
+                "coreos.config.url": "http://bootcfg.foo/ignition?uuid=${uuid}",
+                "coreos.first_boot": ""
             }
         },
-        "cloud_id": "orion-cloud-config.yml",
-        "ignition_id": "ignition.json"
+        "cloud_id": "etcd.yaml",
+        "ignition_id": "node2.json"
     }
 
 The `"boot"` section references the kernel image, init RAM filesystem, and kernel options to use. Point kernel and initrd to remote images or to local [image assets](#images).

@@ -10,14 +10,15 @@ import (
 
 func TestPixiecoreHandler(t *testing.T) {
 	store := &fixedStore{
-		Machines: map[string]*Machine{validMACStr: testMachine},
+		Groups: []Group{testGroupWithMAC},
+		Specs:  map[string]*Spec{testGroupWithMAC.Spec: testSpec},
 	}
 	h := pixiecoreHandler(store)
 	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
 	w := httptest.NewRecorder()
 	h.ServeHTTP(w, req)
 	// assert that:
-	// - machine config is rendered as Pixiecore JSON
+	// - boot config is rendered as Pixiecore JSON
 	expectedJSON := `{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}}`
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))

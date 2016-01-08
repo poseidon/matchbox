@@ -10,17 +10,20 @@ import (
 	ignition "github.com/coreos/ignition/src/config"
 )
 
-// Store provides Machine, Spec, and config resources.
+// Store provides Group, Spec, and config resources.
 type Store interface {
-	Machine(id string) (*Machine, error)
+	BootstrapGroups([]Group) error
+	ListGroups() ([]Group, error)
+
 	Spec(id string) (*Spec, error)
 	CloudConfig(id string) (*CloudConfig, error)
 	IgnitionConfig(id string) (*ignition.Config, error)
 }
 
-// fileStore maps machine attributes to configs based on an http.Filesystem.
+// fileStore provides configs from an http.Filesystem.
 type fileStore struct {
-	root http.FileSystem
+	root   http.FileSystem
+	groups []Group
 }
 
 // NewFileStore returns a Store backed by a filesystem directory.
@@ -30,30 +33,15 @@ func NewFileStore(root http.FileSystem) Store {
 	}
 }
 
-// Machine returns the configuration for the machine with the given id.
-func (s *fileStore) Machine(id string) (*Machine, error) {
-	file, err := openFile(s.root, filepath.Join("machines", id, "machine.json"))
-	if err != nil {
-		log.Debugf("no machine config %s", id)
-		return nil, err
-	}
-	defer file.Close()
+// BootstrapGroups loads an initial collection of groups.
+func (s *fileStore) BootstrapGroups(groups []Group) error {
+	s.groups = groups
+	return nil
+}
 
-	machine := new(Machine)
-	err = json.NewDecoder(file).Decode(machine)
-	if err != nil {
-		log.Errorf("error decoding machine config: %s", err)
-		return nil, err
-	}
-
-	if machine.Spec == nil && machine.SpecID != "" {
-		// machine references a Spec, attempt to add Spec properties
-		spec, err := s.Spec(machine.SpecID)
-		if err == nil {
-			machine.Spec = spec
-		}
-	}
-	return machine, err
+// ListGroups returns the list of groups with matchers.
+func (s *fileStore) ListGroups() ([]Group, error) {
+	return s.groups, nil
 }
 
 // Spec returns the Spec with the given id.

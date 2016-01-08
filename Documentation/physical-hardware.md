@@ -23,7 +23,7 @@ Run the `bootcfg` container to serve configs for any of the network environments
 
     docker run -p 8080:8080 --net=host --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 [-log-level=debug]
 
-Note, the kernel options in the [data](../data) `Spec` examples reference 172.17.0.2 (the libvirt case). Your kernel cmdline options should reference the IP or DNS name where `bootcfg` runs.
+Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.0.2 (the libvirt case). Your kernel cmdline options should reference the IP or DNS name where `bootcfg` runs.
 
 ## Network Setups
 

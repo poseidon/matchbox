@@ -6,16 +6,16 @@ import (
 	"time"
 )
 
-// CloudConfig defines the cloud-init config to initialize a client machine.
+// CloudConfig defines a cloud-init config.
 type CloudConfig struct {
 	Content string
 }
 
-// cloudHandler returns a handler that responds with the cloud config the
-// client machine should use.
+// cloudHandler returns a handler that responds with the cloud config for the
+// requester.
 func cloudHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		attrs := attrsFromRequest(req)
+		attrs := labelsFromRequest(req)
 		spec, err := getMatchingSpec(store, attrs)
 		if err != nil || spec.CloudConfig == "" {
 			http.NotFound(w, req)

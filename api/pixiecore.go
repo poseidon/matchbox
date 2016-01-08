@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 )
 
-// pixiecoreHandler returns a handler that renders Boot Configs as JSON to
-// implement the Pixiecore API specification.
+// pixiecoreHandler returns a handler that renders the boot config JSON for
+// the requester, to implement the Pixiecore API specification.
 // https://github.com/danderson/pixiecore/blob/master/README.api.md
 func pixiecoreHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
@@ -16,7 +16,7 @@ func pixiecoreHandler(store Store) http.Handler {
 			return
 		}
 		// pixiecore only provides MAC addresses
-		attrs := MachineAttrs{MAC: macAddr}
+		attrs := LabelSet(map[string]string{"mac": macAddr.String()})
 		spec, err := getMatchingSpec(store, attrs)
 		if err != nil {
 			http.NotFound(w, req)

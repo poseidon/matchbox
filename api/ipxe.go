@@ -8,7 +8,7 @@ import (
 )
 
 const ipxeBootstrap = `#!ipxe
-chain ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&ip=${ip}&domain=${domain}&hostname=${hostname}&serial=${serial}
+chain ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
 `
 
 var ipxeTemplate = template.Must(template.New("ipxe boot").Parse(`#!ipxe
@@ -17,8 +17,8 @@ initrd {{ range $element := .Initrd }}{{$element}} {{end}}
 boot
 `))
 
-// ipxeInspect returns a handler that responds with an iPXE script to gather
-// client machine data and chain load the real boot script.
+// ipxeInspect returns a handler that responds with the iPXE script to gather
+// client machine data and chainload to the ipxeHandler.
 func ipxeInspect() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, ipxeBootstrap)
@@ -26,11 +26,11 @@ func ipxeInspect() http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-// ipxeBoot returns a handler which renders an iPXE boot config script based
-// on the machine attribtue query parameters.
+// ipxeBoot returns a handler which renders the iPXE boot script for the
+// requester.
 func ipxeHandler(store Store) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		attrs := attrsFromRequest(req)
+		attrs := labelsFromRequest(req)
 		spec, err := getMatchingSpec(store, attrs)
 		if err != nil {
 			http.NotFound(w, req)
