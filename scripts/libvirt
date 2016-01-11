@@ -31,11 +31,11 @@ function usage {
 }
 
 function create {
-  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:docker0 --ram=756 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
 }
 
 function reboot {
