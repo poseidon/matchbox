@@ -8,4 +8,5 @@ mkdir -p $GOPATH/src/github.com/coreos
 # directory or symlink must be present
 [ -d $GOPATH/src/github.com/coreos/coreos-baremetal ] || ln -s ${PWD} $GOPATH/src/github.com/coreos/coreos-baremetal
 
-CGO_ENABLED=0 GOOS=linux go build -o bin/server -a -tags netgo -ldflags '-w' github.com/coreos/coreos-baremetal/cmd/bootcfg
+LD_FLAGS="-w -X main.version=$(./git-version)"
+CGO_ENABLED=0 GOOS=linux go build -o bin/server -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcfg

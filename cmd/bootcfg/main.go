@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -13,38 +14,60 @@ import (
 	"github.com/coreos/pkg/flagutil"
 )
 
-var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/bootcfg", "main")
+var (
+	// version provided by compile time flag: -ldflags "-X main.version $GIT_SHA"
+	version = "was not built properly"
+	log     = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/bootcfg", "main")
+)
 
 func main() {
-	flags := flag.NewFlagSet("bootcfg", flag.ExitOnError)
-	address := flags.String("address", "127.0.0.1:8080", "HTTP listen address")
-	configPath := flags.String("config", "./data/config.yaml", "Path to config file")
-	dataPath := flags.String("data-path", "./data", "Path to data directory")
-	imagesPath := flags.String("images-path", "./images", "Path to static assets")
+	flags := struct {
+		address    string
+		configPath string
+		dataPath   string
+		imagesPath string
+		logLevel   string
+		version    bool
+		help       bool
+	}{}
+	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
+	flag.StringVar(&flags.configPath, "config", "./data/config.yaml", "Path to config file")
+	flag.StringVar(&flags.dataPath, "data-path", "./data", "Path to data directory")
+	flag.StringVar(&flags.imagesPath, "images-path", "./images", "Path to static assets")
 	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
-	logLevel := flags.String("log-level", "info", "Set the logging level")
+	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
+	flag.BoolVar(&flags.version, "version", false, "print version and exit")
+	flag.BoolVar(&flags.help, "help", false, "print usage and exit")
 
 	// parse command-line and environment variable arguments
-	if err := flags.Parse(os.Args[1:]); err != nil {
+	flag.Parse()
+	if err := flagutil.SetFlagsFromEnv(flag.CommandLine, "BOOTCFG"); err != nil {
 		log.Fatal(err.Error())
 	}
-	if err := flagutil.SetFlagsFromEnv(flags, "BOOTCFG"); err != nil {
-		log.Fatal(err.Error())
+
+	if flags.version {
+		fmt.Println(version)
+		return
+	}
+
+	if flags.help {
+		flag.Usage()
+		return
 	}
 
 	// validate arguments
-	if url, err := url.Parse(*address); err != nil || url.String() == "" {
+	if url, err := url.Parse(flags.address); err != nil || url.String() == "" {
 		log.Fatal("A valid HTTP listen address is required")
 	}
-	if finfo, err := os.Stat(*dataPath); err != nil || !finfo.IsDir() {
+	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
 		log.Fatal("A path to a data directory is required")
 	}
-	if finfo, err := os.Stat(*imagesPath); err != nil || !finfo.IsDir() {
+	if finfo, err := os.Stat(flags.imagesPath); err != nil || !finfo.IsDir() {
 		log.Fatal("A path to an assets directory is required")
 	}
 
 	// logging setup
-	lvl, err := capnslog.ParseLevel(strings.ToUpper(*logLevel))
+	lvl, err := capnslog.ParseLevel(strings.ToUpper(flags.logLevel))
 	if err != nil {
 		log.Fatalf("Invalid log-level: %v", err.Error())
 	}
@@ -52,11 +75,11 @@ func main() {
 	capnslog.SetFormatter(capnslog.NewPrettyFormatter(os.Stdout, false))
 
 	// storage
-	store := api.NewFileStore(http.Dir(*dataPath))
+	store := api.NewFileStore(http.Dir(flags.dataPath))
 
 	// bootstrap a group config
-	if *configPath != "" {
-		data, err := ioutil.ReadFile(*configPath)
+	if flags.configPath != "" {
+		data, err := ioutil.ReadFile(flags.configPath)
 		if err != nil {
 			log.Fatalf("error reading config file: %v", err)
 		}
@@ -69,13 +92,13 @@ func main() {
 
 	config := &api.Config{
 		Store:     store,
-		ImagePath: *imagesPath,
+		ImagePath: flags.imagesPath,
 	}
 
 	// API server
 	server := api.NewServer(config)
-	log.Infof("starting bootcfg API Server on %s", *address)
-	err = http.ListenAndServe(*address, server.HTTPHandler())
+	log.Infof("starting bootcfg API Server on %s", flags.address)
+	err = http.ListenAndServe(flags.address, server.HTTPHandler())
 	if err != nil {
 		log.Fatalf("failed to start listening: %s", err)
 	}
