@@ -14,7 +14,7 @@ Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bo
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/images:/images:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
 Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.0.2, the first container IP Docker is likely to assign to `bootcfg`. Ensure your kernel options point to where `bootcfg` runs.
 

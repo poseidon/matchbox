@@ -25,7 +25,7 @@ func main() {
 		address    string
 		configPath string
 		dataPath   string
-		imagesPath string
+		assetsPath string
 		logLevel   string
 		version    bool
 		help       bool
@@ -33,7 +33,7 @@ func main() {
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
 	flag.StringVar(&flags.configPath, "config", "./data/config.yaml", "Path to config file")
 	flag.StringVar(&flags.dataPath, "data-path", "./data", "Path to data directory")
-	flag.StringVar(&flags.imagesPath, "images-path", "./images", "Path to static assets")
+	flag.StringVar(&flags.assetsPath, "assets-path", "./assets", "Path to static assets")
 	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
 	flag.BoolVar(&flags.version, "version", false, "print version and exit")
@@ -62,7 +62,7 @@ func main() {
 	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
 		log.Fatal("A path to a data directory is required")
 	}
-	if finfo, err := os.Stat(flags.imagesPath); err != nil || !finfo.IsDir() {
+	if finfo, err := os.Stat(flags.assetsPath); err != nil || !finfo.IsDir() {
 		log.Fatal("A path to an assets directory is required")
 	}
 
@@ -91,8 +91,8 @@ func main() {
 	}
 
 	config := &api.Config{
-		Store:     store,
-		ImagePath: flags.imagesPath,
+		Store:      store,
+		AssetsPath: flags.assetsPath,
 	}
 
 	// API server

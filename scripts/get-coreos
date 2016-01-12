@@ -4,10 +4,14 @@
 
 CHANNEL=${1:-"stable"}
 VERSION=${2:-"835.9.0"}
-DEST=${PWD}/images/coreos/$VERSION
+DEST=${PWD}/assets/coreos/$VERSION
 
-mkdir -p $DEST
-echo "Downloading CoreOS kernel and initrd"
+echo "Downloading CoreOS kernel and initrd image assets"
+
+if [ ! -d "$DEST" ]; then
+  echo "Creating directory $DEST"
+  mkdir -p $DEST
+fi
 
 # kernel and sig
 BASE_URL=http://$CHANNEL.release.core-os.net/amd64-usr/$VERSION

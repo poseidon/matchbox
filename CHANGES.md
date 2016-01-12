@@ -2,6 +2,9 @@
 
 ## Latest
 
+* Renamed flag `-images-path` to `-assets-path`
+* Renamed endpoint `/images` to `/assets`
+
 ## v0.1.0 (2015-01-08)
 
 Initial release of the coreos-baremetal Config Service.

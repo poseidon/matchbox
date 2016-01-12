@@ -17,21 +17,21 @@ var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal", "api")
 type Config struct {
 	// Store for configs (boot, cloud)
 	Store Store
-	// Path to static image assets
-	ImagePath string
+	// Path to static assets
+	AssetsPath string
 }
 
 // Server serves boot and cloud configs for PXE-based clients.
 type Server struct {
-	store     Store
-	imagePath string
+	store      Store
+	assetsPath string
 }
 
 // NewServer returns a new Server.
 func NewServer(config *Config) *Server {
 	return &Server{
-		store:     config.Store,
-		imagePath: config.ImagePath,
+		store:      config.Store,
+		assetsPath: config.AssetsPath,
 	}
 }
 
@@ -52,7 +52,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	// API Resources
 	// specs
 	newSpecResource(mux, "/spec/", s.store)
-	// Kernel and Initrd Images
-	mux.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(s.imagePath))))
+	// kernel, initrd, and TLS assets
+	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(s.assetsPath))))
 	return mux
 }

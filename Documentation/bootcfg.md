@@ -25,16 +25,16 @@ The latest image corresponds to the most recent `coreos-baremetal` master commit
 
 [Prepare a data volume](#data) with `Spec` and ignition/cloud configs. Optionally, prepare a volume of downloaded CoreOS kernel and initrd image assets that `bootcfg` should serve.
 
-    ./scripts/get-coreos   # download CoreOS 835.9.0 to images/coreos/835.9.0
+    ./scripts/get-coreos               # download CoreOS 835.9.0
     ./scripts/get-coreos beta 877.1.0
 
-Run the container and mount the data and images directories as volumes.
+Run the container and mount the data and assets directories as volumes.
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/images:/images:Z coreos/bootcfg -address=0.0.0.0:8080 [-log-level=debug]
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg -address=0.0.0.0:8080 [-log-level=debug]
 
 ## Endpoints
 
-The [API](api.md) documents the iPXE and Pixiecore endpoints, the cloud config endpoint, and image assets.
+The [API](api.md) documents the iPXE and Pixiecore endpoints, the cloud config endpoint, and assets.
 
 Map container port 8080 to host port 8080 to quickly check endpoints:
 
@@ -43,7 +43,7 @@ Map container port 8080 to host port 8080 to quickly check endpoints:
 * Cloud Config: `/cloud?uuid=val`
 * Ignition Config: `/ignition?uuid=val`
 * Spec: `/spec/:id`
-* Images: `/images`
+* Assets: `/assets`
 
 ## Data
 
@@ -116,8 +116,8 @@ Boot config files contain JSON referencing a kernel image, init RAM fileystems, 
     {
         "id": "etcd2",
         "boot": {
-            "kernel": "/images/coreos/835.9.0/coreos_production_pxe.vmlinuz",
-            "initrd": ["/images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
+            "kernel": "/assets/coreos/835.9.0/coreos_production_pxe.vmlinuz",
+            "initrd": ["/assets/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
             "cmdline": {
                 "cloud-config-url": "http://bootcfg.foo/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
                 "coreos.autologin": "",
@@ -129,7 +129,7 @@ Boot config files contain JSON referencing a kernel image, init RAM fileystems, 
         "ignition_id": "node2.json"
     }
 
-The `"boot"` section references the kernel image, init RAM filesystem, and kernel options to use. Point kernel and initrd to remote images or to local [image assets](#images).
+The `"boot"` section references the kernel image, init RAM filesystem, and kernel options to use. Point kernel and initrd to remote images or to local [assets](#assets).
 
 To use cloud-init, set the `cloud-config-url` kernel option to the `bootcfg` cloud endpoint to reference the cloud config named by `cloud_id`.
 
@@ -175,22 +175,22 @@ Ignition is a configuration system for provisioning CoreOS instances before user
 
 See the Ignition [docs](https://coreos.com/ignition/docs/latest/) and [github](https://github.com/coreos/ignition) for the latest details.
 
-## Images
+## Assets
 
-Optionally, `bootcfg` can host free-form static assets if an `-images-path` argument to a directory is provided. This is a quick way to serve kernel and init RAM filesystem images, GPG verify them at an origin, and lets client machines download images without using egress bandwidth.
+Optionally, `bootcfg` can host free-form static assets if an `-assets-path` argument to a directory is provided. This is a quick way to serve kernel and initrd assets and reduce bandwidth usage.
 
-    images/
+    assets/
     └── coreos
         └── 835.9.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
 
-Run the `get-coreos` script to quickly download kernel and initrd images from a recent CoreOS release into an `/images` directory.
+Run the `get-coreos` script to quickly download kernel and initrd image assets.
 
     ./scripts/get-coreos                 # stable, 835.9.0
     ./scripts/get-coreos beta 877.1.0
 
-To reference these local images, change the `kernel` and `initrd` in a boot config file. For example, change `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/images/coreos/835.9.0/coreos_production_pxe.vmlinuz`.
+To reference local assets, change the `kernel` and `initrd` in a boot config file. For example, change `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/assets/coreos/835.9.0/coreos_production_pxe.vmlinuz`.
 
 ## Virtual and Physical Machine Guides
 

@@ -29,8 +29,8 @@ Finds the spec matching the attribute query parameters and renders the boot conf
 **Response**
 
     #!ipxe
-    kernel /images/coreos/835.9.0/coreos_production_pxe.vmlinuz cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
-    initrd  /images/coreos/835.9.0/coreos_production_pxe_image.cpio.gz
+    kernel /assets/coreos/835.9.0/coreos_production_pxe.vmlinuz cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
+    initrd  /assets/coreos/835.9.0/coreos_production_pxe_image.cpio.gz
     boot
 
 The kernel, cmdline kernel options, and initrd are populated from a `Spec`.
@@ -50,8 +50,8 @@ Finds the spec matching the attribute query parameters and renders the boot conf
 **Response**
 
     {
-      "kernel":"/images/coreos/877.1.0/coreos_production_pxe.vmlinuz",
-      "initrd":["/images/coreos/877.1.0/coreos_production_pxe_image.cpio.gz"],
+      "kernel":"/assets/coreos/877.1.0/coreos_production_pxe.vmlinuz",
+      "initrd":["/assets/coreos/877.1.0/coreos_production_pxe_image.cpio.gz"],
       "cmdline":{
         "cloud-config-url":"http://bootcfg.example.com/cloud",
         "coreos.autologin":""
@@ -133,9 +133,9 @@ Get a `Spec` definition by id (UUID, MAC).
 {
   "id": "orion",
   "boot": {
-    "kernel": "\/images\/coreos\/835.9.0\/coreos_production_pxe.vmlinuz",
+    "kernel": "\/assets\/coreos\/835.9.0\/coreos_production_pxe.vmlinuz",
     "initrd": [
-      "\/images\/coreos\/835.9.0\/coreos_production_pxe_image.cpio.gz"
+      "\/assets\/coreos\/835.9.0\/coreos_production_pxe_image.cpio.gz"
     ],
     "cmdline": {
       "cloud-config-url": "http:\/\/172.17.0.2:8080\/cloud?uuid=${uuid}&mac=${net0\/mac:hexhyp}",
@@ -146,11 +146,11 @@ Get a `Spec` definition by id (UUID, MAC).
 }
 ```
 
-## Image Assets
+## Assets
 
-If you need to host kernel and initrd images within your network, bootcfg server's `/images/` route serves free-form static assets. Set the `-images-path` when starting the bootcfg server. Here is an example images directory layout:
+If you need to host static assets (e.g. kernel, initrd) within your network, bootcfg server's `/assets/` route serves free-form static assets. Set the `-assets-path` when starting the bootcfg server. Here is an example:
 
-    images/
+    assets/
     └── coreos
         └── 835.9.0
             ├── coreos_production_pxe.vmlinuz
