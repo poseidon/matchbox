@@ -84,7 +84,7 @@ Reboot the nodes to PXE boot them into your new cluster!
 
 All examples use autologin so you can check whether your nodes were setup correctly, depending on the cluster example you chose.
 
-If something goes wrong, check troubleshooting.
+If something goes wrong, see [troubleshooting](../Documentation/troubleshooting.md).
 
 If everything works, congratulations! Stay tuned for developments.
 
