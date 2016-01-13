@@ -21,4 +21,8 @@ The config service provides network boot (PXE, iPXE, Pixiecore), [Ignition](http
 
 ## Examples
 
-Check out the declarative config [examples](examples) which network boot several different CoreOS clusters. Use the [libvirt script](scripts/libvirt) tool to quickly setup a network of virtual hardware on your Linux box.
+Get started with the declarative [examples](examples) which network boot different CoreOS clusters. Use the [libvirt script](scripts/libvirt) to quickly setup a network of virtual hardware on your Linux box.
+
+* Single Node etcd Cluster
+* Multi Node etcd Cluster
+* Kubernetes Cluster (1 master, 1 worker, 1 etcd)

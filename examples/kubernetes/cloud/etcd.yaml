@@ -1,0 +1,12 @@
+#cloud-config
+coreos:
+  etcd2:
+    name: etcdserver
+    initial-cluster: etcdserver=http://172.17.0.23:2380
+    initial-advertise-peer-urls: http://172.17.0.23:2380
+    advertise-client-urls: http://172.17.0.23:2379
+    listen-client-urls: http://0.0.0.0:2379
+    listen-peer-urls: http://0.0.0.0:2380
+  units:
+    - name: etcd2.service
+      command: start
