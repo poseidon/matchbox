@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # USAGE: ./examples/kubernetes/scripts/generate-tls
 
-DEST=assets/tls
+DEST=${1:-"assets/tls"}
 
 if [ ! -d "$DEST" ]; then
   echo "Creating directory $DEST"

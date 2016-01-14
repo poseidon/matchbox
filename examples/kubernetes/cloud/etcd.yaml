@@ -10,3 +10,9 @@ coreos:
   units:
     - name: etcd2.service
       command: start
+write_files:
+  - path: "/home/core/etcd"
+    owner: "core"
+    permissions: "0644"
+    content: |
+      File added by etcd.yaml.

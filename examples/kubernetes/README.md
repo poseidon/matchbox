@@ -29,6 +29,8 @@ Alternately, if you have existing Public Key Infrastructure, add your CA certifi
 
 See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/latest/openssl.html) document or [Kubernetes Step by Step](https://coreos.com/kubernetes/docs/latest/getting-started.html) for more details.
 
+Return the the general examples [README](../README).
+
 ## Usage
 
 Install `kubectl` on your host and use the `examples/kubernetes/kubeconfig` file which references the top level `assets/tls`.

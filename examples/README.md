@@ -11,18 +11,20 @@ Examples contains Config Service data directories showcasing different network-b
 
 ## Experimental
 
-These examples are experimental and designed to demonstrate booting and configuring CoreOS clusters, especially locally. They have **NOT** been hardened for production yet.
+These examples are experimental and have **NOT** been hardened for production. They are designed to demonstrate booting and configuring CoreOS clusters, especially locally.
 
-## Virtual or Physical Hardware
+## Virtual Hardware
 
-Create a network of virtual hardware on your Linux machine before running the Config Service with one of these examples.
-
-Create 5 libvirt VM nodes, which should be enough for any of the examples. The `scripts/libvirt` script will create 5 VM nodes with known hardware attributes, on the `docker0` bridge network.
+Get started on your Linux machine by creating a network of virtual hardware. Install `libvirt` and `virt-manager` and clone the source.
 
     # Fedora/RHEL
     dnf install virt-manager
 
-    # create node1 ... node5
+Create 5 libvirt VM nodes, which should be enough for any of the examples. The `scripts/libvirt` script will create 5 VM nodes with known hardware attributes, on the `docker0` bridge network.
+
+    # clone the source
+    git clone https://github.com/coreos/coreos-baremetal.git
+    # create 5 nodes
     ./scripts/libvirt create
 
 The nodes can be conveniently managed together.
@@ -32,7 +34,9 @@ The nodes can be conveniently managed together.
     ./scripts/libvirt poweroff        # non-graceful
     ./scripts/libvirt destroy
 
-The Config Service can uses these examples to provision physical clusters, but you'll have to edit the static IPs to suit your network and hardware. See the [Baremetal Guide](../Documentation/physical-hardware.md).
+## Physical Hardware
+
+You can use these examples to provision experimental physical clusters. You'll have to edit the IPs in the examples which reference the config service and cluster nodes to suit your network and update the `config.yaml` to match the attribtues of your hardware. For Kubernetes, be sure to generate TLS assets with the new set of IPs. Read the [Baremetal Guide](../Documentation/physical-hardware.md) for details.
 
 ## Config Service
 
@@ -46,15 +50,15 @@ Run the command for the example you wish to use.
 
 **etcd-small Cluster**
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/etcd-small:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/etcd-small:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
 **etcd-large Cluster**
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/etcd-large:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/etcd-large:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
 **Kubernetes Cluster**
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/kubernetes:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/kubernetes:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
 The mounted data directory (e.g. `-v $PWD/examples/etcd-small:/data:Z`) depends on the example you wish to run.
 
@@ -74,6 +78,8 @@ Run an iPXE setup with DHCP and TFTP on the virtual network on your machine simi
 
     docker run --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://172.17.0.2:8080/boot.ipxe
 
+You may need to update your firewall to allow DHCP and TFTP services. If your config service container has a different IP address or subnet, the IPs in examples will require some adjustments to match your local setup.
+
 ## Boot
 
 Reboot the nodes to PXE boot them into your new cluster!
@@ -82,9 +88,7 @@ Reboot the nodes to PXE boot them into your new cluster!
     # if nodes are in a non-booted state
     ./scripts/libvirt poweroff
 
-All examples use autologin so you can check whether your nodes were setup correctly, depending on the cluster example you chose.
-
-If something goes wrong, see [troubleshooting](../Documentation/troubleshooting.md).
+The examples use autologin for debugging and checking that nodes were setup correctly depending on the example. If something goes wrong, see [troubleshooting](../Documentation/troubleshooting.md).
 
 If everything works, congratulations! Stay tuned for developments.
 
