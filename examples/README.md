@@ -30,6 +30,7 @@ Create 5 libvirt VM nodes, which should be enough for any of the examples. The `
 The nodes can be conveniently managed together.
 
     ./scripts/libvirt reboot
+    ./scripts/libvirt start
     ./scripts/libvirt shutdown        # graceful
     ./scripts/libvirt poweroff        # non-graceful
     ./scripts/libvirt destroy
@@ -87,6 +88,7 @@ Reboot the nodes to PXE boot them into your new cluster!
     ./scripts/libvirt reboot
     # if nodes are in a non-booted state
     ./scripts/libvirt poweroff
+    ./scripts/libvirt start
 
 The examples use autologin for debugging and checking that nodes were setup correctly depending on the example. If something goes wrong, see [troubleshooting](../Documentation/troubleshooting.md).
 

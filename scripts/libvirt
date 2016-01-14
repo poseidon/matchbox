@@ -9,6 +9,7 @@ fi
 function main {
   case "$1" in
     "create") create;;
+    "start") start;;
     "reboot") reboot;;
     "shutdown") shutdown;;
     "poweroff") poweroff;;
@@ -24,6 +25,7 @@ function usage {
   echo "USAGE: ${0##*/} <command>"
   echo "Commands:"
   echo -e "\tcreate\t\tcreate 5 libvirt nodes with specific hardware attributes"
+  echo -e "\tstart\t\tstart the 5 libvirt nodes"
   echo -e "\treboot\t\treboot the 5 libvirt nodes"
   echo -e "\tshutdown\tshutdown the 5 libvirt nodes"
   echo -e "\tpoweroff\tpoweroff the 5 libvirt nodes"
@@ -38,36 +40,36 @@ function create {
   virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
 }
 
+nodes=(node1 node2 node3 node4 node5)
+
+function start {
+  for node in ${nodes[@]}; do
+    virsh start $node
+  done
+}
+
 function reboot {
-  virsh reboot node1
-  virsh reboot node2
-  virsh reboot node3
-  virsh reboot node4
-  virsh reboot node5
+  for node in ${nodes[@]}; do
+    virsh reboot $node
+  done
 }
 
 function shutdown {
-  virsh shutdown node1
-  virsh shutdown node2
-  virsh shutdown node3
-  virsh shutdown node4
-  virsh shutdown node5
+  for node in ${nodes[@]}; do
+    virsh shutdown $node
+  done
 }
 
 function poweroff {
-  virsh destroy node1
-  virsh destroy node2
-  virsh destroy node3
-  virsh destroy node4
-  virsh destroy node5
+  for node in ${nodes[@]}; do
+    virsh destroy $node
+  done
 }
 
 function destroy {
-  virsh undefine node1
-  virsh undefine node2
-  virsh undefine node3
-  virsh undefine node4
-  virsh undefine node5
+  for node in ${nodes[@]}; do
+    virsh undefine $node
+  done
 }
 
 main $@

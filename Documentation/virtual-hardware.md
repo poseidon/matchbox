@@ -94,6 +94,7 @@ Create 5 libvirt VM nodes configured to boot from the network. The `scripts/libv
     USAGE: libvirt <command>
     Commands:
         create      create 5 libvirt nodes
+        start       start 5 libvirt nodes
         reboot      reboot the 5 libvirt nodes
         shutdown    shutdown the 5 libvirt nodes
         poweroff    poweroff the 5 libvirt nodes
