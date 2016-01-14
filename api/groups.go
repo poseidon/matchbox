@@ -3,7 +3,9 @@ package api
 import (
 	"errors"
 	"fmt"
+	"net"
 	"sort"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -24,10 +26,32 @@ type Group struct {
 	Matcher RequirementSet `yaml:"require"`
 }
 
-// GroupConfig define an group import structure.
+// GroupConfig defines an group import structure.
 type GroupConfig struct {
 	APIVersion string  `yaml:"api_version"`
 	Groups     []Group `yaml:"groups"`
+}
+
+// validate the group config's API version and reserved tag matchers.
+func (gc *GroupConfig) validate() error {
+	if gc.APIVersion != APIVersion {
+		return ErrInvalidVersion
+	}
+	for _, group := range gc.Groups {
+		for key, val := range group.Matcher {
+			switch strings.ToLower(key) {
+			case "mac":
+				macAddr, err := net.ParseMAC(val)
+				if err != nil {
+					return fmt.Errorf("api: invalid MAC address %s", val)
+				}
+				if val != macAddr.String() {
+					return fmt.Errorf("api: normalize MAC address %s to %v", val, macAddr.String())
+				}
+			}
+		}
+	}
+	return nil
 }
 
 // byMatcher defines a collection of Group structs which have a deterministic
@@ -54,10 +78,13 @@ func (g byMatcher) Less(i, j int) bool {
 func ParseGroupConfig(data []byte) (*GroupConfig, error) {
 	config := new(GroupConfig)
 	err := yaml.Unmarshal(data, config)
-	if err == nil && config.APIVersion != APIVersion {
-		return nil, ErrInvalidVersion
+	if err != nil {
+		return nil, err
 	}
-	return config, err
+	if err := config.validate(); err != nil {
+		return nil, err
+	}
+	return config, nil
 }
 
 type groupsResource struct {

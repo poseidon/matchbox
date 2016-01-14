@@ -15,13 +15,13 @@ var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal", "api")
 
 // Config configures the api Server.
 type Config struct {
-	// Store for configs (boot, cloud)
+	// Store for configs
 	Store Store
 	// Path to static assets
 	AssetsPath string
 }
 
-// Server serves boot and cloud configs for PXE-based clients.
+// Server serves matches boot and configuration settings to machines.
 type Server struct {
 	store      Store
 	assetsPath string

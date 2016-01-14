@@ -76,7 +76,7 @@ Matcher groups define a set of requirements which match zero or more machines to
 Baremetal clients network booted with `bootcfg` include hardware attributes in requests which make it simple to match baremetal instances.
 
 * `uuid`
-* `mac`
+* `mac` in normalized form (e.g. 01:ab:23:cd:67:89)
 * `hostname`
 * `serial`
 

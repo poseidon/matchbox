@@ -39,8 +39,7 @@ func (r *specResource) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	renderJSON(w, spec)
 }
 
-// getMatchingSpec returns the Spec matching the given attributes. Attributes
-// are matched in priority order (UUID, MAC, default).
+// getMatchingSpec returns the Spec matching the given attributes.
 func getMatchingSpec(store Store, labels Labels) (*Spec, error) {
 	groups := newGroupsResource(store)
 	group, err := groups.findMatch(labels)

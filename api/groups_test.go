@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"sort"
 	"testing"
 
@@ -90,6 +91,20 @@ groups:
 		},
 	}
 	wrongVersion := `api_version:`
+	invalidMAC := `
+api_version: v1alpha1
+groups:
+  - name: group
+    require:
+      mac: ?:?:?:?
+`
+	nonNormalizedMAC := `
+api_version: v1alpha1
+groups:
+  - name: group
+    require:
+      mac: aB:Ab:3d:45:cD:10
+`
 
 	cases := []struct {
 		data           string
@@ -98,6 +113,8 @@ groups:
 	}{
 		{validData, validConfig, nil},
 		{wrongVersion, nil, ErrInvalidVersion},
+		{invalidMAC, nil, fmt.Errorf("api: invalid MAC address ?:?:?:?")},
+		{nonNormalizedMAC, nil, fmt.Errorf("api: normalize MAC address aB:Ab:3d:45:cD:10 to ab:ab:3d:45:cd:10")},
 	}
 	for _, c := range cases {
 		config, err := ParseGroupConfig([]byte(c.data))
