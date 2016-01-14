@@ -1,18 +1,8 @@
 package api
 
 import (
-	"errors"
 	"fmt"
-	"net"
 	"sort"
-	"strings"
-
-	"gopkg.in/yaml.v2"
-)
-
-// GroupConfig parser errors
-var (
-	ErrInvalidVersion = errors.New("api: mismatched API version")
 )
 
 // Group associates matcher conditions with a Specification identifier. The
@@ -24,34 +14,6 @@ type Group struct {
 	Spec string `yaml:"spec"`
 	// matcher conditions
 	Matcher RequirementSet `yaml:"require"`
-}
-
-// GroupConfig defines an group import structure.
-type GroupConfig struct {
-	APIVersion string  `yaml:"api_version"`
-	Groups     []Group `yaml:"groups"`
-}
-
-// validate the group config's API version and reserved tag matchers.
-func (gc *GroupConfig) validate() error {
-	if gc.APIVersion != APIVersion {
-		return ErrInvalidVersion
-	}
-	for _, group := range gc.Groups {
-		for key, val := range group.Matcher {
-			switch strings.ToLower(key) {
-			case "mac":
-				macAddr, err := net.ParseMAC(val)
-				if err != nil {
-					return fmt.Errorf("api: invalid MAC address %s", val)
-				}
-				if val != macAddr.String() {
-					return fmt.Errorf("api: normalize MAC address %s to %v", val, macAddr.String())
-				}
-			}
-		}
-	}
-	return nil
 }
 
 // byMatcher defines a collection of Group structs which have a deterministic
@@ -74,19 +36,6 @@ func (g byMatcher) Less(i, j int) bool {
 	return len(g[i].Matcher) < len(g[j].Matcher)
 }
 
-// ParseGroupConfig parses a YAML group config and returns a GroupConfig.
-func ParseGroupConfig(data []byte) (*GroupConfig, error) {
-	config := new(GroupConfig)
-	err := yaml.Unmarshal(data, config)
-	if err != nil {
-		return nil, err
-	}
-	if err := config.validate(); err != nil {
-		return nil, err
-	}
-	return config, nil
-}
-
 type groupsResource struct {
 	store Store
 }
@@ -103,9 +52,9 @@ func (r *groupsResource) listGroups() ([]Group, error) {
 	return r.store.ListGroups()
 }
 
-// select returns the first Group whose Matcher is satisfied by the given
+// findMatch returns the first Group whose Matcher is satisfied by the given
 // labels. Groups are attempted in sorted order, preferring those with
-// more matcher conditions.
+// more matcher conditions, alphabetically.
 func (r *groupsResource) findMatch(labels Labels) (*Group, error) {
 	groups, err := r.store.ListGroups()
 	if err != nil {

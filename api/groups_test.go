@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"sort"
 	"testing"
 
@@ -63,62 +62,5 @@ func TestByMatcherSort(t *testing.T) {
 	for _, c := range cases {
 		sort.Sort(byMatcher(c.input))
 		assert.Equal(t, c.expected, c.input)
-	}
-}
-
-// Test parsing group config YAML data.
-func TestParseGroupConfig(t *testing.T) {
-	validData := `
-api_version: v1alpha1
-groups:
-  - name: node1
-    spec: worker
-    require:
-      role: worker
-      region: us-central1-a
-`
-	validConfig := &GroupConfig{
-		APIVersion: "v1alpha1",
-		Groups: []Group{
-			Group{
-				Name: "node1",
-				Spec: "worker",
-				Matcher: RequirementSet(map[string]string{
-					"role":   "worker",
-					"region": "us-central1-a",
-				}),
-			},
-		},
-	}
-	wrongVersion := `api_version:`
-	invalidMAC := `
-api_version: v1alpha1
-groups:
-  - name: group
-    require:
-      mac: ?:?:?:?
-`
-	nonNormalizedMAC := `
-api_version: v1alpha1
-groups:
-  - name: group
-    require:
-      mac: aB:Ab:3d:45:cD:10
-`
-
-	cases := []struct {
-		data           string
-		expectedConfig *GroupConfig
-		expectedErr    error
-	}{
-		{validData, validConfig, nil},
-		{wrongVersion, nil, ErrInvalidVersion},
-		{invalidMAC, nil, fmt.Errorf("api: invalid MAC address ?:?:?:?")},
-		{nonNormalizedMAC, nil, fmt.Errorf("api: normalize MAC address aB:Ab:3d:45:cD:10 to ab:ab:3d:45:cd:10")},
-	}
-	for _, c := range cases {
-		config, err := ParseGroupConfig([]byte(c.data))
-		assert.Equal(t, c.expectedConfig, config)
-		assert.Equal(t, c.expectedErr, err)
 	}
 }

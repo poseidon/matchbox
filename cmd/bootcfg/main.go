@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 
 	"github.com/coreos/coreos-baremetal/api"
+	"github.com/coreos/coreos-baremetal/config"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/coreos/pkg/flagutil"
 )
@@ -59,6 +59,9 @@ func main() {
 	if url, err := url.Parse(flags.address); err != nil || url.String() == "" {
 		log.Fatal("A valid HTTP listen address is required")
 	}
+	if finfo, err := os.Stat(flags.configPath); err != nil || finfo.IsDir() {
+		log.Fatal("A path to a config file is required")
+	}
 	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
 		log.Fatal("A path to a data directory is required")
 	}
@@ -77,25 +80,18 @@ func main() {
 	// storage
 	store := api.NewFileStore(http.Dir(flags.dataPath))
 
-	// bootstrap a group config
-	if flags.configPath != "" {
-		data, err := ioutil.ReadFile(flags.configPath)
-		if err != nil {
-			log.Fatalf("error reading config file: %v", err)
-		}
-		configGroup, err := api.ParseGroupConfig(data)
-		if err != nil {
-			log.Fatalf("error parsing group config: %v", err)
-		}
-		store.BootstrapGroups(configGroup.Groups)
+	// load bootstrap config
+	cfg, err := config.LoadConfig(flags.configPath)
+	if err != nil {
+		log.Fatal(err)
 	}
+	store.BootstrapGroups(cfg.Groups)
 
+	// API server
 	config := &api.Config{
 		Store:      store,
 		AssetsPath: flags.assetsPath,
 	}
-
-	// API server
 	server := api.NewServer(config)
 	log.Infof("starting bootcfg API Server on %s", flags.address)
 	err = http.ListenAndServe(flags.address, server.HTTPHandler())
