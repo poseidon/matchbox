@@ -38,20 +38,22 @@ func NewServer(config *Config) *Server {
 // HTTPHandler returns a HTTP handler for the server.
 func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
-	// iPXE
+	// API Resources
+	newSpecResource(mux, "/spec/", s.store)
+	gr := newGroupsResource(s.store)
+
+	// Endpoints
+	// Boot via iPXE
 	mux.Handle("/boot.ipxe", logRequests(ipxeInspect()))
 	mux.Handle("/boot.ipxe.0", logRequests(ipxeInspect()))
-	mux.Handle("/ipxe", logRequests(ipxeHandler(s.store)))
-	// Pixiecore
-	mux.Handle("/pixiecore/v1/boot/", logRequests(pixiecoreHandler(s.store)))
+	mux.Handle("/ipxe", logRequests(NewHandler(gr.matchSpecHandler(ipxeHandler()))))
+	// Boot via Pixiecore
+	mux.Handle("/pixiecore/v1/boot/", logRequests(pixiecoreHandler(gr, s.store)))
 	// cloud configs
-	mux.Handle("/cloud", logRequests(cloudHandler(s.store)))
+	mux.Handle("/cloud", logRequests(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
 	// ignition configs
-	mux.Handle("/ignition", logRequests(ignitionHandler(s.store)))
+	mux.Handle("/ignition", logRequests(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
 
-	// API Resources
-	// specs
-	newSpecResource(mux, "/spec/", s.store)
 	// kernel, initrd, and TLS assets
 	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(s.assetsPath))))
 	return mux

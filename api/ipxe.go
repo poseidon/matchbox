@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"text/template"
+
+	"golang.org/x/net/context"
 )
 
 const ipxeBootstrap = `#!ipxe
@@ -28,15 +30,13 @@ func ipxeInspect() http.Handler {
 
 // ipxeBoot returns a handler which renders the iPXE boot script for the
 // requester.
-func ipxeHandler(store Store) http.Handler {
-	fn := func(w http.ResponseWriter, req *http.Request) {
-		attrs := labelsFromRequest(req)
-		spec, err := getMatchingSpec(store, attrs)
+func ipxeHandler() ContextHandler {
+	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+		spec, err := specFromContext(ctx)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-
 		var buf bytes.Buffer
 		err = ipxeTemplate.Execute(&buf, spec.BootConfig)
 		if err != nil {
@@ -49,5 +49,5 @@ func ipxeHandler(store Store) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}
-	return http.HandlerFunc(fn)
+	return ContextHandlerFunc(fn)
 }

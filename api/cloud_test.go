@@ -6,45 +6,38 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/context"
 )
 
 func TestCloudHandler(t *testing.T) {
-	cloudcfg := &CloudConfig{
-		Content: "#cloud-config",
-	}
+	cloudcfg := &CloudConfig{Content: "#cloud-config"}
 	store := &fixedStore{
-		Groups:       []Group{testGroup},
-		Specs:        map[string]*Spec{testGroup.Spec: testSpec},
 		CloudConfigs: map[string]*CloudConfig{testSpec.CloudConfig: cloudcfg},
 	}
 	h := cloudHandler(store)
-	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+	ctx := withSpec(context.Background(), testSpec)
 	w := httptest.NewRecorder()
-	h.ServeHTTP(w, req)
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - match parameters to a Spec
-	// - render the Spec's cloud config
+	// - the Spec's cloud config is served
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, cloudcfg.Content, w.Body.String())
 }
 
-func TestCloudHandler_NoMatchingSpec(t *testing.T) {
-	store := &emptyStore{}
-	h := cloudHandler(store)
-	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+func TestCloudHandler_MissingCtxSpec(t *testing.T) {
+	h := cloudHandler(&emptyStore{})
 	w := httptest.NewRecorder()
-	h.ServeHTTP(w, req)
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(context.Background(), w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
-	store := &fixedStore{
-		Groups: []Group{testGroup},
-		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
-	}
-	h := cloudHandler(store)
-	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+	h := cloudHandler(&emptyStore{})
+	ctx := withSpec(context.Background(), testSpec)
 	w := httptest.NewRecorder()
-	h.ServeHTTP(w, req)
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(ctx, w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
