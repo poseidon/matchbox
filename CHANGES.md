@@ -2,6 +2,8 @@
 
 ## Latest
 
+* Require the `-config` flag if the default file path doesn't exist
+* Normalize user-defined MAC address tags
 * Renamed flag `-images-path` to `-assets-path`
 * Renamed endpoint `/images` to `/assets`
 

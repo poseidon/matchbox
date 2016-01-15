@@ -36,6 +36,7 @@ func main() {
 	flag.StringVar(&flags.assetsPath, "assets-path", "./assets", "Path to static assets")
 	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
+	// subcommands
 	flag.BoolVar(&flags.version, "version", false, "print version and exit")
 	flag.BoolVar(&flags.help, "help", false, "print usage and exit")
 

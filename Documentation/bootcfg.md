@@ -69,20 +69,20 @@ Ignition configs and cloud configs can be named whatever you like and dropped in
          └── worker
              └── spec.json
 
-### Matcher Groups
+### Groups
 
-Matcher groups define a set of requirements which match zero or more machines to a `Spec`. Groups have a human readable name, a `Spec` id, and a free-form map of key/value matcher requirements.
+Groups define a set of tag requirements which match zero or more machines to a `Spec`. Groups have a human readable name, a `Spec` id, and a free-form map of key/value tag requirements.
 
-Baremetal clients network booted with `bootcfg` include hardware attributes in requests which make it simple to match baremetal instances.
+Several tags have reserved semantic purpose. You cannot use these tags for other purposes.
 
-* `uuid`
-* `mac` in normalized form (e.g. 01:ab:23:cd:67:89)
+* `uuid` - machine UUID
+* `mac` - network interface physical address (MAC address) in normalized form (e.g. 01:ab:23:cd:67:89)
 * `hostname`
 * `serial`
 
-Note that Pixiecore only provides MAC addresses and does not subsitute variables into later config requests.
+Client's booted with the Config service include `uuid`, `mac`, `hostname`, and `serial` arguments in their requests. The exception is with Pixiecore which can only detect MAC addresss and cannot substitute it into later config requests.
 
-Currently, matcher groups are loaded from a YAML config file specified by the `-config` flag. With containers, it is easiest to keep the file in the data path they gets mounted.
+Currently, group definitions are loaded from a YAML config file specified by the `-config` flag. With containers, it is easiest to keep the file in the data path they gets mounted.
 
     ---
     api_version: v1alpha1
@@ -103,9 +103,9 @@ Currently, matcher groups are loaded from a YAML config file specified by the `-
       - name: default
         spec: default
 
-Machines are matched to a `Spec` by evaluating group matchers requirements by decreasing number of constraints, in deterministic order. In this example, a request to `/cloud?mac=52:54:00:89:d8:10` would serve the cloud config from the "etcd2" `Spec`.
+Machines are matched to a `Spec` by evaluating group tag requirements from most constraints to least, in a deterministic order. Machines may supply extra arguments, but every tag requirement must be satisfied to match a group (i.e. AND operation). With the groups defined above, a request to `/cloud?mac=52:54:00:89:d8:10` would serve the cloud config from the "etcd2" `Spec`.
 
-A default group matcher can be defined by omitting the `require` field. Avoid defining multiple default groups as resolution will not be deterministic.
+A default group can be defined by omitting the `require` field. Avoid defining multiple default groups as resolution will not be deterministic.
 
 ### Spec
 
