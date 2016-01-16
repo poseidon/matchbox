@@ -7,45 +7,40 @@ import (
 
 	ignition "github.com/coreos/ignition/src/config"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/context"
 )
 
 func TestIgnitionHandler(t *testing.T) {
 	ignitioncfg := &ignition.Config{}
 	store := &fixedStore{
-		Groups:          []Group{testGroup},
-		Specs:           map[string]*Spec{testGroup.Spec: testSpec},
 		IgnitionConfigs: map[string]*ignition.Config{testSpec.IgnitionConfig: ignitioncfg},
 	}
 	h := ignitionHandler(store)
-	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+	ctx := withSpec(context.Background(), testSpec)
 	w := httptest.NewRecorder()
-	h.ServeHTTP(w, req)
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - match parameters to a Spec
-	// - render the Spec's ignition config
+	// - the Spec's ignition config is rendered
 	expectedJSON := `{"ignitionVersion":0,"storage":{},"systemd":{},"networkd":{},"passwd":{}}`
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
 	assert.Equal(t, expectedJSON, w.Body.String())
 }
 
-func TestIgnitionHandler_NoMatchingSpec(t *testing.T) {
-	store := &emptyStore{}
-	h := ignitionHandler(store)
-	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+func TestIgnitionHandler_MissingCtxSpec(t *testing.T) {
+	h := ignitionHandler(&emptyStore{})
 	w := httptest.NewRecorder()
-	h.ServeHTTP(w, req)
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(context.Background(), w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
 func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
-	store := &fixedStore{
-		Groups: []Group{testGroup},
-		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
-	}
-	h := ignitionHandler(store)
-	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+	h := ignitionHandler(&emptyStore{})
+	ctx := withSpec(context.Background(), testSpec)
 	w := httptest.NewRecorder()
-	h.ServeHTTP(w, req)
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(ctx, w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }

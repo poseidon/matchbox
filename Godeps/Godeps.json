@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/coreos/coreos-baremetal",
-	"GoVersion": "go1.5.1",
+	"GoVersion": "go1.5.3",
 	"Packages": [
 		"./..."
 	],
@@ -37,6 +37,10 @@
 			"ImportPath": "github.com/stretchr/testify/assert",
 			"Comment": "v1.0-71-g0d5a14c",
 			"Rev": "0d5a14c5a477957864f3b747d95255ad4e34bcc0"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "d75b1902409c457a51e4bd1895031872c370983a"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
