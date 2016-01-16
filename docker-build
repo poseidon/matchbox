@@ -3,5 +3,6 @@
 REPO=coreos/bootcfg
 GIT_SHA=$(./git-version)
 
+GOOS=linux ./build
 docker build -q --rm=true -t $REPO:$GIT_SHA .
 docker tag -f $REPO:$GIT_SHA $REPO:latest

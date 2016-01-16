@@ -9,4 +9,4 @@ mkdir -p $GOPATH/src/github.com/coreos
 [ -d $GOPATH/src/github.com/coreos/coreos-baremetal ] || ln -s ${PWD} $GOPATH/src/github.com/coreos/coreos-baremetal
 
 LD_FLAGS="-w -X main.version=$(./git-version)"
-CGO_ENABLED=0 GOOS=linux go build -o bin/server -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcfg
+CGO_ENABLED=0 go build -o bin/bootcfg -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcfg
