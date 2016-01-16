@@ -35,6 +35,14 @@ func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
 	assert.Equal(t, "invalid MAC address /\n", w.Body.String())
 }
 
+func TestPixiecoreHandler_NoMatchingGroup(t *testing.T) {
+	h := pixiecoreHandler(newGroupsResource(&emptyStore{}), &emptyStore{})
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
+	h.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
 func TestPixiecoreHandler_NoMatchingSpec(t *testing.T) {
 	store := &fixedStore{
 		Groups: []Group{testGroupWithMAC},

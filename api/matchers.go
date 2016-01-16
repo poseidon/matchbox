@@ -13,7 +13,7 @@ type RequirementSet map[string]string
 // false otherwise.
 func (r RequirementSet) Matches(labels Labels) bool {
 	for k, v := range r {
-		if labels.Get(k) != v {
+		if labels == nil || labels.Get(k) != v {
 			return false
 		}
 	}

@@ -44,7 +44,7 @@ func TestSpecHandler(t *testing.T) {
 	assert.Equal(t, expectedSpecJSON, w.Body.String())
 }
 
-func TestSpecHandler_MissingConfig(t *testing.T) {
+func TestSpecHandler_MissingSpec(t *testing.T) {
 	store := &emptyStore{}
 	h := specResource{store}
 	req, _ := http.NewRequest("GET", "/", nil)

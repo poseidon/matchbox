@@ -1,11 +1,15 @@
 package api
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"sort"
 
 	"golang.org/x/net/context"
+)
+
+var (
+	errNoMatchingGroup = errors.New("api: No matching Group")
 )
 
 // Group associates matcher conditions with a Specification identifier. The
@@ -90,5 +94,5 @@ func (gr *groupsResource) findMatch(labels Labels) (*Group, error) {
 			return &group, nil
 		}
 	}
-	return nil, fmt.Errorf("no Group matching %v", labels)
+	return nil, errNoMatchingGroup
 }

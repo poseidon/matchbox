@@ -1,10 +1,14 @@
 package api
 
 import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/context"
 )
 
 var (
@@ -62,5 +66,74 @@ func TestByMatcherSort(t *testing.T) {
 	for _, c := range cases {
 		sort.Sort(byMatcher(c.input))
 		assert.Equal(t, c.expected, c.input)
+	}
+}
+
+func TestNewGroupsResource(t *testing.T) {
+	store := &fixedStore{}
+	gr := newGroupsResource(store)
+	assert.Equal(t, store, gr.store)
+}
+
+func TestGroupsResource_ListGroups(t *testing.T) {
+	expectedGroups := []Group{Group{Name: "test group"}}
+	store := &fixedStore{
+		Groups: expectedGroups,
+	}
+	res := newGroupsResource(store)
+	groups, err := res.listGroups()
+	assert.Nil(t, err)
+	assert.Equal(t, expectedGroups, groups)
+}
+
+func TestGroupsResource_MatchSpecHandler(t *testing.T) {
+	store := &fixedStore{
+		Groups: []Group{testGroup},
+		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
+	}
+	gr := newGroupsResource(store)
+	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+		spec, err := specFromContext(ctx)
+		assert.Nil(t, err)
+		assert.Equal(t, testSpec, spec)
+		fmt.Fprintf(w, "next handler called")
+	}
+	// assert that:
+	// - request arguments are used to match uuid=a1b2c3d4 -> testGroup
+	// - the group's Spec is found by id and added to the context
+	// - next handler is called
+	h := gr.matchSpecHandler(ContextHandlerFunc(next))
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+	h.ServeHTTP(context.Background(), w, req)
+	assert.Equal(t, "next handler called", w.Body.String())
+}
+
+func TestGroupsResource_FindMatch(t *testing.T) {
+	store := &fixedStore{
+		Groups: []Group{testGroup},
+		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
+	}
+	uuidLabel := LabelSet(map[string]string{
+		"uuid": "a1b2c3d4",
+	})
+
+	cases := []struct {
+		store         Store
+		labels        Labels
+		expectedGroup *Group
+		expectedErr   error
+	}{
+		{store, uuidLabel, &testGroup, nil},
+		{store, nil, nil, errNoMatchingGroup},
+		// no groups in the store
+		{&emptyStore{}, uuidLabel, nil, errNoMatchingGroup},
+	}
+
+	for _, c := range cases {
+		gr := newGroupsResource(c.store)
+		group, err := gr.findMatch(c.labels)
+		assert.Equal(t, c.expectedGroup, group)
+		assert.Equal(t, c.expectedErr, err)
 	}
 }
