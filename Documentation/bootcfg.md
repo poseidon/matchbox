@@ -76,7 +76,7 @@ Groups define a set of tag requirements which match zero or more machines to a `
 Several tags have reserved semantic purpose. You cannot use these tags for other purposes.
 
 * `uuid` - machine UUID
-* `mac` - network interface physical address (MAC address) in normalized form (e.g. 01:ab:23:cd:67:89)
+* `mac` - network interface physical address (MAC address) in normalized form (e.g. `01:ab:23:cd:67:89`)
 * `hostname`
 * `serial`
 
