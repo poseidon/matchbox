@@ -1,7 +1,9 @@
 
 # coreos/dnsmasq
 
-The coreos/dnsmasq Docker image provides an entrypoint to [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) for running dnsmasq DHCP, proxyDHCP, and TFTP. This is useful for testing different network setups without requiring changes to `dnsmasq.conf` on your host. The image also bundles `undionly.kpxe` which can be used to chainload PXE clients to iPXE.
+[coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) is a convenience entrypoint to [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) for running DHCP, proxy DHCP, and TFTP without making changes to the host `/etc/dnsmasq.conf`.
+
+The image bundles `undionly.kpxe` which chainloads PXE clients to iPXE.
 
 ## Usage
 

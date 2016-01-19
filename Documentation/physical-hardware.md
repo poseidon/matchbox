@@ -29,7 +29,9 @@ Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.
 
 Your network may already have a configurable PXE or iPXE server, configurable DHCP, a DHCP server you cannot modify, or no DHCP server at all. We'll show how to setup each network environment to talk to `bootcfg`, depending on your circumstances.
 
-Several setups use the [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) program and included [coreos/dnsmasq](../dockerfiles/dnsmasq) docker image to run a PXE-enabled DHCP server, proxy DHCP server, or TFTP server as needed. Build the Docker image if needed.
+The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) image can be used to run DHCP, proxy DHCP, and TFTP. It can be built from the [dockerfiles](../dockerfiles/dnsmasq) or pulled from Quay.
+
+    docker pull quay.io/coreos/dnsmasq
 
 ### Configurable iPXE
 
@@ -66,7 +68,7 @@ If the network already runs a DHCP service, setup a PXE/iPXE network environment
 Run DHCP in proxy mode to respond to DHCP requests on the subnet. Optionally, serve the `undionly.pxe` boot file to older, non-iPXE clients (the '#' means not). Detect iPXE clients by the user class sent in their DHCPDISCOVER (or by Option 175) and point them to the `bootcfg` iPXE boot script.
 
 ```
-sudo docker run --net=host --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q -i enp0s25 --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://192.168.1.100:8080/boot.ipxe
+sudo docker run --net=host --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q -i enp0s25 --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://192.168.1.100:8080/boot.ipxe
 ```
 
 Change the `dhcp-range`, `-i interface`, and boot.ipxe endpoint to match your environment.
@@ -82,7 +84,7 @@ Identify a host machine which should run the DHCP service. If this machine has t
 Run DHCP to allocate IP address leases and TFTP to serve the `undionly.pxe` boot file to older, non-iPXE clients (the '#' means not). Point iPXE clients to the `bootcfg` iPXE boot script.
 
 ```
-sudo docker run --net=host --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q -i enp0s20u1 --dhcp-range=192.168.1.101,192.168.1.150 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://192.168.1.100:8080/boot.ipxe
+sudo docker run --net=host --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q -i enp0s20u1 --dhcp-range=192.168.1.101,192.168.1.150 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://192.168.1.100:8080/boot.ipxe
 ```
 
 Change the `dhcp-range`, `-i interface`, and boot.ipxe endpoint to match your environment.

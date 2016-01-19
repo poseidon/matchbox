@@ -77,7 +77,7 @@ The following examples require a few additional assets be downloaded or generate
 
 Run an iPXE setup with DHCP and TFTP on the virtual network on your machine similar to what would be present on a real network. This allocates IP addresses to VM hosts, points PXE booting clients to the config service, and chainloads iPXE.
 
-    docker run --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://172.17.0.2:8080/boot.ipxe
+    docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://172.17.0.2:8080/boot.ipxe
 
 You may need to update your firewall to allow DHCP and TFTP services. If your config service container has a different IP address or subnet, the IPs in examples will require some adjustments to match your local setup.
 
