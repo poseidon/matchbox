@@ -1,5 +1,5 @@
 FROM alpine:latest
 MAINTAINER Dalton Hubble <dalton.hubble@coreos.com>
-COPY bin/server /server
+COPY bin/bootcfg /bootcfg
 EXPOSE 8080
-ENTRYPOINT ["./server"]
+ENTRYPOINT ["./bootcfg"]
