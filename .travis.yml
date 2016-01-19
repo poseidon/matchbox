@@ -3,7 +3,7 @@ sudo: required
 services:
   - docker
 go:
-  - 1.5
+  - 1.5.3
   - tip
 install:
   - go get golang.org/x/tools/cmd/vet
@@ -20,7 +20,7 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    go: '1.5'
+    go: '1.5.3'
     condition: "$TRAVIS_PULL_REQUEST = false"
 notifications:
   email: false
