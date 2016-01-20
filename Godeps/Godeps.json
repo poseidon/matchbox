@@ -39,6 +39,14 @@
 			"Rev": "0d5a14c5a477957864f3b747d95255ad4e34bcc0"
 		},
 		{
+			"ImportPath": "golang.org/x/crypto/cast5",
+			"Rev": "3760e016850398b85094c4c99e955b8c3dea5711"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/openpgp",
+			"Rev": "3760e016850398b85094c4c99e955b8c3dea5711"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
 			"Rev": "d75b1902409c457a51e4bd1895031872c370983a"
 		},
