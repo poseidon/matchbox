@@ -146,6 +146,47 @@ Get a `Spec` definition by id (UUID, MAC).
 }
 ```
 
+## Signatures
+
+The OpenPGP signature endpoints exist for each config API endpoint. Add the suffix `.sig` to receive the ASCII armored signature of the HTTP response from the config API endpoint.
+
+* `http://bootcfg.example.com/boot.ipxe`
+* `http://bootcfg.example.com/boot.ipxe.0.sig`
+* `http://bootcfg.example.com/ipxe.sig`
+* `http://bootcfg.example.com/pixiecore/v1/boot.sig/:MAC`
+* `http://bootcfg.example.com/cloud.sig`
+* `http://bootcfg.example.com/ignition.sig`
+
+For example, each HTTP API endpoint like the following:
+
+    GET http://bootcfg.example.com/ipxe?attribute=value
+
+**Response**
+
+    #!ipxe
+    kernel /assets/coreos/835.9.0/coreos_production_pxe.vmlinuz cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
+    initrd  /assets/coreos/835.9.0/coreos_production_pxe_image.cpio.gz
+    boot
+
+Provides a sibling OpenPGP signature endpoint.
+
+    GET http://bootcfg.example.com/ipxe.sig?attribute=value
+
+**Response**
+
+```
+-----BEGIN PGP SIGNATURE-----
+
+wsBcBAEBCAAQBQJWoDHyCRCzUpbPLRRcKAAAqQ8IAGD+eC9kzc/U7h9tgwvvWwm9
+suTmVSGlzC5RwTRXg6CKuW31m3WAin2b5zWRPa7MxxanYMhhBbOfrqg/4xi1tfdE
+w7ipmmgftl3re0np75Jt9K1rwGXUHTCs3yooz/zvqSvNSobG13FL5tp+Jl7a22wE
++W7x9BukTytVgNLt3IDIxsJ/rAEYUm4zySftooDbFVKj/SK5w8xg4zLmE6Jxz6wp
+eaMlL1TEXy3NaFR0+hgbqM/tgeV2j6pmho8yaPF63iPnksH+gdmPiwasCfpSaJyr
+NO+p24BL3PHZyKw0nsrm275C913OxEVgnNZX7TQltaweW23Cd1YBNjcfb3zv+Zo=
+=mqZK
+-----END PGP SIGNATURE-----
+```
+
 ## Assets
 
 If you need to host static assets (e.g. kernel, initrd) within your network, bootcfg server's `/assets/` route serves free-form static assets. Set the `-assets-path` when starting the bootcfg server. Here is an example:

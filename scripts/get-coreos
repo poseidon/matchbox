@@ -1,6 +1,6 @@
 #!/bin/bash -e
-# USAGE: ./get-coreos
-# USAGE: ./get-coreos beta 877.1.0
+# USAGE: ./scripts/get-coreos
+# USAGE: ./scripts/get-coreos beta 877.1.0
 
 CHANNEL=${1:-"stable"}
 VERSION=${2:-"835.9.0"}

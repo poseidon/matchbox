@@ -110,7 +110,7 @@ func main() {
 		Signer:     signer,
 	}
 	server := api.NewServer(config)
-	log.Infof("starting bootcfg API Server on %s", flags.address)
+	log.Infof("starting config server on %s", flags.address)
 	err = http.ListenAndServe(flags.address, server.HTTPHandler())
 	if err != nil {
 		log.Fatalf("failed to start listening: %s", err)
