@@ -10,6 +10,7 @@ import (
 
 	"github.com/coreos/coreos-baremetal/api"
 	"github.com/coreos/coreos-baremetal/config"
+	"github.com/coreos/coreos-baremetal/sign"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/coreos/pkg/flagutil"
 )
@@ -22,18 +23,20 @@ var (
 
 func main() {
 	flags := struct {
-		address    string
-		configPath string
-		dataPath   string
-		assetsPath string
-		logLevel   string
-		version    bool
-		help       bool
+		address     string
+		configPath  string
+		dataPath    string
+		assetsPath  string
+		keyRingPath string
+		logLevel    string
+		version     bool
+		help        bool
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
 	flag.StringVar(&flags.configPath, "config", "./data/config.yaml", "Path to config file")
 	flag.StringVar(&flags.dataPath, "data-path", "./data", "Path to data directory")
 	flag.StringVar(&flags.assetsPath, "assets-path", "./assets", "Path to static assets")
+	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
 	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
 	// subcommands
@@ -45,6 +48,8 @@ func main() {
 	if err := flagutil.SetFlagsFromEnv(flag.CommandLine, "BOOTCFG"); err != nil {
 		log.Fatal(err.Error())
 	}
+	// restrict OpenPGP passphrase to pass via environment variable only
+	passphrase := os.Getenv("BOOTCFG_PASSPHRASE")
 
 	if flags.version {
 		fmt.Println(version)
@@ -81,6 +86,16 @@ func main() {
 	// storage
 	store := api.NewFileStore(http.Dir(flags.dataPath))
 
+	// (optional) signing
+	var signer sign.Signer
+	if flags.keyRingPath != "" {
+		var err error
+		signer, err = sign.LoadGPGSigner(flags.keyRingPath, passphrase)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	// load bootstrap config
 	cfg, err := config.LoadConfig(flags.configPath)
 	if err != nil {
@@ -92,9 +107,10 @@ func main() {
 	config := &api.Config{
 		Store:      store,
 		AssetsPath: flags.assetsPath,
+		Signer:     signer,
 	}
 	server := api.NewServer(config)
-	log.Infof("starting bootcfg API Server on %s", flags.address)
+	log.Infof("starting config server on %s", flags.address)
 	err = http.ListenAndServe(flags.address, server.HTTPHandler())
 	if err != nil {
 		log.Fatalf("failed to start listening: %s", err)
