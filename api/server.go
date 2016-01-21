@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/coreos/coreos-baremetal/sign"
 	"github.com/coreos/pkg/capnslog"
 )
 
@@ -19,12 +20,15 @@ type Config struct {
 	Store Store
 	// Path to static assets
 	AssetsPath string
+	// Config signer
+	Signer sign.Signer
 }
 
 // Server serves matches boot and configuration settings to machines.
 type Server struct {
 	store      Store
 	assetsPath string
+	signer     sign.Signer
 }
 
 // NewServer returns a new Server.
@@ -32,6 +36,7 @@ func NewServer(config *Config) *Server {
 	return &Server{
 		store:      config.Store,
 		assetsPath: config.AssetsPath,
+		signer:     config.Signer,
 	}
 }
 
@@ -53,6 +58,19 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux.Handle("/cloud", logRequests(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
 	// ignition configs
 	mux.Handle("/ignition", logRequests(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
+
+	// Signatures
+	signerChain := func(next http.Handler) http.Handler {
+		return logRequests(sign.SignatureHandler(s.signer, next))
+	}
+	if s.signer != nil {
+		mux.Handle("/boot.ipxe.sig", signerChain(ipxeInspect()))
+		mux.Handle("/boot.ipxe.0.sig", signerChain(ipxeInspect()))
+		mux.Handle("/ipxe.sig", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))
+		mux.Handle("/pixiecore/v1/boot.sig/", signerChain(pixiecoreHandler(gr, s.store)))
+		mux.Handle("/cloud.sig", signerChain(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
+		mux.Handle("/ignition.sig", signerChain(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
+	}
 
 	// kernel, initrd, and TLS assets
 	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(s.assetsPath))))
