@@ -10,19 +10,3 @@ coreos:
   units:
     - name: etcd2.service
       command: start
-    - name: 00-ens3.network
-      runtime: true
-      content: |
-        [Match]
-        Name=ens3
-        [Network]
-        Address=172.17.0.21/16
-    - name: down-interfaces.service
-      command: start
-      content: |
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/ip link set ens3 down
-        ExecStart=/usr/bin/ip addr flush dev ens3
-    - name: systemd-networkd.service
-      command: restart
