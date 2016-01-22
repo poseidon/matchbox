@@ -2,6 +2,7 @@
 
 ## Latest
 
+* Add OpenPGP signature endpoints for iPXE, Pixiecore, Ignition, and Cloud configs. Enable config signing by providing a `-key-ring-path` with a signing key and setting a `BOOTCFG_PASSPHRASE`.
 * Require the `-config` flag if the default file path doesn't exist
 * Normalize user-defined MAC address tags
 * Renamed flag `-images-path` to `-assets-path`

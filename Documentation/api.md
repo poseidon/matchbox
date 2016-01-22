@@ -146,18 +146,18 @@ Get a `Spec` definition by id (UUID, MAC).
 }
 ```
 
-## Signatures
+## OpenPGP Signatures
 
-The OpenPGP signature endpoints exist for each config API endpoint. Add the suffix `.sig` to receive the ASCII armored signature of the HTTP response from the config API endpoint.
+OpenPGP signature endpoints serve ASCII armored signatures of configs. Signatures are available if the config service is provided with a `-key-ring-path` to a private keyring containing a single signing key. If the key has a passphrase, set the `BOOTCFG_PASSPHRASE` environment variable
 
-* `http://bootcfg.example.com/boot.ipxe`
+* `http://bootcfg.example.com/boot.ipxe.sig`
 * `http://bootcfg.example.com/boot.ipxe.0.sig`
 * `http://bootcfg.example.com/ipxe.sig`
 * `http://bootcfg.example.com/pixiecore/v1/boot.sig/:MAC`
 * `http://bootcfg.example.com/cloud.sig`
 * `http://bootcfg.example.com/ignition.sig`
 
-For example, each HTTP API endpoint like the following:
+Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.sig`. For example, an iPXE config endpoint like the following:
 
     GET http://bootcfg.example.com/ipxe?attribute=value
 

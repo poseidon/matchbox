@@ -13,6 +13,8 @@ Next, add or generate a root CA and Kubernetes TLS assets for each component.
 
 ### TLS Assets
 
+Note: In this example, TLS assets are served to any machines which request them. The network and any machines on it cannot be trusted yet, so this example is **not suitable for production**. [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html) work soon let machines with TPMs establish secure channels to improve secret distribution and cluster attestation.
+
 Use the `generate-tls` script to generate throw-away TLS assets. The script will generate a root CA and `admin`, `apiserver`, and `worker` certificates in `assets/tls`.
 
     ./examples/kubernetes/scripts/generate-tls

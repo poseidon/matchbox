@@ -1,15 +1,17 @@
 
 # Config Service
 
-The `bootcfg` HTTP service provides virtual or physical hardware with PXE, iPXE, or Pixiecore boot settings and igntion/cloud configs based on their attributes.
+The bare metal config service is an HTTP service run inside a data center which provides (optionally signed) boot configs, ignition configs, and cloud configs to PXE, iPXE, and Pixiecore network-boot client machines.
 
-The service maintains `Spec` definitions and ignition/cloud config resources and matches machines to `Spec`'s based on matcher groups you can declare. `Spec` resources define a named set of boot settings (kernel, options, initrd) and configuration settings (ignition config, cloud config). Group matchers associate zero or more machines to a `Spec` based on required attributes (e.g. UUID, MAC, region, free-form pairs).
+The service maintains **Spec** resources which define a named set of boot settings (kernel, options, initrd) and configuration settings (ignition config, cloud config). **Groups** match zero or more machines to a `Spec` based on tags such as machine attributes (e.g. UUID, MAC) or arbitrary key/value pairs (e.g. zone, region, etc.).
 
-Boot settings are presented as iPXE scripts or [Pixiecore JSON](https://github.com/danderson/pixiecore/blob/master/README.api.md) to support different network boot environments.
+The aim is to declare the desired boot and kernel/userspace provisoning behavior of machines so they come online as functioning clusters, while supporting multiple network boot environments as entrypoints.
+
+Currently, iPXE and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) network boot environments are supported. End to end [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html) is a goal.
 
 ## Usage
 
-The `bootcfg` service can be run as a container to boot libvirt VMs or on a provisioner host to boot baremetal machines.
+The config service (`bootcfg`) can be run as a container to boot libvirt VMs or on a provisioner host to boot baremetal machines.
 
 Build the binary and docker image from source
 
@@ -174,6 +176,24 @@ Ignition is a configuration system for provisioning CoreOS instances before user
 
 
 See the Ignition [docs](https://coreos.com/ignition/docs/latest/) and [github](https://github.com/coreos/ignition) for the latest details.
+
+## OpenPGP Signatures
+
+OpenPGP signature endpoints serve ASCII armored signatures of configs. Signatures are available if the config service is provided with a `-key-ring-path` to a private keyring containing a single signing key. If the key has a passphrase, set the `BOOTCFG_PASSPHRASE` environment variable.
+
+    BOOTCFG_PASSPHRASE=phrase
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg -address=0.0.0.0:8080 -key-ring-path /data/secring.gpg [-log-level=debug]
+
+It is recommended that a subkey be used and exported to a key ring which is solely used for config signing and can be revoked by a master if needed. If running the config service on a Kubernetes cluster, Kubernetes secrets provide a reasonable way to mount the key ring and source a passphrase variable.
+
+Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.sig`.
+
+* `http://bootcfg.example.com/boot.ipxe.sig`
+* `http://bootcfg.example.com/boot.ipxe.0.sig`
+* `http://bootcfg.example.com/ipxe.sig`
+* `http://bootcfg.example.com/pixiecore/v1/boot.sig/:MAC`
+* `http://bootcfg.example.com/cloud.sig`
+* `http://bootcfg.example.com/ignition.sig`
 
 ## Assets
 
