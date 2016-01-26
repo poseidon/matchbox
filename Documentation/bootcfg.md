@@ -181,19 +181,18 @@ See the Ignition [docs](https://coreos.com/ignition/docs/latest/) and [github](h
 
 OpenPGP signature endpoints serve ASCII armored signatures of configs. Signatures are available if the config service is provided with a `-key-ring-path` to a private keyring containing a single signing key. If the key has a passphrase, set the `BOOTCFG_PASSPHRASE` environment variable.
 
-    BOOTCFG_PASSPHRASE=phrase
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg -address=0.0.0.0:8080 -key-ring-path /data/secring.gpg [-log-level=debug]
+    docker run -p 8080:8080 -e BOOTCFG_PASSPHRASE=phrase --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg -address=0.0.0.0:8080 -key-ring-path /data/secring.gpg [-log-level=debug]
 
-It is recommended that a subkey be used and exported to a key ring which is solely used for config signing and can be revoked by a master if needed. If running the config service on a Kubernetes cluster, Kubernetes secrets provide a reasonable way to mount the key ring and source a passphrase variable.
+It is recommended that a subkey be used and exported to a key ring which is solely used for config signing and can be revoked by a master if needed. If running the config service on a Kubernetes cluster, Kubernetes secrets provide a better way to mount the key ring and source a passphrase variable.
 
-Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.sig`.
+Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.asc`.
 
-* `http://bootcfg.example.com/boot.ipxe.sig`
-* `http://bootcfg.example.com/boot.ipxe.0.sig`
-* `http://bootcfg.example.com/ipxe.sig`
-* `http://bootcfg.example.com/pixiecore/v1/boot.sig/:MAC`
-* `http://bootcfg.example.com/cloud.sig`
-* `http://bootcfg.example.com/ignition.sig`
+* `http://bootcfg.example.com/boot.ipxe.asc`
+* `http://bootcfg.example.com/boot.ipxe.0.asc`
+* `http://bootcfg.example.com/ipxe.asc`
+* `http://bootcfg.example.com/pixiecore/v1/boot.asc/:MAC`
+* `http://bootcfg.example.com/cloud.asc`
+* `http://bootcfg.example.com/ignition.asc`
 
 ## Assets
 

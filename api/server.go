@@ -64,12 +64,12 @@ func (s *Server) HTTPHandler() http.Handler {
 		return logRequests(sign.SignatureHandler(s.signer, next))
 	}
 	if s.signer != nil {
-		mux.Handle("/boot.ipxe.sig", signerChain(ipxeInspect()))
-		mux.Handle("/boot.ipxe.0.sig", signerChain(ipxeInspect()))
-		mux.Handle("/ipxe.sig", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))
-		mux.Handle("/pixiecore/v1/boot.sig/", signerChain(pixiecoreHandler(gr, s.store)))
-		mux.Handle("/cloud.sig", signerChain(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
-		mux.Handle("/ignition.sig", signerChain(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
+		mux.Handle("/boot.ipxe.asc", signerChain(ipxeInspect()))
+		mux.Handle("/boot.ipxe.0.asc", signerChain(ipxeInspect()))
+		mux.Handle("/ipxe.asc", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))
+		mux.Handle("/pixiecore/v1/boot.asc/", signerChain(pixiecoreHandler(gr, s.store)))
+		mux.Handle("/cloud.asc", signerChain(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
+		mux.Handle("/ignition.asc", signerChain(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
 	}
 
 	// kernel, initrd, and TLS assets

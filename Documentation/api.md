@@ -150,14 +150,14 @@ Get a `Spec` definition by id (UUID, MAC).
 
 OpenPGP signature endpoints serve ASCII armored signatures of configs. Signatures are available if the config service is provided with a `-key-ring-path` to a private keyring containing a single signing key. If the key has a passphrase, set the `BOOTCFG_PASSPHRASE` environment variable
 
-* `http://bootcfg.example.com/boot.ipxe.sig`
-* `http://bootcfg.example.com/boot.ipxe.0.sig`
-* `http://bootcfg.example.com/ipxe.sig`
-* `http://bootcfg.example.com/pixiecore/v1/boot.sig/:MAC`
-* `http://bootcfg.example.com/cloud.sig`
-* `http://bootcfg.example.com/ignition.sig`
+* `http://bootcfg.example.com/boot.ipxe.asc`
+* `http://bootcfg.example.com/boot.ipxe.0.asc`
+* `http://bootcfg.example.com/ipxe.asc`
+* `http://bootcfg.example.com/pixiecore/v1/boot.asc/:MAC`
+* `http://bootcfg.example.com/cloud.asc`
+* `http://bootcfg.example.com/ignition.asc`
 
-Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.sig`. For example, an iPXE config endpoint like the following:
+Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.asc`. For example, an iPXE config endpoint like the following:
 
     GET http://bootcfg.example.com/ipxe?attribute=value
 
@@ -170,7 +170,7 @@ Signature endpoints mirror the config endpoints, but provide detached signatures
 
 Provides a sibling OpenPGP signature endpoint.
 
-    GET http://bootcfg.example.com/ipxe.sig?attribute=value
+    GET http://bootcfg.example.com/ipxe.asc?attribute=value
 
 **Response**
 
