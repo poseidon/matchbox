@@ -8,7 +8,8 @@ fi
 
 function main {
   case "$1" in
-    "create") create;;
+    "create-docker") create;;
+    "create-rkt") create_rkt;;
     "start") start;;
     "reboot") reboot;;
     "shutdown") shutdown;;
@@ -24,7 +25,8 @@ function main {
 function usage {
   echo "USAGE: ${0##*/} <command>"
   echo "Commands:"
-  echo -e "\tcreate\t\tcreate 5 libvirt nodes with specific hardware attributes"
+  echo -e "\tcreate-docker\tcreate 5 libvirt nodes on the docker0 bridge"
+  echo -e "\tcreate-rkt\tcreate 5 libvirt nodes on a rkt CNI metal0 bridge"
   echo -e "\tstart\t\tstart the 5 libvirt nodes"
   echo -e "\treboot\t\treboot the 5 libvirt nodes"
   echo -e "\tshutdown\tshutdown the 5 libvirt nodes"
@@ -38,6 +40,31 @@ function create {
   virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
   virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
   virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+}
+
+function create_rkt {
+  metal0
+  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+}
+
+function metal0 {
+  cat > /etc/rkt/net.d/20-metal.conf << EOF
+{
+  "name": "metal0",
+  "type": "bridge",
+  "bridge": "metal0",
+  "isGateway": true,
+  "ipam": {
+    "type": "host-local",
+    "subnet": "172.15.0.0/16",
+    "routes" : [ { "dst" : "172.15.0.0/16" } ]
+   }
+}
+EOF
 }
 
 nodes=(node1 node2 node3 node4 node5)

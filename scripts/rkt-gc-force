@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+# See https://github.com/coreos/rkt/issues/1572
+rkt gc --grace-period=0s
+for p in `mount | grep -oP "/tmp/[^\s,\)]*"`; do umount -l $p; done
+for p in `mount | grep -oP "/var/lib/rkt/pods/[^\s,\)]*"`; do umount -l $p; done
+rkt gc --grace-period=0s
+for i in `rkt image list | grep -oP '^sha512[^ \t]*'`; do rkt image rm $i; done
+for ns in `ip netns l | grep -o -E '^[[:alnum:]]+'`; do ip netns del $ns; done
+ip l del metal0
+for veth in `ip l show | grep -oE 'veth[^@]+'`; do ip l del $veth; done
+rm -Rf /var/lib/cni/networks/*
+rm -Rf /var/lib/rkt/*

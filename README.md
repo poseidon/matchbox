@@ -9,12 +9,13 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 * [Network Booting](Documentation/network-booting.md)
 * [Config Service](Documentation/bootcfg.md)
+* [rkt Tutorial](Documentation/rkt.md)
 * [Libvirt Guide](Documentation/virtual-hardware.md)
 * [Baremetal Guide](Documentation/physical-hardware.md)
 
 ## Config Service
 
-The config service provides network boot (PXE, iPXE, Pixiecore), [Ignition](https://coreos.com/ignition/docs/latest/what-is-ignition.html), and [Cloud-Init](https://github.com/coreos/coreos-cloudinit) configs to machines based on hardware attributes (e.g. UUID, MAC, hostname) or free-form tag matchers.
+The config service provides network boot (PXE, iPXE, Pixiecore), [Ignition](https://coreos.com/ignition/docs/latest/what-is-ignition.html), and [Cloud-Init](https://github.com/coreos/coreos-cloudinit) configs to machines based on hardware attributes (e.g. UUID, MAC, hostname) or free-form tags.
 
 * [API](Documentation/api.md)
 * [Flags](Documentation/config.md)
