@@ -14,14 +14,30 @@ Clone the source.
     git clone https://github.com/coreos/coreos-baremetal.git
     cd coreos-baremetal
 
-Currently, rkt and the Fedora/RHEL/CentOS SELinux policies aren't supported. See the [issue](https://github.com/coreos/rkt/issues/1727) tracking the work and policy changes. To test these examples on your laptop, temporarily disable SELinux enforcement if you are comfortable (`sudo setenforce 0`). Enable it again when you are finished.
+Currently, rkt and the Fedora/RHEL/CentOS SELinux policies aren't supported. See the [issue](https://github.com/coreos/rkt/issues/1727) tracking the work and policy changes. To test these examples on your laptop, set SELinux enforcement to permissive if you are comfortable (`sudo setenforce 0`). Enable it again when you are finished.
 
 Download the CoreOS network boot images to assets/coreos:
 
     cd coreos-baremetal
     ./scripts/get-coreos
 
-Run the config server on an IP which will correspond to the examples and DNS setup.
+Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
+
+    cat > /etc/rkt/net.d/20-metal.conf << EOF
+    {
+      "name": "metal0",
+      "type": "bridge",
+      "bridge": "metal0",
+      "isGateway": true,
+      "ipam": {
+        "type": "host-local",
+        "subnet": "172.15.0.0/16",
+        "routes" : [ { "dst" : "172.15.0.0/16" } ]
+       }
+    }
+    EOF
+
+Run the config server on `metal0` with the IP address corresponding to the examples (or add DNS).
 
     sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
 
@@ -34,7 +50,7 @@ If you get an error about the IP being assigned already.
     sudo rkt gc --grace-period=0
     sudo rkt list            # should be empty
 
-Create 5 VM nodes which have known "hardware" attributes that match the examples. This also creates a CNI network `metal0` which containers and VMs can share for local development.
+Create 5 VM nodes on the `metal0` bridge, which have known "hardware" attributes that match the examples.
 
     sudo ./scripts/libvirt create-rkt
     # if you previously tried the docker examples, cleanup first
@@ -48,7 +64,12 @@ Build an dnsmasq ACI and run it to create a DNS server, TFTP server, and DHCP se
     cd contrib
     sudo ./acifile
 
-Sign the file if you wish, but we'll run it directly.
+Run `dnsmasq.aci` to create a DHCP and TFTP server pointing to config server.
 
+    cd contrib
     sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0 -- -d -q --dhcp-range=172.15.0.50,172.15.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.example:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.15.0.1 --address=/bootcfg.example/172.15.0.2
 
+Reboot Nodes
+
+    sudo ./script/libvirt poweroff
+    sudo ./script/libvirt start
