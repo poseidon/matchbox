@@ -19,6 +19,8 @@ type Group struct {
 	Name string `yaml:"name"`
 	// Spec identifier
 	Spec string `yaml:"spec"`
+	// Custom Metadata
+	Metadata map[string]string `yaml:"metadata"`
 	// matcher conditions
 	Matcher RequirementSet `yaml:"require"`
 }
@@ -74,6 +76,20 @@ func (gr *groupsResource) matchSpecHandler(next ContextHandler) ContextHandler {
 				// add the Spec to the ctx for next handler
 				ctx = withSpec(ctx, spec)
 			}
+		}
+		next.ServeHTTP(ctx, w, req)
+	}
+	return ContextHandlerFunc(fn)
+}
+
+func (gr *groupsResource) matchGroupHandler(next ContextHandler) ContextHandler {
+	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+		attrs := labelsFromRequest(req)
+		// match machine request
+		group, err := gr.findMatch(attrs)
+		if err == nil {
+			// add the Group to the ctx for next handler
+			ctx = withGroup(ctx, group)
 		}
 		next.ServeHTTP(ctx, w, req)
 	}

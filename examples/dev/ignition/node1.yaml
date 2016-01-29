@@ -1,0 +1,38 @@
+---
+ignition_version: 1
+systemd:
+  units:
+    - name: metadata.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Bare Metal Metadata Agent
+        [Service]
+        Type=oneshot
+        Environment=OUTPUT=/run/metadata/bootcfg
+        ExecStart=/usr/bin/mkdir --parent /run/metadata
+        ExecStart=/usr/bin/bash -c 'curl --url http://bootcfg.foo:8080/metadata?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b --retry 10 --output ${OUTPUT}'
+        [Install]
+        WantedBy=multi-user.target
+    - name: greeting.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Greeting using Ignition Metadata
+        Requires=metadata.service
+        After=metadata.service
+        [Service]
+        Type=oneshot
+        EnvironmentFile=/run/metadata/bootcfg
+        ExecStart=/usr/bin/echo ${GREETING}
+        [Install]
+        WantedBy=multi-user.target
+networkd:
+  units:
+    - name: 00-ens3.network
+      contents: |
+        [Match]
+        Name=ens3
+        [Network]
+        DNS=172.17.0.3
+        Address=172.17.0.41

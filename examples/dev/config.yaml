@@ -5,6 +5,8 @@ groups:
     spec: node1
     require:
       uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
+    metadata:
+      greeting: hello
 
   - name: node2
     spec: node2

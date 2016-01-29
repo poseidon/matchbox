@@ -1,0 +1,25 @@
+---
+ignition_version: 1
+systemd:
+  units:
+    - name: metadata.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Bare Metal Metadata Agent
+        [Service]
+        Type=oneshot
+        Environment=OUTPUT=/run/metadata/bootcfg
+        ExecStart=/usr/bin/mkdir --parent /run/metadata
+        ExecStart=/usr/bin/bash -c 'curl --url http://bootcfg.foo:8080/metadata?uuid=264cd073-ca62-44b3-98c0-50aad5b5f819 --retry 10 --output ${OUTPUT}'
+        [Install]
+        WantedBy=multi-user.target
+networkd:
+  units:
+    - name: 00-ens3.network
+      contents: |
+        [Match]
+        Name=ens3
+        [Network]
+        DNS=172.17.0.3
+        Address=172.17.0.42

@@ -12,10 +12,15 @@ import (
 )
 
 var (
-	validMACStr = "52:54:00:89:d8:10"
-	testGroup   = Group{
-		Name:    "test group",
-		Spec:    "g1h2i3j4",
+	validMACStr         = "52:da:00:89:d8:10"
+	nonNormalizedMACStr = "52:dA:00:89:d8:10"
+	testGroup           = Group{
+		Name: "test group",
+		Spec: "g1h2i3j4",
+		Metadata: map[string]string{
+			"k8s_version": "v1.1.2",
+			"pod_network": "10.2.0.0/16",
+		},
 		Matcher: RequirementSet(map[string]string{"uuid": "a1b2c3d4"}),
 	}
 	testGroupWithMAC = Group{
@@ -103,6 +108,27 @@ func TestGroupsResource_MatchSpecHandler(t *testing.T) {
 	// - the group's Spec is found by id and added to the context
 	// - next handler is called
 	h := gr.matchSpecHandler(ContextHandlerFunc(next))
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
+	h.ServeHTTP(context.Background(), w, req)
+	assert.Equal(t, "next handler called", w.Body.String())
+}
+
+func TestGroupsResource_MatchGroupHandler(t *testing.T) {
+	store := &fixedStore{
+		Groups: []Group{testGroup},
+	}
+	gr := newGroupsResource(store)
+	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+		group, err := groupFromContext(ctx)
+		assert.Nil(t, err)
+		assert.Equal(t, &testGroup, group)
+		fmt.Fprintf(w, "next handler called")
+	}
+	// assert that:
+	// - request arguments are used to match uuid=a1b2c3d4 -> testGroup
+	// - next handler is called
+	h := gr.matchGroupHandler(ContextHandlerFunc(next))
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
 	h.ServeHTTP(context.Background(), w, req)

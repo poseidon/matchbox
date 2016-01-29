@@ -40,7 +40,7 @@ With `dnsmasq`, the relevant `dnsmasq.conf` settings would be:
 Create a PXE/iPXE network environment by running a PXE-enabled DHCP server and TFTP server on the `docker0` bridge, alongside `bootcfg`.
 
 ```
-sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://172.17.0.2:8080/boot.ipxe
+sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://172.17.0.2:8080/boot.ipxe --log-dhcp --dhcp-option=3,172.17.0.1 --address=/bootcfg.foo/172.17.0.2
 ```
 
 The `coreos/dnsmasq` image runs DHCP and TFTP as a container. It allocates IPs in the `docker0` subnet to VMs and sends options to chainload older PXE clients to iPXE. iPXE clients are pointed to the `bootcfg` service iPXE endpoint (assumed to be running on 172.17.0.2:8080).

@@ -1,0 +1,12 @@
+#!/bin/bash -e
+# USAGE: ./scripts/gen-ignition src
+# Example: ./scripts/gen-ignition exampels/dev/ignition
+# Use coreos/fuze to transform a human-friendly *.yaml Ignition config to
+# machine-friendly JSON
+
+DEST=$1
+
+shopt -s nullglob
+for file in $DEST/*.yaml; do
+  fuze -in-file "$file" -out-file "${file%.yaml}.json"
+done

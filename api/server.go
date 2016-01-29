@@ -58,6 +58,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux.Handle("/cloud", logRequests(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
 	// ignition configs
 	mux.Handle("/ignition", logRequests(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
+	// metadata
+	mux.Handle("/metadata", logRequests(NewHandler(gr.matchGroupHandler(metadataHandler()))))
 
 	// Signatures
 	signerChain := func(next http.Handler) http.Handler {
@@ -70,6 +72,7 @@ func (s *Server) HTTPHandler() http.Handler {
 		mux.Handle("/pixiecore/v1/boot.asc/", signerChain(pixiecoreHandler(gr, s.store)))
 		mux.Handle("/cloud.asc", signerChain(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
 		mux.Handle("/ignition.asc", signerChain(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
+		mux.Handle("/metadata.asc", signerChain(NewHandler(gr.matchGroupHandler(metadataHandler()))))
 	}
 
 	// kernel, initrd, and TLS assets

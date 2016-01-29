@@ -49,7 +49,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // labelsFromRequest returns Labels from request query parameters.
-func labelsFromRequest(req *http.Request) Labels {
+func labelsFromRequest(req *http.Request) LabelSet {
 	values := req.URL.Query()
 	labels := map[string]string{}
 	for key := range values {
