@@ -16,7 +16,7 @@ The config service (`bootcfg`) can be run as a container to boot libvirt VMs or 
 Build the binary and docker image from source
 
     ./build
-    ./docker-build
+    ./build-docker
 
 Or pull a published container image from [quay.io/repository/coreoso/bootcfg](https://quay.io/repository/coreos/bootcfg?tab=tags).
 

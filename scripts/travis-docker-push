@@ -3,6 +3,6 @@
 
 GOOS=linux ./build
 docker info
-./docker-build
+./build-docker
 docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p=$DOCKER_PASSWORD quay.io
-./docker-push
+./push-docker
