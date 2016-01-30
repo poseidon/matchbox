@@ -22,11 +22,7 @@ Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.
 
 ## Network Setups
 
-We'll show how to setup PXE, iPXE, or Pixiecore network boot environments on the `docker0` bridge and configure them to use `bootcfg`.
-
-The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) image can be used to run DHCP, proxyDHCP, and TFTP. It can be built from the [dockerfiles](../dockerfiles/dnsmasq) or pulled from Quay.
-
-    docker pull quay.io/coreos/dnsmasq
+Create a PXE, iPXE, or Pixiecore network boot environment using the CoreOS [dnsmasq](../contrib/dnsmasq) container image which can run DHCP, proxyDHCP, TFTP, and/or DNS with `dnsmasq`. Use `--net` to specify a virtual bridge and `--dhcp-boot` to point clients to the config service.
 
 ### PXE
 

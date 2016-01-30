@@ -61,8 +61,8 @@ In your firewall settings, configure the `metal0` interface as trusted.
 
 Build an dnsmasq ACI and run it to create a DNS server, TFTP server, and DHCP server which points network boot clients to the config server started above.
 
-    cd contrib
-    sudo ./acifile
+    cd contrib/dnsmasq
+    sudo ./build-aci
 
 Run `dnsmasq.aci` to create a DHCP and TFTP server pointing to config server.
 

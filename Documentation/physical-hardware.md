@@ -29,9 +29,7 @@ Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.
 
 Your network may already have a configurable PXE or iPXE server, configurable DHCP, a DHCP server you cannot modify, or no DHCP server at all. We'll show how to setup each network environment to talk to `bootcfg`, depending on your circumstances.
 
-The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) image can be used to run DHCP, proxy DHCP, and TFTP. It can be built from the [dockerfiles](../dockerfiles/dnsmasq) or pulled from Quay.
-
-    docker pull quay.io/coreos/dnsmasq
+Otherwise create a PXE, iPXE, or Pixiecore network boot environment using the CoreOS [dnsmasq](../contrib/dnsmasq) container image which can run DHCP, proxyDHCP, TFTP, and/or DNS with `dnsmasq`. Use `--net=host` to run the services on the host and use `--dhcp-boot` to point clients to the config service.
 
 ### Configurable iPXE
 

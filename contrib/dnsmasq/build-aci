@@ -1,11 +1,12 @@
-#!/usr/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 if [ "$EUID" -ne 0 ]; then
   echo "Please run as root"
   exit 1
 fi
 
-# Start the build with an empty ACI
+# Start with an empty ACI
 acbuild --debug begin
 
 # In the event of the script exiting, end the build
@@ -14,14 +15,14 @@ trap "{ export EXT=$?; acbuild --debug end && exit $EXT; }" EXIT
 # Name the ACI
 acbuild --debug set-name coreos/dnsmasq
 
-# Based on alpine
+# Add alpine base dependency
 acbuild --debug dep add quay.io/coreos/alpine-sh
 
 # Install dnsmasq and curl
 acbuild --debug run apk update
 acbuild --debug run apk add dnsmasq curl
 
-# Get the PXE->iPXE chainloader
+# Copy the PXE->iPXE chainloader
 if [ ! -d "tftpboot" ]; then
   mkdir tftpboot
   curl -s -o tftpboot/undionly.kpxe http://boot.ipxe.org/undionly.kpxe
@@ -29,18 +30,15 @@ if [ ! -d "tftpboot" ]; then
 fi
 acbuild --debug copy tftpboot /var/lib/tftpboot
 
-# Add a port for dhcp discover traffic
+# Add DHCP and DNS ports for dnsmasq
 acbuild --debug port add dhcp udp 67
-acbuild --debug port add dhcp udp 53
+acbuild --debug port add dns udp 53
 
 # Elevate network admin capabilities
-echo "{\"set\": [\"CAP_NET_ADMIN\"]}" | acbuild isolator add os/linux/capabilities-retain-set -
+echo "{\"set\": [\"CAP_NET_ADMIN\"]}" | acbuild --debug isolator add os/linux/capabilities-retain-set -
 
-# Run dnsmasq
+# Set the exec command
 acbuild --debug set-exec -- /usr/sbin/dnsmasq -d
 
-# Check that the manifest looks ok
-acbuild --debug cat-manifest
-
-# Save the ACI
+# Save and override any older ACI
 acbuild --debug write --overwrite dnsmasq.aci
