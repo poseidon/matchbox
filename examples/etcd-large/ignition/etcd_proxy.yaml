@@ -1,0 +1,31 @@
+---
+ignition_version: 1
+systemd:
+  units:
+    - name: metadata.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Bare Metal Metadata Agent
+        [Service]
+        Type=oneshot
+        Environment=OUTPUT=/run/metadata/bootcfg
+        ExecStart=/usr/bin/mkdir --parent /run/metadata
+        ExecStart=/usr/bin/bash -c 'curl --url http://bootcfg.foo:8080/metadata --retry 10 --output ${OUTPUT}'
+        [Install]
+        WantedBy=multi-user.target
+    - name: etcd2.service
+      enable: true
+      dropins:
+        - name: etcd-metadata.conf
+          contents: |
+            [Unit]
+            Requires=metadata.service
+            After=metadata.service
+            [Service]
+            EnvironmentFile=/run/metadata/bootcfg
+            ExecStart=
+            ExecStart=/usr/bin/etcd2 \
+              --proxy on
+              --listen-client-urls=http://localhost:2379 \
+              --initial-cluster=${ETCD_INITIAL_CLUSTER}

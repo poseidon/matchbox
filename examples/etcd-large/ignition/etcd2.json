@@ -1,11 +1,1 @@
-{
-  "ignitionVersion": 1,
-  "networkd": {
-    "units": [
-      {
-        "name": "00-ens3.network",
-        "contents": "[Match]\nName=ens3\n\n[Network]\nDNS=8.8.8.8\nGateway=172.17.0.1\nAddress=172.17.0.22"
-      }
-    ]
-  }
-}
+{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"metadata.service","enable":true,"contents":"[Unit]\nDescription=Bare Metal Metadata Agent\n[Service]\nType=oneshot\nEnvironment=OUTPUT=/run/metadata/bootcfg\nExecStart=/usr/bin/mkdir --parent /run/metadata\nExecStart=/usr/bin/bash -c 'curl --url http://bootcfg.foo:8080/metadata?uuid=264cd073-ca62-44b3-98c0-50aad5b5f819 --retry 10 --output ${OUTPUT}'\n[Install]\nWantedBy=multi-user.target\n"},{"name":"etcd2.service","enable":true,"dropins":[{"name":"etcd-metadata.conf","contents":"[Unit]\nRequires=metadata.service\nAfter=metadata.service\n[Service]\nEnvironmentFile=/run/metadata/bootcfg\nExecStart=\nExecStart=/usr/bin/etcd2 \\\n  --advertise-client-urls=http://${IPV4_LOCAL}:2379 \\\n  --initial-advertise-peer-urls=http://${IPV4_LOCAL}:2380 \\\n  --listen-client-urls=http://0.0.0.0:2379 \\\n  --listen-peer-urls=http://${IPV4_LOCAL}:2380 \\\n  --initial-cluster=${ETCD_INITIAL_CLUSTER}\n"}]}]},"networkd":{"units":[{"name":"00-ens3.network","contents":"[Match]\nName=ens3\n[Network]\nGateway=172.17.0.1\nDNS=172.17.0.3\nAddress=172.17.0.22\n"}]},"passwd":{}}
