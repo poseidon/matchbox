@@ -57,7 +57,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	// cloud configs
 	mux.Handle("/cloud", logRequests(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
 	// ignition configs
-	mux.Handle("/ignition", logRequests(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
+	mux.Handle("/ignition", logRequests(NewHandler(gr.matchGroupHandler(ignitionHandler(s.store)))))
 	// metadata
 	mux.Handle("/metadata", logRequests(NewHandler(gr.matchGroupHandler(metadataHandler()))))
 
@@ -71,7 +71,7 @@ func (s *Server) HTTPHandler() http.Handler {
 		mux.Handle("/ipxe.asc", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))
 		mux.Handle("/pixiecore/v1/boot.asc/", signerChain(pixiecoreHandler(gr, s.store)))
 		mux.Handle("/cloud.asc", signerChain(NewHandler(gr.matchSpecHandler(cloudHandler(s.store)))))
-		mux.Handle("/ignition.asc", signerChain(NewHandler(gr.matchSpecHandler(ignitionHandler(s.store)))))
+		mux.Handle("/ignition.asc", signerChain(NewHandler(gr.matchGroupHandler(ignitionHandler(s.store)))))
 		mux.Handle("/metadata.asc", signerChain(NewHandler(gr.matchGroupHandler(metadataHandler()))))
 	}
 

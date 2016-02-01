@@ -6,18 +6,16 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
-
-	ignition "github.com/coreos/ignition/src/config"
 )
 
-// Store provides Group, Spec, and config resources.
+// Store provides Group, Spec, Ignition, and Cloud config resources.
 type Store interface {
 	BootstrapGroups([]Group) error
 	ListGroups() ([]Group, error)
 
 	Spec(id string) (*Spec, error)
 	CloudConfig(id string) (*CloudConfig, error)
-	IgnitionConfig(id string) (*ignition.Config, error)
+	IgnitionConfig(id string) (string, error)
 }
 
 // fileStore provides configs from an http.Filesystem.
@@ -80,25 +78,20 @@ func (s *fileStore) CloudConfig(id string) (*CloudConfig, error) {
 	}, nil
 }
 
-// IgnitionConfig returns the ignition config with the given id.
-func (s *fileStore) IgnitionConfig(id string) (*ignition.Config, error) {
+// IgnitionConfig returns the ignition template with the given id.
+func (s *fileStore) IgnitionConfig(id string) (string, error) {
 	file, err := openFile(s.root, filepath.Join("ignition", id))
 	if err != nil {
 		log.Debugf("no ignition config %s", id)
-		return nil, err
+		return "", err
 	}
 	defer file.Close()
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Errorf("error reading ignition config: %s", err)
-		return nil, err
+		return "", err
 	}
-	config, err := ignition.Parse(b)
-	if err != nil {
-		log.Errorf("error parsing ignition config: %s", err)
-		return nil, err
-	}
-	return &config, err
+	return string(b), err
 }
 
 // openFile attempts to open the file within the specified Filesystem. If

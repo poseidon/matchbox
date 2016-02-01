@@ -11,15 +11,16 @@ systemd:
         Type=oneshot
         Environment=OUTPUT=/run/metadata/bootcfg
         ExecStart=/usr/bin/mkdir --parent /run/metadata
-        ExecStart=/usr/bin/bash -c 'curl --url http://bootcfg.foo:8080/metadata?uuid=264cd073-ca62-44b3-98c0-50aad5b5f819 --retry 10 --output ${OUTPUT}'
+        ExecStart=/usr/bin/bash -c 'curl --url "http://bootcfg.foo:8080/metadata?{{.query}}" --retry 10 --output ${OUTPUT}'
         [Install]
         WantedBy=multi-user.target
 networkd:
   units:
-    - name: 00-ens3.network
+    - name: 00-{{.networkd_name}}.network
       contents: |
         [Match]
-        Name=ens3
+        Name={{.networkd_name}}
         [Network]
-        DNS=172.17.0.3
-        Address=172.17.0.42
+        Gateway={{.networkd_gateway}}
+        DNS={{.networkd_dns}}
+        Address={{.networkd_address}}
