@@ -66,8 +66,7 @@ Build an dnsmasq ACI and run it to create a DNS server, TFTP server, and DHCP se
 
 Run `dnsmasq.aci` to create a DHCP and TFTP server pointing to config server.
 
-    cd contrib
-    sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0 -- -d -q --dhcp-range=172.15.0.50,172.15.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.example:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.15.0.1 --address=/bootcfg.example/172.15.0.2
+    sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0 -- -d -q --dhcp-range=172.15.0.50,172.15.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.15.0.1 --address=/bootcfg.foo/172.15.0.2
 
 Reboot Nodes
 
