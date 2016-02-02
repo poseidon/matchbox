@@ -6,6 +6,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/coreos/coreos-cloudinit/config",
+			"Comment": "v1.8.1-2-g6e1a0f7",
+			"Rev": "6e1a0f7ca8d16ceac0f79d6c6693b2da4624512e"
+		},
+		{
 			"ImportPath": "github.com/coreos/go-systemd/journal",
 			"Comment": "v4-8-gf164f43",
 			"Rev": "f164f437010a16e0443d2d1e68e8e001cdbf1226"
@@ -32,6 +37,10 @@
 		{
 			"ImportPath": "github.com/coreos/pkg/flagutil",
 			"Rev": "2c77715c4df99b5420ffcae14ead08f52104065d"
+		},
+		{
+			"ImportPath": "github.com/coreos/yaml",
+			"Rev": "6b16a5714269b2f70720a45406b1babd947a17ef"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
