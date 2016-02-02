@@ -21,7 +21,7 @@ Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bo
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
-    docker run -p 8080:8080 --net=host --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 [-log-level=debug]
+    docker run -p 8080:8080 --net=host --name=bootcfg --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
 
 Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.0.2 (the libvirt case). Your kernel cmdline options should reference the IP or DNS name where `bootcfg` runs.
 

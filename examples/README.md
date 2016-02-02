@@ -5,7 +5,6 @@ Examples contains Config Service data directories showcasing different network-b
 
 | Name       | Description |  Docs          |
 |------------|-------------|----------------|
-| etcd-small | Cluster with 1 etcd node, 4 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | etcd-large | Cluster with 3 etcd nodes, 2 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) |
 
@@ -49,19 +48,15 @@ Let's run the config service on the virtual network.
 
 Run the command for the example you wish to use.
 
-**etcd-small Cluster**
+**etcd Cluster**
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/etcd-small:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
-
-**etcd-large Cluster**
-
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/etcd-large:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
 
 **Kubernetes Cluster**
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/kubernetes:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/k8s-docker.yaml
 
-The mounted data directory (e.g. `-v $PWD/examples/etcd-small:/data:Z`) depends on the example you wish to run.
+The `-config` file describes the desired state of booted machines.
 
 ## Assets
 
@@ -97,4 +92,52 @@ If everything works, congratulations! Stay tuned for developments.
 ## Further Reading
 
 See the [libvirt guide](../Documentation/virtual-hardware.md) or [baremetal guide](../Documentation/physical-hardware.md) for more information.
+
+# Kubernetes
+
+This example provisions a Kubernetes cluster with 1 master node, 1 worker node, and a dedicated etcd node. Each node uses a static IP address on the local network.
+
+## Assets
+
+Download the required CoreOS Beta image assets.
+
+    ./scripts/get-coreos beta 877.1.0
+
+Next, add or generate a root CA and Kubernetes TLS assets for each component.
+
+### TLS Assets
+
+Note: In this example, TLS assets are served to any machines which request them. The network and any machines on it cannot be trusted yet, so this example is **not suitable for production**. [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html) work soon let machines with TPMs establish secure channels to improve secret distribution and cluster attestation.
+
+Use the `generate-tls` script to generate throw-away TLS assets. The script will generate a root CA and `admin`, `apiserver`, and `worker` certificates in `assets/tls`.
+
+    cd coreos-baremetal
+    ./scripts/tls/generate-kubernetes-secrets
+
+Alternately, if you have existing Public Key Infrastructure, add your CA certificate, entity certificates, and entity private keys to `assets/tls` (for testing only, not secure yet).
+
+    * ca.pem
+    * apiserver.pem
+    * apiserver-key.pem
+    * worker.pem
+    * worker-key.pem
+    * admin.pem
+    * admin-key.pem
+
+See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/latest/openssl.html) document or [Kubernetes Step by Step](https://coreos.com/kubernetes/docs/latest/getting-started.html) for more details.
+
+Return the the general examples [README](../README).
+
+## Usage
+
+Install `kubectl` on your host and use the `examples/kubeconfig` file which references the top level `assets/tls`.
+
+    cd /path/to/coreos-baremetal
+    kubectl --kubeconfig=examples/kubeconfig get nodes
+
+Get all pods.
+
+    kubectl --kubeconfig=examples/kubeconfig get pods --all-namespaces
+
+On my laptop, it takes about 1 minute from boot until the Kubernetes API comes up. Then it takes another 1-2 minutes for all components including DNS to be pulled and started.
 

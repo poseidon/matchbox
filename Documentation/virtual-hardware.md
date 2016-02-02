@@ -10,11 +10,11 @@ Docker containers run on the `docker0` virtual bridge, typically on a subnet 172
 
 ## Config Service
 
-Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
+Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
 
 Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.0.2, the first container IP Docker is likely to assign to `bootcfg`. Ensure your kernel options point to where `bootcfg` runs.
 
@@ -91,8 +91,9 @@ Create 5 libvirt VM nodes configured to boot from the network. The `scripts/libv
     sudo ./scripts/libvirt
     USAGE: libvirt <command>
     Commands:
-        create      create 5 libvirt nodes
-        start       start 5 libvirt nodes
+        create-docker create 5 libvirt nodes on the docker0 bridge
+        create-rkt  create 5 libvirt nodes on a rkt CNI metal0 bridge
+        start       start the 5 libvirt nodes
         reboot      reboot the 5 libvirt nodes
         shutdown    shutdown the 5 libvirt nodes
         poweroff    poweroff the 5 libvirt nodes

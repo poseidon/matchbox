@@ -43,7 +43,7 @@ Run the config server on `metal0` with the IP address corresponding to the examp
 
 The insecure flag is needed because Docker images do not support signature verification.
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples/etcd-large quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
 
 If you get an error about the IP being assigned already.
 

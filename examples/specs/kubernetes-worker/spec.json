@@ -10,6 +10,6 @@
       "coreos.first_boot": ""
     }
   },
-  "cloud_id": "worker.sh",
+  "cloud_id": "kubernetes-worker.sh",
   "ignition_id": "network.json"
 }

@@ -2,25 +2,25 @@
 set -e
 
 # List of etcd servers (http://ip:port), comma separated
-export ETCD_ENDPOINTS=http://172.17.0.23:2379
+export ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
 
 # The endpoint the worker node should use to contact controller nodes (https://ip:port)
 # In HA configurations this should be an external DNS record or loadbalancer in front of the control nodes.
 # However, it is also possible to point directly to a single control node.
-export CONTROLLER_ENDPOINT=https://172.17.0.21
+export CONTROLLER_ENDPOINT={{.k8s_controller_endpoint}}
 
 # Specify the version (vX.Y.Z) of Kubernetes assets to deploy
-export K8S_VER=v1.1.2
+export K8S_VER={{.k8s_version}}
 
 # The IP address of the cluster DNS service.
 # This must be the same DNS_SERVICE_IP used when configuring the controller nodes.
-export DNS_SERVICE_IP=10.3.0.10
+export DNS_SERVICE_IP={{.k8s_dns_service_ip}}
 
 # ADVERTISE_IP is the host node's IP.
-export ADVERTISE_IP=172.17.0.22
+export ADVERTISE_IP={{.k8s_advertise_ip}}
 
 # TLS Certificate assets are hosted by the Config Server
-export CERT_ENDPOINT=172.17.0.2:8080/assets
+export CERT_ENDPOINT={{.k8s_cert_endpoint}}
 
 function init_config {
     local REQUIRED=( 'ADVERTISE_IP' 'ETCD_ENDPOINTS' 'CONTROLLER_ENDPOINT' 'DNS_SERVICE_IP' 'K8S_VER' )
@@ -36,9 +36,9 @@ function init_config {
 function get_certs {
   DEST=/etc/kubernetes/ssl
   mkdir -p $DEST
-  curl http://$CERT_ENDPOINT/tls/worker.pem -o $DEST/worker.pem
-  curl http://$CERT_ENDPOINT/tls/worker-key.pem -o $DEST/worker-key.pem
-  curl http://$CERT_ENDPOINT/tls/ca.pem -o $DEST/ca.pem
+  curl $CERT_ENDPOINT/tls/worker.pem -o $DEST/worker.pem
+  curl $CERT_ENDPOINT/tls/worker-key.pem -o $DEST/worker-key.pem
+  curl $CERT_ENDPOINT/tls/ca.pem -o $DEST/ca.pem
 }
 
 function init_templates {
