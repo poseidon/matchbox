@@ -18,7 +18,7 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
     git clone https://github.com/coreos/coreos-baremetal.git
     cd coreos-baremetal
 
-Create 5 VM nodes which have known hardware attributes. The nodes will be attached to the `docker0` bridge where your containers run.
+Create four VM nodes which have known hardware attributes. The nodes will be attached to the `docker0` bridge where your containers run.
 
     sudo ./scripts/libvirt create-docker
 

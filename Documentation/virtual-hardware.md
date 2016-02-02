@@ -91,13 +91,14 @@ Create 5 libvirt VM nodes configured to boot from the network. The `scripts/libv
     sudo ./scripts/libvirt
     USAGE: libvirt <command>
     Commands:
-        create-docker create 5 libvirt nodes on the docker0 bridge
-        create-rkt  create 5 libvirt nodes on a rkt CNI metal0 bridge
-        start       start the 5 libvirt nodes
-        reboot      reboot the 5 libvirt nodes
-        shutdown    shutdown the 5 libvirt nodes
-        poweroff    poweroff the 5 libvirt nodes
-        destroy     destroy the 5 libvirt nodes
+        create-docker create 4 libvirt nodes on the docker0 bridge
+        create-rkt    create 4 libvirt nodes on a rkt CNI metal0 bridge
+        start         start the 4 libvirt nodes
+        reboot        reboot the 4 libvirt nodes
+        shutdown      shutdown the 4 libvirt nodes
+        poweroff      poweroff the 4 libvirt nodes
+        destroy       destroy the 4 libvirt nodes
+        remove-disks  delete the allocated disks
 
 You may use `virt-manager` to create your own VMs and view the console/state/attributes of existing VM nodes.
 

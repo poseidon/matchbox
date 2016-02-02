@@ -61,7 +61,7 @@ Take a look at [etcd-rkt.yaml](../examples/etcd-rkt.yaml) to get an idea of how 
 
 ## Client VMs
 
-Create 5 VM nodes which have known hardware attributes. The nodes will be attached to the `metal0` bridge where your pods run.
+Create four VM nodes which have known hardware attributes. The nodes will be attached to the `metal0` bridge where your pods run.
 
     sudo ./scripts/libvirt create-rkt
 

@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# Manage 5 VM nodes which have a specific set of hardware attributes.
+# Manage four VM nodes which have a specific set of hardware attributes.
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -15,6 +15,7 @@ function main {
     "shutdown") shutdown;;
     "poweroff") poweroff;;
     "destroy") destroy;;
+    "delete-disks") delete_disks;;
     *)
       usage
       exit 2
@@ -25,32 +26,31 @@ function main {
 function usage {
   echo "USAGE: ${0##*/} <command>"
   echo "Commands:"
-  echo -e "\tcreate-docker\tcreate 5 libvirt nodes on the docker0 bridge"
-  echo -e "\tcreate-rkt\tcreate 5 libvirt nodes on a rkt CNI metal0 bridge"
-  echo -e "\tstart\t\tstart the 5 libvirt nodes"
-  echo -e "\treboot\t\treboot the 5 libvirt nodes"
-  echo -e "\tshutdown\tshutdown the 5 libvirt nodes"
-  echo -e "\tpoweroff\tpoweroff the 5 libvirt nodes"
-  echo -e "\tdestroy\t\tdestroy the 5 libvirt nodes"
+  echo -e "\tcreate-docker\tcreate 4 libvirt nodes on the docker0 bridge"
+  echo -e "\tcreate-rkt\tcreate 4 libvirt nodes on a rkt CNI metal0 bridge"
+  echo -e "\tstart\t\tstart the 4 libvirt nodes"
+  echo -e "\treboot\t\treboot the 4 libvirt nodes"
+  echo -e "\tshutdown\tshutdown the 4 libvirt nodes"
+  echo -e "\tpoweroff\tpoweroff the 4 libvirt nodes"
+  echo -e "\tdestroy\t\tdestroy the 4 libvirt nodes"
+  echo -e "\tdelete-disks\tdelete the allocated disks"
 }
 
 function create_docker {
-  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:docker0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
 }
 
 function create_rkt {
-  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
-  virt-install --name node5 -u 53683e94-3273-4a49-9a82-d769b88e3ccf --pxe --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --disk none --noautoconsole
+  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
 }
 
-nodes=(node1 node2 node3 node4 node5)
+nodes=(node1 node2 node3 node4)
 
 function start {
   for node in ${nodes[@]}; do
@@ -79,6 +79,13 @@ function poweroff {
 function destroy {
   for node in ${nodes[@]}; do
     virsh undefine $node
+  done
+}
+
+function delete_disks {
+  echo "Deleting volumes... you may need to wait a few seconds or retry"
+  for node in ${nodes[@]}; do
+    virsh vol-delete --pool default $node.qcow2
   done
 }
 
