@@ -1,18 +1,33 @@
 ---
 api_version: v1alpha1
 groups:
-  - name: master
-    spec: master
+  - name: Master Node
+    spec: kubernetes-master
     require:
       uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
+    metadata:
+      networkd_name: ens3
+      networkd_gateway: 172.17.0.1
+      networkd_dns: 172.17.0.3
+      networkd_address: 172.17.0.21/16
 
-  - name: worker
-    spec: worker
+  - name: Worker Node
+    spec: kubernetes-worker
     require:
       uuid: 264cd073-ca62-44b3-98c0-50aad5b5f819
+    metadata:
+      networkd_name: ens3
+      networkd_gateway: 172.17.0.1
+      networkd_dns: 172.17.0.3
+      networkd_address: 172.17.0.22/16
 
-  - name: etcd
+  - name: etcd Node
     spec: etcd
     require:
       uuid: 39d2e747-2648-4d68-ae92-bbc70b245055
+    metadata:
+      networkd_name: ens3
+      networkd_gateway: 172.17.0.1
+      networkd_dns: 172.17.0.3
+      networkd_address: 172.17.0.23/16
 
