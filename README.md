@@ -9,21 +9,22 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 * [Network Booting](Documentation/network-booting.md)
 * [Config Service](Documentation/bootcfg.md)
-* [rkt Tutorial](Documentation/rkt.md)
 * [Libvirt Guide](Documentation/virtual-hardware.md)
 * [Baremetal Guide](Documentation/physical-hardware.md)
 
 ## Config Service
 
-The config service provides network boot (PXE, iPXE, Pixiecore), [Ignition](https://coreos.com/ignition/docs/latest/what-is-ignition.html), and [Cloud-Init](https://github.com/coreos/coreos-cloudinit) configs to machines based on hardware attributes (e.g. UUID, MAC, hostname) or free-form tags.
+The config service renders signed [Ignition](https://coreos.com/ignition/docs/latest/what-is-ignition.html) configs, [Cloud-Init](https://github.com/coreos/coreos-cloudinit) configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or arbitrary tags (e.g. os=installed). Network boot endpoints provide PXE, iPXE, and Pixiecore support.
 
+* Getting Started
+    - [Using rkt](Documentation/getting-started-rkt.md)
+    - [Using docker](Documentation/getting-started-docker.md)
 * [API](Documentation/api.md)
 * [Flags](Documentation/config.md)
 
-## Examples
+### Examples
 
-Get started with the declarative [examples](examples) which network boot different CoreOS clusters. Use the [libvirt script](scripts/libvirt) to quickly setup a network of virtual hardware on your Linux box.
+Boot machines into CoreOS clusters of higher-order systems like Kubernetes or etcd according to the declarative [examples](examples). Use the [libvirt script](scripts/libvirt) to quickly setup a network of virtual hardware on your Linux box.
 
-* Single Node etcd Cluster
 * Multi Node etcd Cluster
 * Kubernetes Cluster (1 master, 1 worker, 1 etcd)
