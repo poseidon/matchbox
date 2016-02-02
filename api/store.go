@@ -14,7 +14,7 @@ type Store interface {
 	ListGroups() ([]Group, error)
 
 	Spec(id string) (*Spec, error)
-	CloudConfig(id string) (*CloudConfig, error)
+	CloudConfig(id string) (string, error)
 	IgnitionConfig(id string) (string, error)
 }
 
@@ -61,21 +61,19 @@ func (s *fileStore) Spec(id string) (*Spec, error) {
 }
 
 // CloudConfig returns the cloud config with the given id.
-func (s *fileStore) CloudConfig(id string) (*CloudConfig, error) {
+func (s *fileStore) CloudConfig(id string) (string, error) {
 	file, err := openFile(s.root, filepath.Join("cloud", id))
 	if err != nil {
 		log.Debugf("no cloud config %s", id)
-		return nil, err
+		return "", err
 	}
 	defer file.Close()
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Errorf("error reading cloud config: %s", err)
-		return nil, err
+		return "", err
 	}
-	return &CloudConfig{
-		Content: string(b),
-	}, nil
+	return string(b), err
 }
 
 // IgnitionConfig returns the ignition template with the given id.

@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"net/http"
-	"text/template"
 
 	ignition "github.com/coreos/ignition/src/config"
 	"golang.org/x/net/context"
@@ -36,22 +35,15 @@ func ignitionHandler(store Store) ContextHandler {
 		}
 		data["query"] = req.URL.RawQuery
 
-		// render the Ignition Config with context and group data
-		tmpl, err := template.New("ignition").Parse(contents)
-		if err != nil {
-			log.Errorf("error parsing template: %v", err)
-			http.NotFound(w, req)
-			return
-		}
+		// render the template for an Ignition config with data
 		var buf bytes.Buffer
-		err = tmpl.Execute(&buf, data)
+		err = renderTemplate(&buf, data, contents)
 		if err != nil {
-			log.Errorf("error rendering template: %v", err)
 			http.NotFound(w, req)
 			return
 		}
 
-		// validate the Ignition Config
+		// validate the Ignition JSON
 		config, err := ignition.Parse(buf.Bytes())
 		if err != nil {
 			log.Errorf("error parsing ignition config: %v", err)

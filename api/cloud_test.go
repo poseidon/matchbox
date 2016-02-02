@@ -10,19 +10,20 @@ import (
 )
 
 func TestCloudHandler(t *testing.T) {
-	cloudcfg := &CloudConfig{Content: "#cloud-config"}
+	cloudContent := "#cloud-config"
 	store := &fixedStore{
-		CloudConfigs: map[string]*CloudConfig{testSpec.CloudConfig: cloudcfg},
+		Specs:        map[string]*Spec{testGroup.Spec: testSpec},
+		CloudConfigs: map[string]string{testSpec.CloudConfig: cloudContent},
 	}
 	h := cloudHandler(store)
-	ctx := withSpec(context.Background(), testSpec)
+	ctx := withGroup(context.Background(), &testGroup)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
 	// - the Spec's cloud config is served
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, cloudcfg.Content, w.Body.String())
+	assert.Equal(t, cloudContent, w.Body.String())
 }
 
 func TestCloudHandler_MissingCtxSpec(t *testing.T) {

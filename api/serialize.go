@@ -2,7 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
+	"text/template"
 )
 
 const (
@@ -26,4 +28,21 @@ func renderJSON(w http.ResponseWriter, v interface{}) {
 		log.Errorf("error writing to response: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+func renderTemplate(w io.Writer, data interface{}, contents ...string) (err error) {
+	tmpl := template.New("")
+	for _, content := range contents {
+		tmpl, err = tmpl.Parse(content)
+		if err != nil {
+			log.Errorf("error parsing template: %v", err)
+			return err
+		}
+	}
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		log.Errorf("error rendering template: %v", err)
+		return err
+	}
+	return nil
 }

@@ -9,7 +9,7 @@ import (
 type fixedStore struct {
 	Groups          []Group
 	Specs           map[string]*Spec
-	CloudConfigs    map[string]*CloudConfig
+	CloudConfigs    map[string]string
 	IgnitionConfigs map[string]string
 }
 
@@ -29,11 +29,11 @@ func (s *fixedStore) ListGroups() ([]Group, error) {
 	return s.Groups, nil
 }
 
-func (s *fixedStore) CloudConfig(id string) (*CloudConfig, error) {
+func (s *fixedStore) CloudConfig(id string) (string, error) {
 	if config, present := s.CloudConfigs[id]; present {
 		return config, nil
 	}
-	return nil, fmt.Errorf("no cloud config %s", id)
+	return "", fmt.Errorf("no cloud config %s", id)
 }
 
 func (s *fixedStore) IgnitionConfig(id string) (string, error) {
@@ -57,8 +57,8 @@ func (s *emptyStore) ListGroups() (groups []Group, err error) {
 	return groups, nil
 }
 
-func (s emptyStore) CloudConfig(id string) (*CloudConfig, error) {
-	return nil, fmt.Errorf("no cloud config %s", id)
+func (s emptyStore) CloudConfig(id string) (string, error) {
+	return "", fmt.Errorf("no cloud config %s", id)
 }
 
 func (s emptyStore) IgnitionConfig(id string) (string, error) {
