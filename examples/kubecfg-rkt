@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    certificate-authority: ../assets/tls/ca.pem
+    server: https://172.15.0.21:443
+  name: k8s-rkt
+contexts:
+- context:
+    cluster: k8s-rkt
+    namespace: default
+    user: k8s-rkt
+  name: k8s-rkt
+current-context: k8s-rkt
+users:
+- name: k8s-rkt
+  user:
+    client-certificate: ../assets/tls/admin.pem
+    client-key: ../assets/tls/admin-key.pem

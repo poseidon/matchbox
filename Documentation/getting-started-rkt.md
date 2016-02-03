@@ -23,28 +23,31 @@ Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct m
 
 Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
 
-    cat > /etc/rkt/net.d/20-metal.conf << EOF
-    {
-      "name": "metal0",
-      "type": "bridge",
-      "bridge": "metal0",
-      "isGateway": true,
-      "ipam": {
-        "type": "host-local",
-        "subnet": "172.15.0.0/16",
-        "routes" : [ { "dst" : "172.15.0.0/16" } ]
-       }
-    }
-    EOF
+```bash
+sudo bash -c 'cat > /etc/rkt/net.d/20-metal.conf << EOF{
+  "name": "metal0",
+  "type": "bridge",
+  "bridge": "metal0",
+  "isGateway": true,
+  "ipMasq": true,
+  "ipam": {
+    "type": "host-local",
+    "subnet": "172.15.0.0/16",
+    "routes" : [ { "dst" : "172.15.0.0/16" } ]
+   }
+}
+EOF'
+```
 
 ## Application Container
 
 Run the Config service (`bootcfg`) on the `metal0` network, with a known IP we'll use in later steps with DNS.
 
     sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
 
 Currently, the insecure flag is needed since Docker images do not support signature verification. We'll ship an ACI soon to address this.
+
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
 
 If you get an error about the IP assignment, garbage collect old pods.
 
@@ -75,7 +78,7 @@ Build the `dnsmasq.aci` ACI.
 
 Run `dnsmasq.aci` to create a DHCP and TFTP server pointing to config server.
 
-    sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0 -- -d -q --dhcp-range=172.15.0.50,172.15.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.15.0.1 --address=/bootcfg.foo/172.15.0.2
+    sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0:IP=172.15.0.3 -- -d -q --dhcp-range=172.15.0.50,172.15.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.15.0.1 --address=/bootcfg.foo/172.15.0.2
 
 In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.15.0.50 and 172.15.0.99, resolves bootcfg.foo to 172.15.0.2 (the IP where `bootcfg` runs), and points iPXE clients to `http://bootcfg.foo:8080/boot.ipxe`.
 
@@ -101,7 +104,7 @@ Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
 ## Going Further
 
-Explore the [examples](../examples). Try the `k8s-rkt.yaml` config to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Explore the [examples](../examples). Try the `k8s-rkt.yaml` [example](../examples/README.md#kubernetes) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 
 Add a GPG key to sign all rendered configs.
 

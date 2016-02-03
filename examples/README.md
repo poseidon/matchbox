@@ -1,7 +1,7 @@
 
 # Examples
 
-Examples contains Config Service data directories showcasing different network-bootable baremetal clusters. These examples work with the libvirt VMs created by `scripts/libvirt` and the [Libvirt Guide](../Documentation/virtual-hardware.md).
+These examples show the declarative configurations needed to network boot libvirt VMs into CoreOS clusters (Kubernetes, etcd) using the Config service (`bootcfg`).
 
 | Name       | Description |  Docs          |
 |------------|-------------|----------------|
@@ -10,111 +10,70 @@ Examples contains Config Service data directories showcasing different network-b
 
 ## Experimental
 
-These examples are experimental and have **NOT** been hardened for production. They are designed to demonstrate booting and configuring CoreOS clusters, especially locally.
+These CoreOS clusters are experimental and have **NOT** been hardened for production yet. They demonstrate Ignition (initrd) and cloud-init provisioning of higher order clusters.
 
-## Virtual Hardware
+## Getting Started
 
-Get started on your Linux machine by creating a network of virtual hardware. Install `libvirt` and `virt-manager` and clone the source.
+Get started running the Config service on your Linux machine to boot clusters of libvirt PXE VMs.
 
-    # Fedora/RHEL
-    dnf install virt-manager
-
-Create 5 libvirt VM nodes, which should be enough for any of the examples. The `scripts/libvirt` script will create 5 VM nodes with known hardware attributes, on the `docker0` bridge network.
-
-    # clone the source
-    git clone https://github.com/coreos/coreos-baremetal.git
-    # create 5 nodes
-    ./scripts/libvirt create
-
-The nodes can be conveniently managed together.
-
-    ./scripts/libvirt reboot
-    ./scripts/libvirt start
-    ./scripts/libvirt shutdown        # graceful
-    ./scripts/libvirt poweroff        # non-graceful
-    ./scripts/libvirt destroy
+* [Getting Started with rkt](Documentation/getting-started-rkt.md)
+* [Getting Started with Docker](Documentation/getting-started-docker.md)
 
 ## Physical Hardware
 
-You can use these examples to provision experimental physical clusters. You'll have to edit the IPs in the examples which reference the config service and cluster nodes to suit your network and update the `config.yaml` to match the attribtues of your hardware. For Kubernetes, be sure to generate TLS assets with the new set of IPs. Read the [Baremetal Guide](../Documentation/physical-hardware.md) for details.
+Run the Config service to boot and provision physical machines (for testing). Update the network values in the `*.yaml` config to match your hardware and network. Generate TLS assets if required for the example (e.g. Kubernetes).
 
-## Config Service
+Continue to the [Physical Hardware Guide](../Documentation/physical-hardware.md) for details.
 
-The Config service matches machines to boot configurations, ignition configs, and cloud configs. It optionally serves OS images and other assets.
+## Examples
 
-Let's run the config service on the virtual network.
+See the Getting Started with [rkt](getting-started-rkt.md) or [Docker](getting-started-docker.md) for a walk-through.
 
-    docker pull quay.io/coreos/bootcfg:latest
+### rkt
 
-Run the command for the example you wish to use.
+etcd cluster with 3 nodes on `metal0`, other nodes act as proxies.
 
-**etcd Cluster**
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
+
+Kubernetes cluster with one master, one worker, and one dedicated etcd on `metal0`.
+
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/k8s-rkt.yaml
+
+### Docker
+
+etcd cluster with 3 nodes on `docker0`, other nodes act as proxies.
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
 
-**Kubernetes Cluster**
+Kubernetes cluster with one master, one worker, and one dedicated etcd on `docker0`.
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/k8s-docker.yaml
 
-The `-config` file describes the desired state of booted machines.
+## Kubernetes
 
-## Assets
+The Kubernetes cluster examples create a TLS-authenticated Kubernetes cluster with 1 master node, 1 worker node, and 1 etcd node, running without a disk.
 
-The examples require the CoreOS stable PXE kernel and initrd images be served by the Config service. Run `get-coreos` to download those images to `assets`.
+You'll need to download the CoreOS Beta image, which ships with the kubelet, and generate TLS assets.
 
-    ./scripts/get-coreos
-
-The following examples require a few additional assets be downloaded or generated. Acquire those assets before continuing.
-
-* [Kubernetes Cluster](kubernetes)
-
-## Network Environment
-
-Run an iPXE setup with DHCP and TFTP on the virtual network on your machine similar to what would be present on a real network. This allocates IP addresses to VM hosts, points PXE booting clients to the config service, and chainloads iPXE.
-
-    sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --address=/bootcfg.foo/172.17.0.2
-
-You may need to update your firewall to allow DHCP and TFTP services. If your config service container has a different IP address or subnet, the IPs in examples will require some adjustments to match your local setup.
-
-## Boot
-
-Reboot the nodes to PXE boot them into your new cluster!
-
-    ./scripts/libvirt reboot
-    # if nodes are in a non-booted state
-    ./scripts/libvirt poweroff
-    ./scripts/libvirt start
-
-The examples use autologin for debugging and checking that nodes were setup correctly depending on the example. If something goes wrong, see [troubleshooting](../Documentation/troubleshooting.md).
-
-If everything works, congratulations! Stay tuned for developments.
-
-## Further Reading
-
-See the [libvirt guide](../Documentation/virtual-hardware.md) or [baremetal guide](../Documentation/physical-hardware.md) for more information.
-
-# Kubernetes
-
-This example provisions a Kubernetes cluster with 1 master node, 1 worker node, and a dedicated etcd node. Each node uses a static IP address on the local network.
-
-## Assets
+### Assets
 
 Download the required CoreOS Beta image assets.
 
     ./scripts/get-coreos beta 877.1.0
 
-Next, add or generate a root CA and Kubernetes TLS assets for each component.
-
 ### TLS Assets
 
-Note: In this example, TLS assets are served to any machines which request them. The network and any machines on it cannot be trusted yet, so this example is **not suitable for production**. [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html) work soon let machines with TPMs establish secure channels to improve secret distribution and cluster attestation.
+**Note**: TLS assets are served to any machines which request them. This is unsuitable for production where machines and networks are untrusted. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html).
 
-Use the `generate-tls` script to generate throw-away TLS assets. The script will generate a root CA and `admin`, `apiserver`, and `worker` certificates in `assets/tls`.
+Generate a root CA and Kubernetes TLS assets for each component (`admin`, `apiserver`, `worker`).
 
     cd coreos-baremetal
-    ./scripts/tls/generate-kubernetes-secrets
+    # for Kubernetes on CNI metal0, i.e. rkt
+    ./scripts/tls/gen-rkt-k8s-secrets
+    # for Kubernetes on docker0
+    ./scripts/tls/gen-docker-k8s-secrets
 
-Alternately, if you have existing Public Key Infrastructure, add your CA certificate, entity certificates, and entity private keys to `assets/tls` (for testing only, not secure yet).
+Alternately, you can add your own CA certificate, entity certificates, and entity private keys to `assets/tls`.
 
     * ca.pem
     * apiserver.pem
@@ -126,18 +85,19 @@ Alternately, if you have existing Public Key Infrastructure, add your CA certifi
 
 See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/latest/openssl.html) document or [Kubernetes Step by Step](https://coreos.com/kubernetes/docs/latest/getting-started.html) for more details.
 
-Return the the general examples [README](../README).
+### Verify
 
-## Usage
-
-Install `kubectl` on your host and use the `examples/kubeconfig` file which references the top level `assets/tls`.
+Install the `kubectl` CLI on your host. Use the provided kubeconfig's to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
 
     cd /path/to/coreos-baremetal
-    kubectl --kubeconfig=examples/kubeconfig get nodes
+    # for kubernetes on CNI metal0, i.e. rkt
+    kubectl --kubeconfig=examples/kubecfg-rkt get nodes
+    # for kubernetes on docker0
+    kubectl --kubeconfig=examples/kubecfg-docker get nodes
 
 Get all pods.
 
-    kubectl --kubeconfig=examples/kubeconfig get pods --all-namespaces
+    kubectl --kubeconfig=examples/kubecfg-rkt get pods --all-namespaces
 
 On my laptop, it takes about 1 minute from boot until the Kubernetes API comes up. Then it takes another 1-2 minutes for all components including DNS to be pulled and started.
 

@@ -66,7 +66,7 @@ Clean up the VM machines.
 
 ## Going Further
 
-Explore the [examples](../examples). Try the `k8s-docker.yaml` config to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Explore the [examples](../examples). Try the `k8s-docker.yaml` [example](../examples/README.md#kubernetes) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 
 Add a GPG key to sign all rendered configs.
 

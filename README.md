@@ -14,11 +14,10 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 ## Config Service
 
-The config service renders signed [Ignition](https://coreos.com/ignition/docs/latest/what-is-ignition.html) configs, [Cloud-Init](https://github.com/coreos/coreos-cloudinit) configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or arbitrary tags (e.g. os=installed). Network boot endpoints provide PXE, iPXE, and Pixiecore support.
+The config service renders signed [Ignition](https://coreos.com/ignition/docs/latest/what-is-ignition.html) configs, [Cloud-Init](https://github.com/coreos/coreos-cloudinit) configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or arbitrary tags (e.g. os=installed, region=us-central). Network boot endpoints provide PXE, iPXE, and Pixiecore support.
 
-* Getting Started
-    - [Using rkt](Documentation/getting-started-rkt.md)
-    - [Using docker](Documentation/getting-started-docker.md)
+* [Getting Started with rkt](Documentation/getting-started-rkt.md)
+* [Getting Started with Docker](Documentation/getting-started-docker.md)
 * [API](Documentation/api.md)
 * [Flags](Documentation/config.md)
 
