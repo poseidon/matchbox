@@ -2,11 +2,18 @@
 
 ## Latest
 
-* Add OpenPGP signature endpoints for iPXE, Pixiecore, Ignition, and Cloud configs. Enable config signing by providing a `-key-ring-path` with a signing key and setting a `BOOTCFG_PASSPHRASE`.
+* Render Ignition config and Cloud configs as Go templates (favor systemd EnvironmentFile where possible).
+* Add a `metadata` endpoint so machine instances can fetch their metadata.
+* Allow `metadata` to be added to group definitions in config.yaml
+* Add detached OpenPGP signature endpoints (suffix `.asc`) for all configs.
+    - Enable signing by providing a `-key-ring-path` with a signing key and setting `BOOTCFG_PASSPHRASE` if needed.
 * Require the `-config` flag if the default file path doesn't exist
 * Normalize user-defined MAC address tags
-* Renamed flag `-images-path` to `-assets-path`
-* Renamed endpoint `/images` to `/assets`
+* Rename flag `-images-path` to `-assets-path`
+* Rename endpoint `/images` to `/assets`
+* Example TLS-authenticated Kubernetes cluster with rkt
+* Example TLS-authenticated Kubernetes cluster with Docker
+* Example custom metadata agent with Ignition, fetches on boot
 
 ## v0.1.0 (2015-01-08)
 
