@@ -44,10 +44,10 @@ function create_docker {
 }
 
 function create_rkt {
-  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
-  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
-  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
-  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --disk pool=default,size=6 --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
 }
 
 nodes=(node1 node2 node3 node4)
@@ -83,7 +83,7 @@ function destroy {
 }
 
 function delete_disks {
-  echo "Deleting volumes... you may need to wait a few seconds or retry"
+  virsh pool-refresh default
   for node in ${nodes[@]}; do
     virsh vol-delete --pool default $node.qcow2
   done
