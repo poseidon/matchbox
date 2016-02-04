@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # USAGE: ./scripts/get-coreos
-# USAGE: ./scripts/get-coreos beta 877.1.0
+# USAGE: ./scripts/get-coreos alpha 942.0.0
 
-CHANNEL=${1:-"stable"}
-VERSION=${2:-"835.9.0"}
+CHANNEL=${1:-"beta"}
+VERSION=${2:-"899.6.0"}
 DEST=${PWD}/assets/coreos/$VERSION
 
 echo "Downloading CoreOS kernel and initrd image assets"

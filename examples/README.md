@@ -56,12 +56,6 @@ The Kubernetes cluster examples create a TLS-authenticated Kubernetes cluster wi
 
 You'll need to download the CoreOS Beta image, which ships with the kubelet, and generate TLS assets.
 
-### Assets
-
-Download the required CoreOS Beta image assets.
-
-    ./scripts/get-coreos beta 877.1.0
-
 ### TLS Assets
 
 **Note**: TLS assets are served to any machines which request them. This is unsuitable for production where machines and networks are untrusted. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html).

@@ -27,8 +27,8 @@ The latest image corresponds to the most recent `coreos-baremetal` master commit
 
 [Prepare a data volume](#data) with `Spec` and ignition/cloud configs. Optionally, prepare a volume of downloaded CoreOS kernel and initrd image assets that `bootcfg` should serve.
 
-    ./scripts/get-coreos               # download CoreOS 835.9.0
-    ./scripts/get-coreos beta 877.1.0
+    ./scripts/get-coreos               # CoreOS Beta 899.6.0
+    ./scripts/get-coreos alpha 942.0.0
 
 Run the container and mount the data and assets directories as volumes.
 
@@ -206,8 +206,8 @@ Optionally, `bootcfg` can host free-form static assets if an `-assets-path` argu
 
 Run the `get-coreos` script to quickly download kernel and initrd image assets.
 
-    ./scripts/get-coreos                 # stable, 835.9.0
-    ./scripts/get-coreos beta 877.1.0
+    ./scripts/get-coreos                 # beta, 899.6.0
+    ./scripts/get-coreos alpha 942.0.0
 
 To reference local assets, change the `kernel` and `initrd` in a boot config file. For example, change `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/assets/coreos/835.9.0/coreos_production_pxe.vmlinuz`.
 
