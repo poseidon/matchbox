@@ -2,7 +2,7 @@
 
 Get started with the Config service on your Linux machine with rkt, CNI, and appc. 
 
-In this tutorial, we'll run the Config service (`bootcfg`) to boot and provision a cluster of 5 VM machines on a CNI bridge (`metal0`). You'll be able to boot etcd clusters, Kubernetes clusters, and more, while emulating different network setups.
+In this tutorial, we'll run the Config service (`bootcfg`) to boot and provision a cluster of four VM machines on a CNI bridge (`metal0`). You'll be able to boot etcd clusters, Kubernetes clusters, and more, while emulating different network setups.
 
 ## Requirements
 

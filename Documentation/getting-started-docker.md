@@ -4,7 +4,7 @@
 
 Get started with the Config service on your Linux machine with Docker. If you're ready to try [rkt](https://coreos.com/rkt/docs/latest/), see [Getting Started with rkt](getting-started-rkt.md).
 
-In this tutorial, we'll run the Config service (`bootcfg`) to boot and provision a cluster of 5 VM machines on the `docker0` bridge. You'll be able to boot etcd clusters, Kubernetes clusters, and more, while emulating different network setups.
+In this tutorial, we'll run the Config service (`bootcfg`) to boot and provision a cluster of four VM machines on the `docker0` bridge. You'll be able to boot etcd clusters, Kubernetes clusters, and more, while emulating different network setups.
 
 ## Requirements
 

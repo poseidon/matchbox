@@ -3,10 +3,11 @@
 
 These examples show the declarative configurations needed to network boot libvirt VMs into CoreOS clusters (Kubernetes, etcd) using the Config service (`bootcfg`).
 
-| Name       | Description |  Docs          |
+| Name       | Description |  Reference     |
 |------------|-------------|----------------|
-| etcd-large | Cluster with 3 etcd nodes, 2 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) |
+| etcd | Cluster with 3 etcd nodes, 2 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+|Kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) |
+| Disk Install | 2-stage Ignition: Install CoreOS, provision etcd cluster | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 
 ## Experimental
 
@@ -16,8 +17,8 @@ These CoreOS clusters are experimental and have **NOT** been hardened for produc
 
 Get started running the Config service on your Linux machine to boot clusters of libvirt PXE VMs.
 
-* [Getting Started with rkt](Documentation/getting-started-rkt.md)
-* [Getting Started with Docker](Documentation/getting-started-docker.md)
+* [Getting Started with rkt](../Documentation/getting-started-rkt.md)
+* [Getting Started with Docker](../Documentation/getting-started-docker.md)
 
 ## Physical Hardware
 

@@ -86,7 +86,7 @@ Create or attach PXE client machines to the network boot environment on the `doc
 
 ### libvirt VM
 
-Create 5 libvirt VM nodes configured to boot from the network. The `scripts/libvirt` script will create 5 VM nodes with known hardware attributes, on the `docker0` bridge network.
+Create libvirt VM nodes configured to boot from the network. The `scripts/libvirt` script will create four VM nodes with known hardware attributes, on the `docker0` bridge network.
 
     sudo ./scripts/libvirt
     USAGE: libvirt <command>
