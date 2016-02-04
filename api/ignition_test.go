@@ -9,11 +9,13 @@ import (
 	"golang.org/x/net/context"
 )
 
+var expectedIgnition = `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
+
 func TestIgnitionHandler(t *testing.T) {
-	ignitioncfg := `{"ignitionVersion": 1}`
+	content := `{"ignitionVersion": 1,"systemd":{"units":[{"name":"{{.service_name}}.service","enable":true}]}}`
 	store := &fixedStore{
 		Specs:           map[string]*Spec{testGroup.Spec: testSpec},
-		IgnitionConfigs: map[string]string{testSpec.IgnitionConfig: ignitioncfg},
+		IgnitionConfigs: map[string]string{testSpec.IgnitionConfig: content},
 	}
 	h := ignitionHandler(store)
 	ctx := withGroup(context.Background(), &testGroup)
@@ -21,11 +23,38 @@ func TestIgnitionHandler(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - the Spec's ignition config is rendered
-	expectedJSON := `{"ignitionVersion":1,"storage":{},"systemd":{},"networkd":{},"passwd":{}}`
+	// - Ignition template is rendered with Group metadata
+	// - Rendered Ignition template is parsed as JSON
+	// - Ignition Config served as JSON
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
-	assert.Equal(t, expectedJSON, w.Body.String())
+	assert.Equal(t, expectedIgnition, w.Body.String())
+}
+
+func TestIgnitionHandler_YAMLIgnition(t *testing.T) {
+	content := `
+ignition_version: 1
+systemd:
+  units:
+    - name: {{.service_name}}.service
+      enable: true
+`
+	store := &fixedStore{
+		Specs:           map[string]*Spec{testGroup.Spec: testSpecWithIgnitionYAML},
+		IgnitionConfigs: map[string]string{testSpecWithIgnitionYAML.IgnitionConfig: content},
+	}
+	h := ignitionHandler(store)
+	ctx := withGroup(context.Background(), &testGroup)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(ctx, w, req)
+	// assert that:
+	// - Ignition template is rendered with Group metadata
+	// - Rendered Ignition template ending in .yaml is parsed as YAML
+	// - Ignition Config served as JSON
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, expectedIgnition, w.Body.String())
 }
 
 func TestIgnitionHandler_MissingCtxSpec(t *testing.T) {

@@ -11,5 +11,5 @@
     }
   },
   "cloud_id": "kubernetes-worker.sh",
-  "ignition_id": "network.json"
+  "ignition_id": "network.yaml"
 }

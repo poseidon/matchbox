@@ -10,5 +10,5 @@
     }
   },
   "cloud_id": "",
-  "ignition_id": "etcd.json"
+  "ignition_id": "etcd.yaml"
 }

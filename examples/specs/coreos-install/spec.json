@@ -10,5 +10,5 @@
     }
   },
   "cloud_id": "",
-  "ignition_id": "coreos-install.json"
+  "ignition_id": "coreos-install.yaml"
 }

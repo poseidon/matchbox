@@ -23,6 +23,10 @@ var (
 		CloudConfig:    "cloud-config.yml",
 		IgnitionConfig: "ignition.json",
 	}
+	testSpecWithIgnitionYAML = &Spec{
+		ID:             "g1h2i3j4",
+		IgnitionConfig: "ignition.yaml",
+	}
 	emptySpec = &Spec{
 		ID: "empty",
 	}

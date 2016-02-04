@@ -25,3 +25,11 @@ networkd:
         DNS={{.networkd_dns}}
         DNS=8.8.8.8
         Address={{.networkd_address}}
+
+{{ if .ssh_authorized_key }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - {{.ssh_authorized_key}}
+{{end}}

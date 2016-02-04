@@ -2,14 +2,18 @@ package api
 
 import (
 	"bytes"
+	"gopkg.in/yaml.v2"
 	"net/http"
+	"strings"
 
 	ignition "github.com/coreos/ignition/src/config"
 	"golang.org/x/net/context"
 )
 
-// ignitionHandler returns a handler that responds with the ignition config
-// for the requester.
+// ignitionHandler returns a handler that responds with the Ignition config
+// for the requester. The Ignition file referenced in the Spec is rendered
+// with metadata and parsed and validated as either YAML or JSON based on the
+// extension. The Ignition config is served as an HTTP JSON response.
 func ignitionHandler(store Store) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
@@ -43,14 +47,28 @@ func ignitionHandler(store Store) ContextHandler {
 			return
 		}
 
-		// validate the Ignition JSON
-		config, err := ignition.Parse(buf.Bytes())
-		if err != nil {
-			log.Errorf("error parsing ignition config: %v", err)
-			http.NotFound(w, req)
-			return
+		// Unmarshal YAML or JSON Ignition config
+		var cfg ignition.Config
+		if isYAML(spec.IgnitionConfig) {
+			if err := yaml.Unmarshal(buf.Bytes(), &cfg); err != nil {
+				log.Errorf("error parsing YAML Ignition config: %v", err)
+				http.NotFound(w, req)
+				return
+			}
+		} else {
+			cfg, err = ignition.Parse(buf.Bytes())
+			if err != nil {
+				log.Errorf("error parsing JSON Ignition config: %v", err)
+				http.NotFound(w, req)
+				return
+			}
 		}
-		renderJSON(w, config)
+		// Marshal Ignition config as JSON HTTP response
+		renderJSON(w, cfg)
 	}
 	return ContextHandlerFunc(fn)
+}
+
+func isYAML(filename string) bool {
+	return strings.HasSuffix(filename, ".yaml") || strings.HasSuffix(filename, ".yml")
 }

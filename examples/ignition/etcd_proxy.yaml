@@ -29,3 +29,11 @@ systemd:
               --proxy on
               --listen-client-urls=http://localhost:2379 \
               --initial-cluster=${ETCD_INITIAL_CLUSTER}
+
+{{ if .ssh_authorized_key }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - {{.ssh_authorized_key}}
+{{end}}

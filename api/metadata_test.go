@@ -22,10 +22,11 @@ func TestMetadataHandler(t *testing.T) {
 	// - query argument attributes are added to the metadata
 	// - key names are upper case
 	expectedData := map[string]string{
-		"K8S_VERSION": "v1.1.2",
-		"POD_NETWORK": "10.2.0.0/16",
-		"UUID":        "a1b2c3d4",
-		"MAC":         validMACStr,
+		"K8S_VERSION":  "v1.1.2",
+		"POD_NETWORK":  "10.2.0.0/16",
+		"SERVICE_NAME": "etcd2",
+		"UUID":         "a1b2c3d4",
+		"MAC":          validMACStr,
 	}
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, expectedData, metadataToMap(w.Body.String()))
