@@ -36,7 +36,7 @@ func cloudHandler(store Store) ContextHandler {
 		}
 
 		// collect data for rendering
-		data := make(map[string]string)
+		data := make(map[string]interface{})
 		for k := range group.Metadata {
 			data[k] = group.Metadata[k]
 		}

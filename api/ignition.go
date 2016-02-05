@@ -33,7 +33,7 @@ func ignitionHandler(store Store) ContextHandler {
 		}
 
 		// collect data for rendering Ignition Config
-		data := make(map[string]string)
+		data := make(map[string]interface{})
 		for k := range group.Metadata {
 			data[k] = group.Metadata[k]
 		}

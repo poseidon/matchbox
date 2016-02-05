@@ -24,7 +24,8 @@ Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct m
 Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
 
 ```bash
-sudo bash -c 'cat > /etc/rkt/net.d/20-metal.conf << EOF{
+sudo bash -c 'cat > /etc/rkt/net.d/20-metal.conf << EOF
+{
   "name": "metal0",
   "type": "bridge",
   "bridge": "metal0",
@@ -43,6 +44,7 @@ EOF'
 
 Run the Config service (`bootcfg`) on the `metal0` network, with a known IP we'll use in later steps with DNS.
 
+    sudo rkt trust --prefix quay.io/coreos
     sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
 
 Currently, the insecure flag is needed since Docker images do not support signature verification. We'll ship an ACI soon to address this.
@@ -65,9 +67,9 @@ Create four VM nodes which have known hardware attributes. The nodes will be att
 
     sudo ./scripts/libvirt create-rkt
 
-In your Firewall Configuration, add `metal0` as a trusted interface.
-
 ## Network
+
+In your **Firewall Configuration**, add the `metal0` interface to the trusted zone.
 
 Since the virtual network has no network boot services, use the `dnsmasq` ACI to set up an example iPXE environment which runs DHCP, DNS, and TFTP. The `dnsmasq` container can help test different network setups.
 
@@ -101,6 +103,7 @@ Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
     sudo ./scripts/libvirt poweroff
     sudo ./scripts/libvirt destroy
+    sudo ./scripts/libvirt delete-disks
 
 ## Going Further
 

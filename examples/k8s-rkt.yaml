@@ -18,6 +18,7 @@ groups:
       k8s_dns_service_ip: 10.3.0.10
       k8s_advertise_ip: 172.15.0.21
       k8s_cert_endpoint: http://bootcfg.foo:8080/assets
+      ssh_authorized_keys:
 
   - name: Worker Node
     spec: kubernetes-worker

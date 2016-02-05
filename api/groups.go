@@ -20,7 +20,7 @@ type Group struct {
 	// Spec identifier
 	Spec string `yaml:"spec"`
 	// Custom Metadata
-	Metadata map[string]string `yaml:"metadata"`
+	Metadata map[string]interface{} `yaml:"metadata"`
 	// matcher conditions
 	Matcher RequirementSet `yaml:"require"`
 }

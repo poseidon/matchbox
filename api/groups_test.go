@@ -17,7 +17,7 @@ var (
 	testGroup           = Group{
 		Name: "test group",
 		Spec: "g1h2i3j4",
-		Metadata: map[string]string{
+		Metadata: map[string]interface{}{
 			"k8s_version":  "v1.1.2",
 			"pod_network":  "10.2.0.0/16",
 			"service_name": "etcd2",

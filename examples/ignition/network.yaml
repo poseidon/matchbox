@@ -26,10 +26,12 @@ networkd:
         DNS=8.8.8.8
         Address={{.networkd_address}}
 
-{{ if .ssh_authorized_key }}
+{{ if .ssh_authorized_keys }}
 passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        - {{.ssh_authorized_key}}
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
 {{end}}
