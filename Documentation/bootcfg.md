@@ -1,7 +1,7 @@
 
-# Config Service
+# bootcfg
 
-The bare metal config service is an HTTP service run inside a data center which provides (optionally signed) boot configs, ignition configs, and cloud configs to PXE, iPXE, and Pixiecore network-boot client machines.
+`bootcfg` is an HTTP config service which renders signed Ignition configs, Cloud-configs, network boot configs, and metadata to machines based on their attributes.
 
 The service maintains **Spec** resources which define a named set of boot settings (kernel, options, initrd) and configuration settings (ignition config, cloud config). **Groups** match zero or more machines to a `Spec` based on tags such as machine attributes (e.g. UUID, MAC) or arbitrary key/value pairs (e.g. zone, region, etc.).
 
@@ -136,63 +136,6 @@ The `"boot"` section references the kernel image, init RAM filesystem, and kerne
 To use cloud-init, set the `cloud-config-url` kernel option to the `bootcfg` cloud endpoint to reference the cloud config named by `cloud_id`.
 
 To use ignition, set the `coreos.config.url` kernel option to the `bootcfg` ignition endpoint to refernce the ignition config named by `ignition_id`. Be sure to add the `coreos.first_boot` kernel argument when network booting.
-
-### Cloud Config
-
-Cloud config files are declarative configurations for customizing early initialization of machine instances. CoreOS supports a subset of the [cloud-init project](http://cloudinit.readthedocs.org/en/latest/index.html) and supports a kernel option `cloud-config-url`. CoreOS downloads the HTTP config after kernel initialization.
-
-    #cloud-config
-    coreos:
-      units:
-        - name: etcd2.service
-          command: start
-        - name: fleet.service
-          command: start
-    write_files:
-      - path: "/home/core/welcome"
-        owner: "core"
-        permissions: "0644"
-        content: |
-          File added by the default cloud-config.
-
-See the CoreOS cloud config [docs](https://coreos.com/os/docs/latest/cloud-config.html), config [validator](https://coreos.com/validate/), and [implementation](https://github.com/coreos/coreos-cloudinit) for more details or [data](../data) for examples.
-
-## Ignition Config
-
-Ignition is a configuration system for provisioning CoreOS instances before userspace startup. Here is an example `ignition-config.json`.
-
-    {
-        "ignitionVersion": 1,
-        "systemd": {
-            "units": [
-                {
-                    "name": "hello.service",
-                    "enable": true,
-                    "contents": "[Service]\nType=oneshot\nExecStart=/usr/bin/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
-                }
-            ]
-        }
-    }
-
-
-See the Ignition [docs](https://coreos.com/ignition/docs/latest/) and [github](https://github.com/coreos/ignition) for the latest details.
-
-## OpenPGP Signatures
-
-OpenPGP signature endpoints serve ASCII armored signatures of configs. Signatures are available if the config service is provided with a `-key-ring-path` to a private keyring containing a single signing key. If the key has a passphrase, set the `BOOTCFG_PASSPHRASE` environment variable.
-
-    docker run -p 8080:8080 -e BOOTCFG_PASSPHRASE=phrase --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg -address=0.0.0.0:8080 -key-ring-path /data/secring.gpg [-log-level=debug]
-
-It is recommended that a subkey be used and exported to a key ring which is solely used for config signing and can be revoked by a master if needed. If running the config service on a Kubernetes cluster, Kubernetes secrets provide a better way to mount the key ring and source a passphrase variable.
-
-Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.asc`.
-
-* `http://bootcfg.example.com/boot.ipxe.asc`
-* `http://bootcfg.example.com/boot.ipxe.0.asc`
-* `http://bootcfg.example.com/ipxe.asc`
-* `http://bootcfg.example.com/pixiecore/v1/boot.asc/:MAC`
-* `http://bootcfg.example.com/cloud.asc`
-* `http://bootcfg.example.com/ignition.asc`
 
 ## Assets
 
