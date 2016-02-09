@@ -15,9 +15,9 @@ Identify whether the network runs a DHCP service which can be configured or whet
 
     route -n        # e.g. Gateway 192.168.1.1
 
-## Config Service
+## bootcfg
 
-Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
+Set up `bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Machine` definitions, `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
@@ -29,7 +29,7 @@ Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.
 
 Your network may already have a configurable PXE or iPXE server, configurable DHCP, a DHCP server you cannot modify, or no DHCP server at all. We'll show how to setup each network environment to talk to `bootcfg`, depending on your circumstances.
 
-Otherwise create a PXE, iPXE, or Pixiecore network boot environment using the CoreOS [dnsmasq](../contrib/dnsmasq) container image which can run DHCP, proxyDHCP, TFTP, and/or DNS with `dnsmasq`. Use `--net=host` to run the services on the host and use `--dhcp-boot` to point clients to the config service.
+Otherwise create a PXE, iPXE, or Pixiecore network boot environment using the CoreOS [dnsmasq](../contrib/dnsmasq) container image which can run DHCP, proxyDHCP, TFTP, and/or DNS with `dnsmasq`. Use `--net=host` to run the services on the host and use `--dhcp-boot` to point clients to `bootcfg`.
 
 ### Configurable iPXE
 

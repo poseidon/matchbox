@@ -1,7 +1,7 @@
 
-# Config: Flags and Variables
+# Flags and Variables
 
-`bootcfg` arguments can be provided as flags or as environment variables.
+Configuration arguments can be provided as flags or as environment variables.
 
 | flag | variable | example |
 |------|----------|---------|
@@ -15,16 +15,17 @@
 
 ## Examples
 
-Binary
+Build the static binary.
 
-    ./run -address=0.0.0.0:8080 -data-path=./examples/dev -config=./examples/dev/config.yaml -assets-path=./assets -log-level=debug
+    ./build
 
-Binary with Signature Endpoints Enabled
+Run
 
-    BOOTCFG_PASSPHRASE=phrase
-    ./run -address=0.0.0.0:8080 -data-path=./examples/dev -config=./examples/dev/config.yaml -assets-path=./assets -key-ring-path path/to/ring/secring.gpg -log-level=debug
+    ./bin/bootcfg -address=0.0.0.0:8080 -log-level=debug -data-path examples/ -config examples/etcd-rkt.yaml
 
-Container
+Run with a fake signing key.
 
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -data-path=./data -config=./data/config.yaml -assets-path=./assets -log-level=debug
+    export BOOTCFG_PASSPHRASE=test
+    ./bin/bootcfg -address=0.0.0.0:8080 -key-ring-path sign/fixtures/secring.gpg -data-path examples/ -config examples/etcd-rkt.yaml
+
 

@@ -1,14 +1,14 @@
 # Getting Started with rkt
 
-Get started with the Config service on your Linux machine with rkt, CNI, and appc. 
+Get started with `bootcfg` on your Linux machine with rkt, CNI, and appc. 
 
-In this tutorial, we'll run the Config service (`bootcfg`) to boot and provision a cluster of four VM machines on a CNI bridge (`metal0`). You'll be able to boot etcd clusters, Kubernetes clusters, and more, while emulating different network setups.
+In this tutorial, we'll run `bootcfg` to boot and provision a cluster of four VM machines on a CNI bridge (`metal0`). You'll be able to boot etcd clusters, Kubernetes clusters, and more, while testing different network setups.
 
 ## Requirements
 
 **Note**: Currently, rkt and the Fedora/RHEL/CentOS SELinux policies aren't supported. See the [issue](https://github.com/coreos/rkt/issues/1727) tracking the work and policy changes. To test these examples on your laptop, set SELinux enforcement to permissive if you are comfortable (`sudo setenforce 0`). Enable it again when you are finished.
 
-Install [rkt](https://github.com/coreos/rkt/releases), [acbuild](https://github.com/appc/acbuild), and package dependencies. These examples have been tested on Fedora 23.
+Install [rkt](https://github.com/coreos/rkt/releases), [acbuild](https://github.com/appc/acbuild), and package dependencies.
 
     sudo dnf install virt-install virt-manager
 
@@ -42,7 +42,7 @@ EOF'
 
 ## Application Container
 
-Run the Config service (`bootcfg`) on the `metal0` network, with a known IP we'll use in later steps with DNS.
+Run `bootcfg` on the `metal0` network, with a known IP we'll use in later steps with DNS.
 
     sudo rkt trust --prefix quay.io/coreos
     sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
@@ -109,6 +109,4 @@ Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
 Explore the [examples](../examples). Try the `k8s-rkt.yaml` [example](../examples/README.md#kubernetes) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 
-Add a GPG key to sign all rendered configs.
-
-Learn more about the [config service](bootcfg.md) or adapt an example for your own [physical hardware and network](physical-hardware.md).
+Learn more about [bootcfg](bootcfg.md), enable [OpenPGP signing](openpgp.md), or adapt an example for your own [physical hardware](physical-hardware.md) and network.

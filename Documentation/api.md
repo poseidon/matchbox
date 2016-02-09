@@ -5,8 +5,8 @@
 
 Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Configure your DHCP server or iPXE server to boot from this script (e.g. set `dhcp-boot:dhcp-boot=tag:ipxe,http://bootcfg.domain.com/ipxe/boot.ipxe` if using `dnsmasq`).
 
-    GET http://bootcfg.example.com/boot.ipxe
-    GET http://bootcfg.example.com/boot.ipxe.0   // for dnsmasq
+    GET http://bootcfg.foo/boot.ipxe
+    GET http://bootcfg.foo/boot.ipxe.0   // for dnsmasq
 
 **Response**
 
@@ -15,9 +15,9 @@ Serves a static iPXE boot script which gathers client machine attributes and cha
 
 ## iPXE
 
-Finds the spec matching the attribute query parameters and renders the boot config as an iPXE script.
+Finds the spec matching the attribute query parameters and renders the spec boot settings (kernel, options, initrd) as an iPXE script.
 
-    GET http://bootcfg.example.com/ipxe
+    GET http://bootcfg.foo/ipxe
 
 **Query Parameters**
 
@@ -29,17 +29,15 @@ Finds the spec matching the attribute query parameters and renders the boot conf
 **Response**
 
     #!ipxe
-    kernel /assets/coreos/835.9.0/coreos_production_pxe.vmlinuz cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
-    initrd  /assets/coreos/835.9.0/coreos_production_pxe_image.cpio.gz
+    kernel /assets/coreos/899.6.0/coreos_production_pxe.vmlinuz cloud-config-url=http://bootcfg.foo:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
+    initrd  /assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz
     boot
-
-The kernel, cmdline kernel options, and initrd are populated from a `Spec`.
 
 ## Pixiecore
 
-Finds the spec matching the attribute query parameters and renders the boot config as JSON to implement the Pixiecore API [spec](https://github.com/danderson/pixiecore/blob/master/README.api.md). Currently, Pixiecore only provides the machine's MAC address for matching specs.
+Finds the spec matching the attribute query parameters and renders the boot settings as JSON to implement the Pixiecore API [spec](https://github.com/danderson/pixiecore/blob/master/README.api.md). Currently, Pixiecore only provides the machine's MAC address for matching.
 
-    GET http://bootcfg.example.com/pixiecore/v1/boot/:MAC
+    GET http://bootcfg.foo/pixiecore/v1/boot/:MAC
 
 **URL Parameters**
 
@@ -50,19 +48,19 @@ Finds the spec matching the attribute query parameters and renders the boot conf
 **Response**
 
     {
-      "kernel":"/assets/coreos/877.1.0/coreos_production_pxe.vmlinuz",
-      "initrd":["/assets/coreos/877.1.0/coreos_production_pxe_image.cpio.gz"],
+      "kernel":"/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
+      "initrd":["/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],
       "cmdline":{
-        "cloud-config-url":"http://bootcfg.example.com/cloud",
+        "cloud-config-url":"http://bootcfg.foo/cloud?mac=ADDRESS",
         "coreos.autologin":""
       }
     }
 
 ## Cloud Config
 
-Finds the spec matching the attribute query parameters and returns the corresponding cloud config file.
+Finds the spec matching the attribute query parameters and renders the corresponding cloud-config file.
 
-    GET http://bootcfg.example.com/cloud
+    GET http://bootcfg.foo/cloud
 
 **Query Parameters**
 
@@ -83,9 +81,9 @@ Finds the spec matching the attribute query parameters and returns the correspon
 
 ## Ignition Config
 
-Finds the spec matching the attribute query parameters and returns the corresponding ignition config JSON.
+Finds the spec matching the attribute query parameters and renders the corresponding Ignition config as JSON.
 
-    GET http://bootcfg.example.com/ignition
+    GET http://bootcfg.foo/ignition
 
 **Query Parameters**
 
@@ -112,65 +110,30 @@ Finds the spec matching the attribute query parameters and returns the correspon
       "passwd": {}
     }
 
-
-## API Resources
-
-### Specs
-
-Get a `Spec` definition by id (UUID, MAC).
-
-    http://bootcfg.domain.com/spec/:id
-
-**URL Parameters**
-
-| Name | Type   | Description |
-|------|--------|-------------|
-| id   | string | spec identifier |
-
-**Response**
-
-```json
-{
-  "id": "orion",
-  "boot": {
-    "kernel": "\/assets\/coreos\/835.9.0\/coreos_production_pxe.vmlinuz",
-    "initrd": [
-      "\/assets\/coreos\/835.9.0\/coreos_production_pxe_image.cpio.gz"
-    ],
-    "cmdline": {
-      "cloud-config-url": "http:\/\/172.17.0.2:8080\/cloud?uuid=${uuid}&mac=${net0\/mac:hexhyp}",
-      "coreos.autologin": ""
-    }
-  },
-  "cloud_id": "orion-cloud-config.yml"
-}
-```
-
 ## OpenPGP Signatures
 
-OpenPGP signature endpoints serve ASCII armored signatures of configs. Signatures are available if the config service is provided with a `-key-ring-path` to a private keyring containing a single signing key. If the key has a passphrase, set the `BOOTCFG_PASSPHRASE` environment variable
+OpenPGPG signature endpoints serve ASCII armored detached signatures of rendered configs when signing is enabled. See [OpenPGP Signing](openpgp.md).
 
-* `http://bootcfg.example.com/boot.ipxe.asc`
-* `http://bootcfg.example.com/boot.ipxe.0.asc`
-* `http://bootcfg.example.com/ipxe.asc`
-* `http://bootcfg.example.com/pixiecore/v1/boot.asc/:MAC`
-* `http://bootcfg.example.com/cloud.asc`
-* `http://bootcfg.example.com/ignition.asc`
+| Endpoint   | ASCII Signature Endpoint |
+|------------|-----------------|
+| Ignition   | `http://bootcfg.foo/ignition.asc` |
+| Cloud-init | `http://bootcfg.foo/cloud.asc` |
+| iPXE       | `http://bootcfg.foo/boot.ipxe.asc` |
+| iPXE       | `http://bootcfg.foo/ipxe.asc` |
+| Pixiecore  | `http://bootcfg.foo/pixiecore/v1/boot.asc/:MAC` |
 
-Signature endpoints mirror the config endpoints, but provide detached signatures and are suffixed with `.asc`. For example, an iPXE config endpoint like the following:
+Get an Ignition config and its detached signature.
 
-    GET http://bootcfg.example.com/ipxe?attribute=value
+    GET http://bootcfg.foo/ipxe?attribute=value
 
 **Response**
 
     #!ipxe
-    kernel /assets/coreos/835.9.0/coreos_production_pxe.vmlinuz cloud-config-url=http://172.17.0.2:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
-    initrd  /assets/coreos/835.9.0/coreos_production_pxe_image.cpio.gz
+    kernel /assets/coreos/899.6.0/coreos_production_pxe.vmlinuz cloud-config-url=http://bootcfg.foo:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
+    initrd  /assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz
     boot
 
-Provides a sibling OpenPGP signature endpoint.
-
-    GET http://bootcfg.example.com/ipxe.asc?attribute=value
+    GET http://bootcfg.foo/ipxe.asc?attribute=value
 
 **Response**
 
@@ -187,16 +150,51 @@ NO+p24BL3PHZyKw0nsrm275C913OxEVgnNZX7TQltaweW23Cd1YBNjcfb3zv+Zo=
 -----END PGP SIGNATURE-----
 ```
 
+## API Resources
+
+### Specs
+
+Get a `Spec` definition by id (UUID, MAC).
+
+    http://bootcfg.foo/spec/:id
+
+**URL Parameters**
+
+| Name | Type   | Description |
+|------|--------|-------------|
+| id   | string | spec identifier |
+
+**Response**
+
+```json
+{
+  "id": "etcd",
+  "boot": {
+    "kernel": "/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
+    "initrd": [
+      "/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"
+    ],
+    "cmdline": {
+      "coreos.autologin": "",
+      "coreos.config.url": "http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+      "coreos.first_boot": ""
+    }
+  },
+  "cloud_id": "",
+  "ignition_id": "etcd.yaml"
+}
+```
+
 ## Assets
 
-If you need to host static assets (e.g. kernel, initrd) within your network, bootcfg server's `/assets/` route serves free-form static assets. Set the `-assets-path` when starting the bootcfg server. Here is an example:
+If you need to serve static assets (e.g. kernel, initrd), `bootcfg` can serve arbitrary assets from `-assets-path` at `/assets/`.
 
     assets/
     └── coreos
         └── 835.9.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
-        └── 877.1.0
+        └── 899.6.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
 

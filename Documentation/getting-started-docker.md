@@ -2,13 +2,13 @@
 
 # Getting Started with Docker
 
-Get started with the Config service on your Linux machine with Docker. If you're ready to try [rkt](https://coreos.com/rkt/docs/latest/), see [Getting Started with rkt](getting-started-rkt.md).
+Get started with `bootcfg` on your Linux machine with Docker. If you're ready to try [rkt](https://coreos.com/rkt/docs/latest/), see [Getting Started with rkt](getting-started-rkt.md).
 
-In this tutorial, we'll run the Config service (`bootcfg`) to boot and provision a cluster of four VM machines on the `docker0` bridge. You'll be able to boot etcd clusters, Kubernetes clusters, and more, while emulating different network setups.
+In this tutorial, we'll run `bootcfg` to boot and provision a cluster of four VM machines on the `docker0` bridge. You'll be able to boot etcd clusters, Kubernetes clusters, and more, while testing different network setups.
 
 ## Requirements
 
-Install the dependencies. These examples have been tested on Fedora 23.
+Install the dependencies.
 
     sudo dnf install virt-install docker virt-manager
     sudo systemctl start docker
@@ -28,7 +28,7 @@ Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct m
 
 ## Containers
 
-Run the Config service (`bootcfg`). The `docker0` bridge should assign it the IP 172.17.0.2 (`sudo docker network inspect bridge`).
+Run `bootcfg` on the default bridge `docker0`. The bridge should assign it the IP 172.17.0.2 (`sudo docker network inspect bridge`).
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
 
@@ -69,6 +69,4 @@ Clean up the VM machines.
 
 Explore the [examples](../examples). Try the `k8s-docker.yaml` [example](../examples/README.md#kubernetes) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 
-Add a GPG key to sign all rendered configs.
-
-Learn more about the [config service](bootcfg.md) or adapt an example for your own [physical hardware and network](physical-hardware.md).
+Learn more about [bootcfg](bootcfg.md), enable [OpenPGP signing](openpgp.md), or adapt an example for your own [physical hardware](physical-hardware.md) and network.

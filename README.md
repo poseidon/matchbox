@@ -13,13 +13,14 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 ## bootcfg
 
-`bootcfg` is a config service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://github.com/coreos/coreos-cloudinit), network boot configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or tags (e.g. os=installed, region=us-central) to create CoreOS clusters. Network boot endpoints provide PXE, iPXE, and Pixiecore support. `bootcfg` can run as an [application container](https://github.com/appc/spec) with [rkt](https://coreos.com/rkt/docs/latest/), as a Docker container, or as a binary.
+`bootcfg` is a service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or tags (e.g. os=installed, region=us-central) to create CoreOS clusters. Network boot endpoints provide PXE, iPXE, and Pixiecore support. `bootcfg` can run as an [application container](https://github.com/appc/spec) with [rkt](https://coreos.com/rkt/docs/latest/), as a Docker container, or as a binary.
 
 * [Getting Started with rkt](Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](Documentation/getting-started-docker.md)
 * [bootcfg](Documentation/bootcfg.md)
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
+    * [Groups](Documentation/bootcfg.md#groups-and-metadata)
 * [OpenPGP Signing](Documentation/openpgp.md)
 * [Flags](Documentation/config.md)
 * [API](Documentation/api.md)
@@ -28,6 +29,6 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 Use the [examples](examples) to boot machines into CoreOS clusters of higher-order systems, like Kubernetes. Quickly setup a network of virtual hardware on your Linux box for testing with the [libvirt script](scripts/libvirt).
 
-* TLS-auth Kubernetes Cluster (1 master, 1 worker, 1 etcd)
-* Multi Node etcd Cluster
+* TLS-auth Kubernetes cluster (1 master, 1 worker, 1 etcd)
+* Multi Node etcd cluster
 * Install CoreOS to disk with followup Ignition stages

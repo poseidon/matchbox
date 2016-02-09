@@ -22,7 +22,7 @@ Alternately, Docker can be used.
 
 ## Configuration Flags
 
-Configuration arguments can be provided as arguments. Check the dnsmasq [man pages]](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) for a complete list, but here are some important options.
+Configuration arguments can be provided at the command line. Check the dnsmasq [man pages]](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) for a complete list, but here are some important flags.
 
 | flag     | description | example |
 |----------|-------------|---------|
@@ -36,7 +36,7 @@ Configuration arguments can be provided as arguments. Check the dnsmasq [man pag
 Build a `dnsmasq` ACI with the build script which uses [acbuild](https://github.com/appc/acbuild).
 
     cd contrib/dnsmasq
-    ./build-aci
+    sudo ./build-aci
 
 Run `dnsmasq.aci` with rkt to run DHCP/proxyDHCP/TFTP/DNS services.
 

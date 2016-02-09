@@ -1,7 +1,7 @@
 
 # Examples
 
-These examples show the declarative configurations needed to network boot libvirt VMs into CoreOS clusters (Kubernetes, etcd) using the Config service (`bootcfg`).
+These examples show declarative configurations for network booting libvirt VMs into CoreOS clusters (Kubernetes, etcd) using `bootcfg`.
 
 | Name       | Description |  Reference     |
 |------------|-------------|----------------|
@@ -15,14 +15,14 @@ These CoreOS clusters are experimental and have **NOT** been hardened for produc
 
 ## Getting Started
 
-Get started running the Config service on your Linux machine to boot clusters of libvirt PXE VMs.
+Get started running the `bootcfg` on your Linux machine to boot clusters of libvirt PXE VMs.
 
 * [Getting Started with rkt](../Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](../Documentation/getting-started-docker.md)
 
 ## Physical Hardware
 
-Run the Config service to boot and provision physical machines (for testing). Update the network values in the `*.yaml` config to match your hardware and network. Generate TLS assets if required for the example (e.g. Kubernetes).
+Run the `bootcfg` to boot and configure physical machines (for testing). Update the network values in the `*.yaml` config to match your hardware and network. Generate TLS assets if required for the example (e.g. Kubernetes).
 
 Continue to the [Physical Hardware Guide](../Documentation/physical-hardware.md) for details.
 

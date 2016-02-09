@@ -8,9 +8,9 @@ Docker containers run on the `docker0` virtual bridge, typically on a subnet 172
     brctl show
     docker network inspect bridge
 
-## Config Service
+## bootcfg
 
-Set up `coreos/bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
+Set up `bootcfg` according to the [docs](bootcfg.md). Pull the `coreos/bootcfg` image, prepare a data volume with `Spec` definitions and ignition/cloud configs. Optionally, include a volume of downloaded image assets.
 
 Run the `bootcfg` container to serve configs for any of the network environments we'll discuss next.
 
@@ -22,7 +22,7 @@ Note, the kernel options in the `Spec` [examples](../examples) reference 172.17.
 
 ## Network Setups
 
-Create a PXE, iPXE, or Pixiecore network boot environment using the CoreOS [dnsmasq](../contrib/dnsmasq) container image which can run DHCP, proxyDHCP, TFTP, and/or DNS with `dnsmasq`. Use `--net` to specify a virtual bridge and `--dhcp-boot` to point clients to the config service.
+Create a PXE, iPXE, or Pixiecore network boot environment using the CoreOS [dnsmasq](../contrib/dnsmasq) container image which can run DHCP, proxyDHCP, TFTP, and/or DNS with `dnsmasq`. Use `--net` to specify a virtual bridge and `--dhcp-boot` to point clients to `bootcfg`.
 
 ### PXE
 

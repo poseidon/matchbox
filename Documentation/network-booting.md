@@ -3,7 +3,7 @@
 
 These guides walk through booting and configuring CoreOS on real or virtual hardware on your network. This introductory document reviews network booting protocols and the requirments of your network environment.
 
-Once you've reviewed the protocols, proceed to the [boot config service](bootcfg.md) which explains a way to serve configs to machines. Finally, you'll be ready to use the [libvirt guide](virtual-hardware.md) or [baremetal guide](physical-hardware.md) to walk through setting up a virtual or physical network of machines.
+Once you've reviewed the protocols, you'll be ready to [get started](getting-started-rkt.md) serving configs to machines during boot with [bootcfg](bootcfg.md).
 
 ## PXE
 
@@ -68,13 +68,13 @@ boot
 
 A TFTP server is used only to provide the `undionly.kpxe` boot program to older PXE firmware in order to bootstrap into iPXE.
 
-The CoreOS [boot config service](bootcfg.md) can serve iPXE scripts to machines by mapping hardware attributes to declarative specifications. Setup involves configuring DHCP to respond to iPXE clients with the `bootcfg` ipxe endpoint.
+CoreOS `bootcfg` can render signed iPXE scripts to machines based on their hardware attributes. Setup involves configuring your DHCP server to point iPXE clients to the `bootcfg` [iPXE endpoint](api.md#ipxe).
 
 Continue to the [libvirt guide](virtual-hardware.md) or the [baremetal guide](physical-hardware.md) to use iPXE to boot PXE/iPXE client machines. Consult [CoreOS with iPXE](https://coreos.com/os/docs/latest/booting-with-ipxe.html) for details about CoreOS support for iPXE.
 
 #### Pixiecore
 
-[Pixiecore](https://github.com/danderson/pixiecore) is a newer service which implements a proxyDHCP server, TFTP server, and HTTP server all-in-one and calls through to an HTTP API. The [boot config service](bootcfg.md) implements the Pixiecore API spec to provide JSON boot configs to Pixiecore based on the client's MAC address attribute.
+[Pixiecore](https://github.com/danderson/pixiecore) is a newer service which implements a proxyDHCP server, TFTP server, and HTTP server all-in-one and calls through to an HTTP API. CoreOS `bootcfg` can serve Pixiecore JSON (optionally signed) based on the supplied MAC address, to implement the Pixiecore HTTP API.
 
 Continue to the [libvirt guide](virtual-hardware.md) to use Pixiecore to network boot PXE client machines.
 
@@ -94,4 +94,4 @@ The [baremetal guide](physical-hardware.md) shows how to check your network envi
 
 ## Configuration Service
 
-Now that you understand network booting protocols you can explore how the [boot config service](bootcfg.md) supports PXE, iPXE, and Pixiecore network environments.
+Now that you understand network booting protocols [get started](getting-started-rkt.md) serving configs to machines during boot with [bootcfg](bootcfg.md).

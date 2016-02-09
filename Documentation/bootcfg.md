@@ -1,159 +1,162 @@
 
 # bootcfg
 
-`bootcfg` is an HTTP config service which renders signed Ignition configs, Cloud-configs, network boot configs, and metadata to machines based on their attributes.
+`bootcfg` is an HTTP service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create clusters of CoreOS machines. The service maintains a list of **Specs** which are named sets of configuration data (e.g. Ignition config, cloud-config, kernel, initrd). When started, `bootcfg` loads a list of **Group** definitions, which match machines to Specs and metadata based on attributes (e.g. UUID, MAC address, stage) passed as query arguments.
 
-The service maintains **Spec** resources which define a named set of boot settings (kernel, options, initrd) and configuration settings (ignition config, cloud config). **Groups** match zero or more machines to a `Spec` based on tags such as machine attributes (e.g. UUID, MAC) or arbitrary key/value pairs (e.g. zone, region, etc.).
-
-The aim is to declare the desired boot and kernel/userspace provisoning behavior of machines so they come online as functioning clusters, while supporting multiple network boot environments as entrypoints.
-
-Currently, iPXE and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) network boot environments are supported. End to end [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html) is a goal.
+The aim is to use CoreOS Linux's early-boot capabilities to boot machines into functional cluster members with end to end [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html). PXE, iPXE, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) endpoints provide support for network booting. The `bootcfg` service can be run as an [application container](https://github.com/appc/spec) with rkt, as a Docker container, or as a binary.
 
 ## Usage
 
-The config service (`bootcfg`) can be run as a container to boot libvirt VMs or on a provisioner host to boot baremetal machines.
+Fetch the application container image (ACI) from [Quay](https://quay.io/repository/coreos/bootcfg?tab=tags).
 
-Build the binary and docker image from source
+    sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
 
-    ./build
-    ./build-docker
+Alternately, pull the Docker image.
 
-Or pull a published container image from [quay.io/repository/coreoso/bootcfg](https://quay.io/repository/coreos/bootcfg?tab=tags).
+    sudo docker pull quay.io/coreos/bootcfg
 
-    docker pull quay.io/coreos/bootcfg:latest
-    docker tag quay.io/coreos/bootcfg:latest coreos/bootcfg:latest
+The `latest` image corresponds to the most recent commit on master, so choose a tagged [release](https://github.com/coreos/coreos-baremetal/releases) if you require more stability.
 
-The latest image corresponds to the most recent `coreos-baremetal` master commit.
+Get started running `bootcfg` with rkt or Docker to network boot libvirt VMs on your laptop into CoreOS clusters.
 
-[Prepare a data volume](#data) with `Spec` and ignition/cloud configs. Optionally, prepare a volume of downloaded CoreOS kernel and initrd image assets that `bootcfg` should serve.
+* [Getting Started with rkt](getting-started-rkt.md)
+* [Getting Started with Docker](getting-started-docker.md)
 
-    ./scripts/get-coreos               # CoreOS Beta 899.6.0
-    ./scripts/get-coreos alpha 942.0.0
-
-Run the container and mount the data and assets directories as volumes.
-
-    docker run -p 8080:8080 --name=bootcfg --rm -v $PWD/examples/dev:/data:Z -v $PWD/assets:/assets:Z coreos/bootcfg -address=0.0.0.0:8080 [-log-level=debug]
-
-## Endpoints
-
-The [API](api.md) documents the iPXE and Pixiecore endpoints, the cloud config endpoint, and assets.
-
-Map container port 8080 to host port 8080 to quickly check endpoints:
-
-* iPXE Scripts: `/ipxe?uuid=val`
-* Pixiecore JSON: `/pixiecore/v1/boot/:mac`
-* Cloud Config: `/cloud?uuid=val`
-* Ignition Config: `/ignition?uuid=val`
-* Spec: `/spec/:id`
-* Assets: `/assets`
+Once you've tried those examples, you're ready to write your own configs.
 
 ## Data
 
-A `Store` maintains `Spec` definitions, matcher groups, and ignition/cloud config resources. By default, `bootcfg` uses a `FileStore` to search a filesystem data directory for these resources.
+A `Store` stores Ignition configs, cloud-configs, and named Specs. By default, `bootcfg` uses a `FileStore` to search a data directory (`-data-path`) for these resources.
 
-Prepare a data directory or modify the [examples](../examples) provided. The `FileStore` expects `Spec` JSON files to be located at `specs/:id/spec.json` with any unique spec identifier.
-
-You may wish to keep the data directory under version control with your other infrastructure configs, since it contains the declarative configuration of your hardware.
-
-Ignition configs and cloud configs can be named whatever you like and dropped into `ignition` and `cloud`, respectively.
+Prepare a data directory similar to the [examples](../examples) directory, with `ignition`, `cloud`, and `specs` subdirectories. You might keep this directory under version control since it will define the early boot behavior of your machines.
 
      data
      ├── config.yaml
      ├── cloud
-     │   ├── etcd.yaml
-     │   └── worker.yaml
+     │   ├── cloud.yaml
+     │   └── worker.sh
      ├── ignition
-     │   └── node1.json
-     │   └── node2.json
+     │   └── hello.json
+     │   └── etcd.yaml
+     │   └── simple_networking.yaml
      └── specs
          └── etcd
              └── spec.json
          └── worker
              └── spec.json
 
-### Groups
+Ignition files can be JSON files or Ignition YAML. Cloud-Configs can be YAML or scripts. Both may contain may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with [metadata](#groups-and-metadata). For details and examples:
 
-Groups define a set of tag requirements which match zero or more machines to a `Spec`. Groups have a human readable name, a `Spec` id, and a free-form map of key/value tag requirements.
+* [Ignition Config](ignition.md)
+* [Cloud-Config](cloud-config.md)
 
-Several tags have reserved semantic purpose. You cannot use these tags for other purposes.
+#### Spec
 
-* `uuid` - machine UUID
-* `mac` - network interface physical address (MAC address) in normalized form (e.g. `01:ab:23:cd:67:89`)
-* `hostname`
-* `serial`
+Specs specify the Ignition config, cloud-config, and PXE boot settings (kernel, options, initrd) of a matched machine.
 
-Client's booted with the Config service include `uuid`, `mac`, `hostname`, and `serial` arguments in their requests. The exception is with Pixiecore which can only detect MAC addresss and cannot substitute it into later config requests.
+    {
+        "id": "etcd_profile",
+        "cloud_id": "",
+        "ignition_id": "etcd.yaml",
+        "boot": {
+            "kernel": "/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
+            "initrd": ["/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],
+            "cmdline": {
+                "cloud-config-url": "http://bootcfg.foo/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+                "coreos.autologin": "",
+                "coreos.config.url": "http://bootcfg.foo/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+                "coreos.first_boot": "1"
+            }
+        }
+    }
 
-Currently, group definitions are loaded from a YAML config file specified by the `-config` flag. With containers, it is easiest to keep the file in the data path they gets mounted.
+The `"boot"` settings will be used to render configs to the network boot programs used in PXE, iPXE, or Pixiecore setups. You may reference remote kernel and initrd assets or [local assets](#assets).
+
+To use cloud-config, set the `cloud-config-url` kernel option to the `bootcfg` [Cloud-Config endpoint](api.md#cloud-config) `/cloud?param=val`, which will render the `cloud_id` file.
+
+To use Ignition, set the `coreos.config.url` kernel option to the `bootcfg` [Ignition endpoint](api.md#ignition-config) `/ignition?param=val`, which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
+
+## Groups and Metadata
+
+Groups define a set of required tags which match zero or more machines. Machines matching a group will boot and provision themselves according to the group's `spec` and metadata. Currently, `bootcfg` loads group definitions from a YAML config file specified by the `-config` flag. When running `bootcfg` as a container, it is easiest to keep the config file in the [data](#data) directory so it is mounted and versioned.
+
+Define a list of named groups, name the `Spec` that should be applied, add the tags required to match the group, and add your own `metadata` needed to render your Ignition or Cloud configs.
+
+Here is an example `bootcfg` config.yaml:
 
     ---
     api_version: v1alpha1
     groups:
-      - name: node1
-        spec: etcd1
-        require:
-          uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
-      - name: node2
-        spec: etcd2
-        require:
-          mac: 52:54:00:89:d8:10
-      - name: workers
+      - name: default
+        spec: discovery
+      - name: Worker Node
         spec: worker
         require:
-          region: okla
-          zone: a1
-      - name: default
-        spec: default
+          region: us-central1-a
+          zone: a
+      - name: etcd Node 1
+        spec: etcd
+        require:
+          uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
+        metadata:
+          networkd_name: ens3
+          networkd_gateway: 172.15.0.1
+          networkd_dns: 172.15.0.3
+          networkd_address: 172.15.0.21/16
+          ipv4_address: 172.15.0.21
+          etcd_name: node1
+          etcd_initial_cluster: "node1=http://172.15.0.21:2380"
+          ssh_authorized_keys:
+            - "ssh-rsa pub-key-goes-here"
+      - name: etcd Proxy
+        spec: etcd_proxy
+        require:
+          mac: 52:54:00:89:d8:10
+        metadata:
+          etcd_initial_cluster: "node1=http://172.15.0.21:2380"
 
-Machines are matched to a `Spec` by evaluating group tag requirements from most constraints to least, in a deterministic order. Machines may supply extra arguments, but every tag requirement must be satisfied to match a group (i.e. AND operation). With the groups defined above, a request to `/cloud?mac=52:54:00:89:d8:10` would serve the cloud config from the "etcd2" `Spec`.
+Requirements are AND'd together and evaluated from most constraints to least, in a deterministic order. For most endpoints, "tags" correspond to query arguments in machine requests. Machines are free to query `bootcfg` with additional information (query arguments) about themselves, but they must supply the required set of tags to match a group.
 
-A default group can be defined by omitting the `require` field. Avoid defining multiple default groups as resolution will not be deterministic.
+For example, a request to `/cloud?mac=52:54:00:89:d8:10` would render the cloud-config named in "etcd_proxy" `Spec` with the etcd proxy metadata. A request to `/cloud` would match the default group (which has no requirements) and serve the cloud-config from the "discovery" `Spec`. Avoid defining multiple default groups as resolution will not be deterministic.
 
-### Spec
+### Reserved Attributes
 
-Specs can have any unique identifier you choose and specify boot settings (kernel, options, initrd) and configuration settings (cloud config) for one or more machines.
+The following attributes/tags have reserved semantic purpose. Do not use these tags for other purposes as they may be normalized or parsed specially.
 
-Boot config files contain JSON referencing a kernel image, init RAM fileystems, and kernel options for booting a machine.
+* `uuid` - machine UUID
+* `mac` - network interface physical address (MAC address)
+* `hostname`
+* `serial`
 
-    {
-        "id": "etcd2",
-        "boot": {
-            "kernel": "/assets/coreos/835.9.0/coreos_production_pxe.vmlinuz",
-            "initrd": ["/assets/coreos/835.9.0/coreos_production_pxe_image.cpio.gz"],
-            "cmdline": {
-                "cloud-config-url": "http://bootcfg.foo/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
-                "coreos.autologin": "",
-                "coreos.config.url": "http://bootcfg.foo/ignition?uuid=${uuid}",
-                "coreos.first_boot": ""
-            }
-        },
-        "cloud_id": "etcd.yaml",
-        "ignition_id": "node2.json"
-    }
-
-The `"boot"` section references the kernel image, init RAM filesystem, and kernel options to use. Point kernel and initrd to remote images or to local [assets](#assets).
-
-To use cloud-init, set the `cloud-config-url` kernel option to the `bootcfg` cloud endpoint to reference the cloud config named by `cloud_id`.
-
-To use ignition, set the `coreos.config.url` kernel option to the `bootcfg` ignition endpoint to refernce the ignition config named by `ignition_id`. Be sure to add the `coreos.first_boot` kernel argument when network booting.
+Client's booted with the `/ipxe.boot` endpoint will introspect and make a request to `/ipxe` with the `uuid`, `mac`, `hostname`, and `serial` value as query arguments. Pixiecore which can only detect MAC addresss and cannot substitute it into later config requests ([issue](https://github.com/coreos/coreos-baremetal/issues/36)).
 
 ## Assets
 
-Optionally, `bootcfg` can host free-form static assets if an `-assets-path` argument to a directory is provided. This is a quick way to serve kernel and initrd assets and reduce bandwidth usage.
-
-    assets/
-    └── coreos
-        └── 835.9.0
-            ├── coreos_production_pxe.vmlinuz
-            └── coreos_production_pxe_image.cpio.gz
+`bootcfg` can serve static assets from the `-assets-path` at `/assets`. This is helpful for reducing bandwidth usage when serving the kernel and initrd to network booted machines.
 
 Run the `get-coreos` script to quickly download kernel and initrd image assets.
 
     ./scripts/get-coreos                 # beta, 899.6.0
     ./scripts/get-coreos alpha 942.0.0
 
-To reference local assets, change the `kernel` and `initrd` in a boot config file. For example, change `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/assets/coreos/835.9.0/coreos_production_pxe.vmlinuz`.
+This will create:
+
+    assets/
+    └── coreos
+        └── 899.6.0
+            ├── coreos_production_pxe.vmlinuz
+            └── coreos_production_pxe_image.cpio.gz
+
+To reference local assets, change `kernel` and `initrd` in a `Spec` from `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz`, for example.
+
+## Endpoints
+
+The [API](api.md) documents the available endpoints.
+
+## Network
+
+`bootcfg` does not implement a DHCP/TFTP server or monitor running instances. If you need a quick DHCP, proxyDHCP, TFTP, or DNS setup, the [coreos/dnsmasq](../contrib/dnsmasq) image can create a suitable network boot environment on a virtual or physical network. Use `--net` to specify a network bridge and `--dhcp-boot` to point clients to `bootcfg`.
 
 ## Virtual and Physical Machine Guides
 
-Next, setup a virtual machine network within libvirt or a baremetal machine network. Follow the [libvirt guide](virtual-hardware.md) or [baremetal guide](physical-hardware.md).
+Next, setup a network of virtual machines with libvirt or boot a cluster of physical hardware. Follow the [libvirt guide](virtual-hardware.md) or [physical hardware guide](physical-hardware.md).
