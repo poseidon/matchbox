@@ -1,7 +1,7 @@
 
 # CoreOS on Baremetal
 
-[![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](http://godoc.org/github.com/coreos/coreos-baremetal?status.png)](http://godoc.org/github.com/coreos/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/bootcfg/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bootcfg)
+[![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](https://godoc.org/github.com/coreos/coreos-baremetal?status.png)](https://godoc.org/github.com/coreos/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/bootcfg/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bootcfg)
 
 CoreOS on Baremetal contains guides for network booting and configuring CoreOS clusters on virtual or physical hardware.
 
@@ -14,12 +14,13 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 ## Config Service
 
-The config service renders signed [Ignition](https://coreos.com/ignition/docs/latest/what-is-ignition.html) configs, [Cloud-Init](https://github.com/coreos/coreos-cloudinit) configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or arbitrary tags (e.g. os=installed, region=us-central). Network boot endpoints provide PXE, iPXE, and Pixiecore support.
+`bootcfg` is a service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [Cloud configs](https://github.com/coreos/coreos-cloudinit), network boot configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or tags (e.g. os=installed, region=us-central) to create CoreOS clusters. Network boot endpoints provide PXE, iPXE, and Pixiecore support. `bootcfg` can run as an [application container](https://github.com/appc/spec) with [rkt](https://coreos.com/rkt/docs/latest/), as a Docker container, or as a binary.
 
 * [Getting Started with rkt](Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](Documentation/getting-started-docker.md)
-* [API](Documentation/api.md)
+* [OpenPGP Signing](Documentation/openpgp.md)
 * [Flags](Documentation/config.md)
+* [API](Documentation/api.md)
 
 ### Examples
 
