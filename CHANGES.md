@@ -2,13 +2,15 @@
 
 ## Latest
 
+* Add detached OpenPGP signature endpoints (`.sig`)
+
 ## v0.2.0 (2016-02-09)
 
 #### Features
 
 * Render Ignition config and cloud-configs as Go templates
 * Allow writing Ignition configs as YAML configs. Render as JSON for machines.
-* Add detached OpenPGP signature endpoints (`.asc`) for all configs.
+* Add ASCII armored detached OpenPGP signature endpoints (`.asc`)
     - Enable signing by providing a `-key-ring-path` with a signing key and setting `BOOTCFG_PASSPHRASE` if needed
 * Add `metadata` endpoint which matches machines to custom metadata
 * Add `metadata` to group definitions in `config.yaml`

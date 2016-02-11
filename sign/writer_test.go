@@ -1,9 +1,14 @@
 package sign
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -63,4 +68,27 @@ func TestSignatureHandler_SignatureError(t *testing.T) {
 	h.ServeHTTP(w, req)
 	assert.Equal(t, errorMessage+"\n", w.Body.String())
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
+}
+
+// upperSigner "signs" messages by writing a signature that is the upper case
+// form of the message body. For testing purposes only.
+type upperSigner struct{}
+
+func (s *upperSigner) Sign(w io.Writer, message io.Reader) error {
+	b, err := ioutil.ReadAll(message)
+	if err != nil {
+		return err
+	}
+	signature := strings.ToUpper(string(b))
+	_, err = io.Copy(w, bytes.NewReader([]byte(signature)))
+	return err
+}
+
+// errorSigner always returns an error message.
+type errorSigner struct {
+	errorMessage string
+}
+
+func (s *errorSigner) Sign(w io.Writer, message io.Reader) error {
+	return errors.New(s.errorMessage)
 }

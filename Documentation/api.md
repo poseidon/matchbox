@@ -112,17 +112,17 @@ Finds the spec matching the attribute query parameters and renders the correspon
 
 ## OpenPGP Signatures
 
-OpenPGPG signature endpoints serve ASCII armored detached signatures of rendered configs when signing is enabled. See [OpenPGP Signing](openpgp.md).
+OpenPGPG signature endpoints serve detached binary and ASCII armored signatures of rendered configs when signing is enabled. See [OpenPGP Signing](openpgp.md).
 
-| Endpoint   | ASCII Signature Endpoint |
-|------------|-----------------|
-| Ignition   | `http://bootcfg.foo/ignition.asc` |
-| Cloud-init | `http://bootcfg.foo/cloud.asc` |
-| iPXE       | `http://bootcfg.foo/boot.ipxe.asc` |
-| iPXE       | `http://bootcfg.foo/ipxe.asc` |
-| Pixiecore  | `http://bootcfg.foo/pixiecore/v1/boot.asc/:MAC` |
+| Endpoint   | Signature Endpoint | ASCII Signature Endpoint |
+|------------|--------------------|-------------------------|
+| Ignition   | `http://bootcfg.foo/ignition.sig` | `http://bootcfg.foo/ignition.asc` |
+| Cloud-init | `http://bootcfg.foo/cloud.sig` | `http://bootcfg.foo/cloud.asc` |
+| iPXE       | `http://bootcfg.foo/boot.ipxe.sig` | `http://bootcfg.foo/boot.ipxe.asc` |
+| iPXE       | `http://bootcfg.foo/ipxe.sig` | `http://bootcfg.foo/ipxe.asc` |
+| Pixiecore  | `http://bootcfg/pixiecore/v1/boot.sig/:MAC` | `http://bootcfg/pixiecore/v1/boot.asc/:MAC` |
 
-Get an Ignition config and its detached signature.
+Get an Ignition config and its detached ASCII armored signature.
 
     GET http://bootcfg.foo/ipxe?attribute=value
 

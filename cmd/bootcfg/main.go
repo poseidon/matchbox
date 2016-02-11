@@ -87,13 +87,14 @@ func main() {
 	store := api.NewFileStore(http.Dir(flags.dataPath))
 
 	// (optional) signing
-	var signer sign.Signer
+	var signer, armoredSigner sign.Signer
 	if flags.keyRingPath != "" {
-		var err error
-		signer, err = sign.LoadGPGSigner(flags.keyRingPath, passphrase)
+		entity, err := sign.LoadGPGEntity(flags.keyRingPath, passphrase)
 		if err != nil {
 			log.Fatal(err)
 		}
+		signer = sign.NewGPGSigner(entity)
+		armoredSigner = sign.NewArmoredGPGSigner(entity)
 	}
 
 	// load bootstrap config
@@ -105,9 +106,10 @@ func main() {
 
 	// API server
 	config := &api.Config{
-		Store:      store,
-		AssetsPath: flags.assetsPath,
-		Signer:     signer,
+		Store:         store,
+		AssetsPath:    flags.assetsPath,
+		Signer:        signer,
+		ArmoredSigner: armoredSigner,
 	}
 	server := api.NewServer(config)
 	log.Infof("starting config server on %s", flags.address)

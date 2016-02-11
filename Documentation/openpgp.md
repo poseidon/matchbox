@@ -1,21 +1,21 @@
 
 # OpenPGP Signing
 
-The `bootcfg` OpenPGP signature endpoints serve ASCII armored detached signatures of rendered configs, if enabled. Each config endpoint has a corresponding signature endpoint, usually suffixed by `.asc`.
+The `bootcfg` OpenPGP signature endpoints serve detached binary and ASCII armored signatures of rendered configs, if enabled. Each config endpoint has corresponding signature endpoints, typically suffixed with `.sig` or `.asc`.
 
 To enable OpenPGP signing, provide the path to a secret keyring containing a single signing key with `-key-ring-path` or by setting `BOOTCFG_KEY_RING_PATH`. If a passphrase is required, set it via the `BOOTCFG_PASSPHRASE` environment variable.
 
 Here are example signature endpoints without their query parameters.
 
-| Endpoint   | ASCII Signature Endpoint |
-|------------|-----------------|
-| Ignition   | `http://bootcfg.foo/ignition.asc` |
-| Cloud-init | `http://bootcfg.foo/cloud.asc` |
-| iPXE       | `http://bootcfg.foo/boot.ipxe.asc` |
-| iPXE       | `http://bootcfg.foo/ipxe.asc` |
-| Pixiecore  | `http://bootcfg.foo/pixiecore/v1/boot.asc/:MAC` |
+| Endpoint   | Signature Endpoint | ASCII Signature Endpoint |
+|------------|--------------------|-------------------------|
+| Ignition   | `http://bootcfg.foo/ignition.sig` | `http://bootcfg.foo/ignition.asc` |
+| Cloud-init | `http://bootcfg.foo/cloud.sig` | `http://bootcfg.foo/cloud.asc` |
+| iPXE       | `http://bootcfg.foo/boot.ipxe.sig` | `http://bootcfg.foo/boot.ipxe.asc` |
+| iPXE       | `http://bootcfg.foo/ipxe.sig` | `http://bootcfg.foo/ipxe.asc` |
+| Pixiecore  | `http://bootcfg/pixiecore/v1/boot.sig/:MAC` | `http://bootcfg/pixiecore/v1/boot.asc/:MAC` |
 
-In production, mount your signing keyring and source the passphrase from a [Kubernetes secret](http://kubernetes.io/v1.1/docs/user-guide/secrets.html). Use a signing subkey exported to a keyring used only for config signing, which can be revoked by a master if needed.
+In production, mount your signing keyring and source the passphrase from a [Kubernetes secret](http://kubernetes.io/v1.1/docs/user-guide/secrets.html). Use a signing subkey exported to a keyring by itself, which can be revoked by a primary key, if needed.
 
 To try it locally, you may use the test fixture keyring. **Warning: The test fixture keyring is for examples only.**
 

@@ -20,23 +20,26 @@ type Config struct {
 	Store Store
 	// Path to static assets
 	AssetsPath string
-	// Config signer
-	Signer sign.Signer
+	// config signers (.sig and .asc)
+	Signer        sign.Signer
+	ArmoredSigner sign.Signer
 }
 
-// Server serves matches boot and configuration settings to machines.
+// Server serves boot and provisioning configs to machines.
 type Server struct {
-	store      Store
-	assetsPath string
-	signer     sign.Signer
+	store         Store
+	assetsPath    string
+	signer        sign.Signer
+	armoredSigner sign.Signer
 }
 
 // NewServer returns a new Server.
 func NewServer(config *Config) *Server {
 	return &Server{
-		store:      config.Store,
-		assetsPath: config.AssetsPath,
-		signer:     config.Signer,
+		store:         config.Store,
+		assetsPath:    config.AssetsPath,
+		signer:        config.Signer,
+		armoredSigner: config.ArmoredSigner,
 	}
 }
 
@@ -61,11 +64,23 @@ func (s *Server) HTTPHandler() http.Handler {
 	// metadata
 	mux.Handle("/metadata", logRequests(NewHandler(gr.matchGroupHandler(metadataHandler()))))
 
-	// Signatures
-	signerChain := func(next http.Handler) http.Handler {
-		return logRequests(sign.SignatureHandler(s.signer, next))
-	}
+	// Singatures
 	if s.signer != nil {
+		signerChain := func(next http.Handler) http.Handler {
+			return logRequests(sign.SignatureHandler(s.signer, next))
+		}
+		mux.Handle("/boot.ipxe.sig", signerChain(ipxeInspect()))
+		mux.Handle("/boot.ipxe.0.sig", signerChain(ipxeInspect()))
+		mux.Handle("/ipxe.sig", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))
+		mux.Handle("/pixiecore/v1/boot.sig/", signerChain(pixiecoreHandler(gr, s.store)))
+		mux.Handle("/cloud.sig", signerChain(NewHandler(gr.matchGroupHandler(cloudHandler(s.store)))))
+		mux.Handle("/ignition.sig", signerChain(NewHandler(gr.matchGroupHandler(ignitionHandler(s.store)))))
+		mux.Handle("/metadata.sig", signerChain(NewHandler(gr.matchGroupHandler(metadataHandler()))))
+	}
+	if s.armoredSigner != nil {
+		signerChain := func(next http.Handler) http.Handler {
+			return logRequests(sign.SignatureHandler(s.armoredSigner, next))
+		}
 		mux.Handle("/boot.ipxe.asc", signerChain(ipxeInspect()))
 		mux.Handle("/boot.ipxe.0.asc", signerChain(ipxeInspect()))
 		mux.Handle("/ipxe.asc", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))

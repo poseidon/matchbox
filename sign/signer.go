@@ -18,29 +18,47 @@ type Signer interface {
 	Sign(w io.Writer, message io.Reader) error
 }
 
-// gpgSigner reads messages and writes ascii armored OpenPGP signatures.
+// gpgSigner reads messages and writes OpenPGP signatures.
 type gpgSigner struct {
 	signer *openpgp.Entity
 }
 
-// Sign signs the given message and writes the ascii armored OpenPGP signature
+// Sign signs the given message and writes the detached OpenPGP signature
 // to w.
 func (s *gpgSigner) Sign(w io.Writer, message io.Reader) error {
-	return openpgp.ArmoredDetachSignText(w, s.signer, message, nil)
+	return openpgp.DetachSignText(w, s.signer, message, nil)
 }
 
-// NewGPGSigner returns a new Signer that reads messages and writes ascii
-// armored OpenPGP signatures.
+// NewGPGSigner returns a new Signer that reads messages and writes OpenPGP
+// signatures.
 func NewGPGSigner(signer *openpgp.Entity) Signer {
 	return &gpgSigner{
 		signer: signer,
 	}
 }
 
-// LoadGPGSigner loads a key ring file, unlocks the first key with the given
-// passphrase, and returns a new Signer that reads messages and writes ascii
-// armored OpenPGP signatures.
-func LoadGPGSigner(keyRingPath, passphrase string) (Signer, error) {
+// armoredGPGSigner reads messages and writes ascii armored OpenPGP signatures.
+type armoredGPGSigner struct {
+	signer *openpgp.Entity
+}
+
+// Sign signs the given message and writes the detached ascii armored OpenPGP
+// signature to w.
+func (s *armoredGPGSigner) Sign(w io.Writer, message io.Reader) error {
+	return openpgp.ArmoredDetachSignText(w, s.signer, message, nil)
+}
+
+// NewArmoredGPGSigner returns a new Signer that reads messages and writes
+// ascii armored OpenPGP signatures.
+func NewArmoredGPGSigner(signer *openpgp.Entity) Signer {
+	return &armoredGPGSigner{
+		signer: signer,
+	}
+}
+
+// LoadGPGEntity loads a key ring file, unlocks the first key using the given
+// passphrase, and returns a new OpenPGP Entity for signing.
+func LoadGPGEntity(keyRingPath, passphrase string) (*openpgp.Entity, error) {
 	kring, err := os.Open(keyRingPath)
 	if err != nil {
 		return nil, err
@@ -50,7 +68,7 @@ func LoadGPGSigner(keyRingPath, passphrase string) (Signer, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewGPGSigner(entity), nil
+	return entity, nil
 }
 
 // unlockKeyRingEntity loads a key ring file and returns the first Entity. The
