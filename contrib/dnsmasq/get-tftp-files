@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+DEST=tftpboot
+
+if [ ! -d $DEST ]; then
+  echo "Creating directory $DEST"
+  mkdir -p $DEST
+fi
+
+curl -s -o $DEST/undionly.kpxe http://boot.ipxe.org/undionly.kpxe
+cp $DEST/undionly.kpxe $DEST/undionly.kpxe.0

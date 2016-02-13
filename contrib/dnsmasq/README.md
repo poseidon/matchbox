@@ -36,6 +36,7 @@ Configuration arguments can be provided at the command line. Check the dnsmasq [
 Build a `dnsmasq` ACI with the build script which uses [acbuild](https://github.com/appc/acbuild).
 
     cd contrib/dnsmasq
+    ./get-tftp-files
     sudo ./build-aci
 
 Run `dnsmasq.aci` with rkt to run DHCP/proxyDHCP/TFTP/DNS services.
@@ -49,6 +50,7 @@ DHCP+TFTP+DNS on the `metal0` bridge:
 Build a Docker image locally using the tag `latest`.
 
     cd contrib/dnsmasq
+    ./get-tftp-files
     sudo ./build-docker
 
 Run the Docker image to run DHCP/proxyDHCP/TFTP/DNS services.

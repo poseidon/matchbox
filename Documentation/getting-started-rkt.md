@@ -69,7 +69,9 @@ Create four VM nodes which have known hardware attributes. The nodes will be att
 
 ## Network
 
-In your **Firewall Configuration**, add the `metal0` interface to the trusted zone.
+Add the `metal0` interface to the trusted zone in your firewall configuration.
+
+    sudo firewall-cmd --add-interface=metal0 --zone=trusted
 
 Since the virtual network has no network boot services, use the `dnsmasq` ACI to set up an example iPXE environment which runs DHCP, DNS, and TFTP. The `dnsmasq` container can help test different network setups.
 

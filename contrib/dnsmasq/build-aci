@@ -23,11 +23,6 @@ acbuild --debug run apk update
 acbuild --debug run apk add dnsmasq curl
 
 # Copy the PXE->iPXE chainloader
-if [ ! -d "tftpboot" ]; then
-  mkdir tftpboot
-  curl -s -o tftpboot/undionly.kpxe http://boot.ipxe.org/undionly.kpxe
-  cp tftpboot/undionly.kpxe tftpboot/undionly.kpxe.0
-fi
 acbuild --debug copy tftpboot /var/lib/tftpboot
 
 # Add DHCP and DNS ports for dnsmasq
