@@ -6,6 +6,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/coreos/coreos-cloudinit/Godeps/_workspace/src/github.com/coreos/yaml",
+			"Comment": "v1.8.1-2-g6e1a0f7",
+			"Rev": "6e1a0f7ca8d16ceac0f79d6c6693b2da4624512e"
+		},
+		{
 			"ImportPath": "github.com/coreos/coreos-cloudinit/config",
 			"Comment": "v1.8.1-2-g6e1a0f7",
 			"Rev": "6e1a0f7ca8d16ceac0f79d6c6693b2da4624512e"
@@ -32,15 +37,11 @@
 		},
 		{
 			"ImportPath": "github.com/coreos/pkg/capnslog",
-			"Rev": "2c77715c4df99b5420ffcae14ead08f52104065d"
+			"Rev": "fa92df939cff437b00010275644a10882beaeca8"
 		},
 		{
 			"ImportPath": "github.com/coreos/pkg/flagutil",
-			"Rev": "2c77715c4df99b5420ffcae14ead08f52104065d"
-		},
-		{
-			"ImportPath": "github.com/coreos/yaml",
-			"Rev": "6b16a5714269b2f70720a45406b1babd947a17ef"
+			"Rev": "fa92df939cff437b00010275644a10882beaeca8"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
@@ -49,11 +50,11 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/cast5",
-			"Rev": "3760e016850398b85094c4c99e955b8c3dea5711"
+			"Rev": "c8b9e6388ef638d5a8a9d865c634befdc46a6784"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/openpgp",
-			"Rev": "3760e016850398b85094c4c99e955b8c3dea5711"
+			"Rev": "c8b9e6388ef638d5a8a9d865c634befdc46a6784"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
@@ -61,7 +62,7 @@
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
-			"Rev": "49c95bdc21843256fb6c4e0d370a05f24a0bf213"
+			"Rev": "f7716cbe52baa25d2e9b0d0da546fcf909fc16b4"
 		}
 	]
 }

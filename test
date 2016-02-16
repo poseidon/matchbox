@@ -1,0 +1,21 @@
+#!/bin/bash -e
+
+PKGS=$(go list ./... | grep -v /vendor)
+FORMATTABLE="./api ./config ./cmd ./sign"
+
+go test $PKGS
+go vet $PKGS
+
+echo "Checking gofmt..."
+fmtRes=$(gofmt -l $FORMATTABLE)
+if [ -n "${fmtRes}" ]; then
+  echo -e "gofmt checking failed:\n${fmtRes}"
+  exit 2
+fi
+
+echo "Checking golint..."
+lintRes=$(echo $PKGS | xargs -n 1 golint)
+if [ -n "${lintRes}" ]; then
+  echo -e "golint checking failed:\n${lintRes}"
+  exit 2
+fi

@@ -1,4 +1,5 @@
 data/
 Godeps/
+vendor/
 assets/
 vagrant/

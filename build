@@ -1,8 +1,4 @@
 #!/bin/bash -e
 
-# allow builds outside the standard GOPATH via symlink
-export GOPATH=${PWD}/Godeps/_workspace:$GOPATH
-export GOBIN=${PWD}/bin
-
 LD_FLAGS="-w -X main.version=$(./git-version)"
 CGO_ENABLED=0 go build -o bin/bootcfg -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcfg
