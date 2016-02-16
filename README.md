@@ -27,7 +27,7 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 ### Examples
 
-Use the [examples](examples) to boot machines into CoreOS clusters of higher-order systems, like Kubernetes. Quickly setup a network of virtual hardware on your Linux box for testing with the [libvirt script](scripts/libvirt).
+Use the [examples](examples) to boot machines into CoreOS clusters of higher-order systems, like Kubernetes. Quickly setup a network of virtual hardware on your Linux box for testing with [libvirt](scripts/README.md#libvirt).
 
 * TLS-auth Kubernetes cluster (1 master, 1 worker, 1 etcd)
 * Multi Node etcd cluster

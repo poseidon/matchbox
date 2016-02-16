@@ -1,18 +1,37 @@
 
 # Scripts
 
-## Ignition Generation
+## get-coreos
 
-Transform human friendly `*.yaml` Ignition files to machine-friendly Ignition configs using the [github.com/coreos/fuze](https://github.com/coreos/fuze) utility.
+Run the `get-coreos` script to quickly download CoreOS kernel and initrd images, verify them, and move them into `assets`.
 
-First, install Fuze.
+    ./scripts/get-coreos                 # beta, 899.6.0
+    ./scripts/get-coreos alpha 942.0.0
 
-    cd $GOPATH/src/github.com/coreos
-    git clone https://github.com/coreos/fuze.git
-    cd fuze
-    ./build
-    cp bin/fuze $GOPATH/bin
+This will create:
 
-Use `gen-ignition` to generate a JSON Ignition config for each `*.yaml` file in a directory of Ignition file sources.
+    assets/
+    └── coreos
+        └── 899.6.0
+            ├── coreos_production_pxe.vmlinuz
+            └── coreos_production_pxe_image.cpio.gz
+        └── 942.0.0
+            ├── coreos_production_pxe.vmlinuz
+            └── coreos_production_pxe_image.cpio.gz
 
-    ./scripts/gen-ignition examples/dev/ignition
+## libvirt
+
+Create libvirt VM nodes which are configured to boot from the network or from disk (empty). The `scripts/libvirt` script will create virtual machines on the `metal0` or `docker0` bridge with known hardware attributes (e.g. UUID, MAC address).
+
+    $ sudo ./scripts/libvirt
+    USAGE: libvirt <command>
+    Commands:
+        create-docker  create 4 libvirt nodes on the docker0 bridge
+        create-rkt     create 4 libvirt nodes on a rkt CNI metal0 bridge
+        start          start the 4 libvirt nodes
+        reboot         reboot the 4 libvirt nodes
+        shutdown       shutdown the 4 libvirt nodes
+        poweroff       poweroff the 4 libvirt nodes
+        destroy        destroy the 4 libvirt nodes
+        delete-disks   delete the allocated disks
+

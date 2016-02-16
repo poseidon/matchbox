@@ -134,20 +134,15 @@ Client's booted with the `/ipxe.boot` endpoint will introspect and make a reques
 
 `bootcfg` can serve static assets from the `-assets-path` at `/assets`. This is helpful for reducing bandwidth usage when serving the kernel and initrd to network booted machines.
 
-Run the `get-coreos` script to quickly download kernel and initrd image assets.
-
-    ./scripts/get-coreos                 # beta, 899.6.0
-    ./scripts/get-coreos alpha 942.0.0
-
-This will create:
-
     assets/
     └── coreos
-        └── 899.6.0
+        └── VERSION
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
 
-To reference local assets, change `kernel` and `initrd` in a `Spec` from `http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz` to `/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz`, for example.
+For example, a `Spec` might refer to a local asset `/assets/coreos/VERSION/coreos_production_pxe.vmlinuz` instead of `http://stable.release.core-os.net/amd64-usr/VERSION/coreos_production_pxe.vmlinuz`.
+
+See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download, verify, and move CoreOS assets to `assets`.
 
 ## Endpoints
 

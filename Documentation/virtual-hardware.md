@@ -84,22 +84,6 @@ Continue to [clients](#clients) to create a client VM or attach a baremetal mach
 
 Create or attach PXE client machines to the network boot environment on the `docker0` bridge.
 
-### libvirt VM
-
-Create libvirt VM nodes configured to boot from the network. The `scripts/libvirt` script will create four VM nodes with known hardware attributes, on the `docker0` bridge network.
-
-    sudo ./scripts/libvirt
-    USAGE: libvirt <command>
-    Commands:
-        create-docker create 4 libvirt nodes on the docker0 bridge
-        create-rkt    create 4 libvirt nodes on a rkt CNI metal0 bridge
-        start         start the 4 libvirt nodes
-        reboot        reboot the 4 libvirt nodes
-        shutdown      shutdown the 4 libvirt nodes
-        poweroff      poweroff the 4 libvirt nodes
-        destroy       destroy the 4 libvirt nodes
-        remove-disks  delete the allocated disks
-
 You may use `virt-manager` to create your own VMs and view the console/state/attributes of existing VM nodes.
 
 When creating your own VMs, select "Network Boot with PXE" and for network selection use "Specify Shared Device" with the bridge name `docker0`.
