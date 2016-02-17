@@ -36,6 +36,37 @@ type FilesystemCreate struct {
 	Options MkfsOptions `json:"options,omitempty" yaml:"options"`
 }
 
+func (f *Filesystem) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	return f.unmarshal(unmarshal)
+}
+
+func (f *Filesystem) UnmarshalJSON(data []byte) error {
+	return f.unmarshal(func(tf interface{}) error {
+		return json.Unmarshal(data, tf)
+	})
+}
+
+type filesystem Filesystem
+
+func (f *Filesystem) unmarshal(unmarshal func(interface{}) error) error {
+	tf := filesystem(*f)
+	if err := unmarshal(&tf); err != nil {
+		return err
+	}
+	*f = Filesystem(tf)
+	return f.assertValid()
+}
+
+func (f Filesystem) assertValid() error {
+	if err := f.Device.assertValid(); err != nil {
+		return err
+	}
+	if err := f.Format.assertValid(); err != nil {
+		return err
+	}
+	return nil
+}
+
 type FilesystemFormat string
 
 func (f *FilesystemFormat) UnmarshalYAML(unmarshal func(interface{}) error) error {

@@ -7,41 +7,41 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/coreos/coreos-cloudinit/Godeps/_workspace/src/github.com/coreos/yaml",
-			"Comment": "v1.8.1-2-g6e1a0f7",
-			"Rev": "6e1a0f7ca8d16ceac0f79d6c6693b2da4624512e"
+			"Comment": "v1.9.0-3-g8fa2641",
+			"Rev": "8fa26412d8c2008a2b8f71bfc21af57965ffec55"
 		},
 		{
 			"ImportPath": "github.com/coreos/coreos-cloudinit/config",
-			"Comment": "v1.8.1-2-g6e1a0f7",
-			"Rev": "6e1a0f7ca8d16ceac0f79d6c6693b2da4624512e"
+			"Comment": "v1.9.0-3-g8fa2641",
+			"Rev": "8fa26412d8c2008a2b8f71bfc21af57965ffec55"
 		},
 		{
 			"ImportPath": "github.com/coreos/go-systemd/journal",
-			"Comment": "v4-8-gf164f43",
-			"Rev": "f164f437010a16e0443d2d1e68e8e001cdbf1226"
+			"Comment": "v4-42-g7b2428f",
+			"Rev": "7b2428fec40033549c68f54e26e89e7ca9a9ce31"
 		},
 		{
 			"ImportPath": "github.com/coreos/ignition/src/config",
-			"Comment": "v0.2.4-5-g9d5b476",
-			"Rev": "9d5b4766ae22e66b25702ffbdc94545f2e0d082c"
+			"Comment": "v0.2.6-3-g3a4d7aa",
+			"Rev": "3a4d7aa9d371457ac2d138ebb0b169cdcf751dcf"
 		},
 		{
 			"ImportPath": "github.com/coreos/ignition/third_party/github.com/alecthomas/units",
-			"Comment": "v0.2.4-5-g9d5b476",
-			"Rev": "9d5b4766ae22e66b25702ffbdc94545f2e0d082c"
+			"Comment": "v0.2.6-3-g3a4d7aa",
+			"Rev": "3a4d7aa9d371457ac2d138ebb0b169cdcf751dcf"
 		},
 		{
 			"ImportPath": "github.com/coreos/ignition/third_party/github.com/camlistore/camlistore/pkg/errorutil",
-			"Comment": "v0.2.4-5-g9d5b476",
-			"Rev": "9d5b4766ae22e66b25702ffbdc94545f2e0d082c"
+			"Comment": "v0.2.6-3-g3a4d7aa",
+			"Rev": "3a4d7aa9d371457ac2d138ebb0b169cdcf751dcf"
 		},
 		{
 			"ImportPath": "github.com/coreos/pkg/capnslog",
-			"Rev": "fa92df939cff437b00010275644a10882beaeca8"
+			"Rev": "8e29e900973a26d5a2f0851a35908f724c18650d"
 		},
 		{
 			"ImportPath": "github.com/coreos/pkg/flagutil",
-			"Rev": "fa92df939cff437b00010275644a10882beaeca8"
+			"Rev": "8e29e900973a26d5a2f0851a35908f724c18650d"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
@@ -50,15 +50,15 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/cast5",
-			"Rev": "c8b9e6388ef638d5a8a9d865c634befdc46a6784"
+			"Rev": "1f22c0103821b9390939b6776727195525381532"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/openpgp",
-			"Rev": "c8b9e6388ef638d5a8a9d865c634befdc46a6784"
+			"Rev": "1f22c0103821b9390939b6776727195525381532"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "d75b1902409c457a51e4bd1895031872c370983a"
+			"Rev": "cbbbe2bc0f2efdd2afb318d93f1eadb19350e4a3"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
