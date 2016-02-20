@@ -26,7 +26,7 @@ Build the binary and ACI. Prepare the binary tarball and ACI.
     export VERSION=v0.3.0
     mkdir bootcfg-$VERSION
     cp bin/bootcfg bootcfg-$VERSION
-    cp bootcfg.aci bootcfg-$VERSION-linux-amd64-aci
+    cp bootcfg.aci bootcfg-$VERSION-linux-amd64.aci
     tar -zcvf bootcfg-$VERSION-linux-amd64.tar.gz bootcfg-VERSION
 
 ## Signing
@@ -38,8 +38,8 @@ Sign the binary tarball and ACI.
 
 Verify the signatures.
 
-    gpg2 --verify bootcfg-v0.2.0-linux-amd64.tar.gz.asc bootcfg-$VERSION-linux-amd64.tar.gz
-    gpg2 --verify bootcfg-v0.2.0-linux-amd64.aci.asc bootcfg-$VERSION-linux-amd64.aci
+    gpg2 --verify bootcfg-$VERSION-linux-amd64.tar.gz.asc bootcfg-$VERSION-linux-amd64.tar.gz
+    gpg2 --verify bootcfg-$VERSION-linux-amd64.aci.asc bootcfg-$VERSION-linux-amd64.aci
 
 ## Publish
 
