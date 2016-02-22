@@ -42,7 +42,7 @@ EOF'
 
 ## Application Container
 
-Run `bootcfg` on the `metal0` network, with a known IP we'll use in later steps with DNS.
+Run `bootcfg` on the `metal0` network, with a known IP we'll have DNS point to.
 
     sudo rkt trust --prefix quay.io/coreos
     sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
@@ -73,11 +73,12 @@ Add the `metal0` interface to the trusted zone in your firewall configuration.
 
     sudo firewall-cmd --add-interface=metal0 --zone=trusted
 
-Since the virtual network has no network boot services, use the `dnsmasq` ACI to set up an example iPXE environment which runs DHCP, DNS, and TFTP. The `dnsmasq` container can help test different network setups.
+Since the virtual network has no network boot services, use the `dnsmasq` ACI to create an iPXE network boot environment which runs DHCP, DNS, and TFTP. The `dnsmasq` container can help test different network setups.
 
 Build the `dnsmasq.aci` ACI.
 
     cd contrib/dnsmasq
+    ./get-tftp-files
     sudo ./build-aci
 
 Run `dnsmasq.aci` to create a DHCP and TFTP server pointing to config server.
