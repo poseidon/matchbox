@@ -34,7 +34,7 @@ sudo bash -c 'cat > /etc/rkt/net.d/20-metal.conf << EOF
   "ipam": {
     "type": "host-local",
     "subnet": "172.15.0.0/16",
-    "routes" : [ { "dst" : "172.15.0.0/16" } ]
+    "routes" : [ { "dst" : "0.0.0.0/0" } ]
    }
 }
 EOF'

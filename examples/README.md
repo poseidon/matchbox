@@ -6,7 +6,7 @@ These examples show declarative configurations for network booting libvirt VMs i
 | Name       | Description |  Reference     |
 |------------|-------------|----------------|
 | etcd | Cluster with 3 etcd nodes, 2 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-|Kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) |
+| Kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) |
 | Disk Install | 2-stage Ignition: Install CoreOS, provision etcd cluster | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 
 ## Experimental
