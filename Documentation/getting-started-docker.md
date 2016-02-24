@@ -25,6 +25,7 @@ Create four VM nodes which have known hardware attributes. The nodes will be att
 Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from the Config server, though you could change this.
 
     ./scripts/get-coreos
+    ./scripts/get-coreos channel version
 
 ## Containers
 

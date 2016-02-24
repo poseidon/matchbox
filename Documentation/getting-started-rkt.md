@@ -20,6 +20,7 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
 Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from the Config server, though you could change this.
 
     ./scripts/get-coreos
+    ./scripts/get-coreos channel version
 
 Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
 

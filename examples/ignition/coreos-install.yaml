@@ -10,10 +10,9 @@ systemd:
         After=network-online.target
         [Service]
         Type=oneshot
-        ExecStart=/usr/bin/coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}}
+        ExecStart=/usr/bin/curl {{.ignition_endpoint}}?{{.query}}&os=installed -o ignition.json
+        ExecStart=/usr/bin/coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json
         ExecStart=/usr/bin/udevadm settle
-        ExecStart=/usr/bin/mount /dev/disk/by-label/OEM /mnt
-        ExecStart=/bin/sh -c 'echo set linux_append=\\"coreos.config.url=\"{{.ignition_endpoint}}?{{.query}}&os=installed\"\\" > /mnt/grub.cfg'
         ExecStart=/usr/bin/systemctl reboot
         [Install]
         WantedBy=multi-user.target

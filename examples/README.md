@@ -3,11 +3,11 @@
 
 These examples show declarative configurations for network booting libvirt VMs into CoreOS clusters (Kubernetes, etcd) using `bootcfg`.
 
-| Name       | Description |  Reference     |
-|------------|-------------|----------------|
-| etcd | Cluster with 3 etcd nodes, 2 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| Kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) |
-| Disk Install | 2-stage Ignition: Install CoreOS, provision etcd cluster | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
+| Name       | Description |  Reference     | CoreOS Version |
+|------------|-------------|----------------|----------------|
+| etcd | Cluster with 3 etcd nodes, 2 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) | beta/899.6.0 |
+| Kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) | beta/899.6.0 |
+| etcd on disk | 2-stage Ignition: Install CoreOS, provision etcd cluster | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) | alpha/962.0.0,935.0.0 |
 
 ## Experimental
 
@@ -22,7 +22,7 @@ Get started running the `bootcfg` on your Linux machine to boot clusters of libv
 
 ## Physical Hardware
 
-Run the `bootcfg` to boot and configure physical machines (for testing). Update the network values in the `*.yaml` config to match your hardware and network. Generate TLS assets if required for the example (e.g. Kubernetes).
+Run `bootcfg` to boot and configure physical machines (for testing). Update the network values in the `*.yaml` config to match your hardware and network. Generate TLS assets if required for the example (e.g. Kubernetes).
 
 Continue to the [Physical Hardware Guide](../Documentation/physical-hardware.md) for details.
 
