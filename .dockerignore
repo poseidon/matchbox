@@ -3,3 +3,4 @@ Godeps/
 vendor/
 assets/
 vagrant/
+*.aci

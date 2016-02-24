@@ -7,7 +7,8 @@ These examples show declarative configurations for network booting libvirt VMs i
 |------------|-------------|----------------|----------------|
 | etcd | Cluster with 3 etcd nodes, 2 proxies | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) | beta/899.6.0 |
 | Kubernetes | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node | [reference](https://github.com/coreos/coreos-kubernetes) | beta/899.6.0 |
-| etcd on disk | 2-stage Ignition: Install CoreOS, provision etcd cluster | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) | alpha/962.0.0,935.0.0 |
+| Disk install w etcd | 2-stage Ignition: Install CoreOS, provision etcd cluster | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) | alpha/962.0.0,935.0.0 |
+| alpha-pxe | PXE CoreOS alpha node, uses configured SSH keys | | alpha/962.0.0 |
 
 ## Experimental
 
