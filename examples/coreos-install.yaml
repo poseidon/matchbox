@@ -15,12 +15,12 @@ groups:
       os: installed
     metadata:
       networkd_name: ens3
-      networkd_gateway: 172.17.0.1
-      networkd_dns: 172.17.0.3
-      networkd_address: 172.17.0.21/16
-      ipv4_address: 172.17.0.21
+      networkd_gateway: 172.15.0.1
+      networkd_dns: 172.15.0.3
+      networkd_address: 172.15.0.21/16
+      ipv4_address: 172.15.0.21
       etcd_name: node1
-      etcd_initial_cluster: "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380"
+      etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
 
   - name: etcd Node 2
     spec: etcd
@@ -29,12 +29,12 @@ groups:
       os: installed
     metadata:
       networkd_name: ens3
-      networkd_gateway: 172.17.0.1
-      networkd_dns: 172.17.0.3
-      networkd_address: 172.17.0.22/16
-      ipv4_address: 172.17.0.22
+      networkd_gateway: 172.15.0.1
+      networkd_dns: 172.15.0.3
+      networkd_address: 172.15.0.22/16
+      ipv4_address: 172.15.0.22
       etcd_name: node2
-      etcd_initial_cluster: "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380"
+      etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
 
   - name: etcd Node 3
     spec: etcd
@@ -43,12 +43,12 @@ groups:
       os: installed
     metadata:
       networkd_name: ens3
-      networkd_gateway: 172.17.0.1
-      networkd_dns: 172.17.0.3
-      networkd_address: 172.17.0.23/16
-      ipv4_address: 172.17.0.23
+      networkd_gateway: 172.15.0.1
+      networkd_dns: 172.15.0.3
+      networkd_address: 172.15.0.23/16
+      ipv4_address: 172.15.0.23
       etcd_name: node3
-      etcd_initial_cluster: "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380"
+      etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
 
   - name: etcd Proxy
     spec: etcd_proxy
@@ -56,6 +56,6 @@ groups:
       os: installed
     metadata:
       networkd_name: ens3
-      networkd_gateway: 172.17.0.1
-      networkd_dns: 172.17.0.3
-      etcd_initial_cluster: "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380"
+      networkd_gateway: 172.15.0.1
+      networkd_dns: 172.15.0.3
+      etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
