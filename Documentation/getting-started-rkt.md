@@ -6,18 +6,27 @@ In this tutorial, we'll run `bootcfg` to boot and provision a cluster of four VM
 
 ## Requirements
 
-**Note**: Currently, rkt and the Fedora/RHEL/CentOS SELinux policies aren't supported. See the [issue](https://github.com/coreos/rkt/issues/1727) tracking the work and policy changes. To test these examples on your laptop, set SELinux enforcement to permissive if you are comfortable (`sudo setenforce 0`). Enable it again when you are finished.
+Install [rkt](https://github.com/coreos/rkt/releases) and [acbuild](https://github.com/appc/acbuild/releases) from the latest releases. For rkt, see the setup and privilege separation [docs](https://coreos.com/rkt/docs/latest/trying-out-rkt.html). For acbuild:
 
-Install [rkt](https://github.com/coreos/rkt/releases), [acbuild](https://github.com/appc/acbuild), and package dependencies.
+    tar xzvf acbuild.tar.gz
+    sudo ln -s /path/to/acbuild /usr/local/bin/acbuild
 
+Install package dependencies.
+
+    # Fedora
     sudo dnf install virt-install virt-manager
+
+    # Debian/Ubuntu
+    sudo apt-get install virt-manager virtinst qemu-kvm systemd-container
+
+**Note**: Currently, rkt does not integrate with SELinux on Fedora. As a workaround, temporarily set enforcement to permissive if you are comfortable (`sudo setenforce Permissive`). Check the rkt [distribution notes](https://github.com/coreos/rkt/blob/master/Documentation/distributions.md) or track the [issue](https://github.com/coreos/rkt/issues/1727).
 
 Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source which contains the examples and scripts.
 
     git clone https://github.com/coreos/coreos-baremetal.git
     cd coreos-baremetal
 
-Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from the Config server, though you could change this.
+Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from `bootcfg`.
 
     ./scripts/get-coreos
     ./scripts/get-coreos channel version
@@ -25,6 +34,7 @@ Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct m
 Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
 
 ```bash
+sudo mkdir -p /etc/rkt/net.d
 sudo bash -c 'cat > /etc/rkt/net.d/20-metal.conf << EOF
 {
   "name": "metal0",
@@ -41,11 +51,14 @@ sudo bash -c 'cat > /etc/rkt/net.d/20-metal.conf << EOF
 EOF'
 ```
 
+On Fedora, add the `metal0` interface to the trusted zone in your firewall configuration.
+
+    sudo firewall-cmd --add-interface=metal0 --zone=trusted
+
 ## Application Container
 
 Run `bootcfg` on the `metal0` network, with a known IP we'll have DNS point to.
 
-    sudo rkt trust --prefix quay.io/coreos
     sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
 
 Currently, the insecure flag is needed since Docker images do not support signature verification. We'll ship an ACI soon to address this.
@@ -67,12 +80,9 @@ Take a look at [etcd-rkt.yaml](../examples/etcd-rkt.yaml) to get an idea of how 
 Create four VM nodes which have known hardware attributes. The nodes will be attached to the `metal0` bridge where your pods run.
 
     sudo ./scripts/libvirt create-rkt
+    sudo virt-manager
 
 ## Network
-
-Add the `metal0` interface to the trusted zone in your firewall configuration.
-
-    sudo firewall-cmd --add-interface=metal0 --zone=trusted
 
 Since the virtual network has no network boot services, use the `dnsmasq` ACI to create an iPXE network boot environment which runs DHCP, DNS, and TFTP. The `dnsmasq` container can help test different network setups.
 
@@ -97,7 +107,7 @@ Reboot the VM machines and use `virt-manager` to watch the console.
 
 At this point, the VMs will PXE boot and use Ignition (preferred over cloud config) to set up a three node etcd cluster, with other nodes behaving as etcd proxies.
 
-On VMs with autologin, check etcd2 works between different nodes.
+The example spec added autologin so you can check that etcd works between nodes.
 
     systemctl status etcd2
     etcdctl set /message hello

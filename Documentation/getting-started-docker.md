@@ -8,21 +8,27 @@ In this tutorial, we'll run `bootcfg` to boot and provision a cluster of four VM
 
 ## Requirements
 
-Install the dependencies.
+Install the dependencies and start the Docker daemon.
 
-    sudo dnf install virt-install docker virt-manager
+    # Fedora
+    sudo dnf install docker virt-install virt-manager
     sudo systemctl start docker
+
+    # Debian/Ubuntu
+    # check Docker's docs to install Docker 1.8+ on Debian/Ubuntu
+    sudo apt-get install virt-manager virtinst qemu-kvm
 
 Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source which contains the examples and scripts.
 
     git clone https://github.com/coreos/coreos-baremetal.git
     cd coreos-baremetal
 
-Create four VM nodes which have known hardware attributes. The nodes will be attached to the `docker0` bridge where your containers run.
+Create four VM nodes which have known hardware attributes. The nodes will be attached to the `docker0` bridge where containers run.
 
     sudo ./scripts/libvirt create-docker
+    sudo virt-manager
 
-Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from the Config server, though you could change this.
+Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from `bootcfg`.
 
     ./scripts/get-coreos
     ./scripts/get-coreos channel version
@@ -54,7 +60,7 @@ Reboot the VM machines and use `virt-manager` to watch the console.
 
 At this point, the VMs will PXE boot and use Ignition (preferred over cloud config) to set up a three node etcd cluster, with other nodes behaving as etcd proxies.
 
-On VMs with autologin, check etcd2 works between different nodes.
+The example spec added autologin so you can check that etcd works between nodes.
 
     systemctl status etcd2
     etcdctl set /message hello

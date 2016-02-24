@@ -8,8 +8,6 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 ## Guides
 
 * [Network Booting](Documentation/network-booting.md)
-* [Libvirt Guide](Documentation/virtual-hardware.md)
-* [Baremetal Guide](Documentation/physical-hardware.md)
 
 ## bootcfg
 
