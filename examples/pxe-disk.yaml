@@ -1,0 +1,7 @@
+---
+api_version: v1alpha1
+groups:
+  - name: Partition disk with Root Filesystem for PXE (non-installs)
+    spec: pxe-disk
+    metadata:
+      ssh_authorized_keys:

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 # Manage four VM nodes which have a specific set of hardware attributes.
 
 if [ "$EUID" -ne 0 ]

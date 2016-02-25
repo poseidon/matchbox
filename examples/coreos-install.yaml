@@ -5,7 +5,7 @@ groups:
     spec: coreos-install
     metadata:
       coreos_channel: alpha
-      coreos_version: 935.0.0
+      coreos_version: 962.0.0
       ignition_endpoint: http://bootcfg.foo:8080/ignition
 
   - name: etcd Node 1
