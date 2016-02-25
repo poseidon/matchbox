@@ -5,25 +5,33 @@
 CHANNEL=${1:-"beta"}
 VERSION=${2:-"899.6.0"}
 DEST=${PWD}/assets/coreos/$VERSION
+BASE_URL=http://$CHANNEL.release.core-os.net/amd64-usr/$VERSION
 
-echo "Downloading CoreOS kernel and initrd image assets"
+# check channel/version exist based on the header response
+curl -s -I $BASE_URL/coreos_production_pxe.vmlinuz | awk '/200/ {found++} /301/ {found++} END { if (found<1) { print "Channel or Version not found"; exit 1 }}'
 
 if [ ! -d "$DEST" ]; then
   echo "Creating directory $DEST"
   mkdir -p $DEST
 fi
 
+echo "Downloading CoreOS kernel and initrd image assets"
+
 # kernel and sig
-BASE_URL=http://$CHANNEL.release.core-os.net/amd64-usr/$VERSION
-curl $BASE_URL/coreos_production_pxe.vmlinuz -o $DEST/coreos_production_pxe.vmlinuz
-curl $BASE_URL/coreos_production_pxe.vmlinuz.sig -o $DEST/coreos_production_pxe.vmlinuz.sig
+echo "coreos_production_pxe.vmlinuz..."
+curl -# $BASE_URL/coreos_production_pxe.vmlinuz -o $DEST/coreos_production_pxe.vmlinuz
+echo "coreos_production_pxe.vmlinuz.sig"
+curl -# $BASE_URL/coreos_production_pxe.vmlinuz.sig -o $DEST/coreos_production_pxe.vmlinuz.sig
 
 # initrd and sig
-curl $BASE_URL/coreos_production_pxe_image.cpio.gz -o $DEST/coreos_production_pxe_image.cpio.gz
-curl $BASE_URL/coreos_production_pxe_image.cpio.gz.sig -o $DEST/coreos_production_pxe_image.cpio.gz.sig
+echo "coreos_production_pxe_image.cpio.gz"
+curl -# $BASE_URL/coreos_production_pxe_image.cpio.gz -o $DEST/coreos_production_pxe_image.cpio.gz
+echo "coreos_production_pxe_image.cpio.gz.sig"
+curl -# $BASE_URL/coreos_production_pxe_image.cpio.gz.sig -o $DEST/coreos_production_pxe_image.cpio.gz.sig
 
 # verify signatures
-curl https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.asc -o $DEST/CoreOS_Image_Signing_Key.asc
+echo "CoreOS Image Signing Key"
+curl -# https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.asc -o $DEST/CoreOS_Image_Signing_Key.asc
 gpg --import < "$DEST/CoreOS_Image_Signing_Key.asc"
 echo "Adding trust for CoreOS signing key:"
 echo "04127D0BFABEC8871FFB2CCE50E0885593D2DCB4:6:" | gpg --import-ownertrust
