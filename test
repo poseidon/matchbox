@@ -3,7 +3,10 @@
 PKGS=$(go list ./... | grep -v /vendor)
 FORMATTABLE="./api ./config ./cmd ./sign"
 
-go test $PKGS
+LINT_EXCLUDE='(/vendor|pb$)'
+LINTABLE=$(go list ./... | grep -v -E $LINT_EXCLUDE)
+
+go test $PKGS -cover
 go vet $PKGS
 
 echo "Checking gofmt..."
@@ -14,7 +17,7 @@ if [ -n "${fmtRes}" ]; then
 fi
 
 echo "Checking golint..."
-lintRes=$(echo $PKGS | xargs -n 1 golint)
+lintRes=$(echo $LINTABLE | xargs -n 1 golint)
 if [ -n "${lintRes}" ]; then
   echo -e "golint checking failed:\n${lintRes}"
   exit 2

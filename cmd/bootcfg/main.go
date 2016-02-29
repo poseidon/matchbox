@@ -8,11 +8,12 @@ import (
 	"os"
 	"strings"
 
+	"github.com/coreos/pkg/capnslog"
+	"github.com/coreos/pkg/flagutil"
+
 	"github.com/coreos/coreos-baremetal/api"
 	"github.com/coreos/coreos-baremetal/config"
 	"github.com/coreos/coreos-baremetal/sign"
-	"github.com/coreos/pkg/capnslog"
-	"github.com/coreos/pkg/flagutil"
 )
 
 var (
@@ -104,7 +105,7 @@ func main() {
 	}
 	store.BootstrapGroups(cfg.Groups)
 
-	// API server
+	// HTTP server
 	config := &api.Config{
 		Store:         store,
 		AssetsPath:    flags.assetsPath,
@@ -112,9 +113,9 @@ func main() {
 		ArmoredSigner: armoredSigner,
 	}
 	server := api.NewServer(config)
-	log.Infof("starting config server on %s", flags.address)
+	log.Infof("starting bootcfg HTTP server on %s", flags.address)
 	err = http.ListenAndServe(flags.address, server.HTTPHandler())
 	if err != nil {
-		log.Fatalf("failed to start listening: %s", err)
+		log.Fatalf("failed to start listening: %v", err)
 	}
 }

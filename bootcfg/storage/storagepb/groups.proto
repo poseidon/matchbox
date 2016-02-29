@@ -1,0 +1,15 @@
+syntax = "proto3";
+package storagepb;
+
+message Group {
+  // machine readable Id
+  string id = 1;
+  // human readable name
+  string name = 2;
+  // profile id
+  string profile = 3;
+  // tags required to match the group 
+  map<string, string> requirements = 4;
+  // custom metadata
+  map<string, string> metadata = 5;
+}

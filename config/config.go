@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/coreos/coreos-baremetal/api"
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	"github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
 )
 
@@ -70,4 +72,32 @@ func (c *Config) validate() error {
 		}
 	}
 	return nil
+}
+
+// PBGroups returns the parsed storagepb.Group slice.
+func (c *Config) PBGroups() []*storagepb.Group {
+	groups := make([]*storagepb.Group, len(c.Groups))
+	i := 0
+	for _, g := range c.Groups {
+		group := &storagepb.Group{
+			Id:           uuid.NewV4().String(),
+			Name:         g.Name,
+			Profile:      g.Spec,
+			Metadata:     make(map[string]string),
+			Requirements: g.Matcher,
+		}
+		// gRPC message fields must have concrete types.
+		// Limit YAML metadata nesting to a depth of 1 for now.
+		for key, unknown := range g.Metadata {
+			switch val := unknown.(type) {
+			case string:
+				group.Metadata[key] = val
+			default:
+				// skip subtree
+			}
+		}
+		groups[i] = group
+		i++
+	}
+	return groups
 }

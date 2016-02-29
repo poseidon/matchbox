@@ -1,0 +1,27 @@
+syntax = "proto3";
+package serverpb;
+
+import "github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb/groups.proto";
+
+service Groups {
+  // Get a machine Group by id.
+  rpc Get(GetRequest) returns (GetResponse) {}
+  
+  // List all machine Groups.
+  rpc List(ListRequest) returns (ListResponse) {}
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message ListRequest {
+}
+
+message GetResponse {
+  storagepb.Group group = 1;
+}
+
+message ListResponse {
+  repeated storagepb.Group groups = 1;
+}
