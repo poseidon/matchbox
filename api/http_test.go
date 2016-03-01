@@ -25,7 +25,7 @@ func TestLabelsFromRequest(t *testing.T) {
 		// parse and set MAC regardless of query argument case
 		{"http://a.io?UUID=a1b2c3&MAC=52:DA:00:89:d8:10", map[string]string{"UUID": "a1b2c3", "MAC": validMACStr}},
 		// ignore MAC addresses which do not parse
-		{"http://a.io?mac=?:?:?", emptyMap},
+		{"http://a.io?mac=x:x:x:x:x:x", emptyMap},
 	}
 	for _, c := range cases {
 		req, err := http.NewRequest("GET", c.urlString, nil)
