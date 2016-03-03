@@ -1,0 +1,53 @@
+syntax = "proto3";
+package serverpb;
+
+import "github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb/storage.proto";
+
+service Groups {
+  // Get a machine Group by id.
+  rpc GroupGet(GroupGetRequest) returns (GroupGetResponse) {};
+  // List all machine Groups.
+  rpc GroupList(GroupListRequest) returns (GroupListResponse) {};
+}
+
+service Profiles {
+  // Get a Profile by id.
+  rpc ProfileGet(ProfileGetRequest) returns (ProfileGetResponse) {};
+  // List all Profiles.
+  rpc ProfileList(ProfileListRequest) returns (ProfileListResponse) {};
+}
+
+message GroupGetRequest {
+  string id = 1;
+}
+
+message GroupListRequest {
+}
+
+message GroupGetResponse {
+  storagepb.Group group = 1;
+}
+
+message GroupListResponse {
+  repeated storagepb.Group groups = 1;
+}
+
+message ProfileGetRequest {
+  string id = 1;
+}
+
+message ProfileGetResponse {
+  storagepb.Profile profile = 1;
+}
+
+message ProfileListRequest {
+  string id = 1;
+}
+
+message ProfileListResponse {
+  repeated storagepb.Profile profiles = 1;
+}
+
+
+
+

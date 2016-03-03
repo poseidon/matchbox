@@ -27,11 +27,13 @@ func main() {
 	flags := struct {
 		address    string
 		configPath string
+		dataPath   string
 		version    bool
 		help       bool
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8081", "gRPC listen address")
 	flag.StringVar(&flags.configPath, "config", "./data/config.yaml", "Path to config file")
+	flag.StringVar(&flags.dataPath, "data-path", "./data", "Path to data directory")
 	// subcommands
 	flag.BoolVar(&flags.version, "version", false, "print version and exit")
 	flag.BoolVar(&flags.help, "help", false, "print usage and exit")
@@ -59,6 +61,9 @@ func main() {
 	if finfo, err := os.Stat(flags.configPath); err != nil || finfo.IsDir() {
 		log.Fatal("A path to a config file is required")
 	}
+	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
+		log.Fatal("A path to a data directory is required")
+	}
 
 	// load bootstrap config
 	cfg, err := config.LoadConfig(flags.configPath)
@@ -67,7 +72,8 @@ func main() {
 	}
 
 	// storage
-	store := storage.NewMemStore(&storage.Config{
+	store := storage.NewFileStore(&storage.Config{
+		Dir:    flags.dataPath,
 		Groups: cfg.PBGroups(),
 	})
 
@@ -78,8 +84,10 @@ func main() {
 		log.Fatalf("failed to start listening: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterGroupsServer(grpcServer, bootcfg.NewServer(&bootcfg.Config{
+	bootcfgServer := bootcfg.NewServer(&bootcfg.Config{
 		Store: store,
-	}))
+	})
+	pb.RegisterGroupsServer(grpcServer, bootcfgServer)
+	pb.RegisterProfilesServer(grpcServer, bootcfgServer)
 	grpcServer.Serve(lis)
 }

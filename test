@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 PKGS=$(go list ./... | grep -v /vendor)
-FORMATTABLE="./api ./config ./cmd ./sign"
+FORMATTABLE="$(ls -d */ | grep -v vendor/)"
 
 LINT_EXCLUDE='(/vendor|pb$)'
 LINTABLE=$(go list ./... | grep -v -E $LINT_EXCLUDE)

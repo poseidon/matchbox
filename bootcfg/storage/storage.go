@@ -1,47 +1,61 @@
 package storage
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"path/filepath"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 // Errors querying a Store.
 var (
-	ErrGroupNotFound = errors.New("storage: No Group found")
+	ErrGroupNotFound   = errors.New("storage: No Group found")
+	ErrProfileNotFound = errors.New("storage: No Profile found")
 )
 
-// A Store provides machine Groups.
+// A Store stores machine Groups and Profiles.
 type Store interface {
-	// Get a machine Group by id.
-	GetGroup(id string) (*storagepb.Group, error)
-	// List all machine Groups.
-	ListGroups() ([]*storagepb.Group, error)
+	// GroupGet returns a machine Group by id.
+	GroupGet(id string) (*storagepb.Group, error)
+	// GroupList lists all machine Groups.
+	GroupList() ([]*storagepb.Group, error)
+	// ProfileGet gets a profile by id.
+	ProfileGet(id string) (*storagepb.Profile, error)
+	// ProfileList lists all profiles.
+	ProfileList() ([]*storagepb.Profile, error)
 }
 
-// Config initializes a memStore.
+// Config initializes a fileStore.
 type Config struct {
+	Dir    string
 	Groups []*storagepb.Group
 }
 
-// memStore implements ths Store interface.
-type memStore struct {
-	groups map[string] *storagepb.Group
+// fileStore implements ths Store interface. Queries to the file system
+// are restricted to the specified directory tree.
+type fileStore struct {
+	dir    string
+	groups map[string]*storagepb.Group
 }
 
-// NewMemStore returns a new memory-backed Store.
-func NewMemStore(config *Config) Store {
+// NewFileStore returns a new memory-backed Store.
+func NewFileStore(config *Config) Store {
 	groups := make(map[string]*storagepb.Group)
 	for _, group := range config.Groups {
 		groups[group.Id] = group
 	}
-	return &memStore{
+	return &fileStore{
+		dir:    config.Dir,
 		groups: groups,
 	}
 }
 
-// GetGroup returns a machine Group by id.
-func (s *memStore) GetGroup(id string) (*storagepb.Group, error) {
+// GroupGet returns a machine Group by id.
+func (s *fileStore) GroupGet(id string) (*storagepb.Group, error) {
 	val, ok := s.groups[id]
 	if !ok {
 		return nil, ErrGroupNotFound
@@ -49,8 +63,8 @@ func (s *memStore) GetGroup(id string) (*storagepb.Group, error) {
 	return val, nil
 }
 
-// ListGroups lists all machine Groups.
-func (s *memStore) ListGroups() ([]*storagepb.Group, error) {
+// GroupList lists all machine Groups.
+func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 	groups := make([]*storagepb.Group, len(s.groups))
 	i := 0
 	for _, g := range s.groups {
@@ -58,4 +72,57 @@ func (s *memStore) ListGroups() ([]*storagepb.Group, error) {
 		i++
 	}
 	return groups, nil
+}
+
+// ProfileGet gets a profile by id.
+func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
+	file, err := openFile(http.Dir(s.dir), filepath.Join("specs", id, "spec.json"))
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	profile := new(storagepb.Profile)
+	err = json.NewDecoder(file).Decode(profile)
+	if err != nil {
+		return nil, err
+	}
+	return profile, err
+}
+
+// ProfileList lists all profiles.
+func (s *fileStore) ProfileList() ([]*storagepb.Profile, error) {
+	finfos, err := ioutil.ReadDir(filepath.Join(s.dir, "specs"))
+	if err != nil {
+		return nil, err
+	}
+	profiles := make([]*storagepb.Profile, 0, len(finfos))
+	for _, finfo := range finfos {
+		profile, err := s.ProfileGet(finfo.Name())
+		if err == nil {
+			profiles = append(profiles, profile)
+		}
+	}
+	return profiles, nil
+}
+
+// openFile attempts to open the file within the specified Filesystem. If
+// successful, the http.File is returned and must be closed by the caller.
+// Otherwise, the path was not a regular file that could be opened and an
+// error is returned.
+func openFile(fs http.FileSystem, path string) (http.File, error) {
+	file, err := fs.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	info, err := file.Stat()
+	if err != nil {
+		file.Close()
+		return nil, err
+	}
+	if info.Mode().IsRegular() {
+		return file, nil
+	}
+	file.Close()
+	return nil, fmt.Errorf("%s is not a file on the given filesystem", path)
 }

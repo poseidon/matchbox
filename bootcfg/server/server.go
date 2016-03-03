@@ -3,39 +3,61 @@ package server
 import (
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 )
 
-// Config configures an RPC Server.
+// Server defines a bootcfg Server.
+type Server interface {
+	pb.GroupsServer
+	pb.ProfilesServer
+}
+
+// Config configures a server implementation.
 type Config struct {
 	Store storage.Store
 }
 
-// server implements the grpc GroupsServer interface.
+// server implements the Server interface.
 type server struct {
 	store storage.Store
 }
 
-// NewServer returns a new server.
-func NewServer(config *Config) pb.GroupsServer {
+// NewServer returns a new Server.
+func NewServer(config *Config) Server {
 	return &server{
 		store: config.Store,
 	}
 }
 
-func (s *server) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
-	group, err := s.store.GetGroup(req.Id)
+func (s *server) GroupGet(ctx context.Context, req *pb.GroupGetRequest) (*pb.GroupGetResponse, error) {
+	group, err := s.store.GroupGet(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetResponse{Group: group}, nil
+	return &pb.GroupGetResponse{Group: group}, nil
 }
 
-func (s *server) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
-	groups, err := s.store.ListGroups()
+func (s *server) GroupList(ctx context.Context, req *pb.GroupListRequest) (*pb.GroupListResponse, error) {
+	groups, err := s.store.GroupList()
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListResponse{Groups: groups}, nil
+	return &pb.GroupListResponse{Groups: groups}, nil
+}
+
+func (s *server) ProfileGet(ctx context.Context, req *pb.ProfileGetRequest) (*pb.ProfileGetResponse, error) {
+	profile, err := s.store.ProfileGet(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ProfileGetResponse{Profile: profile}, nil
+}
+
+func (s *server) ProfileList(ctx context.Context, req *pb.ProfileListRequest) (*pb.ProfileListResponse, error) {
+	profiles, err := s.store.ProfileList()
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ProfileListResponse{Profiles: profiles}, nil
 }

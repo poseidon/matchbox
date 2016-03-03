@@ -14,8 +14,9 @@ type Config struct {
 
 // Client provides a bootcfg client RPC session.
 type Client struct {
-	Groups pb.GroupsClient
-	conn *grpc.ClientConn
+	Groups   pb.GroupsClient
+	Profiles pb.ProfilesClient
+	conn     *grpc.ClientConn
 }
 
 // New creates a new Client from the given Config.
@@ -23,14 +24,15 @@ func New(config *Config) (*Client, error) {
 	return newClient(config)
 }
 
-func newClient(config *Config)  (*Client, error) {
+func newClient(config *Config) (*Client, error) {
 	conn, err := retryDialer(config)
 	if err != nil {
 		return nil, err
 	}
 	client := &Client{
-		Groups: pb.NewGroupsClient(conn),
-		conn: conn,
+		conn:     conn,
+		Groups:   pb.NewGroupsClient(conn),
+		Profiles: pb.NewProfilesClient(conn),
 	}
 	return client, nil
 }
