@@ -13,6 +13,9 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/pmezard/go-difflib/difflib"
 )
 
 // TestingT is an interface wrapper around *testing.T
@@ -48,8 +51,11 @@ func ObjectsAreEqualValues(expected, actual interface{}) bool {
 	}
 
 	actualType := reflect.TypeOf(actual)
+	if actualType == nil {
+		return false
+	}
 	expectedValue := reflect.ValueOf(expected)
-	if expectedValue.Type().ConvertibleTo(actualType) {
+	if expectedValue.IsValid() && expectedValue.Type().ConvertibleTo(actualType) {
 		// Attempt comparison after type conversion
 		return reflect.DeepEqual(expectedValue.Convert(actualType).Interface(), actual)
 	}
@@ -175,6 +181,28 @@ func indentMessageLines(message string, tabs int) string {
 	return outBuf.String()
 }
 
+type failNower interface {
+	FailNow()
+}
+
+// FailNow fails test
+func FailNow(t TestingT, failureMessage string, msgAndArgs ...interface{}) bool {
+	Fail(t, failureMessage, msgAndArgs...)
+
+	// We cannot extend TestingT with FailNow() and
+	// maintain backwards compatibility, so we fallback
+	// to panicking when FailNow is not available in
+	// TestingT.
+	// See issue #263
+
+	if t, ok := t.(failNower); ok {
+		t.FailNow()
+	} else {
+		panic("test failed and t is missing `FailNow()`")
+	}
+	return false
+}
+
 // Fail reports a failure through
 func Fail(t TestingT, failureMessage string, msgAndArgs ...interface{}) bool {
 
@@ -208,7 +236,7 @@ func Implements(t TestingT, interfaceObject interface{}, object interface{}, msg
 	interfaceType := reflect.TypeOf(interfaceObject).Elem()
 
 	if !reflect.TypeOf(object).Implements(interfaceType) {
-		return Fail(t, fmt.Sprintf("Object must implement %v", interfaceType), msgAndArgs...)
+		return Fail(t, fmt.Sprintf("%T must implement %v", object, interfaceType), msgAndArgs...)
 	}
 
 	return true
@@ -233,8 +261,9 @@ func IsType(t TestingT, expectedType interface{}, object interface{}, msgAndArgs
 func Equal(t TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool {
 
 	if !ObjectsAreEqual(expected, actual) {
+		diff := diff(expected, actual)
 		return Fail(t, fmt.Sprintf("Not equal: %#v (expected)\n"+
-			"        != %#v (actual)", expected, actual), msgAndArgs...)
+			"        != %#v (actual)%s", expected, actual, diff), msgAndArgs...)
 	}
 
 	return true
@@ -356,8 +385,16 @@ func isEmpty(object interface{}) bool {
 		{
 			return (objValue.Len() == 0)
 		}
+	case reflect.Struct:
+		switch object.(type) {
+		case time.Time:
+			return object.(time.Time).IsZero()
+		}
 	case reflect.Ptr:
 		{
+			if objValue.IsNil() {
+				return true
+			}
 			switch object.(type) {
 			case *time.Time:
 				return object.(*time.Time).IsZero()
@@ -372,7 +409,7 @@ func isEmpty(object interface{}) bool {
 // Empty asserts that the specified object is empty.  I.e. nil, "", false, 0 or either
 // a slice or a channel with len == 0.
 //
-// assert.Empty(t, obj)
+//  assert.Empty(t, obj)
 //
 // Returns whether the assertion was successful (true) or not (false).
 func Empty(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
@@ -389,9 +426,9 @@ func Empty(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
 // NotEmpty asserts that the specified object is NOT empty.  I.e. not nil, "", false, 0 or either
 // a slice or a channel with len == 0.
 //
-// if assert.NotEmpty(t, obj) {
-//   assert.Equal(t, "two", obj[1])
-// }
+//  if assert.NotEmpty(t, obj) {
+//    assert.Equal(t, "two", obj[1])
+//  }
 //
 // Returns whether the assertion was successful (true) or not (false).
 func NotEmpty(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
@@ -450,7 +487,7 @@ func True(t TestingT, value bool, msgAndArgs ...interface{}) bool {
 
 }
 
-// False asserts that the specified value is true.
+// False asserts that the specified value is false.
 //
 //    assert.False(t, myBool, "myBool should be false")
 //
@@ -729,42 +766,40 @@ func InDeltaSlice(t TestingT, expected, actual interface{}, delta float64, msgAn
 	return true
 }
 
-// min(|expected|, |actual|) * epsilon
-func calcEpsilonDelta(expected, actual interface{}, epsilon float64) float64 {
+func calcRelativeError(expected, actual interface{}) (float64, error) {
 	af, aok := toFloat(expected)
+	if !aok {
+		return 0, fmt.Errorf("expected value %q cannot be converted to float", expected)
+	}
+	if af == 0 {
+		return 0, fmt.Errorf("expected value must have a value other than zero to calculate the relative error")
+	}
 	bf, bok := toFloat(actual)
-
-	if !aok || !bok {
-		// invalid input
-		return 0
+	if !bok {
+		return 0, fmt.Errorf("expected value %q cannot be converted to float", actual)
 	}
 
-	if af < 0 {
-		af = -af
-	}
-	if bf < 0 {
-		bf = -bf
-	}
-	var delta float64
-	if af < bf {
-		delta = af * epsilon
-	} else {
-		delta = bf * epsilon
-	}
-	return delta
+	return math.Abs(af-bf) / math.Abs(af), nil
 }
 
 // InEpsilon asserts that expected and actual have a relative error less than epsilon
 //
 // Returns whether the assertion was successful (true) or not (false).
 func InEpsilon(t TestingT, expected, actual interface{}, epsilon float64, msgAndArgs ...interface{}) bool {
-	delta := calcEpsilonDelta(expected, actual, epsilon)
+	actualEpsilon, err := calcRelativeError(expected, actual)
+	if err != nil {
+		return Fail(t, err.Error(), msgAndArgs...)
+	}
+	if actualEpsilon > epsilon {
+		return Fail(t, fmt.Sprintf("Relative error is too high: %#v (expected)\n"+
+			"        < %#v (actual)", actualEpsilon, epsilon), msgAndArgs...)
+	}
 
-	return InDelta(t, expected, actual, delta, msgAndArgs...)
+	return true
 }
 
-// InEpsilonSlice is the same as InEpsilon, except it compares two slices.
-func InEpsilonSlice(t TestingT, expected, actual interface{}, delta float64, msgAndArgs ...interface{}) bool {
+// InEpsilonSlice is the same as InEpsilon, except it compares each value from two slices.
+func InEpsilonSlice(t TestingT, expected, actual interface{}, epsilon float64, msgAndArgs ...interface{}) bool {
 	if expected == nil || actual == nil ||
 		reflect.TypeOf(actual).Kind() != reflect.Slice ||
 		reflect.TypeOf(expected).Kind() != reflect.Slice {
@@ -775,7 +810,7 @@ func InEpsilonSlice(t TestingT, expected, actual interface{}, delta float64, msg
 	expectedSlice := reflect.ValueOf(expected)
 
 	for i := 0; i < actualSlice.Len(); i++ {
-		result := InEpsilon(t, actualSlice.Index(i).Interface(), expectedSlice.Index(i).Interface(), delta)
+		result := InEpsilon(t, actualSlice.Index(i).Interface(), expectedSlice.Index(i).Interface(), epsilon)
 		if !result {
 			return result
 		}
@@ -920,4 +955,50 @@ func JSONEq(t TestingT, expected string, actual string, msgAndArgs ...interface{
 	}
 
 	return Equal(t, expectedJSONAsInterface, actualJSONAsInterface, msgAndArgs...)
+}
+
+func typeAndKind(v interface{}) (reflect.Type, reflect.Kind) {
+	t := reflect.TypeOf(v)
+	k := t.Kind()
+
+	if k == reflect.Ptr {
+		t = t.Elem()
+		k = t.Kind()
+	}
+	return t, k
+}
+
+// diff returns a diff of both values as long as both are of the same type and
+// are a struct, map, slice or array. Otherwise it returns an empty string.
+func diff(expected interface{}, actual interface{}) string {
+	if expected == nil || actual == nil {
+		return ""
+	}
+
+	et, ek := typeAndKind(expected)
+	at, _ := typeAndKind(actual)
+
+	if et != at {
+		return ""
+	}
+
+	if ek != reflect.Struct && ek != reflect.Map && ek != reflect.Slice && ek != reflect.Array {
+		return ""
+	}
+
+	spew.Config.SortKeys = true
+	e := spew.Sdump(expected)
+	a := spew.Sdump(actual)
+
+	diff, _ := difflib.GetUnifiedDiffString(difflib.UnifiedDiff{
+		A:        difflib.SplitLines(e),
+		B:        difflib.SplitLines(a),
+		FromFile: "Expected",
+		FromDate: "",
+		ToFile:   "Actual",
+		ToDate:   "",
+		Context:  1,
+	})
+
+	return "\n\nDiff:\n" + diff
 }

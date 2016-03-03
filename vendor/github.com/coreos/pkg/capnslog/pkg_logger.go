@@ -135,20 +135,32 @@ func (p *PackageLogger) Info(entries ...interface{}) {
 // Debug Functions
 
 func (p *PackageLogger) Debugf(format string, args ...interface{}) {
+	if p.level < DEBUG {
+		return
+	}
 	p.Logf(DEBUG, format, args...)
 }
 
 func (p *PackageLogger) Debug(entries ...interface{}) {
+	if p.level < DEBUG {
+		return
+	}
 	p.internalLog(calldepth, DEBUG, entries...)
 }
 
 // Trace Functions
 
 func (p *PackageLogger) Tracef(format string, args ...interface{}) {
+	if p.level < TRACE {
+		return
+	}
 	p.Logf(TRACE, format, args...)
 }
 
 func (p *PackageLogger) Trace(entries ...interface{}) {
+	if p.level < TRACE {
+		return
+	}
 	p.internalLog(calldepth, TRACE, entries...)
 }
 

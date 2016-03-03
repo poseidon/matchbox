@@ -7,13 +7,13 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/coreos/coreos-cloudinit/Godeps/_workspace/src/github.com/coreos/yaml",
-			"Comment": "v1.9.0-3-g8fa2641",
-			"Rev": "8fa26412d8c2008a2b8f71bfc21af57965ffec55"
+			"Comment": "v1.9.1",
+			"Rev": "b3f805dee6a4aa5ed298a1f370284df470eecf43"
 		},
 		{
 			"ImportPath": "github.com/coreos/coreos-cloudinit/config",
-			"Comment": "v1.9.0-3-g8fa2641",
-			"Rev": "8fa26412d8c2008a2b8f71bfc21af57965ffec55"
+			"Comment": "v1.9.1",
+			"Rev": "b3f805dee6a4aa5ed298a1f370284df470eecf43"
 		},
 		{
 			"ImportPath": "github.com/coreos/go-systemd/journal",
@@ -22,43 +22,75 @@
 		},
 		{
 			"ImportPath": "github.com/coreos/ignition/src/config",
-			"Comment": "v0.2.6-3-g3a4d7aa",
-			"Rev": "3a4d7aa9d371457ac2d138ebb0b169cdcf751dcf"
+			"Comment": "v0.3.0-6-g699adeb",
+			"Rev": "699adeba84898259868cef779a45293a49935500"
 		},
 		{
 			"ImportPath": "github.com/coreos/ignition/third_party/github.com/alecthomas/units",
-			"Comment": "v0.2.6-3-g3a4d7aa",
-			"Rev": "3a4d7aa9d371457ac2d138ebb0b169cdcf751dcf"
+			"Comment": "v0.3.0-6-g699adeb",
+			"Rev": "699adeba84898259868cef779a45293a49935500"
 		},
 		{
 			"ImportPath": "github.com/coreos/ignition/third_party/github.com/camlistore/camlistore/pkg/errorutil",
-			"Comment": "v0.2.6-3-g3a4d7aa",
-			"Rev": "3a4d7aa9d371457ac2d138ebb0b169cdcf751dcf"
+			"Comment": "v0.3.0-6-g699adeb",
+			"Rev": "699adeba84898259868cef779a45293a49935500"
 		},
 		{
 			"ImportPath": "github.com/coreos/pkg/capnslog",
-			"Rev": "8e29e900973a26d5a2f0851a35908f724c18650d"
+			"Rev": "66fe44ad037ccb80329115cb4db0dbe8e9beb03a"
 		},
 		{
 			"ImportPath": "github.com/coreos/pkg/flagutil",
-			"Rev": "8e29e900973a26d5a2f0851a35908f724c18650d"
+			"Rev": "66fe44ad037ccb80329115cb4db0dbe8e9beb03a"
+		},
+		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Rev": "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "552c7b9542c194800fd493123b3798ef0a832032"
+		},
+		{
+			"ImportPath": "github.com/pmezard/go-difflib/difflib",
+			"Rev": "792786c7400a136282c1664665ae0a8db921c6c2"
+		},
+		{
+			"ImportPath": "github.com/satori/go.uuid",
+			"Rev": "e673fdd4dea8a7334adbbe7f57b7e4b00bdc5502"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
-			"Comment": "v1.0-71-g0d5a14c",
-			"Rev": "0d5a14c5a477957864f3b747d95255ad4e34bcc0"
+			"Comment": "v1.1.3-4-g1f4a164",
+			"Rev": "1f4a1643a57e798696635ea4c126e9127adb7d3c"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/cast5",
-			"Rev": "1f22c0103821b9390939b6776727195525381532"
+			"Rev": "5dc8cb4b8a8eb076cbb5a06bc3b8682c15bdbbd3"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/openpgp",
-			"Rev": "1f22c0103821b9390939b6776727195525381532"
+			"Rev": "5dc8cb4b8a8eb076cbb5a06bc3b8682c15bdbbd3"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "cbbbe2bc0f2efdd2afb318d93f1eadb19350e4a3"
+			"Rev": "6acef71eb69611914f7a30939ea9f6e194c78172"
+		},
+		{
+			"ImportPath": "golang.org/x/net/http2",
+			"Rev": "6acef71eb69611914f7a30939ea9f6e194c78172"
+		},
+		{
+			"ImportPath": "golang.org/x/net/internal/timeseries",
+			"Rev": "6acef71eb69611914f7a30939ea9f6e194c78172"
+		},
+		{
+			"ImportPath": "golang.org/x/net/trace",
+			"Rev": "6acef71eb69611914f7a30939ea9f6e194c78172"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc",
+			"Rev": "b4b62c5f29c6bc2411c38b00b1e41b1b521eedd4"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
