@@ -57,13 +57,20 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 ## Application Container
 
+Trust the CoreOS App Signing [primary key](https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg) for image signature verification, after cross referencing.
+
+    sudo rkt trust --prefix coreos.com/bootcfg
+    # Fingerprint 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
+
 Run `bootcfg` on the `metal0` network, with a known IP we'll have DNS point to.
+
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples coreos.com/bootcfg:v0.2.0 -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
+
+If you'd like to try to latest build from master, fetch an ACI from Quay.io (uses docker2aci) and run `quay.io/coreos/bootcfg`.
 
     sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
 
-Currently, the insecure flag is needed since Docker images do not support signature verification. We'll ship an ACI soon to address this.
-
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
+Note: The insecure flag is needed for this case, since Docker images don't support signatures.
 
 If you get an error about the IP assignment, garbage collect old pods.
 

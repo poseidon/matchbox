@@ -33,8 +33,8 @@ Build the binary and ACI. Prepare the binary tarball and ACI.
 
 Sign the binary tarball and ACI.
 
-    gpg2 -a --default-key 5D723EDD --detach-sign bootcfg-$VERSION-linux-amd64.tar.gz
-    gpg2 -a --default-key 5D723EDD --detach-sign bootcfg-$VERSION-linux-amd64.aci
+    gpg2 -a --default-key FC8A365E --detach-sign bootcfg-$VERSION-linux-amd64.tar.gz
+    gpg2 -a --default-key FC8A365E --detach-sign bootcfg-$VERSION-linux-amd64.aci
 
 Verify the signatures.
 
