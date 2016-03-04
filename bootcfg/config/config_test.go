@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/coreos/coreos-baremetal/api"
+	"github.com/coreos/coreos-baremetal/bootcfg/api"
 	"github.com/stretchr/testify/assert"
 )
 

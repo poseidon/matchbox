@@ -11,9 +11,9 @@ import (
 	"github.com/coreos/pkg/capnslog"
 	"github.com/coreos/pkg/flagutil"
 
-	"github.com/coreos/coreos-baremetal/api"
-	"github.com/coreos/coreos-baremetal/config"
-	"github.com/coreos/coreos-baremetal/sign"
+	"github.com/coreos/coreos-baremetal/bootcfg/api"
+	"github.com/coreos/coreos-baremetal/bootcfg/config"
+	"github.com/coreos/coreos-baremetal/bootcfg/sign"
 )
 
 var (
@@ -79,7 +79,7 @@ func main() {
 	// logging setup
 	lvl, err := capnslog.ParseLevel(strings.ToUpper(flags.logLevel))
 	if err != nil {
-		log.Fatalf("Invalid log-level: %v", err.Error())
+		log.Fatalf("invalid log-level: %v", err)
 	}
 	capnslog.SetGlobalLogLevel(lvl)
 	capnslog.SetFormatter(capnslog.NewPrettyFormatter(os.Stdout, false))

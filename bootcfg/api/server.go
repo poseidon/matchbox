@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/coreos/coreos-baremetal/sign"
+	"github.com/coreos/coreos-baremetal/bootcfg/sign"
 	"github.com/coreos/pkg/capnslog"
 )
 
@@ -12,7 +12,7 @@ const (
 	APIVersion = "v1alpha1"
 )
 
-var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal", "api")
+var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/bootcfg", "api")
 
 // Config configures the api Server.
 type Config struct {

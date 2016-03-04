@@ -51,7 +51,7 @@ func cloudHandler(store Store) ContextHandler {
 
 		config := buf.String()
 		if !cloudinit.IsCloudConfig(config) && !cloudinit.IsScript(config) {
-			log.Errorf("error parsing user-data")
+			log.Error("error parsing user-data")
 			http.NotFound(w, req)
 			return
 		}

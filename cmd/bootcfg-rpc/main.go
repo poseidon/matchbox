@@ -11,10 +11,10 @@ import (
 	"github.com/coreos/pkg/flagutil"
 	"google.golang.org/grpc"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/config"
 	bootcfg "github.com/coreos/coreos-baremetal/bootcfg/server"
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage"
-	"github.com/coreos/coreos-baremetal/config"
 )
 
 var (

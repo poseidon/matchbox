@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/coreos/coreos-baremetal/api"
+	"github.com/coreos/coreos-baremetal/bootcfg/api"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
