@@ -2,8 +2,8 @@
 ignition_version: 1
 storage:
   disks:
-    - device: "/dev/sda"
-      wipeTable: true
+    - device: /dev/sda
+      wipe_table: true
       partitions:
         - label: ROOT
           number: 0

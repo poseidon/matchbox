@@ -27,7 +27,7 @@ Alternately, build a Docker image `coreos/bootcfg:latest`.
 
 Run the ACI with rkt on `metal0`.
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples bootcfg.aci -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
+    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples bootcfg.aci -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
 
 Alternately, run the Docker image on `docker0`.
 
