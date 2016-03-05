@@ -1,0 +1,37 @@
+syntax = "proto3";
+package storagepb;
+
+message Group {
+  // machine readable Id
+  string id = 1;
+  // human readable name
+  string name = 2;
+  // profile id
+  string profile = 3;
+  // tags required to match the group
+  map<string, string> requirements = 4;
+  // custom metadata
+  map<string, string> metadata = 5;
+}
+
+message Profile {
+  // profile id
+  string id = 1;
+  // human readable name
+  string name = 2;
+  // ignition id
+  string ignition_id = 3;
+  // cloud config id
+  string cloud_id = 4;
+  // support network boot / PXE
+  NetBoot boot = 5;
+}
+
+message NetBoot {
+  // the URL of the kernel image
+  string kernel = 1;
+  // the init RAM filesystem URLs
+  repeated string initrd = 2;
+  // kernel parameters (command line)
+  map<string, string> cmdline = 3;
+}

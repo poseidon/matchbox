@@ -2,3 +2,6 @@
 
 LD_FLAGS="-w -X main.version=$(./git-version)"
 CGO_ENABLED=0 go build -o bin/bootcfg -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcfg
+
+# gRPC server as a separate binary
+CGO_ENABLED=0 go build -o bin/bootcfg-rpc -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcfg-rpc
