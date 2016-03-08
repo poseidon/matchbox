@@ -51,6 +51,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	gr := newGroupsResource(s.store)
 
 	// Endpoints
+	mux.Handle("/grub", logRequests(NewHandler(gr.matchSpecHandler(grubHandler()))))
 	// Boot via iPXE
 	mux.Handle("/boot.ipxe", logRequests(ipxeInspect()))
 	mux.Handle("/boot.ipxe.0", logRequests(ipxeInspect()))
@@ -64,11 +65,12 @@ func (s *Server) HTTPHandler() http.Handler {
 	// metadata
 	mux.Handle("/metadata", logRequests(NewHandler(gr.matchGroupHandler(metadataHandler()))))
 
-	// Singatures
+	// Signatures
 	if s.signer != nil {
 		signerChain := func(next http.Handler) http.Handler {
 			return logRequests(sign.SignatureHandler(s.signer, next))
 		}
+		mux.Handle("/grub.sig", signerChain(NewHandler(gr.matchSpecHandler(grubHandler()))))
 		mux.Handle("/boot.ipxe.sig", signerChain(ipxeInspect()))
 		mux.Handle("/boot.ipxe.0.sig", signerChain(ipxeInspect()))
 		mux.Handle("/ipxe.sig", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))
@@ -81,6 +83,7 @@ func (s *Server) HTTPHandler() http.Handler {
 		signerChain := func(next http.Handler) http.Handler {
 			return logRequests(sign.SignatureHandler(s.armoredSigner, next))
 		}
+		mux.Handle("/grub.asc", signerChain(NewHandler(gr.matchSpecHandler(grubHandler()))))
 		mux.Handle("/boot.ipxe.asc", signerChain(ipxeInspect()))
 		mux.Handle("/boot.ipxe.0.asc", signerChain(ipxeInspect()))
 		mux.Handle("/ipxe.asc", signerChain(NewHandler(gr.matchSpecHandler(ipxeHandler()))))

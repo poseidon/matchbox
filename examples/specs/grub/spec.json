@@ -1,0 +1,14 @@
+{
+  "id": "grub",
+  "boot": {
+    "kernel": "(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
+    "initrd": ["(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],
+    "cmdline": {
+      "coreos.config.url": "http://bootcfg.foo:8080/ignition",
+      "coreos.autologin": "",
+      "coreos.first_boot": ""
+    }
+  },
+  "cloud_id": "",
+  "ignition_id": "ssh.yaml"
+}

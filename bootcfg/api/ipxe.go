@@ -13,7 +13,7 @@ const ipxeBootstrap = `#!ipxe
 chain ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
 `
 
-var ipxeTemplate = template.Must(template.New("ipxe boot").Parse(`#!ipxe
+var ipxeTemplate = template.Must(template.New("iPXE config").Parse(`#!ipxe
 kernel {{.Kernel}}{{range $key, $value := .Cmdline}} {{if $value}}{{$key}}={{$value}}{{else}}{{$key}}{{end}}{{end}}
 initrd {{ range $element := .Initrd }}{{$element}} {{end}}
 boot
