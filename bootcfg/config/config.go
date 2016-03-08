@@ -46,6 +46,18 @@ func ParseConfig(data []byte) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	// normalize MAC addresses
+	for _, group := range config.Groups {
+		for key, val := range group.Matcher {
+			switch strings.ToLower(key) {
+			case "mac":
+				if macAddr, err := net.ParseMAC(val); err == nil {
+					// range iteration copy with mutable map
+					group.Matcher[key] = macAddr.String()
+				}
+			}
+		}
+	}
 	if err := config.validate(); err != nil {
 		return nil, err
 	}

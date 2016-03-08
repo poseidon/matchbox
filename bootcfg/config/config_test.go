@@ -18,6 +18,7 @@ groups:
     require:
       role: worker
       region: us-central1-a
+      mac: aB:Ab:3d:45:cD:10
 `
 
 var validConfig = &Config{
@@ -29,6 +30,7 @@ var validConfig = &Config{
 			Matcher: api.RequirementSet(map[string]string{
 				"role":   "worker",
 				"region": "us-central1-a",
+				"mac":    "ab:ab:3d:45:cd:10",
 			}),
 		},
 	},
@@ -59,6 +61,7 @@ func TestParseConfig(t *testing.T) {
 		expectedErr    error
 	}{
 		{validData, validConfig, nil},
+
 		{invalidData, nil, ErrIncorrectVersion},
 		{invalidYAML, nil, fmt.Errorf("yaml: found character that cannot start any token")},
 	}
