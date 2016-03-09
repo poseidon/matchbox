@@ -10,8 +10,8 @@ message Group {
   string profile = 3;
   // tags required to match the group
   map<string, string> requirements = 4;
-  // custom metadata
-  map<string, string> metadata = 5;
+  // JSON encoded metadata (with restrictions)
+  bytes metadata = 5;
 }
 
 message Profile {

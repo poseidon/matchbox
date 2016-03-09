@@ -26,6 +26,6 @@ Run
 Run with a fake signing key.
 
     export BOOTCFG_PASSPHRASE=test
-    ./bin/bootcfg -address=0.0.0.0:8080 -key-ring-path sign/fixtures/secring.gpg -data-path examples/ -config examples/etcd-rkt.yaml
+    ./bin/bootcfg -address=0.0.0.0:8080 -key-ring-path bootcfg/sign/fixtures/secring.gpg -data-path examples/ -config examples/etcd-rkt.yaml
 
 

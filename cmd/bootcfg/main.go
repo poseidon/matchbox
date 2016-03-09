@@ -103,7 +103,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	store.BootstrapGroups(cfg.Groups)
+	store.BootstrapGroups(cfg.YAMLGroups)
 
 	// HTTP server
 	config := &api.Config{
