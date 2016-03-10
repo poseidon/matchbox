@@ -42,12 +42,6 @@ func TestRequirementMatches(t *testing.T) {
 	}
 	for _, c := range cases {
 		r := RequirementSet(c.reqs)
-		l := LabelSet(c.labels)
-		assert.Equal(t, c.expected, r.Matches(l))
+		assert.Equal(t, c.expected, r.Matches(c.labels))
 	}
-}
-
-func TestLabelSetGet(t *testing.T) {
-	labels := LabelSet(map[string]string{"a": "b"})
-	assert.Equal(t, "b", labels.Get("a"))
 }

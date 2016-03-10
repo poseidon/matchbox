@@ -11,9 +11,9 @@ type RequirementSet map[string]string
 
 // Matches returns true if the given labels satisfy all the requirements,
 // false otherwise.
-func (r RequirementSet) Matches(labels Labels) bool {
-	for k, v := range r {
-		if labels == nil || labels.Get(k) != v {
+func (r RequirementSet) Matches(labels map[string]string) bool {
+	for key, val := range r {
+		if labels == nil || labels[key] != val {
 			return false
 		}
 	}
@@ -28,18 +28,4 @@ func (r RequirementSet) String() string {
 	// sort by "key=value" pairs for a deterministic ordering
 	sort.StringSlice(requirements).Sort()
 	return strings.Join(requirements, ",")
-}
-
-// Labels present key to value mappings, independent of their storage.
-type Labels interface {
-	// Get returns the value for the given label.
-	Get(label string) string
-}
-
-// LabelSet is a map of key:value labels.
-type LabelSet map[string]string
-
-// Get returns the value for the given label.
-func (ls LabelSet) Get(label string) string {
-	return ls[label]
 }

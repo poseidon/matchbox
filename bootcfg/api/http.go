@@ -49,7 +49,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // labelsFromRequest returns Labels from request query parameters.
-func labelsFromRequest(req *http.Request) LabelSet {
+func labelsFromRequest(req *http.Request) map[string]string {
 	values := req.URL.Query()
 	labels := map[string]string{}
 	for key := range values {
@@ -64,7 +64,7 @@ func labelsFromRequest(req *http.Request) LabelSet {
 			labels[key] = values.Get(key)
 		}
 	}
-	return LabelSet(labels)
+	return labels
 }
 
 // parseMAC wraps net.ParseMAC with logging.

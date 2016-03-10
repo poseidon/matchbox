@@ -141,13 +141,13 @@ func TestGroupsResource_FindMatch(t *testing.T) {
 		Groups: []Group{testGroup},
 		Specs:  map[string]*Spec{testGroup.Spec: testSpec},
 	}
-	uuidLabel := LabelSet(map[string]string{
+	uuidLabel := map[string]string{
 		"uuid": "a1b2c3d4",
-	})
+	}
 
 	cases := []struct {
 		store         Store
-		labels        Labels
+		labels        map[string]string
 		expectedGroup *Group
 		expectedErr   error
 	}{

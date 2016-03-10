@@ -16,7 +16,7 @@ func pixiecoreHandler(gr *groupsResource, store Store) http.Handler {
 			return
 		}
 		// pixiecore only provides MAC addresses
-		attrs := LabelSet(map[string]string{"mac": macAddr.String()})
+		attrs := map[string]string{"mac": macAddr.String()}
 		group, err := gr.findMatch(attrs)
 		if err != nil {
 			http.NotFound(w, req)

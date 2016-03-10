@@ -99,7 +99,7 @@ func (gr *groupsResource) matchGroupHandler(next ContextHandler) ContextHandler 
 // findMatch returns the first Group whose Matcher is satisfied by the given
 // labels. Groups are attempted in sorted order, preferring those with
 // more matcher conditions, alphabetically.
-func (gr *groupsResource) findMatch(labels Labels) (*Group, error) {
+func (gr *groupsResource) findMatch(labels map[string]string) (*Group, error) {
 	groups, err := gr.store.ListGroups()
 	if err != nil {
 		return nil, err
