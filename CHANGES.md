@@ -2,8 +2,18 @@
 
 ## Latest
 
-* Remove HTTP `/spec/id` JSON endpoint
+* Add initial gRPC client and server packages
+* Add initial Grub net boot support and an example
 * Add detached OpenPGP signature endpoints (`.sig`)
+
+#### Changes
+
+* Remove HTTP `/spec/id` JSON endpoint
+* Require `metadata` values in the YAML config to be strings, lists of strings, or nested maps of strings. Ignore and log other values.
+
+#### New Examples
+
+* Examples which PXE boot with or without a root partition
 
 ## v0.2.0 (2016-02-09)
 
