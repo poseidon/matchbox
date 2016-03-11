@@ -74,7 +74,7 @@ func main() {
 	// storage
 	store := storage.NewFileStore(&storage.Config{
 		Dir:    flags.dataPath,
-		Groups: cfg.PBGroups(),
+		Groups: cfg.Groups,
 	})
 
 	// gRPC Server

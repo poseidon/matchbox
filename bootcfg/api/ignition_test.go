@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 )
@@ -14,11 +15,11 @@ var expectedIgnition = `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"
 func TestIgnitionHandler(t *testing.T) {
 	content := `{"ignitionVersion": 1,"systemd":{"units":[{"name":"{{.service_name}}.service","enable":true}]}}`
 	store := &fixedStore{
-		Specs:           map[string]*Spec{testGroup.Spec: testSpec},
-		IgnitionConfigs: map[string]string{testSpec.IgnitionConfig: content},
+		Profiles:        map[string]*storagepb.Profile{testGroup.Profile: testProfile},
+		IgnitionConfigs: map[string]string{testProfile.IgnitionId: content},
 	}
 	h := ignitionHandler(store)
-	ctx := withGroup(context.Background(), &testGroup)
+	ctx := withGroup(context.Background(), testGroup)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
@@ -40,11 +41,11 @@ systemd:
       enable: true
 `
 	store := &fixedStore{
-		Specs:           map[string]*Spec{testGroup.Spec: testSpecWithIgnitionYAML},
-		IgnitionConfigs: map[string]string{testSpecWithIgnitionYAML.IgnitionConfig: content},
+		Profiles:        map[string]*storagepb.Profile{testGroup.Profile: testProfileIgnitionYAML},
+		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
 	}
 	h := ignitionHandler(store)
-	ctx := withGroup(context.Background(), &testGroup)
+	ctx := withGroup(context.Background(), testGroup)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
@@ -57,7 +58,7 @@ systemd:
 	assert.Equal(t, expectedIgnition, w.Body.String())
 }
 
-func TestIgnitionHandler_MissingCtxSpec(t *testing.T) {
+func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 	h := ignitionHandler(&emptyStore{})
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -67,7 +68,7 @@ func TestIgnitionHandler_MissingCtxSpec(t *testing.T) {
 
 func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
 	h := ignitionHandler(&emptyStore{})
-	ctx := withSpec(context.Background(), testSpec)
+	ctx := withProfile(context.Background(), testProfile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)

@@ -14,7 +14,7 @@ func TestLabelsFromRequest(t *testing.T) {
 	emptyMap := map[string]string{}
 	cases := []struct {
 		urlString string
-		labelSet  map[string]string
+		labels    map[string]string
 	}{
 		{"http://a.io", emptyMap},
 		{"http://a.io?uuid=a1b2c3", map[string]string{"uuid": "a1b2c3"}},
@@ -30,7 +30,7 @@ func TestLabelsFromRequest(t *testing.T) {
 	for _, c := range cases {
 		req, err := http.NewRequest("GET", c.urlString, nil)
 		assert.Nil(t, err)
-		assert.Equal(t, LabelSet(c.labelSet), labelsFromRequest(req))
+		assert.Equal(t, c.labels, labelsFromRequest(req))
 	}
 }
 

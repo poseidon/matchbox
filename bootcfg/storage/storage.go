@@ -27,6 +27,10 @@ type Store interface {
 	ProfileGet(id string) (*storagepb.Profile, error)
 	// ProfileList lists all profiles.
 	ProfileList() ([]*storagepb.Profile, error)
+	// IgnitionGet gets an Ignition Config template by name.
+	IgnitionGet(name string) (string, error)
+	// CloudGet gets a Cloud-Config template by name.
+	CloudGet(name string) (string, error)
 }
 
 // Config initializes a fileStore.
@@ -104,6 +108,36 @@ func (s *fileStore) ProfileList() ([]*storagepb.Profile, error) {
 		}
 	}
 	return profiles, nil
+}
+
+// IgnitionGet gets an Ignition Config template by name.
+func (s *fileStore) IgnitionGet(id string) (string, error) {
+	file, err := openFile(http.Dir(s.dir), filepath.Join("ignition", id))
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	b, err := ioutil.ReadAll(file)
+	if err != nil {
+		return "", err
+	}
+	return string(b), err
+}
+
+// CloudGet gets a Cloud-Config template by name.
+func (s *fileStore) CloudGet(id string) (string, error) {
+	file, err := openFile(http.Dir(s.dir), filepath.Join("cloud", id))
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	b, err := ioutil.ReadAll(file)
+	if err != nil {
+		return "", err
+	}
+	return string(b), err
 }
 
 // openFile attempts to open the file within the specified Filesystem. If

@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/api"
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,20 +19,27 @@ groups:
       role: worker
       region: us-central1-a
       mac: aB:Ab:3d:45:cD:10
+    metadata:
+      a: b
+      c:
+        - d
+        - e
+      f:
+        g:
+          h
 `
 
-var validConfig = &Config{
-	APIVersion: "v1alpha1",
-	Groups: []api.Group{
-		api.Group{
-			Name: "node1",
-			Spec: "worker",
-			Matcher: api.RequirementSet(map[string]string{
-				"role":   "worker",
-				"region": "us-central1-a",
-				"mac":    "ab:ab:3d:45:cd:10",
-			}),
+var validGroups = []*storagepb.Group{
+	&storagepb.Group{
+		Id:      "node1",
+		Name:    "node1",
+		Profile: "worker",
+		Requirements: map[string]string{
+			"role":   "worker",
+			"region": "us-central1-a",
+			"mac":    "ab:ab:3d:45:cd:10",
 		},
+		Metadata: []byte(`{"a":"b","c":["d","e"],"f":{"g":"h"}}`),
 	},
 }
 
@@ -43,8 +50,9 @@ func TestLoadConfig(t *testing.T) {
 	f.Write([]byte(validData))
 
 	config, err := LoadConfig(f.Name())
-	assert.Equal(t, validConfig, config)
 	assert.Nil(t, err)
+	assert.Equal(t, "v1alpha1", config.APIVersion)
+	assert.Equal(t, validGroups, config.Groups)
 	// read from file that does not exist
 	config, err = LoadConfig("")
 	assert.Nil(t, config)
@@ -57,18 +65,19 @@ func TestParseConfig(t *testing.T) {
 
 	cases := []struct {
 		data           string
-		expectedConfig *Config
+		expectedGroups []*storagepb.Group
 		expectedErr    error
 	}{
-		{validData, validConfig, nil},
-
+		{validData, validGroups, nil},
 		{invalidData, nil, ErrIncorrectVersion},
 		{invalidYAML, nil, fmt.Errorf("yaml: found character that cannot start any token")},
 	}
 	for _, c := range cases {
 		config, err := ParseConfig([]byte(c.data))
-		assert.Equal(t, c.expectedConfig, config)
 		assert.Equal(t, c.expectedErr, err)
+		if c.expectedErr == nil {
+			assert.Equal(t, c.expectedGroups, config.Groups)
+		}
 	}
 }
 
@@ -78,21 +87,35 @@ func TestValidate(t *testing.T) {
 	}
 	invalidMAC := &Config{
 		APIVersion: "v1alpha1",
-		Groups: []api.Group{
-			api.Group{
-				Matcher: api.RequirementSet(map[string]string{
+		YAMLGroups: []Group{
+			Group{
+				Requirements: map[string]string{
 					"mac": "?:?:?:?",
-				}),
+				},
 			},
 		},
 	}
 	nonNormalizedMAC := &Config{
 		APIVersion: "v1alpha1",
-		Groups: []api.Group{
-			api.Group{
-				Matcher: api.RequirementSet(map[string]string{
+		YAMLGroups: []Group{
+			Group{
+				Requirements: map[string]string{
 					"mac": "aB:Ab:3d:45:cD:10",
-				}),
+				},
+			},
+		},
+	}
+	validConfig := &Config{
+		APIVersion: "v1alpha1",
+		YAMLGroups: []Group{
+			Group{
+				Name:    "node1",
+				Profile: "worker",
+				Requirements: map[string]string{
+					"role":   "worker",
+					"region": "us-central1-a",
+					"mac":    "ab:ab:3d:45:cd:10",
+				},
 			},
 		},
 	}
@@ -109,4 +132,47 @@ func TestValidate(t *testing.T) {
 	for _, c := range cases {
 		assert.Equal(t, c.expectedErr, c.config.validate())
 	}
+}
+
+func TestFilterSlice(t *testing.T) {
+	s := []interface{}{"a", 3.14, "b", "c"}
+	expected := []string{"a", "b", "c"}
+	filtered := filterSlice(s)
+	assert.Equal(t, expected, filtered)
+}
+
+func TestFilterKeys(t *testing.T) {
+	m := map[interface{}]interface{}{
+		"a":  "b",
+		3.14: "c",
+	}
+	expected := map[string]interface{}{
+		"a": "b",
+	}
+	filtered := filterNonStringKeys(m)
+	assert.Equal(t, expected, filtered)
+}
+
+func TestFilterValues(t *testing.T) {
+	m := map[string]interface{}{
+		"a": "b",
+		"c": 3.14,
+		"d": map[interface{}]interface{}{
+			"e":  "f",
+			3.14: "g",
+			"h":  []interface{}{"i", "j", "k", 3.14},
+		},
+		"l": true,
+		"m": "true",
+	}
+	expected := map[string]interface{}{
+		"a": "b",
+		"d": map[string]interface{}{
+			"e": "f",
+			"h": []string{"i", "j", "k"},
+		},
+		"m": "true",
+	}
+	filtered := filterValues(m)
+	assert.Equal(t, expected, filtered)
 }

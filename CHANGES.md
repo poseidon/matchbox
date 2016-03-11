@@ -2,6 +2,7 @@
 
 ## Latest
 
+* Remove HTTP `/spec/id` JSON endpoint
 * Add detached OpenPGP signature endpoints (`.sig`)
 
 ## v0.2.0 (2016-02-09)

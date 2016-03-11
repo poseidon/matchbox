@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"golang.org/x/net/context"
 )
 
@@ -10,37 +11,37 @@ import (
 type key int
 
 const (
-	specKey key = iota
+	profileKey key = iota
 	groupKey
 )
 
 var (
-	errNoSpecFromContext  = errors.New("api: Context missing a Spec")
-	errNoGroupFromContext = errors.New("api: Context missing a Group")
+	errNoProfileFromContext = errors.New("api: Context missing a Profile")
+	errNoGroupFromContext   = errors.New("api: Context missing a Group")
 )
 
-// withSpec returns a copy of ctx that stores the given Spec.
-func withSpec(ctx context.Context, spec *Spec) context.Context {
-	return context.WithValue(ctx, specKey, spec)
+// withProfile returns a copy of ctx that stores the given Profile.
+func withProfile(ctx context.Context, profile *storagepb.Profile) context.Context {
+	return context.WithValue(ctx, profileKey, profile)
 }
 
-// specFromContext returns the Spec from the ctx.
-func specFromContext(ctx context.Context) (*Spec, error) {
-	spec, ok := ctx.Value(specKey).(*Spec)
+// profileFromContext returns the Profile from the ctx.
+func profileFromContext(ctx context.Context) (*storagepb.Profile, error) {
+	profile, ok := ctx.Value(profileKey).(*storagepb.Profile)
 	if !ok {
-		return nil, errNoSpecFromContext
+		return nil, errNoProfileFromContext
 	}
-	return spec, nil
+	return profile, nil
 }
 
 // withGroup returns a copy of ctx that stores the given Group.
-func withGroup(ctx context.Context, group *Group) context.Context {
+func withGroup(ctx context.Context, group *storagepb.Group) context.Context {
 	return context.WithValue(ctx, groupKey, group)
 }
 
 // groupFromContext returns the Group from the ctx.
-func groupFromContext(ctx context.Context) (*Group, error) {
-	group, ok := ctx.Value(groupKey).(*Group)
+func groupFromContext(ctx context.Context) (*storagepb.Group, error) {
+	group, ok := ctx.Value(groupKey).(*storagepb.Group)
 	if !ok {
 		return nil, errNoGroupFromContext
 	}

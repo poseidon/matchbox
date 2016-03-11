@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 )
@@ -20,12 +21,12 @@ func TestIPXEInspect(t *testing.T) {
 
 func TestIPXEHandler(t *testing.T) {
 	h := ipxeHandler()
-	ctx := withSpec(context.Background(), testSpec)
+	ctx := withProfile(context.Background(), testProfile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - the Spec's boot config is rendered as an iPXE script
+	// - the Profile's NetBoot config is rendered as an iPXE script
 	expectedScript := `#!ipxe
 kernel /image/kernel a=b c
 initrd /image/initrd_a /image/initrd_b 
@@ -35,7 +36,7 @@ boot
 	assert.Equal(t, expectedScript, w.Body.String())
 }
 
-func TestIPXEHandler_MissingCtxSpec(t *testing.T) {
+func TestIPXEHandler_MissingCtxProfile(t *testing.T) {
 	h := ipxeHandler()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -45,8 +46,8 @@ func TestIPXEHandler_MissingCtxSpec(t *testing.T) {
 
 func TestIPXEHandler_RenderTemplateError(t *testing.T) {
 	h := ipxeHandler()
-	// a Spec with nil BootConfig forces a template.Execute error
-	ctx := withSpec(context.Background(), &Spec{BootConfig: nil})
+	// a Profile with nil NetBoot forces a template.Execute error
+	ctx := withProfile(context.Background(), &storagepb.Profile{Boot: nil})
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
@@ -55,7 +56,7 @@ func TestIPXEHandler_RenderTemplateError(t *testing.T) {
 
 func TestIPXEHandler_WriteError(t *testing.T) {
 	h := ipxeHandler()
-	ctx := withSpec(context.Background(), testSpec)
+	ctx := withProfile(context.Background(), testProfile)
 	w := NewUnwriteableResponseWriter()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)

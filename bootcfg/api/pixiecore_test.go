@@ -5,21 +5,22 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPixiecoreHandler(t *testing.T) {
 	store := &fixedStore{
-		Groups: []Group{testGroupWithMAC},
-		Specs:  map[string]*Spec{testGroupWithMAC.Spec: testSpec},
+		Groups:   map[string]*storagepb.Group{testGroupWithMAC.Id: testGroupWithMAC},
+		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: testProfile},
 	}
 	h := pixiecoreHandler(newGroupsResource(store), store)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
 	h.ServeHTTP(w, req)
 	// assert that:
-	// - MAC address argument is used for Spec matching
-	// - the Spec's boot config is rendered as Pixiecore JSON
+	// - MAC address argument is used for Group matching
+	// - the Profile's NetBoot config is rendered as Pixiecore JSON
 	expectedJSON := `{"kernel":"/image/kernel","initrd":["/image/initrd_a","/image/initrd_b"],"cmdline":{"a":"b","c":""}}`
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
@@ -43,9 +44,9 @@ func TestPixiecoreHandler_NoMatchingGroup(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
-func TestPixiecoreHandler_NoMatchingSpec(t *testing.T) {
+func TestPixiecoreHandler_NoMatchingProfile(t *testing.T) {
 	store := &fixedStore{
-		Groups: []Group{testGroupWithMAC},
+		Groups: map[string]*storagepb.Group{testGroup.Id: testGroup},
 	}
 	h := pixiecoreHandler(newGroupsResource(store), &emptyStore{})
 	w := httptest.NewRecorder()
