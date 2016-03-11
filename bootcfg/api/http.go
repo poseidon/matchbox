@@ -48,7 +48,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	h.handler.ServeHTTP(h.ctx, w, req)
 }
 
-// labelsFromRequest returns Labels from request query parameters.
+// labelsFromRequest returns request query parameters.
 func labelsFromRequest(req *http.Request) map[string]string {
 	values := req.URL.Query()
 	labels := map[string]string{}

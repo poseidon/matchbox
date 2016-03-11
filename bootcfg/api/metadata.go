@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -18,7 +19,15 @@ func metadataHandler() ContextHandler {
 			return
 		}
 		w.Header().Set(contentType, plainContentType)
-		for key, value := range group.Metadata {
+
+		var data map[string]interface{}
+		err = json.Unmarshal(group.Metadata, &data)
+		if err != nil {
+			log.Error("error unmarshalling metadata")
+			http.NotFound(w, req)
+			return
+		}
+		for key, value := range data {
 			fmt.Fprintf(w, "%s=%s\n", strings.ToUpper(key), value)
 		}
 		attrs := labelsFromRequest(req)

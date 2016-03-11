@@ -14,6 +14,7 @@ import (
 	"github.com/coreos/coreos-baremetal/bootcfg/api"
 	"github.com/coreos/coreos-baremetal/bootcfg/config"
 	"github.com/coreos/coreos-baremetal/bootcfg/sign"
+	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 )
 
 var (
@@ -84,9 +85,6 @@ func main() {
 	capnslog.SetGlobalLogLevel(lvl)
 	capnslog.SetFormatter(capnslog.NewPrettyFormatter(os.Stdout, false))
 
-	// storage
-	store := api.NewFileStore(http.Dir(flags.dataPath))
-
 	// (optional) signing
 	var signer, armoredSigner sign.Signer
 	if flags.keyRingPath != "" {
@@ -103,7 +101,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	store.BootstrapGroups(cfg.YAMLGroups)
+
+	// storage
+	store := storage.NewFileStore(&storage.Config{
+		Dir:    flags.dataPath,
+		Groups: cfg.Groups,
+	})
 
 	// HTTP server
 	config := &api.Config{

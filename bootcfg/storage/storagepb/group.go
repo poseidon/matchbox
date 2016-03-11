@@ -32,7 +32,7 @@ func (g *Group) requirementString() string {
 // sorted order by increasing number of Requirements, then by sorted key/value
 // strings. For example, a Group with Requirements {a:b, c:d} should be ordered
 // after one with {a:b} and before one with {a:d, c:d}.
-type ByReqs []Group
+type ByReqs []*Group
 
 func (groups ByReqs) Len() int {
 	return len(groups)

@@ -6,7 +6,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/api"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 )
@@ -88,35 +87,35 @@ func TestValidate(t *testing.T) {
 	}
 	invalidMAC := &Config{
 		APIVersion: "v1alpha1",
-		YAMLGroups: []api.Group{
-			api.Group{
-				Matcher: api.RequirementSet(map[string]string{
+		YAMLGroups: []Group{
+			Group{
+				Requirements: map[string]string{
 					"mac": "?:?:?:?",
-				}),
+				},
 			},
 		},
 	}
 	nonNormalizedMAC := &Config{
 		APIVersion: "v1alpha1",
-		YAMLGroups: []api.Group{
-			api.Group{
-				Matcher: api.RequirementSet(map[string]string{
+		YAMLGroups: []Group{
+			Group{
+				Requirements: map[string]string{
 					"mac": "aB:Ab:3d:45:cD:10",
-				}),
+				},
 			},
 		},
 	}
 	validConfig := &Config{
 		APIVersion: "v1alpha1",
-		YAMLGroups: []api.Group{
-			api.Group{
-				Name: "node1",
-				Spec: "worker",
-				Matcher: api.RequirementSet(map[string]string{
+		YAMLGroups: []Group{
+			Group{
+				Name:    "node1",
+				Profile: "worker",
+				Requirements: map[string]string{
 					"role":   "worker",
 					"region": "us-central1-a",
 					"mac":    "ab:ab:3d:45:cd:10",
-				}),
+				},
 			},
 		},
 	}

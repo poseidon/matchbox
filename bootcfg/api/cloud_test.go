@@ -5,28 +5,29 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 )
 
 func TestCloudHandler(t *testing.T) {
-	cloudContent := "#cloud-config"
+	content := "#cloud-config"
 	store := &fixedStore{
-		Specs:        map[string]*Spec{testGroup.Spec: testSpec},
-		CloudConfigs: map[string]string{testSpec.CloudConfig: cloudContent},
+		Profiles:     map[string]*storagepb.Profile{testGroup.Profile: testProfile},
+		CloudConfigs: map[string]string{testProfile.CloudId: content},
 	}
 	h := cloudHandler(store)
-	ctx := withGroup(context.Background(), &testGroup)
+	ctx := withGroup(context.Background(), testGroup)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - the Spec's cloud config is served
+	// - Cloud config is rendered with Group metadata
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, cloudContent, w.Body.String())
+	assert.Equal(t, content, w.Body.String())
 }
 
-func TestCloudHandler_MissingCtxSpec(t *testing.T) {
+func TestCloudHandler_MissingCtxProfile(t *testing.T) {
 	h := cloudHandler(&emptyStore{})
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -36,7 +37,7 @@ func TestCloudHandler_MissingCtxSpec(t *testing.T) {
 
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
 	h := cloudHandler(&emptyStore{})
-	ctx := withSpec(context.Background(), testSpec)
+	ctx := withProfile(context.Background(), testProfile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)

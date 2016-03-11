@@ -32,13 +32,13 @@ func ipxeInspect() http.Handler {
 // requester.
 func ipxeHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-		spec, err := specFromContext(ctx)
+		profile, err := profileFromContext(ctx)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
 		var buf bytes.Buffer
-		err = ipxeTemplate.Execute(&buf, spec.BootConfig)
+		err = ipxeTemplate.Execute(&buf, profile.Boot)
 		if err != nil {
 			log.Errorf("error rendering template: %v", err)
 			http.NotFound(w, req)

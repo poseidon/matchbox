@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"sort"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/storage"
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"golang.org/x/net/context"
 )
 
@@ -12,76 +14,19 @@ var (
 	errNoMatchingGroup = errors.New("api: No matching Group")
 )
 
-// Group associates matcher conditions with a Specification identifier. The
-// Matcher conditions may be satisfied by zero or more machines.
-type Group struct {
-	// Human readable name (optional)
-	Name string `yaml:"name"`
-	// Spec identifier
-	Spec string `yaml:"spec"`
-	// Custom Metadata
-	Metadata map[string]interface{} `yaml:"metadata"`
-	// matcher conditions
-	Matcher RequirementSet `yaml:"require"`
-}
-
-// byMatcher defines a collection of Group structs which have a deterministic
-// order in increasing number of Matchers, then by sorted key/value pair strings.
-// For example, Matcher {a:b, c:d} is ordered before {a:d, c:d} and {a:b, d:e}.
-type byMatcher []Group
-
-func (g byMatcher) Len() int {
-	return len(g)
-}
-
-func (g byMatcher) Swap(i, j int) {
-	g[i], g[j] = g[j], g[i]
-}
-
-func (g byMatcher) Less(i, j int) bool {
-	if len(g[i].Matcher) == len(g[j].Matcher) {
-		return g[i].Matcher.String() < g[j].Matcher.String()
-	}
-	return len(g[i].Matcher) < len(g[j].Matcher)
-}
-
 type groupsResource struct {
-	store Store
+	store storage.Store
 }
 
-func newGroupsResource(store Store) *groupsResource {
-	res := &groupsResource{
+func newGroupsResource(store storage.Store) *groupsResource {
+	return &groupsResource{
 		store: store,
 	}
-	return res
 }
 
-// listGroups lists all Group resources.
-func (gr *groupsResource) listGroups() ([]Group, error) {
-	return gr.store.ListGroups()
-}
-
-// matchSpecHandler returns a ContextHandler that matches machine requests
-// to a Spec and adds the Spec to the ctx and calls the next handler. The
-// next handler should handle the case that no matching Spec is found.
-func (gr *groupsResource) matchSpecHandler(next ContextHandler) ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-		attrs := labelsFromRequest(req)
-		// match machine request
-		group, err := gr.findMatch(attrs)
-		if err == nil {
-			// lookup Spec by id
-			spec, err := gr.store.Spec(group.Spec)
-			if err == nil {
-				// add the Spec to the ctx for next handler
-				ctx = withSpec(ctx, spec)
-			}
-		}
-		next.ServeHTTP(ctx, w, req)
-	}
-	return ContextHandlerFunc(fn)
-}
-
+// matchGroupHandler returns a ContextHandler that matches machine requests to
+// a Group, adds the Group to the ctx, and calls the next handler. The next
+// handler should handle the case that no matching Group is found.
 func (gr *groupsResource) matchGroupHandler(next ContextHandler) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		attrs := labelsFromRequest(req)
@@ -96,18 +41,39 @@ func (gr *groupsResource) matchGroupHandler(next ContextHandler) ContextHandler 
 	return ContextHandlerFunc(fn)
 }
 
+// matchProfileHandler returns a ContextHandler that matches machine requests
+// to a Profile, adds Profile to the ctx, and calls the next handler. The
+// next handler should handle the case that no matching Profile is found.
+func (gr *groupsResource) matchProfileHandler(next ContextHandler) ContextHandler {
+	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+		attrs := labelsFromRequest(req)
+		// match machine request
+		group, err := gr.findMatch(attrs)
+		if err == nil {
+			// lookup Profile by id
+			profile, err := gr.store.ProfileGet(group.Profile)
+			if err == nil {
+				// add the Profile to the ctx for next handler
+				ctx = withProfile(ctx, profile)
+			}
+		}
+		next.ServeHTTP(ctx, w, req)
+	}
+	return ContextHandlerFunc(fn)
+}
+
 // findMatch returns the first Group whose Matcher is satisfied by the given
 // labels. Groups are attempted in sorted order, preferring those with
 // more matcher conditions, alphabetically.
-func (gr *groupsResource) findMatch(labels map[string]string) (*Group, error) {
-	groups, err := gr.store.ListGroups()
+func (gr *groupsResource) findMatch(labels map[string]string) (*storagepb.Group, error) {
+	groups, err := gr.store.GroupList()
 	if err != nil {
 		return nil, err
 	}
-	sort.Sort(sort.Reverse(byMatcher(groups)))
+	sort.Sort(sort.Reverse(storagepb.ByReqs(groups)))
 	for _, group := range groups {
-		if group.Matcher.Matches(labels) {
-			return &group, nil
+		if group.Matches(labels) {
+			return group, nil
 		}
 	}
 	return nil, errNoMatchingGroup

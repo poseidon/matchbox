@@ -8,16 +8,15 @@ import (
 )
 
 var (
-	validMACStr = "52:da:00:89:d8:10"
-	testGroup   = Group{
+	testGroup = &Group{
 		Name:    "test group",
 		Profile: "g1h2i3j4",
 		Requirements: map[string]string{
 			"uuid": "a1b2c3d4",
-			"mac":  validMACStr,
+			"mac":  "52:da:00:89:d8:10",
 		},
 	}
-	testGroupWithoutProfile = Group{
+	testGroupWithoutProfile = &Group{
 		Name:         "test group without profile",
 		Profile:      "",
 		Requirements: map[string]string{"uuid": "a1b2c3d4"},
@@ -56,20 +55,20 @@ func TestRequirementString(t *testing.T) {
 }
 
 func TestGroupSort(t *testing.T) {
-	oneCondition := Group{
+	oneCondition := &Group{
 		Name: "group with one requirement",
 		Requirements: map[string]string{
 			"region": "a",
 		},
 	}
-	twoConditions := Group{
+	twoConditions := &Group{
 		Name: "group with two requirements",
 		Requirements: map[string]string{
 			"region": "a",
 			"zone":   "z",
 		},
 	}
-	dualConditions := Group{
+	dualConditions := &Group{
 		Name: "group with two requirements",
 		Requirements: map[string]string{
 			"region": "b",
@@ -77,12 +76,12 @@ func TestGroupSort(t *testing.T) {
 		},
 	}
 	cases := []struct {
-		input    []Group
-		expected []Group
+		input    []*Group
+		expected []*Group
 	}{
-		{[]Group{oneCondition, dualConditions, twoConditions}, []Group{oneCondition, twoConditions, dualConditions}},
-		{[]Group{twoConditions, dualConditions, oneCondition}, []Group{oneCondition, twoConditions, dualConditions}},
-		{[]Group{testGroup, testGroupWithoutProfile, oneCondition, twoConditions, dualConditions}, []Group{oneCondition, testGroupWithoutProfile, testGroup, twoConditions, dualConditions}},
+		{[]*Group{oneCondition, dualConditions, twoConditions}, []*Group{oneCondition, twoConditions, dualConditions}},
+		{[]*Group{twoConditions, dualConditions, oneCondition}, []*Group{oneCondition, twoConditions, dualConditions}},
+		{[]*Group{testGroup, testGroupWithoutProfile, oneCondition, twoConditions, dualConditions}, []*Group{oneCondition, testGroupWithoutProfile, testGroup, twoConditions, dualConditions}},
 	}
 	// assert that
 	// - Group ordering is deterministic

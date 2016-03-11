@@ -6,7 +6,7 @@ message Group {
   string id = 1;
   // human readable name
   string name = 2;
-  // profile id
+  // Profile id
   string profile = 3;
   // tags required to match the group
   map<string, string> requirements = 4;

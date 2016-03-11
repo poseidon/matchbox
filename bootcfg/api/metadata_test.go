@@ -13,9 +13,9 @@ import (
 
 func TestMetadataHandler(t *testing.T) {
 	h := metadataHandler()
-	ctx := withGroup(context.Background(), &testGroup)
+	ctx := withGroup(context.Background(), testGroup)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4&mac="+nonNormalizedMACStr, nil)
+	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4&mac="+validMACStr, nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
 	// - the Group's custom metadata is

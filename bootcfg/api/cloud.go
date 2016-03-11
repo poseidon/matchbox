@@ -2,10 +2,12 @@ package api
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
 	"golang.org/x/net/context"
 )
@@ -17,28 +19,31 @@ type CloudConfig struct {
 
 // cloudHandler returns a handler that responds with the cloud config for the
 // requester.
-func cloudHandler(store Store) ContextHandler {
+func cloudHandler(store storage.Store) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
-		if err != nil || group.Spec == "" {
+		if err != nil || group.Profile == "" {
 			http.NotFound(w, req)
 			return
 		}
-		spec, err := store.Spec(group.Spec)
-		if err != nil || spec.CloudConfig == "" {
+		profile, err := store.ProfileGet(group.Profile)
+		if err != nil || profile.CloudId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := store.CloudConfig(spec.CloudConfig)
+		contents, err := store.CloudGet(profile.CloudId)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
 
 		// collect data for rendering
-		data := make(map[string]interface{})
-		for k := range group.Metadata {
-			data[k] = group.Metadata[k]
+		var data map[string]interface{}
+		err = json.Unmarshal(group.Metadata, &data)
+		if err != nil {
+			log.Error("error unmarshalling metadata")
+			http.NotFound(w, req)
+			return
 		}
 
 		// render the template of a cloud config with data

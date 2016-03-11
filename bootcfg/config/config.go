@@ -9,7 +9,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/api"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/satori/go.uuid"
@@ -28,13 +27,26 @@ var (
 
 var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/bootcfg", "config")
 
-// Config is a user defined matching of machines to specifications.
+// Config is a user defined matching of machine groups to profiles.
 type Config struct {
 	APIVersion string `yaml:"api_version"`
 	// allow YAML source for Groups
-	YAMLGroups []api.Group `yaml:"groups"`
+	YAMLGroups []Group `yaml:"groups"`
 	// populate protobuf Groups at parse
 	Groups []*storagepb.Group `yaml:"-"`
+}
+
+// A Group associates machines with required tags with a Profile and
+// metadata. Zero or more machines may match to a machine Group.
+type Group struct {
+	// Human readable name
+	Name string `yaml:"name"`
+	// Profile id
+	Profile string `yaml:"spec"`
+	// tags required to match the group
+	Requirements map[string]string `yaml:"require"`
+	// Metadata (with restrictions)
+	Metadata map[string]interface{} `yaml:"metadata"`
 }
 
 // LoadConfig opens a file and parses YAML data to returns a Config.
@@ -58,8 +70,8 @@ func ParseConfig(data []byte) (*Config, error) {
 	for _, ygroup := range config.YAMLGroups {
 		group := &storagepb.Group{
 			Name:         ygroup.Name,
-			Profile:      ygroup.Spec,
-			Requirements: normalizeMatchers(ygroup.Matcher),
+			Profile:      ygroup.Profile,
+			Requirements: normalizeMatchers(ygroup.Requirements),
 		}
 		// Id: Generate a random UUID or use the name
 		if ygroup.Name == "" {
@@ -159,7 +171,7 @@ func (c *Config) validate() error {
 		return ErrIncorrectVersion
 	}
 	for _, group := range c.YAMLGroups {
-		for key, val := range group.Matcher {
+		for key, val := range group.Requirements {
 			switch strings.ToLower(key) {
 			case "mac":
 				macAddr, err := net.ParseMAC(val)

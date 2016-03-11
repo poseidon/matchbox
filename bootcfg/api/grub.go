@@ -22,13 +22,13 @@ initrdefi {{ range $element := .Initrd }}"{{$element}}" {{end}}
 // requester.
 func grubHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-		spec, err := specFromContext(ctx)
+		profile, err := profileFromContext(ctx)
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
 		var buf bytes.Buffer
-		err = grubTemplate.Execute(&buf, spec.BootConfig)
+		err = grubTemplate.Execute(&buf, profile.Boot)
 		if err != nil {
 			log.Errorf("error rendering template: %v", err)
 			http.NotFound(w, req)
