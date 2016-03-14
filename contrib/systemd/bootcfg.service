@@ -1,0 +1,11 @@
+[Unit]
+Description=CoreOS bootcfg Server
+Documentation=https://github.com/coreos/coreos-baremetal
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/bootcfg.env
+ExecStart=/usr/local/bin/bootcfg -address=0.0.0.0:8080 -log-level=debug
+
+[Install]
+WantedBy=multi-user.target

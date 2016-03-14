@@ -1,0 +1,6 @@
+---
+api_version: v1alpha1
+groups:
+  - name: PXE Boot to CoreOS
+    profile: pxe
+    metadata:

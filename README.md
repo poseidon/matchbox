@@ -23,6 +23,8 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 * [OpenPGP Signing](Documentation/openpgp.md)
 * [Flags](Documentation/config.md)
 * [API](Documentation/api.md)
+* Deployment
+    * [systemd](Documentation/deployment.md#systemd)
 * [Troubleshooting](Documentation/troubleshooting.md)
 * [Hacking](Documentation/dev/develop.md)
 
