@@ -5,33 +5,28 @@
 
 The aim is to use CoreOS Linux's early-boot capabilities to boot machines into functional cluster members with end to end [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html). PXE, iPXE, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) endpoints provide support for network booting. The `bootcfg` service can be run as an [application container](https://github.com/appc/spec) with rkt, as a Docker container, or as a binary.
 
-## Usage
-
-Fetch the application container image (ACI) from [Quay](https://quay.io/repository/coreos/bootcfg?tab=tags).
-
-    sudo rkt --insecure-options=image fetch docker://quay.io/coreos/bootcfg
-
-Alternately, pull the Docker image.
-
-    sudo docker pull quay.io/coreos/bootcfg
-
-The `latest` image corresponds to the most recent commit on master, so choose a tagged [release](https://github.com/coreos/coreos-baremetal/releases) if you require more stability.
+## Getting Started
 
 Get started running `bootcfg` with rkt or Docker to network boot libvirt VMs on your laptop into CoreOS clusters.
 
 * [Getting Started with rkt](getting-started-rkt.md)
 * [Getting Started with Docker](getting-started-docker.md)
 
-Once you've tried those examples, you're ready to write your own configs.
+## Flags
+
+See [flags and variables](config.md)
+
+## API
+
+See [API](api.md)
 
 ## Data
 
 A `Store` stores Ignition configs, cloud-configs, and named Specs. By default, `bootcfg` uses a `FileStore` to search a data directory (`-data-path`) for these resources.
 
-Prepare a data directory similar to the [examples](../examples) directory, with `ignition`, `cloud`, and `specs` subdirectories. You might keep this directory under version control since it will define the early boot behavior of your machines.
+Prepare `/etc/bootcfg` or a custom `-data-path` with `ignition`, `cloud`, and `specs` subdirectories. You may wish to keep these files under version control. The [examples](../examples) directory is a valid target with some pre-defined configs.
 
-     data
-     ├── config.yaml
+     /etc/bootcfg
      ├── cloud
      │   ├── cloud.yaml
      │   └── worker.sh
@@ -45,14 +40,14 @@ Prepare a data directory similar to the [examples](../examples) directory, with 
          └── worker
              └── spec.json
 
-Ignition files can be JSON files or Ignition YAML. Cloud-Configs can be YAML or scripts. Both may contain may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with [metadata](#groups-and-metadata). For details and examples:
+Ignition templates can be JSON files or Ignition YAML. Cloud-Config templates can be YAML or scripts. Both may contain may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with [metadata](#groups-and-metadata). For details and examples:
 
 * [Ignition Config](ignition.md)
 * [Cloud-Config](cloud-config.md)
 
 #### Spec
 
-Specs specify the Ignition config, cloud-config, and PXE boot settings (kernel, options, initrd) of a matched machine.
+Specs specify the Ignition config, cloud-config, and network boot settings (kernel, options, initrd) of a matched machine.
 
     {
         "id": "etcd_profile",
@@ -70,19 +65,19 @@ Specs specify the Ignition config, cloud-config, and PXE boot settings (kernel, 
         }
     }
 
-The `"boot"` settings will be used to render configs to the network boot programs used in PXE, iPXE, or Pixiecore setups. You may reference remote kernel and initrd assets or [local assets](#assets).
+The `"boot"` settings will be used to render configs to network boot programs used in PXE, iPXE, or Pixiecore setups. You may reference remote kernel and initrd assets or [local assets](#assets).
 
-To use cloud-config, set the `cloud-config-url` kernel option to the `bootcfg` [Cloud-Config endpoint](api.md#cloud-config) `/cloud?param=val`, which will render the `cloud_id` file.
+To use cloud-config, set the `cloud-config-url` kernel option to reference the `bootcfg` [Cloud-Config endpoint](api.md#cloud-config), which will render the `cloud_id` file.
 
-To use Ignition, set the `coreos.config.url` kernel option to the `bootcfg` [Ignition endpoint](api.md#ignition-config) `/ignition?param=val`, which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
+To use Ignition, set the `coreos.config.url` kernel option to reference the `bootcfg` [Ignition endpoint](api.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
 
 ## Groups and Metadata
 
-Groups define a set of required tags which match zero or more machines. Machines matching a group will boot and provision themselves according to the group's `spec` and metadata. Currently, `bootcfg` loads group definitions from a YAML config file specified by the `-config` flag. When running `bootcfg` as a container, it is easiest to keep the config file in the [data](#data) directory so it is mounted and versioned.
+Groups define a set of required tags which match zero or more machines. Machines matching a group will boot and provision themselves according to the group's `spec` and metadata.
 
-Define a list of named groups, name the `Spec` that should be applied, add the tags required to match the group, and add your own `metadata` needed to render your Ignition or Cloud configs.
+Define a list of groups, name the `Spec` that should be applied, add the tags required to match each group, and add any `metadata` needed to render the templates in your Ignition or Cloud configs.
 
-Here is an example `bootcfg` config.yaml:
+Here is an example `/etc/bootcfg.conf` YAML file:
 
     ---
     api_version: v1alpha1
@@ -144,14 +139,7 @@ For example, a `Spec` might refer to a local asset `/assets/coreos/VERSION/coreo
 
 See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download, verify, and move CoreOS assets to `assets`.
 
-## Endpoints
-
-The [API](api.md) documents the available endpoints.
-
 ## Network
 
 `bootcfg` does not implement a DHCP/TFTP server or monitor running instances. If you need a quick DHCP, proxyDHCP, TFTP, or DNS setup, the [coreos/dnsmasq](../contrib/dnsmasq) image can create a suitable network boot environment on a virtual or physical network. Use `--net` to specify a network bridge and `--dhcp-boot` to point clients to `bootcfg`.
 
-## Virtual and Physical Machine Guides
-
-Next, setup a network of virtual machines with libvirt or boot a cluster of physical hardware. Follow the [libvirt guide](virtual-hardware.md) or [physical hardware guide](physical-hardware.md).

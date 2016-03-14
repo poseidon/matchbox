@@ -32,8 +32,8 @@ func main() {
 		help       bool
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8081", "gRPC listen address")
-	flag.StringVar(&flags.configPath, "config", "./data/config.yaml", "Path to config file")
-	flag.StringVar(&flags.dataPath, "data-path", "./data", "Path to data directory")
+	flag.StringVar(&flags.configPath, "config", "/etc/bootcfg.conf", "Path to config file")
+	flag.StringVar(&flags.dataPath, "data-path", "/etc/bootcfg", "Path to data directory")
 	// subcommands
 	flag.BoolVar(&flags.version, "version", false, "print version and exit")
 	flag.BoolVar(&flags.help, "help", false, "print usage and exit")

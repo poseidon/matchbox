@@ -5,15 +5,16 @@ These examples show declarative configurations for network booting libvirt VMs i
 
 | Name       | Description | CoreOS Version | FS | Reference | 
 |------------|-------------|----------------|----|-----------|
-| pxe | CoreOS alpha node | alpha/962.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| pxe-disk | CoreOS alpha node, partition disk and root fs | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| pxe | CoreOS via iPXE | alpha/962.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS via GRUB2 Netboot
+| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| coreos-install | 2-stage Ignition: Install CoreOS, provision etcd cluster | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | etcd-rkt, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | beta/899.6.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | k8s-rkt, k8s-docker | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node, TLS-authentication | beta/899.6.0 | RAM | [reference](https://github.com/coreos/coreos-kubernetes) |
-| coreos-install | 2-stage Ignition: Install CoreOS, provision etcd cluster | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 
 ## Experimental
 
-These CoreOS clusters are experimental and have **NOT** been hardened for production yet. They demonstrate Ignition (initrd) and cloud-init provisioning of higher order clusters.
+These CoreOS clusters are experimental and have **NOT** been hardened for production yet. They demonstrate Ignition and cloud-init provisioning of higher order clusters.
 
 ## Getting Started
 
@@ -21,36 +22,6 @@ Get started running the `bootcfg` on your Linux machine to boot clusters of libv
 
 * [Getting Started with rkt](../Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](../Documentation/getting-started-docker.md)
-
-## Physical Hardware
-
-Run `bootcfg` to boot and configure physical machines (for testing). Update the network values in the `*.yaml` config to match your hardware and network. Generate TLS assets if required for the example (e.g. Kubernetes).
-
-Continue to the [Physical Hardware Guide](../Documentation/physical-hardware.md) for details.
-
-## Examples
-
-See the Getting Started with [rkt](getting-started-rkt.md) or [Docker](getting-started-docker.md) for a walk-through.
-
-### rkt
-
-etcd cluster with 3 nodes on `metal0`, other nodes act as proxies.
-
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
-
-Kubernetes cluster with one master, one worker, and one dedicated etcd on `metal0`.
-
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg -- -address=0.0.0.0:8080 -log-level=debug -config /data/k8s-rkt.yaml
-
-### Docker
-
-etcd cluster with 3 nodes on `docker0`, other nodes act as proxies.
-
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
-
-Kubernetes cluster with one master, one worker, and one dedicated etcd on `docker0`.
-
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /data/k8s-docker.yaml
 
 ## Kubernetes
 

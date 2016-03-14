@@ -8,6 +8,9 @@
 
 #### Changes
 
+* Change default `-config` path to `/etc/bootcfg.conf`
+* Change default `-data-path` to `/etc/bootcfg`
+* Change default `-assets-path` to `/var/bootcfg`
 * Remove HTTP `/spec/id` JSON endpoint
 * Require `metadata` values in the YAML config to be strings, lists of strings, or nested maps of strings. Ignore and log other values.
 

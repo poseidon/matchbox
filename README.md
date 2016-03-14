@@ -16,17 +16,23 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 * [Getting Started with rkt](Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](Documentation/getting-started-docker.md)
 * [bootcfg](Documentation/bootcfg.md)
+    * [Groups](Documentation/bootcfg.md#groups-and-metadata)
+    * [Specs](Documentation/bootcfg.md#spec)
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
-    * [Groups](Documentation/bootcfg.md#groups-and-metadata)
 * [OpenPGP Signing](Documentation/openpgp.md)
 * [Flags](Documentation/config.md)
 * [API](Documentation/api.md)
+* [Troubleshooting](Documentation/troubleshooting.md)
+* [Hacking](Documentation/dev/develop.md)
 
 ### Examples
 
 Use the [examples](examples) to boot machines into CoreOS clusters of higher-order systems, like Kubernetes. Quickly setup a network of virtual hardware on your Linux box for testing with [libvirt](scripts/README.md#libvirt).
 
-* TLS-auth Kubernetes cluster (1 master, 1 worker, 1 etcd)
-* Multi Node etcd cluster
-* Install CoreOS to disk with followup Ignition stages
+* Multi-node Kubernetes cluster with TLS
+* Multi-node etcd cluster
+* Install CoreOS to disk and provision with Ignition
+* GRUB Netboot CoreOS
+* PXE Boot CoreOS with a root fs
+* PXE Boot CoreOS
