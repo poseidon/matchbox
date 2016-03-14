@@ -80,7 +80,7 @@ func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 
 // ProfileGet gets a profile by id.
 func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
-	file, err := openFile(http.Dir(s.dir), filepath.Join("specs", id, "spec.json"))
+	file, err := openFile(http.Dir(s.dir), filepath.Join("profiles", id, "profile.json"))
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
 
 // ProfileList lists all profiles.
 func (s *fileStore) ProfileList() ([]*storagepb.Profile, error) {
-	finfos, err := ioutil.ReadDir(filepath.Join(s.dir, "specs"))
+	finfos, err := ioutil.ReadDir(filepath.Join(s.dir, "profiles"))
 	if err != nil {
 		return nil, err
 	}

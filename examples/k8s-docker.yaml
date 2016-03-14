@@ -2,7 +2,7 @@
 api_version: v1alpha1
 groups:
   - name: Master Node
-    spec: kubernetes-master
+    profile: kubernetes-master
     require:
       uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
     metadata:
@@ -20,7 +20,7 @@ groups:
       k8s_cert_endpoint: http://bootcfg.foo:8080/assets
 
   - name: Worker Node
-    spec: kubernetes-worker
+    profile: kubernetes-worker
     require:
       uuid: 264cd073-ca62-44b3-98c0-50aad5b5f819
     metadata:
@@ -36,7 +36,7 @@ groups:
       k8s_cert_endpoint: http://bootcfg.foo:8080/assets
 
   - name: etcd Node
-    spec: etcd
+    profile: etcd
     require:
       uuid: 39d2e747-2648-4d68-ae92-bbc70b245055
     metadata:

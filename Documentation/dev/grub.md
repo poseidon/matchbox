@@ -17,7 +17,7 @@ Run the `bootcfg` ACI with rkt according to the [development docs](develop.md). 
 
 Create a VM with an e1000 or virtio network device.
 
-    sudo virt-install --name uefi-test --pxe --boot=uefi,network --disk pool=default,size=6 --network=bridge=metal0,model=e1000 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+    sudo virt-install --name uefi-test --pxe --boot=uefi,network --disk pool=default,size=4 --network=bridge=metal0,model=e1000 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
 
 ## Network
 
