@@ -90,7 +90,7 @@
 		},
 		{
 			"ImportPath": "google.golang.org/grpc",
-			"Rev": "b4b62c5f29c6bc2411c38b00b1e41b1b521eedd4"
+			"Rev": "986912c9070a060e59e0f28ac7c87f89f72b9388"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",

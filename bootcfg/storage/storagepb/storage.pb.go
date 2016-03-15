@@ -33,7 +33,7 @@ type Group struct {
 	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
 	// human readable name
 	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
-	// profile id
+	// Profile id
 	Profile string `protobuf:"bytes,3,opt,name=profile" json:"profile,omitempty"`
 	// tags required to match the group
 	Requirements map[string]string `protobuf:"bytes,4,rep,name=requirements" json:"requirements,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
