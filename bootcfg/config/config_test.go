@@ -14,7 +14,7 @@ var validData = `
 api_version: v1alpha1
 groups:
   - name: node1
-    spec: worker
+    profile: worker
     require:
       role: worker
       region: us-central1-a

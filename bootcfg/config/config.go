@@ -42,7 +42,7 @@ type Group struct {
 	// Human readable name
 	Name string `yaml:"name"`
 	// Profile id
-	Profile string `yaml:"spec"`
+	Profile string `yaml:"profile"`
 	// tags required to match the group
 	Requirements map[string]string `yaml:"require"`
 	// Metadata (with restrictions)
