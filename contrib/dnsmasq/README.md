@@ -22,7 +22,7 @@ Alternately, Docker can be used.
 
 ## Configuration Flags
 
-Configuration arguments can be provided at the command line. Check the dnsmasq [man pages]](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) for a complete list, but here are some important flags.
+Configuration arguments can be provided at the command line. Check the dnsmasq [man pages](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) for a complete list, but here are some important flags.
 
 | flag     | description | example |
 |----------|-------------|---------|

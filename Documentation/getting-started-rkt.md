@@ -78,7 +78,7 @@ If you get an error about the IP assignment, garbage collect old pods.
     sudo rkt gc --grace-period=0
     ./scripts/rkt-gc-force
 
-Take a look at [etcd-rkt.yaml](../examples/etcd-rkt.yaml) to get an idea of how machines are matched to specifications. Explore some endpoints exposed by the service.
+Take a look at [etcd-rkt.yaml](../examples/etcd-rkt.yaml) to get an idea of how machines are matched to profiles. Explore some endpoints exposed by the service.
 
 * [node1's ipxe](http://172.15.0.2:8080/ipxe?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
 * [node1's Ignition](http://172.15.0.2:8080/ignition?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
@@ -116,7 +116,7 @@ You can use `virt-manager` to watch the console and reboot VM machines with
 
 The VMs should network boot and provision themselves into a three node etcd cluster, with other nodes behaving as etcd proxies.
 
-The example spec added autologin so you can verify that etcd works between nodes.
+The example profile added autologin so you can verify that etcd works between nodes.
 
     systemctl status etcd2
     etcdctl set /message hello

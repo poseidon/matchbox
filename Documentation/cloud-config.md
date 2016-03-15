@@ -1,9 +1,9 @@
 
 # Cloud Config
 
-CoreOS cloud-config is a system for configuring machines with a cloud-config file or executable script from user-data. Cloud-Config runs in userspace on each boot and implements a subset of the [cloud-init spec](http://cloudinit.readthedocs.org/en/latest/topics/format.html#cloud-config-data). See the cloud-config [docs](https://coreos.com/os/docs/latest/cloud-config.html) for details.
+CoreOS Cloud-Config is a system for configuring machines with a Cloud-Config file or executable script from user-data. Cloud-Config runs in userspace on each boot and implements a subset of the [cloud-init spec](http://cloudinit.readthedocs.org/en/latest/topics/format.html#cloud-config-data). See the cloud-config [docs](https://coreos.com/os/docs/latest/cloud-config.html) for details.
 
-Cloud-Config files and scripts can be added in a `cloud` subdirectory of the `bootcfg` data directory. The files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with `metadata` when served.
+Cloud-Config template files can be added in the `/etc/bootcfg/cloud` directory or in a `cloud` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with `metadata` when served.
 
     data/
     ├── cloud
@@ -11,11 +11,11 @@ Cloud-Config files and scripts can be added in a `cloud` subdirectory of the `bo
     │   ├── kubernetes-master.sh
     │   └── kubernetes-worker.sh
     ├── ignition
-    └── specs
+    └── profiles
 
-Add a cloud-config to a `Spec` by adding the `cloud_id` field. When PXE booting, use the kernel option `cloud-config-url` to point to `bootcfg` cloud config endpoint.
+Reference a Cloud-Config in a [Profile](bootcfg.md#profiles). When PXE booting, use the kernel option `cloud-config-url` to point to `bootcfg` [cloud-config endpoint](api.md#cloud-config).
 
-spec.json:
+profile.json:
 
     {
         "id": "worker_profile",
@@ -32,7 +32,7 @@ spec.json:
 
 ## Configs
 
-Here is an example cloud-config which starts some units and writes a file.
+Here is an example Cloud-Config which starts some units and writes a file.
 
     #cloud-config
     coreos:
@@ -50,18 +50,14 @@ Here is an example cloud-config which starts some units and writes a file.
 
 ### Examples
 
-See [examples/cloud](../examples/cloud) for example cloud-config files.
+See [examples/cloud](../examples/cloud) for example Cloud-Config files.
 
 ### Validator
 
-The cloud-config [validator](https://coreos.com/validate/) is useful for checking your cloud-config files for errors.
-
-## Endpoint
-
-The `bootcfg` [cloud-config endpoint](api.md#cloud-config) `/cloud?param=val` endpoint matches parameters to a machine `Spec` and renders the corresponding cloud-config with `metadata`.
+The Cloud-Config [Validator](https://coreos.com/validate/) is useful for checking your Cloud-Config files for errors.
 
 ## Comparison with Ignition
 
-Cloud-Config starts after userspace has started and runs on every boot. Ignition starts earlier and only runs on the first boot to provision disk state. Often, tasks do not need to be repeated on each boot (e.g. writing systemd unit files) and can be performed more easily before systemd starts (e.g. configuring networking). Ignition is recommended unless a task requires re-execution on each boot.
+Cloud-Config starts after userspace has started, on every boot.Ignition starts before PID 1 and only runs on the first boot. Ignition favors immutable infrastructure.
 
-If a service needs to be started with dynamic data, a good approach is to use Ignition to write static files which leverage systemd's environment file expansion and start a metadata service to fetch runtime data for services which require it.
+Ignition is favored as the eventual replacement for CoreOS Cloud-Config. Tasks often only need to be run once and can be performed more easily before systemd has started (e.g. configuring networking). Ignition can write service units for tasks that need to be run on each boot. Instead of depending on Cloud-Config variable substitution, leverage systemd's EnvironmentFile expansion to start units with a metadata file from a source of truth.

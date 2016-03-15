@@ -3,7 +3,7 @@
 
 ## iPXE Script
 
-Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Configure your DHCP server or iPXE server to boot from this script (e.g. set `dhcp-boot:dhcp-boot=tag:ipxe,http://bootcfg.domain.com/ipxe/boot.ipxe` if using `dnsmasq`).
+Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Configure your DHCP server or iPXE server to boot from this script.
 
     GET http://bootcfg.foo/boot.ipxe
     GET http://bootcfg.foo/boot.ipxe.0   // for dnsmasq
@@ -15,7 +15,7 @@ Serves a static iPXE boot script which gathers client machine attributes and cha
 
 ## iPXE
 
-Finds the spec matching the attribute query parameters and renders the spec boot settings (kernel, options, initrd) as an iPXE script.
+Finds the profile for the machine and renders the network boot config (kernel, options, initrd) as an iPXE script.
 
     GET http://bootcfg.foo/ipxe
 
@@ -29,13 +29,37 @@ Finds the spec matching the attribute query parameters and renders the spec boot
 **Response**
 
     #!ipxe
-    kernel /assets/coreos/899.6.0/coreos_production_pxe.vmlinuz cloud-config-url=http://bootcfg.foo:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
+    kernel /assets/coreos/899.6.0/coreos_production_pxe.vmlinuz coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.first_boot=1 coreos.autologin
     initrd  /assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz
     boot
 
+## GRUB2
+
+Finds the profile for the machine and renders the network boot config as a GRUB config.
+
+    GET http://bootcfg.foo/grub
+
+**Query Parameters**
+
+| Name | Type   | Description   |
+|------|--------|---------------|
+| uuid | string | Hardware UUID |
+| mac  | string | MAC address   |
+
+**Response**
+
+    default=0
+    timeout=1
+    menuentry "CoreOS" {
+    echo "Loading kernel"
+    linuxefi "(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz" "coreos.autologin" "coreos.config.url=http://bootcfg.foo:8080/ignition" "coreos.first_boot"
+    echo "Loading initrd"
+    initrdefi "(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"
+    }
+
 ## Pixiecore
 
-Finds the spec matching the attribute query parameters and renders the boot settings as JSON to implement the Pixiecore API [spec](https://github.com/danderson/pixiecore/blob/master/README.api.md). Currently, Pixiecore only provides the machine's MAC address for matching.
+Finds the profile matching the machine and renders the network boot config as JSON to implement the [Pixiecore API](https://github.com/danderson/pixiecore/blob/master/README.api.md). Currently, Pixiecore only provides the machine's MAC address for matching.
 
     GET http://bootcfg.foo/pixiecore/v1/boot/:MAC
 
@@ -58,7 +82,7 @@ Finds the spec matching the attribute query parameters and renders the boot sett
 
 ## Cloud Config
 
-Finds the spec matching the attribute query parameters and renders the corresponding cloud-config file.
+Finds the profile matching the machine and renders the corresponding Cloud-Config.
 
     GET http://bootcfg.foo/cloud
 
@@ -81,7 +105,7 @@ Finds the spec matching the attribute query parameters and renders the correspon
 
 ## Ignition Config
 
-Finds the spec matching the attribute query parameters and renders the corresponding Ignition config as JSON.
+Finds the profile matching the machine and renders the corresponding Ignition Config.
 
     GET http://bootcfg.foo/ignition
 
@@ -112,7 +136,7 @@ Finds the spec matching the attribute query parameters and renders the correspon
 
 ## OpenPGP Signatures
 
-OpenPGPG signature endpoints serve detached binary and ASCII armored signatures of rendered configs when signing is enabled. See [OpenPGP Signing](openpgp.md).
+OpenPGPG signature endpoints serve detached binary and ASCII armored signatures of rendered configs, if enabled. See [OpenPGP Signing](openpgp.md).
 
 | Endpoint   | Signature Endpoint | ASCII Signature Endpoint |
 |------------|--------------------|-------------------------|
@@ -121,18 +145,11 @@ OpenPGPG signature endpoints serve detached binary and ASCII armored signatures 
 | iPXE       | `http://bootcfg.foo/boot.ipxe.sig` | `http://bootcfg.foo/boot.ipxe.asc` |
 | iPXE       | `http://bootcfg.foo/ipxe.sig` | `http://bootcfg.foo/ipxe.asc` |
 | Pixiecore  | `http://bootcfg/pixiecore/v1/boot.sig/:MAC` | `http://bootcfg/pixiecore/v1/boot.asc/:MAC` |
+| GRUB2      | `http://bootcf.foo/grub.sig` | `http://bootcfg.foo/grub.asc` |
 
-Get an Ignition config and its detached ASCII armored signature.
+Get a config and its detached ASCII armored signature.
 
     GET http://bootcfg.foo/ipxe?attribute=value
-
-**Response**
-
-    #!ipxe
-    kernel /assets/coreos/899.6.0/coreos_production_pxe.vmlinuz cloud-config-url=http://bootcfg.foo:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.autologin
-    initrd  /assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz
-    boot
-
     GET http://bootcfg.foo/ipxe.asc?attribute=value
 
 **Response**
@@ -150,46 +167,11 @@ NO+p24BL3PHZyKw0nsrm275C913OxEVgnNZX7TQltaweW23Cd1YBNjcfb3zv+Zo=
 -----END PGP SIGNATURE-----
 ```
 
-## API Resources
-
-### Specs
-
-Get a `Spec` definition by id (UUID, MAC).
-
-    http://bootcfg.foo/spec/:id
-
-**URL Parameters**
-
-| Name | Type   | Description |
-|------|--------|-------------|
-| id   | string | spec identifier |
-
-**Response**
-
-```json
-{
-  "id": "etcd",
-  "boot": {
-    "kernel": "/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
-    "initrd": [
-      "/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"
-    ],
-    "cmdline": {
-      "coreos.autologin": "",
-      "coreos.config.url": "http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
-      "coreos.first_boot": ""
-    }
-  },
-  "cloud_id": "",
-  "ignition_id": "etcd.yaml"
-}
-```
-
 ## Assets
 
 If you need to serve static assets (e.g. kernel, initrd), `bootcfg` can serve arbitrary assets from `-assets-path` at `/assets/`.
 
-    assets/
+    bootcfg.foo/assets/
     └── coreos
         └── 835.9.0
             ├── coreos_production_pxe.vmlinuz

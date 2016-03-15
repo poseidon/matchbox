@@ -11,13 +11,13 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
 
 ## bootcfg
 
-`bootcfg` is a service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines based on hardware attributes (e.g. UUID, MAC) or tags (e.g. os=installed, region=us-central) to create CoreOS clusters. Network boot endpoints provide PXE, iPXE, and Pixiecore support. `bootcfg` can run as an [application container](https://github.com/appc/spec) with [rkt](https://coreos.com/rkt/docs/latest/), as a Docker container, or as a binary.
+`bootcfg` is a HTTP service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines based on attribute selectors (e.g. UUID, MAC, stage, region) to create CoreOS clusters. Network boot endpoints provide PXE, iPXE, GRUB, and Pixiecore support. `bootcfg` can run as an [application container](https://github.com/appc/spec) with [rkt](https://coreos.com/rkt/docs/latest/), as a Docker container, or as a binary.
 
 * [Getting Started with rkt](Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](Documentation/getting-started-docker.md)
 * [bootcfg](Documentation/bootcfg.md)
     * [Groups](Documentation/bootcfg.md#groups-and-metadata)
-    * [Specs](Documentation/bootcfg.md#spec)
+    * [Profiles](Documentation/bootcfg.md#profiles)
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
 * [OpenPGP Signing](Documentation/openpgp.md)

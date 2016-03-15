@@ -3,20 +3,20 @@
 
 Ignition is a system for declaratively provisioning disks during the initramfs, before systemd starts. It runs only on the first boot and handles formatting partitions, writing files (systemd units, networkd units, dropins, regular files), and configuring users. See the Ignition [docs](https://coreos.com/ignition/docs/latest/) for details.
 
-Ignition template files can be added in an `ignition` subdirectory of the `bootcfg` data directory. The files may contain [Go template](https://golang.org/pkg/text/template/) elements which should evaluate, with `metadata`, to Ignition JSON or to Ignition YAML (which will be rendered as JSON).
+Ignition template files can be added in the `/etc/bootcfg/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files should contain Ignition JSON or YAML (which will be rendered as JSON) and may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with `metadata` when served.
 
-    data
+    /etc/bootcfg/
      ├── cloud
      ├── ignition
      │   └── simple.json
      │   └── etcd.yaml
      │   └── etcd_proxy.yaml
      │   └── networking.yaml
-     └── specs
+     └── profiles
 
-Add an Ignition config to a `Spec` by adding the `ignition_id` field. When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `bootcfg`ignition endpoint.
+Reference an Ignition config in a [Profile](bootcfg.md#profiles). When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `bootcfg` [Ignition endpoint](api.md#ignition-config).
 
-spec.json:
+profile.json:
 
      {
          "id": "etcd_profile",
@@ -34,7 +34,7 @@ spec.json:
 
 ## Configs
 
-Here is an example Ignition config for static networking, which will be evaluated with metadata into YAML and tranformed into machine-friendly JSON.
+Here is an example Ignition config for static networking, which will be rendered, with metadata, into YAML and tranformed into machine-friendly JSON.
 
 ignition/network.yaml:
 
@@ -99,8 +99,5 @@ ignition/run-hello.json:
 
 ### Examples
 
-See [examples/ignition](../examples/ignition) for example Ignition configs which setup networking, install CoreOS to disk, or start etcd.
+See [examples/ignition](../examples/ignition) for example Ignition config templates.
 
-## Endpoint
-
-The `bootcfg` [Ignition endpoint](api.md#ignition-config) `/ignition?param=val` endpoint matches parameters to a machine `Spec` and renders the corresponding Ignition config with `metadata`, transforming YAML to JSON if needed.

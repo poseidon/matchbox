@@ -42,7 +42,7 @@ Alternately, run one of the recently tagged [releases](https://github.com/coreos
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:v0.2.0 -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
 
-Take a look at [etcd-docker.yaml](../examples/etcd-docker.yaml) to get an idea of how machines are matched to specifications. Explore some endpoints port mapped to localhost:8080.
+Take a look at [etcd-docker.yaml](../examples/etcd-docker.yaml) to get an idea of how machines are matched to profiles. Explore some endpoints port mapped to localhost:8080.
 
 * [node1's ipxe](http://127.0.0.1:8080/ipxe?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
 * [node1's Ignition](http://127.0.0.1:8080/ignition?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
@@ -72,7 +72,7 @@ You can use `virt-manager` to watch the console and reboot VM machines with
 
 The VMs should network boot and provision themselves into a three node etcd cluster, with other nodes behaving as etcd proxies.
 
-The example spec added autologin so you can verify that etcd works between nodes.
+The example profile added autologin so you can verify that etcd works between nodes.
 
     systemctl status etcd2
     etcdctl set /message hello
