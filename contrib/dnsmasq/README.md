@@ -5,7 +5,7 @@
 
 `dnsmasq` provides an App Container Image (ACI) or Docker image for running DHCP, proxy DHCP, DNS, and/or TFTP with [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) in a container/pod. Use it to test different network setups with clusters of network bootable machines.
 
-The image bundles `undionly.kpxe` which chainloads PXE clients to iPXE.
+The image bundles `undionly.kpxe` which chainloads PXE clients to iPXE and `grub.efi` (experimental) which chainloads UEFI architectures to GRUB2.
 
 ## Usage
 
