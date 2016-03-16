@@ -65,8 +65,7 @@ Note: The insecure flag is needed for this case, since [Quay.io](https://quay.io
 Alternately, run a recent tagged and signed [release](https://github.com/coreos/coreos-baremetal/releases). Trust the [CoreOS App Signing Key](https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg) for image signature verification.
 
     sudo rkt trust --prefix coreos.com/bootcfg
-    # Fingerprint 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-
+    # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples coreos.com/bootcfg:v0.2.0 -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
 
 If you get an error about the IP assignment, garbage collect old pods.
@@ -84,15 +83,14 @@ Take a look at [etcd-rkt.yaml](../examples/etcd-rkt.yaml) to get an idea of how 
 
 Since the virtual network has no network boot services, use the `dnsmasq` ACI to create an iPXE network boot environment which runs DHCP, DNS, and TFTP.
 
-Build the `dnsmasq.aci` ACI.
+Trust the [CoreOS App Signing Key](https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg).
 
-    cd contrib/dnsmasq
-    ./get-tftp-files
-    sudo ./build-aci
+    sudo rkt trust --prefix coreos.com/dnsmasq
+    # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
 
-Run `dnsmasq.aci`.
+Run the `coreos.com/dnsmasq` ACI with rkt.
 
-    sudo rkt --insecure-options=image run dnsmasq.aci --dns=8.8.8.8 --net=metal0:IP=172.15.0.3 -- -d -q --dhcp-range=172.15.0.50,172.15.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.15.0.1 --address=/bootcfg.foo/172.15.0.2
+    sudo rkt run coreos.com/dnsmasq:v0.2.0 --net=metal0:IP=172.15.0.3 -- -d -q --dhcp-range=172.15.0.50,172.15.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.15.0.1 --address=/bootcfg.foo/172.15.0.2
 
 In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.15.0.50 and 172.15.0.99, resolves `bootcfg.foo` to 172.15.0.2 (the IP where `bootcfg` runs), and points iPXE clients to `http://bootcfg.foo:8080/boot.ipxe`.
 

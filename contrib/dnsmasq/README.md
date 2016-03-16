@@ -9,9 +9,11 @@ The image bundles `undionly.kpxe` which chainloads PXE clients to iPXE and `grub
 
 ## Usage
 
-Build the ACI as described below. Run the ACI with [rkt](https://github.com/coreos/rkt).
+Run the `coreos.com/dnsmasq` ACI with rkt.
 
-    sudo rkt --insecure-options=image run dnsmasq.aci
+    sudo rkt trust --prefix coreos.com/dnsmasq
+    # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
+    sudo rkt run coreos.com/dnsmasq:v0.2.0
 
 Press ^] three times to kill the container.
 
