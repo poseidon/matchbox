@@ -54,22 +54,18 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 #### Latest
 
-Run `quay.io/coreos/bootcfg:latest` to get the latest commit from master as an ACI from [Quay.io](https://quay.io/repository/coreos/bootcfg).
+Run the latest ACI with rkt.
 
     sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/bootcfg --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/etc/bootcfg --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug -config /etc/bootcfg/etcd-rkt.yaml
 
-Note: The insecure flag is needed for this case, since Docker images (docker2aci) don't support signatures.
+Note: The insecure flag is needed for this case, since [Quay.io](https://quay.io/repository/coreos/bootcfg) serves ACIs coverted from Docker images (docker2aci) and Docker images don't support signatures.
 
 #### Release
 
-Alternately, run one of the recently tagged [releases](https://github.com/coreos/coreos-baremetal/releases).
-
-Trust the [CoreOS App Signing Key](https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg) for image signature verification.
+Alternately, run a recent tagged and signed [release](https://github.com/coreos/coreos-baremetal/releases). Trust the [CoreOS App Signing Key](https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg) for image signature verification.
 
     sudo rkt trust --prefix coreos.com/bootcfg
     # Fingerprint 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-
-Run a `bootcfg` release on the `metal0` network, with a known IP.
 
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples coreos.com/bootcfg:v0.2.0 -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
 

@@ -5,7 +5,7 @@
 
 Clone the coreos-baremetal project into your $GOPATH.
 
-    go get github.com/coreos/coreos-baremetal
+    go get github.com/coreos/coreos-baremetal/cmd/bootcfg
     cd $GOPATH/src/github.com/coreos/coreos-baremetal
 
 Build `bootcfg` from source.
@@ -18,8 +18,8 @@ Install the `bootcfg` static binary to `/usr/local/bin`.
 
 Run `bootcfg`
 
-    $ sudo bootcfg -version
-    $ sudo bootcfg -address 0.0.0.0:8080
+    $ bootcfg -version
+    $ bootcfg -address 0.0.0.0:8080
     main: starting bootcfg HTTP server on 0.0.0.0:8080
 
 See [flags and variables](config.md).
@@ -32,8 +32,9 @@ Add and start bootcfg's example systemd unit.
     sudo systemctl daemon-reload
     sudo systemctl start bootcfg.service
 
-Check the logs with `journalctl`.
+Check the status and logs.
 
+    systemctl status bootcfg.service
     journalctl -u bootcfg.service
 
 Enable the `bootcfg` service if you'd like it to start at boot time.

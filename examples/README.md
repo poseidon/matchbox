@@ -23,6 +23,19 @@ Get started running the `bootcfg` on your Linux machine to boot clusters of libv
 * [Getting Started with rkt](../Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](../Documentation/getting-started-docker.md)
 
+## SSH Keys
+
+Most example profiles configure machines with a `core` user and `ssh_authorized_keys`. Add your own key(s) as machine metadata.
+
+    ---
+    api_version: v1alpha1
+    groups:
+      - name: default
+        profile: pxe
+        metadata:
+          ssh_authorized_keys:
+            - "ssh-rsa pub-key-goes-here"
+
 ## Kubernetes
 
 The Kubernetes cluster examples create a TLS-authenticated Kubernetes cluster with 1 master node, 1 worker node, and 1 etcd node, running without a disk.
