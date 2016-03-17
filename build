@@ -2,3 +2,6 @@
 
 LD_FLAGS="-w -X main.version=$(./git-version)"
 CGO_ENABLED=0 go build -o bin/bootcfg -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcfg
+
+# bootcmd CLI binary
+CGO_ENABLED=0 go build -o bin/bootcmd -ldflags "$LD_FLAGS" -a -tags netgo github.com/coreos/coreos-baremetal/cmd/bootcmd

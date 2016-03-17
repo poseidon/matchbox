@@ -1,7 +1,7 @@
 
 # bootcfg
 
-`bootcfg` is a HTTP service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create clusters of CoreOS machines. `bootcfg` maintains a list of **Group** definitions which match machines to profiles based on their attributes (e.g. UUID, MAC address, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config) and metadata.
+`bootcfg` is a HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create clusters of CoreOS machines. `bootcfg` maintains a list of **Group** definitions which match machines to profiles based on their attributes (e.g. UUID, MAC address, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config) and metadata.
 
 The aim is to use CoreOS Linux's early-boot capabilities to network boot and provision CoreOS machines into cluster members. Network boot endpoints provide PXE, iPXE, GRUB, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) support. The `bootcfg` service can be run as binary, as an [application container](https://github.com/appc/spec) with rkt, or as a Docker container.
 
