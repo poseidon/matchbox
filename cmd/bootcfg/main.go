@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,6 +14,8 @@ import (
 
 	"github.com/coreos/coreos-baremetal/bootcfg/api"
 	"github.com/coreos/coreos-baremetal/bootcfg/config"
+	"github.com/coreos/coreos-baremetal/bootcfg/rpc"
+	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/sign"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 )
@@ -26,6 +29,7 @@ var (
 func main() {
 	flags := struct {
 		address     string
+		rpcAddress  string
 		configPath  string
 		dataPath    string
 		assetsPath  string
@@ -35,6 +39,7 @@ func main() {
 		help        bool
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
+	flag.StringVar(&flags.rpcAddress, "rpcAddress", "", "RPC listen address")
 	flag.StringVar(&flags.configPath, "config", "/etc/bootcfg.conf", "Path to config file")
 	flag.StringVar(&flags.dataPath, "data-path", "/etc/bootcfg", "Path to data directory")
 	flag.StringVar(&flags.assetsPath, "assets-path", "/var/bootcfg", "Path to static assets")
@@ -108,16 +113,35 @@ func main() {
 		Groups: cfg.Groups,
 	})
 
-	// HTTP server
+	bootcfgServer := server.NewServer(&server.Config{
+		Store: store,
+	})
+
+	// gRPC Server (feature hidden)
+	if flags.rpcAddress != "" {
+		grpcServer, err := rpc.NewServer(bootcfgServer)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Infof("starting bootcfg gRPC server on %s", flags.rpcAddress)
+		lis, err := net.Listen("tcp", flags.rpcAddress)
+		if err != nil {
+			log.Fatalf("failed to start listening: %v", err)
+		}
+		go grpcServer.Serve(lis)
+		defer grpcServer.Stop()
+	}
+
+	// HTTP Server
 	config := &api.Config{
 		Store:         store,
 		AssetsPath:    flags.assetsPath,
 		Signer:        signer,
 		ArmoredSigner: armoredSigner,
 	}
-	server := api.NewServer(config)
+	httpServer := api.NewServer(config)
 	log.Infof("starting bootcfg HTTP server on %s", flags.address)
-	err = http.ListenAndServe(flags.address, server.HTTPHandler())
+	err = http.ListenAndServe(flags.address, httpServer.HTTPHandler())
 	if err != nil {
 		log.Fatalf("failed to start listening: %v", err)
 	}
