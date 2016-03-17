@@ -11,7 +11,7 @@ systemd:
         Type=oneshot
         Environment=OUTPUT=/run/metadata/bootcfg
         ExecStart=/usr/bin/mkdir --parent /run/metadata
-        ExecStart=/usr/bin/bash -c 'curl --url http://bootcfg.foo:8080/metadata --retry 10 --output ${OUTPUT}'
+        ExecStart=/usr/bin/bash -c 'curl --url "http://bootcfg.foo:8080/metadata?{{.query}}" --retry 10 --output ${OUTPUT}'
         [Install]
         WantedBy=multi-user.target
     - name: fleet.service
