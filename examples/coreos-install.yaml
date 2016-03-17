@@ -19,6 +19,7 @@ groups:
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.21/16
       ipv4_address: 172.15.0.21
+      fleet_metadata: "role=etcd,name=node1"
       etcd_name: node1
       etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
       ssh_authorized_keys:
@@ -34,6 +35,7 @@ groups:
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.22/16
       ipv4_address: 172.15.0.22
+      fleet_metadata: "role=etcd,name=node2"
       etcd_name: node2
       etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
 
@@ -48,6 +50,7 @@ groups:
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.23/16
       ipv4_address: 172.15.0.23
+      fleet_metadata: "role=etcd,name=node3"
       etcd_name: node3
       etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
 
@@ -59,4 +62,5 @@ groups:
       networkd_name: ens3
       networkd_gateway: 172.15.0.1
       networkd_dns: 172.15.0.3
+      fleet_metadata: role=etcd-proxy
       etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"

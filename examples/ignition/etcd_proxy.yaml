@@ -14,6 +14,15 @@ systemd:
         ExecStart=/usr/bin/bash -c 'curl --url http://bootcfg.foo:8080/metadata --retry 10 --output ${OUTPUT}'
         [Install]
         WantedBy=multi-user.target
+    - name: fleet.service
+      enable: true
+      dropins:
+        - name: fleet-metadata.conf
+          contents: |
+            [Service]
+            # FLEET_METADATA
+            EnvironmentFile=/run/metadata/bootcfg
+            Environment="FLEET_ETCD_SERVERS=http://127.0.0.1:2379"
     - name: etcd2.service
       enable: true
       dropins:
@@ -23,12 +32,12 @@ systemd:
             Requires=metadata.service
             After=metadata.service
             [Service]
+            # ETCD_INITIAL_CLUSTER
             EnvironmentFile=/run/metadata/bootcfg
             ExecStart=
             ExecStart=/usr/bin/etcd2 \
               --proxy on
-              --listen-client-urls=http://localhost:2379 \
-              --initial-cluster=${ETCD_INITIAL_CLUSTER}
+              --listen-client-urls=http://127.0.0.1:2379
 
 {{ if .ssh_authorized_keys }}
 passwd:
