@@ -13,7 +13,10 @@ acbuild --debug begin
 trap "{ export EXT=$?; acbuild --debug end && exit $EXT; }" EXIT
 
 # Name the ACI
-acbuild --debug set-name coreos/dnsmasq
+acbuild --debug set-name coreos.com/dnsmasq
+
+# Add a version label
+acbuild --debug label add version v0.2.0
 
 # Add alpine base dependency
 acbuild --debug dep add quay.io/coreos/alpine-sh
