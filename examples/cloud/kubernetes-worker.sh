@@ -10,7 +10,7 @@ export ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
 export CONTROLLER_ENDPOINT={{.k8s_controller_endpoint}}
 
 # Specify the version (vX.Y.Z) of Kubernetes assets to deploy
-export K8S_VER={{.k8s_version}}
+export K8S_VER=v1.1.8_coreos.0
 
 # The IP address of the cluster DNS service.
 # This must be the same DNS_SERVICE_IP used when configuring the controller nodes.
@@ -49,7 +49,8 @@ function init_templates {
         cat << EOF > $TEMPLATE
 [Service]
 ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
-ExecStart=/usr/bin/kubelet \
+Environment=KUBELET_VERSION=${K8S_VER}
+ExecStart=/usr/lib/coreos/kubelet-wrapper \
   --api_servers=${CONTROLLER_ENDPOINT} \
   --register-node=true \
   --allow-privileged=true \
@@ -106,7 +107,7 @@ spec:
   hostNetwork: true
   containers:
   - name: kube-proxy
-    image: gcr.io/google_containers/hyperkube:$K8S_VER
+    image: quay.io/coreos/hyperkube:$K8S_VER
     command:
     - /hyperkube
     - proxy

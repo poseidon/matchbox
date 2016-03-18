@@ -11,7 +11,6 @@ groups:
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.21/16
       k8s_etcd_endpoints: http://172.15.0.23:2379
-      k8s_version: v1.1.2
       k8s_pod_network: 10.2.0.0/16
       k8s_service_ip_range: 10.3.0.0/24
       k8s_service_ip: 10.3.0.1
@@ -31,7 +30,6 @@ groups:
       networkd_address: 172.15.0.22/16
       k8s_etcd_endpoints: http://172.15.0.23:2379
       k8s_controller_endpoint: https://172.15.0.21
-      k8s_version: v1.1.2
       k8s_dns_service_ip: 10.3.0.1
       k8s_advertise_ip: 172.15.0.22
       k8s_cert_endpoint: http://bootcfg.foo:8080/assets

@@ -1,9 +1,10 @@
 {
   "id": "kubernetes-worker",
   "boot": {
-    "kernel": "/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
-    "initrd": ["/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],
+    "kernel": "/assets/coreos/962.0.0/coreos_production_pxe.vmlinuz",
+    "initrd": ["/assets/coreos/962.0.0/coreos_production_pxe_image.cpio.gz"],
     "cmdline": {
+      "root": "/dev/sda1",
       "cloud-config-url": "http://bootcfg.foo:8080/cloud?uuid=${uuid}&mac=${net0/mac:hexhyp}",
       "coreos.config.url": "http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
       "coreos.autologin": "",
