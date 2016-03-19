@@ -14,6 +14,20 @@ systemd:
         ExecStart=/usr/bin/bash -c 'curl --url "http://bootcfg.foo:8080/metadata?{{.query}}" --retry 10 --output ${OUTPUT}'
         [Install]
         WantedBy=multi-user.target
+storage:
+  disks:
+    - device: /dev/sda
+      wipe_table: true
+      partitions:
+        - label: ROOT
+          number: 0
+  filesystems:
+    - device: "/dev/sda1"
+      format: "ext4"
+      create:
+        force: true
+        options:
+          - "-LROOT"
 networkd:
   units:
     - name: 00-{{.networkd_name}}.network
