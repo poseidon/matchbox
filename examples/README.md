@@ -10,7 +10,7 @@ These examples show declarative configurations for network booting libvirt VMs i
 | pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | coreos-install | 2-stage Ignition: Install CoreOS, provision etcd cluster | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | etcd-rkt, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | beta/899.6.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| k8s-rkt, k8s-docker | Kubernetes cluster with 1 master, 1 worker, 1 dedicated etcd node, TLS-authentication | alpha/962.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
+| k8s-rkt, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
 
 ## Experimental
 
@@ -38,17 +38,19 @@ Most example profiles configure machines with a `core` user and `ssh_authorized_
 
 ## Kubernetes
 
-The Kubernetes cluster examples create a TLS-authenticated Kubernetes cluster with 1 master node, 1 worker node, and 1 etcd node, running without a disk.
+The Kubernetes examples create Kubernetes clusters with CoreOS hosts and TLS authentication.
 
-You'll need to download the CoreOS Beta image, which ships with the kubelet, and generate TLS assets.
+### Assets
 
-### TLS Assets
+Download the CoreOS PXE image assets to `assets/coreos`. These images are served to network boot machines by `bootcfg`.
+
+    ./scripts/get-coreos alpha 991.0.0
 
 **Note**: TLS assets are served to any machines which request them. This is unsuitable for production where machines and networks are untrusted. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html).
 
-Generate a root CA and Kubernetes TLS assets for each component (`admin`, `apiserver`, `worker`).
+Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`).
 
-    cd coreos-baremetal
+    rm -rf assets/tls
     # for Kubernetes on CNI metal0, i.e. rkt
     ./scripts/tls/gen-rkt-k8s-secrets
     # for Kubernetes on docker0
@@ -80,5 +82,9 @@ Get all pods.
 
     kubectl --kubeconfig=examples/kubecfg-rkt get pods --all-namespaces
 
-On my laptop, it takes about 1 minute from boot until the Kubernetes API comes up. Then it takes another 1-2 minutes for all components including DNS to be pulled and started.
+On my laptop, VMs download and network boot CoreOS in the first 45 seconds, the Kubernetes API becomes available after about 150 seconds, and add-on pods are scheduled by 180 seconds. On physical hosts and networks, OS and container image download times are a bit longer.
+
+## Tectonic
+
+Now sign up for [Tectonic Starter](https://tectonic.com/starter/) and deploy the [Tectonic Console](https://tectonic.com/enterprise/docs/latest/deployer/tectonic_console.html) with a few `kubectl` commands!
 

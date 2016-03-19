@@ -50,7 +50,7 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
     sudo firewall-cmd --add-interface=metal0 --zone=trusted
 
-## Application Container
+## Containers
 
 #### Latest
 

@@ -6,6 +6,7 @@ groups:
     require:
       uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
     metadata:
+      ipv4_address: 172.17.0.21
       networkd_name: ens3
       networkd_gateway: 172.17.0.1
       networkd_dns: 172.17.0.3
@@ -17,12 +18,16 @@ groups:
       k8s_dns_service_ip: 10.3.0.10
       k8s_advertise_ip: 172.17.0.21
       k8s_cert_endpoint: http://bootcfg.foo:8080/assets
+      fleet_metadata: "role=etcd,name=node1"
+      etcd_name: node1
+      etcd_initial_cluster: "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380"
 
-  - name: Worker Node
+  - name: Worker 1
     profile: kubernetes-worker
     require:
       uuid: 264cd073-ca62-44b3-98c0-50aad5b5f819
     metadata:
+      ipv4_address: 172.17.0.22
       networkd_name: ens3
       networkd_gateway: 172.17.0.1
       networkd_dns: 172.17.0.3
@@ -32,17 +37,26 @@ groups:
       k8s_dns_service_ip: 10.3.0.1
       k8s_advertise_ip: 172.17.0.22
       k8s_cert_endpoint: http://bootcfg.foo:8080/assets
+      fleet_metadata: "role=etcd,name=node2"
+      etcd_name: node2
+      etcd_initial_cluster: "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380"
 
-  - name: etcd Node
-    profile: etcd
+  - name: Worker 2
+    profile: kubernetes-worker
     require:
       uuid: 39d2e747-2648-4d68-ae92-bbc70b245055
     metadata:
+      ipv4_address: 172.17.0.23
       networkd_name: ens3
       networkd_gateway: 172.17.0.1
       networkd_dns: 172.17.0.3
       networkd_address: 172.17.0.23/16
-      ipv4_address: 172.17.0.23
-      etcd_name: solo
-      etcd_initial_cluster: "solo=http://172.17.0.23:2380"
+      k8s_etcd_endpoints: http://172.17.0.23:2379
+      k8s_controller_endpoint: https://172.17.0.21
+      k8s_dns_service_ip: 10.3.0.1
+      k8s_advertise_ip: 172.17.0.23
+      k8s_cert_endpoint: http://bootcfg.foo:8080/assets
+      fleet_metadata: "role=etcd,name=node3"
+      etcd_name: node3
+      etcd_initial_cluster: "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380"
 
