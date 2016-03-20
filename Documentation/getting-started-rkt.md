@@ -115,6 +115,7 @@ The example profile added autologin so you can verify that etcd works between no
     systemctl status etcd2
     etcdctl set /message hello
     etcdctl get /message
+    fleetctl list-machines
 
 Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
