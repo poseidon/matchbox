@@ -28,7 +28,7 @@ export K8S_SERVICE_IP={{.k8s_service_ip}}
 export DNS_SERVICE_IP={{.k8s_dns_service_ip}}
 
 # ADVERTISE_IP is the host node's IP.
-export ADVERTISE_IP={{.k8s_advertise_ip}}
+export ADVERTISE_IP={{.ipv4_address}}
 
 # TLS Certificate assets are hosted by the Config Server
 export CERT_ENDPOINT={{.k8s_cert_endpoint}}
