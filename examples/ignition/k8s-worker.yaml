@@ -1,0 +1,193 @@
+---
+ignition_version: 1
+systemd:
+  units:
+    - name: metadata.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Bare Metal Metadata Agent
+        [Service]
+        Type=oneshot
+        Environment=OUTPUT=/run/metadata/bootcfg
+        ExecStart=/usr/bin/mkdir -p /run/metadata
+        ExecStart=/usr/bin/bash -c 'curl --url "http://bootcfg.foo:8080/metadata?{{.query}}" --retry 10 --output ${OUTPUT}'
+        [Install]
+        WantedBy=multi-user.target
+    - name: fleet.service
+      enable: true
+      dropins:
+        - name: fleet-metadata.conf
+          contents: |
+            [Service]
+            Environment="FLEET_METADATA={{.fleet_metadata}}"
+    - name: etcd2.service
+      enable: true
+      dropins:
+        - name: etcd-metadata.conf
+          contents: |
+            [Unit]
+            Requires=metadata.service
+            After=metadata.service
+            [Service]
+            # ETCD_NAME, ETCD_INITIAL_CLUSTER
+            EnvironmentFile=/run/metadata/bootcfg
+            ExecStart=
+            ExecStart=/usr/bin/etcd2 \
+              --advertise-client-urls=http://${IPV4_ADDRESS}:2379 \
+              --initial-advertise-peer-urls=http://${IPV4_ADDRESS}:2380 \
+              --listen-client-urls=http://0.0.0.0:2379 \
+              --listen-peer-urls=http://${IPV4_ADDRESS}:2380
+    - name: kubelet.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Kubelet via Hyperkube ACI
+        Requires=k8stls.service
+        After=k8stls.service
+        [Service]
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+        Environment=KUBELET_VERSION={{.k8s_version}}
+        ExecStart=/usr/lib/coreos/kubelet-wrapper \
+          --api_servers={{.k8s_controller_endpoint}} \
+          --register-node=true \
+          --allow-privileged=true \
+          --config=/etc/kubernetes/manifests \
+          --hostname-override={{.ipv4_address}} \
+          --cluster_dns={{.k8s_dns_service_ip}} \
+          --cluster_domain=cluster.local \
+          --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml \
+          --tls-cert-file=/etc/kubernetes/ssl/worker.pem \
+          --tls-private-key-file=/etc/kubernetes/ssl/worker-key.pem
+        Restart=always
+        RestartSec=10
+        [Install]
+        WantedBy=multi-user.target
+    - name: k8stls.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Acquire Kubernetes TLS CA and Certificate
+        Requires=network-online.target
+        After=network-online.target
+        [Service]
+        Type=oneshot
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
+        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/worker.pem -o /etc/kubernetes/ssl/worker.pem
+        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/worker-key.pem -o /etc/kubernetes/ssl/worker-key.pem
+        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/ca.pem -o /etc/kubernetes/ssl/ca.pem
+        [Install]
+        WantedBy=multi-user.target
+    - name: flanneld.service
+      dropins:
+        - name: 40-ExecStartPre-symlink.conf
+          contents: |
+            [Service]
+            ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
+    - name: docker.service
+      dropins:
+        - name: 40-flannel.conf
+          contents: |
+            [Unit]
+            Requires=flanneld.service
+            After=flanneld.service
+
+storage:
+  disks:
+    - device: /dev/sda
+      wipe_table: true
+      partitions:
+        - label: ROOT
+          number: 0
+  filesystems:
+    - device: "/dev/sda1"
+      format: "ext4"
+      create:
+        force: true
+        options:
+          - "-LROOT"
+      files:
+        - path: /etc/kubernetes/worker-kubeconfig.yaml
+          contents: |
+            apiVersion: v1
+            kind: Config
+            clusters:
+            - name: local
+              cluster:
+                certificate-authority: /etc/kubernetes/ssl/ca.pem
+            users:
+            - name: kubelet
+              user:
+                client-certificate: /etc/kubernetes/ssl/worker.pem
+                client-key: /etc/kubernetes/ssl/worker-key.pem
+            contexts:
+            - context:
+                cluster: local
+                user: kubelet
+              name: kubelet-context
+            current-context: kubelet-context
+        - path: /etc/kubernetes/manifests/kube-proxy.yaml
+          contents: |
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              name: kube-proxy
+              namespace: kube-system
+            spec:
+              hostNetwork: true
+              containers:
+              - name: kube-proxy
+                image: quay.io/coreos/hyperkube:{{.k8s_version}}
+                command:
+                - /hyperkube
+                - proxy
+                - --master={{.k8s_controller_endpoint}}
+                - --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml
+                - --proxy-mode=iptables
+                securityContext:
+                  privileged: true
+                volumeMounts:
+                  - mountPath: /etc/ssl/certs
+                    name: "ssl-certs"
+                  - mountPath: /etc/kubernetes/worker-kubeconfig.yaml
+                    name: "kubeconfig"
+                    readOnly: true
+                  - mountPath: /etc/kubernetes/ssl
+                    name: "etc-kube-ssl"
+                    readOnly: true
+              volumes:
+                - name: "ssl-certs"
+                  hostPath:
+                    path: "/usr/share/ca-certificates"
+                - name: "kubeconfig"
+                  hostPath:
+                    path: "/etc/kubernetes/worker-kubeconfig.yaml"
+                - name: "etc-kube-ssl"
+                  hostPath:
+                    path: "/etc/kubernetes/ssl"
+        - path: /etc/flannel/options.env
+          contents: |
+            FLANNELD_IFACE={{.ipv4_address}}
+            FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
+
+networkd:
+  units:
+    - name: 00-{{.networkd_name}}.network
+      contents: |
+        [Match]
+        Name={{.networkd_name}}
+        [Network]
+        Gateway={{.networkd_gateway}}
+        DNS={{.networkd_dns}}
+        DNS=8.8.8.8
+        Address={{.networkd_address}}
+
+{{ if .ssh_authorized_keys }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
+{{end}}

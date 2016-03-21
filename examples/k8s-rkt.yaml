@@ -23,7 +23,7 @@ groups:
       ssh_authorized_keys:
 
   - name: Worker 1
-    profile: kubernetes-worker
+    profile: k8s-worker
     require:
       uuid: 264cd073-ca62-44b3-98c0-50aad5b5f819
     metadata:
@@ -32,6 +32,7 @@ groups:
       networkd_gateway: 172.15.0.1
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.22/16
+      k8s_version: v1.1.8_coreos.0
       k8s_etcd_endpoints: "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379"
       k8s_controller_endpoint: https://172.15.0.21
       k8s_dns_service_ip: 10.3.0.1
@@ -42,7 +43,7 @@ groups:
       ssh_authorized_keys:
 
   - name: Worker 2
-    profile: kubernetes-worker
+    profile: k8s-worker
     require:
       uuid: 39d2e747-2648-4d68-ae92-bbc70b245055
     metadata:
@@ -51,6 +52,7 @@ groups:
       networkd_gateway: 172.15.0.1
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.23/16
+      k8s_version: v1.1.8_coreos.0
       k8s_etcd_endpoints: "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379"
       k8s_controller_endpoint: https://172.15.0.21
       k8s_dns_service_ip: 10.3.0.1
