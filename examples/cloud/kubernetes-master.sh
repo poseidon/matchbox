@@ -47,6 +47,11 @@ function init_config {
 function get_certs {
   DEST=/etc/kubernetes/ssl
   mkdir -p $DEST
+  echo "Waiting for Certificate Endpoint..."
+  until curl --silent $CERT_ENDPOINT
+  do
+    sleep 5
+  done
   curl $CERT_ENDPOINT/tls/apiserver.pem -o $DEST/apiserver.pem
   curl $CERT_ENDPOINT/tls/apiserver-key.pem -o $DEST/apiserver-key.pem
   curl $CERT_ENDPOINT/tls/ca.pem -o $DEST/ca.pem
@@ -574,7 +579,7 @@ get_certs
 init_templates
 init_flannel
 
-systemctl stop update-engine; systemctl mask update-engine
+{{if .autoupdate}}{{else}}systemctl stop update-engine; systemctl mask update-engine{{end}}
 systemctl daemon-reload
 systemctl enable kubelet; systemctl start kubelet
 

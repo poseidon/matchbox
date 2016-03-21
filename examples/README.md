@@ -8,9 +8,10 @@ These examples show declarative configurations for network booting libvirt VMs i
 | pxe | CoreOS via iPXE | alpha/962.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | grub | CoreOS via GRUB2 Netboot | beta/899.6.0 | RAM | NA |
 | pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| coreos-install | 2-stage Ignition: Install CoreOS, provision etcd cluster | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
+| coreos-install | 2-stage Ignition: Install CoreOS, provision etcd cluster | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | etcd-rkt, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | k8s-rkt, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
+| k8s-install | Install Kubernetes cluster with 1 master and 2 workers, TLS | alpha/983.0.0+ | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
 
 ## Experimental
 

@@ -11,7 +11,8 @@ systemd:
         [Service]
         Type=oneshot
         ExecStart=/usr/bin/curl {{.ignition_endpoint}}?{{.query}}&os=installed -o ignition.json
-        ExecStart=/usr/bin/coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json
+        ExecStart=/usr/bin/curl {{.cloud_endpoint}}?{{.query}}&os=installed -o cloud
+        ExecStart=/usr/bin/coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json {{if .cloud_endpoint}}-c cloud{{end}}
         ExecStart=/usr/bin/udevadm settle
         ExecStart=/usr/bin/systemctl reboot
         [Install]
