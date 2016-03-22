@@ -76,6 +76,7 @@ systemd:
         WantedBy=multi-user.target
 
 storage:
+  {{ if .pxe }}
   disks:
     - device: /dev/sda
       wipe_table: true
@@ -89,6 +90,11 @@ storage:
         force: true
         options:
           - "-LROOT"
+  {{else}}
+  filesystems:
+    - device: "/dev/disk/by-label/ROOT"
+      format: "ext4"
+  {{end}}
       files:
         - path: /etc/kubernetes/worker-kubeconfig.yaml
           contents: |
