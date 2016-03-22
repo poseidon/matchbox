@@ -1,5 +1,5 @@
 #!/bin/bash
-# Manage four VM nodes which have a specific set of hardware attributes.
+# Manage VM nodes which have a specific set of hardware attributes.
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -15,7 +15,6 @@ function main {
     "shutdown") shutdown;;
     "poweroff") poweroff;;
     "destroy") destroy;;
-    "delete-disks") delete_disks;;
     *)
       usage
       exit 2
@@ -33,7 +32,6 @@ function usage {
   echo -e "\tshutdown\tshutdown the libvirt nodes"
   echo -e "\tpoweroff\tpoweroff the libvirt nodes"
   echo -e "\tdestroy\t\tdestroy the libvirt nodes"
-  echo -e "\tdelete-disks\tdelete the allocated disks"
 }
 
 function create_docker {
@@ -80,9 +78,6 @@ function destroy {
   for node in ${nodes[@]}; do
     virsh undefine $node
   done
-}
-
-function delete_disks {
   virsh pool-refresh default
   for node in ${nodes[@]}; do
     virsh vol-delete --pool default $node.qcow2

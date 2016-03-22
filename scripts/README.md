@@ -33,5 +33,4 @@ Create libvirt VM nodes which are configured to boot from the network or from di
         shutdown        shutdown the libvirt nodes
         poweroff        poweroff the libvirt nodes
         destroy         destroy the libvirt nodes
-        delete-disks    delete the allocated disks
 
