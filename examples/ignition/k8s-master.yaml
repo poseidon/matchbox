@@ -2,52 +2,52 @@
 ignition_version: 1
 systemd:
   units:
-    - name: metadata.service
-      enable: true
-      contents: |
-        [Unit]
-        Description=Bare Metal Metadata Agent
-        [Service]
-        Type=oneshot
-        Environment=OUTPUT=/run/metadata/bootcfg
-        ExecStart=/usr/bin/mkdir --parent /run/metadata
-        ExecStart=/usr/bin/bash -c 'curl --url "http://bootcfg.foo:8080/metadata?{{.query}}" --retry 10 --output ${OUTPUT}'
-        [Install]
-        WantedBy=multi-user.target
-    - name: fleet.service
-      enable: true
-      dropins:
-        - name: fleet-metadata.conf
-          contents: |
-            [Service]
-            Environment="FLEET_METADATA={{.fleet_metadata}}"
     - name: etcd2.service
       enable: true
       dropins:
-        - name: etcd-metadata.conf
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_NAME={{.etcd_name}}"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+    - name: fleet.service
+      enable: true
+      dropins:
+        - name: 40-fleet-metadata.conf
+          contents: |
+            [Service]
+            Environment="FLEET_METADATA={{.fleet_metadata}}"
+    - name: flanneld.service
+      dropins:
+        - name: 40-ExecStartPre-symlink.conf
+          contents: |
+            [Service]
+            ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
+            ExecStartPre=/opt/init-flannel
+    - name: docker.service
+      dropins:
+        - name: 40-flannel.conf
           contents: |
             [Unit]
-            Requires=metadata.service
-            After=metadata.service
-            [Service]
-            # ETCD_NAME, ETCD_INITIAL_CLUSTER
-            EnvironmentFile=/run/metadata/bootcfg
-            ExecStart=
-            ExecStart=/usr/bin/etcd2 \
-              --advertise-client-urls=http://${IPV4_ADDRESS}:2379 \
-              --initial-advertise-peer-urls=http://${IPV4_ADDRESS}:2380 \
-              --listen-client-urls=http://0.0.0.0:2379 \
-              --listen-peer-urls=http://${IPV4_ADDRESS}:2380
-    - name: k8s-addons.service
+            Requires=flanneld.service
+            After=flanneld.service
+    - name: k8stls.service
       enable: true
       contents: |
         [Unit]
-        Description=Start Kubernetes DNS Controller and Service
-        Requires=kubelet.service
-        After=kubelet.service
+        Description=Acquire Kubernetes TLS CA and Certificate
+        Requires=network-online.target
+        After=network-online.target
         [Service]
         Type=oneshot
-        ExecStart=/opt/k8s-addons
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
+        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver.pem -o /etc/kubernetes/ssl/apiserver.pem
+        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver-key.pem -o /etc/kubernetes/ssl/apiserver-key.pem
+        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/ca.pem -o /etc/kubernetes/ssl/ca.pem
         [Install]
         WantedBy=multi-user.target
     - name: kubelet.service
@@ -74,36 +74,19 @@ systemd:
         RestartSec=10
         [Install]
         WantedBy=multi-user.target
-    - name: k8stls.service
+    - name: k8s-addons.service
       enable: true
       contents: |
         [Unit]
-        Description=Acquire Kubernetes TLS CA and Certificate
-        Requires=network-online.target
-        After=network-online.target
+        Description=Start Kubernetes DNS Controller and Service
+        Requires=kubelet.service
+        After=kubelet.service
         [Service]
         Type=oneshot
-        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
-        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver.pem -o /etc/kubernetes/ssl/apiserver.pem
-        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver-key.pem -o /etc/kubernetes/ssl/apiserver-key.pem
-        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/ca.pem -o /etc/kubernetes/ssl/ca.pem
+        ExecStart=/opt/k8s-addons
         [Install]
         WantedBy=multi-user.target
-    - name: flanneld.service
-      enable: true
-      dropins:
-        - name: 40-ExecStartPre-symlink.conf
-          contents: |
-            [Service]
-            ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
-            ExecStartPre=/opt/init-flannel
-    - name: docker.service
-      dropins:
-        - name: 40-flannel.conf
-          contents: |
-            [Unit]
-            Requires=flanneld.service
-            After=flanneld.service
+
 storage:
   disks:
     - device: /dev/sda
