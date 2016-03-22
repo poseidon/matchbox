@@ -2,7 +2,7 @@
 api_version: v1alpha1
 groups:
   - name: Master Node
-    profile: kubernetes-master
+    profile: k8s-master
     require:
       uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
     metadata:
@@ -11,6 +11,7 @@ groups:
       networkd_gateway: 172.17.0.1
       networkd_dns: 172.17.0.3
       networkd_address: 172.17.0.21/16
+      k8s_version: v1.1.8_coreos.0
       k8s_etcd_endpoints: "http://172.17.0.21:2379,http://172.17.0.22:2379,http://172.17.0.23:2379"
       k8s_pod_network: 10.2.0.0/16
       k8s_service_ip_range: 10.3.0.0/24
