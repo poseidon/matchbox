@@ -8,8 +8,7 @@ Cloud-Config template files can be added in the `/etc/bootcfg/cloud` directory o
     data/
     ├── cloud
     │   ├── cloud.yaml
-    │   ├── kubernetes-master.sh
-    │   └── kubernetes-worker.sh
+    │   └── script.sh
     ├── ignition
     └── profiles
 
