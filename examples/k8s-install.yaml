@@ -7,7 +7,6 @@ groups:
       coreos_channel: alpha
       coreos_version: 983.0.0
       ignition_endpoint: http://bootcfg.foo:8080/ignition
-      cloud_endpoint: http://bootcfg.foo:8080/cloud
 
   - name: Master Node
     profile: k8s-master-install
@@ -16,11 +15,11 @@ groups:
       os: installed
     metadata:
       ipv4_address: 172.15.0.21
-      autoupdate: "true"
       networkd_name: ens3
       networkd_gateway: 172.15.0.1
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.21/16
+      k8s_version: v1.1.8_coreos.0
       k8s_etcd_endpoints: "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379"
       k8s_pod_network: 10.2.0.0/16
       k8s_service_ip_range: 10.3.0.0/24
@@ -39,11 +38,11 @@ groups:
       os: installed
     metadata:
       ipv4_address: 172.15.0.22
-      autoupdate: "true"
       networkd_name: ens3
       networkd_gateway: 172.15.0.1
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.22/16
+      k8s_version: v1.1.8_coreos.0
       k8s_etcd_endpoints: "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379"
       k8s_controller_endpoint: https://172.15.0.21
       k8s_dns_service_ip: 10.3.0.1
@@ -60,11 +59,11 @@ groups:
       os: installed
     metadata:
       ipv4_address: 172.15.0.23
-      autoupdate: "true"
       networkd_name: ens3
       networkd_gateway: 172.15.0.1
       networkd_dns: 172.15.0.3
       networkd_address: 172.15.0.23/16
+      k8s_version: v1.1.8_coreos.0
       k8s_etcd_endpoints: "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379"
       k8s_controller_endpoint: https://172.15.0.21
       k8s_dns_service_ip: 10.3.0.1

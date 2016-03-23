@@ -1,0 +1,185 @@
+---
+ignition_version: 1
+systemd:
+  units:
+    - name: etcd2.service
+      enable: true
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_NAME={{.etcd_name}}"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+    - name: fleet.service
+      enable: true
+      dropins:
+        - name: 40-fleet-metadata.conf
+          contents: |
+            [Service]
+            Environment="FLEET_METADATA={{.fleet_metadata}}"
+    - name: flanneld.service
+      dropins:
+        - name: 40-ExecStartPre-symlink.conf
+          contents: |
+            [Service]
+            ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
+    - name: docker.service
+      dropins:
+        - name: 40-flannel.conf
+          contents: |
+            [Unit]
+            Requires=flanneld.service
+            After=flanneld.service
+    - name: k8s-certs@.service
+      contents: |
+        [Unit]
+        Description=Fetch Kubernetes certificate assets
+        Requires=network-online.target
+        After=network-online.target
+        [Service]
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
+        ExecStart=/usr/bin/bash -c "[ -f {{.k8s_cert_endpoint}}/tls/%i ] || curl {{.k8s_cert_endpoint}}/tls/%i -o /etc/kubernetes/ssl/%i"
+    - name: k8s-assets.target
+      contents: |
+        [Unit]
+        Description=Load Kubernetes Assets
+        Requires=k8s-certs@worker.pem.service
+        After=k8s-certs@worker.pem.service
+        Requires=k8s-certs@worker-key.pem.service
+        After=k8s-certs@worker-key.pem.service
+        Requires=k8s-certs@ca.pem.service
+        After=k8s-certs@ca.pem.service
+    - name: kubelet.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Kubelet via Hyperkube ACI
+        Requires=k8s-assets.target
+        After=k8s-assets.target
+        [Service]
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+        Environment=KUBELET_VERSION={{.k8s_version}}
+        ExecStart=/usr/lib/coreos/kubelet-wrapper \
+          --api_servers={{.k8s_controller_endpoint}} \
+          --register-node=true \
+          --allow-privileged=true \
+          --config=/etc/kubernetes/manifests \
+          --hostname-override={{.ipv4_address}} \
+          --cluster_dns={{.k8s_dns_service_ip}} \
+          --cluster_domain=cluster.local \
+          --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml \
+          --tls-cert-file=/etc/kubernetes/ssl/worker.pem \
+          --tls-private-key-file=/etc/kubernetes/ssl/worker-key.pem
+        Restart=always
+        RestartSec=10
+        [Install]
+        WantedBy=multi-user.target
+
+storage:
+  {{ if .pxe }}
+  disks:
+    - device: /dev/sda
+      wipe_table: true
+      partitions:
+        - label: ROOT
+  filesystems:
+    - device: "/dev/sda1"
+      format: "ext4"
+      create:
+        force: true
+        options:
+          - "-LROOT"
+  {{else}}
+  filesystems:
+    - device: "/dev/disk/by-label/ROOT"
+      format: "ext4"
+  {{end}}
+      files:
+        - path: /etc/kubernetes/worker-kubeconfig.yaml
+          contents: |
+            apiVersion: v1
+            kind: Config
+            clusters:
+            - name: local
+              cluster:
+                certificate-authority: /etc/kubernetes/ssl/ca.pem
+            users:
+            - name: kubelet
+              user:
+                client-certificate: /etc/kubernetes/ssl/worker.pem
+                client-key: /etc/kubernetes/ssl/worker-key.pem
+            contexts:
+            - context:
+                cluster: local
+                user: kubelet
+              name: kubelet-context
+            current-context: kubelet-context
+        - path: /etc/kubernetes/manifests/kube-proxy.yaml
+          contents: |
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              name: kube-proxy
+              namespace: kube-system
+            spec:
+              hostNetwork: true
+              containers:
+              - name: kube-proxy
+                image: quay.io/coreos/hyperkube:{{.k8s_version}}
+                command:
+                - /hyperkube
+                - proxy
+                - --master={{.k8s_controller_endpoint}}
+                - --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml
+                - --proxy-mode=iptables
+                securityContext:
+                  privileged: true
+                volumeMounts:
+                  - mountPath: /etc/ssl/certs
+                    name: "ssl-certs"
+                  - mountPath: /etc/kubernetes/worker-kubeconfig.yaml
+                    name: "kubeconfig"
+                    readOnly: true
+                  - mountPath: /etc/kubernetes/ssl
+                    name: "etc-kube-ssl"
+                    readOnly: true
+              volumes:
+                - name: "ssl-certs"
+                  hostPath:
+                    path: "/usr/share/ca-certificates"
+                - name: "kubeconfig"
+                  hostPath:
+                    path: "/etc/kubernetes/worker-kubeconfig.yaml"
+                - name: "etc-kube-ssl"
+                  hostPath:
+                    path: "/etc/kubernetes/ssl"
+        - path: /etc/flannel/options.env
+          contents: |
+            FLANNELD_IFACE={{.ipv4_address}}
+            FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
+
+networkd:
+  units:
+    - name: 00-{{.networkd_name}}.network
+      contents: |
+        [Match]
+        Name={{.networkd_name}}
+        [Network]
+        Gateway={{.networkd_gateway}}
+        DNS={{.networkd_dns}}
+        DNS=8.8.8.8
+        Address={{.networkd_address}}
+
+{{ if .ssh_authorized_keys }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
+{{end}}

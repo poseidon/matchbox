@@ -13,7 +13,7 @@ systemd:
         ExecStart=/usr/bin/curl {{.ignition_endpoint}}?{{.query}}&os=installed -o ignition.json
         ExecStart=/usr/bin/coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json
         ExecStart=/usr/bin/udevadm settle
-        ExecStart=/usr/bin/systemctl reboot
+        ExecStart=/usr/bin/systemctl poweroff
         [Install]
         WantedBy=multi-user.target
 
