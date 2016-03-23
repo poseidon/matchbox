@@ -495,7 +495,7 @@ storage:
               }
             }
         - path: /opt/init-flannel
-          mode: 0500
+          mode: 0544
           contents: |
             #!/bin/bash
             function init_flannel {
@@ -522,7 +522,7 @@ storage:
             }
             init_flannel
         - path: /opt/k8s-addons
-          mode: 0500
+          mode: 0544
           contents: |
             #!/bin/bash
             echo "Waiting for Kubernetes API..."
