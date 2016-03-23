@@ -42,23 +42,32 @@ systemd:
         Description=Acquire Kubernetes TLS CA and Certificate
         Requires=network-online.target
         After=network-online.target
+        ConditionPathExists=!/etc/kubernetes/ssl/ready
         [Service]
         Type=oneshot
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
         ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver.pem -o /etc/kubernetes/ssl/apiserver.pem
         ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver-key.pem -o /etc/kubernetes/ssl/apiserver-key.pem
         ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/ca.pem -o /etc/kubernetes/ssl/ca.pem
+        ExecStart=/usr/bin/touch /etc/kubernetes/ssl/ready
         [Install]
         WantedBy=multi-user.target
+    - name: kubelet.path
+      enable: true
+      contents: |
+        [Unit]
+        Description=Watch for Kubelet TLS Assets
+        [Path]
+        PathExists=/etc/kubernetes/ssl/ready
     - name: kubelet.service
       enable: true
       contents: |
         [Unit]
         Description=Kubelet via Hyperkube ACI
-        Requires=k8stls.service
-        After=k8stls.service
         Requires=flanneld.service
         After=flanneld.service
+        Requires=kubelet.path
+        After=kubelet.path
         [Service]
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         Environment=KUBELET_VERSION={{.k8s_version}}
@@ -94,7 +103,6 @@ storage:
       wipe_table: true
       partitions:
         - label: ROOT
-          number: 0
   filesystems:
     - device: "/dev/sda1"
       format: "ext4"
@@ -487,7 +495,7 @@ storage:
               }
             }
         - path: /opt/init-flannel
-          mode: 320
+          mode: 0500
           contents: |
             #!/bin/bash
             function init_flannel {
@@ -514,7 +522,7 @@ storage:
             }
             init_flannel
         - path: /opt/k8s-addons
-          mode: 320
+          mode: 0500
           contents: |
             #!/bin/bash
             echo "Waiting for Kubernetes API..."

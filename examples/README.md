@@ -1,7 +1,7 @@
 
 # Examples
 
-These examples show declarative configurations for network booting libvirt VMs into CoreOS clusters (Kubernetes, etcd) using `bootcfg`.
+These examples network boot and provision VMs into CoreOS clusters using `bootcfg`.
 
 | Name       | Description | CoreOS Version | FS | Reference | 
 |------------|-------------|----------------|----|-----------|

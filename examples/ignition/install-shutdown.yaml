@@ -1,0 +1,28 @@
+---
+ignition_version: 1
+systemd:
+  units:
+    - name: install.service
+      enable: true
+      contents: |
+        [Unit]
+        Requires=network-online.target
+        After=network-online.target
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/curl {{.ignition_endpoint}}?{{.query}}&os=installed -o ignition.json
+        ExecStart=/usr/bin/coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json
+        ExecStart=/usr/bin/udevadm settle
+        ExecStart=/usr/bin/systemctl poweroff
+        [Install]
+        WantedBy=multi-user.target
+
+{{ if .ssh_authorized_keys }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
+{{end}}
