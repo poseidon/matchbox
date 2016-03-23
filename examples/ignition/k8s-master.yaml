@@ -35,30 +35,25 @@ systemd:
             [Unit]
             Requires=flanneld.service
             After=flanneld.service
-    - name: k8stls.service
-      enable: true
+    - name: k8s-certs@.service
       contents: |
         [Unit]
-        Description=Acquire Kubernetes TLS CA and Certificate
+        Description=Fetch Kubernetes certificate assets
         Requires=network-online.target
         After=network-online.target
-        ConditionPathExists=!/etc/kubernetes/ssl/ready
         [Service]
-        Type=oneshot
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
-        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver.pem -o /etc/kubernetes/ssl/apiserver.pem
-        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/apiserver-key.pem -o /etc/kubernetes/ssl/apiserver-key.pem
-        ExecStart=/usr/bin/curl {{.k8s_cert_endpoint}}/tls/ca.pem -o /etc/kubernetes/ssl/ca.pem
-        ExecStart=/usr/bin/touch /etc/kubernetes/ssl/ready
-        [Install]
-        WantedBy=multi-user.target
-    - name: kubelet.path
-      enable: true
+        ExecStart=/usr/bin/bash -c "[ -f {{.k8s_cert_endpoint}}/tls/%i ] || curl {{.k8s_cert_endpoint}}/tls/%i -o /etc/kubernetes/ssl/%i"
+    - name: k8s-assets.target
       contents: |
         [Unit]
-        Description=Watch for Kubelet TLS Assets
-        [Path]
-        PathExists=/etc/kubernetes/ssl/ready
+        Description=Load Kubernetes Assets
+        Requires=k8s-certs@apiserver.pem.service
+        After=k8s-certs@apiserver.pem.service
+        Requires=k8s-certs@apiserver-key.pem.service
+        After=k8s-certs@apiserver-key.pem.service
+        Requires=k8s-certs@ca.pem.service
+        After=k8s-certs@ca.pem.service
     - name: kubelet.service
       enable: true
       contents: |
@@ -66,8 +61,8 @@ systemd:
         Description=Kubelet via Hyperkube ACI
         Requires=flanneld.service
         After=flanneld.service
-        Requires=kubelet.path
-        After=kubelet.path
+        Requires=k8s-assets.target
+        After=k8s-assets.target
         [Service]
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         Environment=KUBELET_VERSION={{.k8s_version}}
