@@ -55,6 +55,9 @@ func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 // ProfileGet gets a profile by id.
 func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("profiles", id, "profile.json"))
+	if err != nil {
+		return nil, err
+	}
 	profile := new(storagepb.Profile)
 	err = json.Unmarshal(data, profile)
 	if err != nil {

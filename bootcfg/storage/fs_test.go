@@ -10,11 +10,6 @@ import (
 )
 
 func TestDir(t *testing.T) {
-	tdir, err := ioutil.TempDir("", "bootcfg")
-	assert.Nil(t, err)
-	defer os.RemoveAll(tdir)
-	dir := Dir(tdir)
-	// touch new files
 	cases := []struct {
 		path     string
 		expected string
@@ -26,6 +21,11 @@ func TestDir(t *testing.T) {
 		{"d/e/ff", "d/e/ff"},
 		{"d/e/ff/../gg", "d/e/gg"},
 	}
+	tdir, err := ioutil.TempDir("", "bootcfg")
+	assert.Nil(t, err)
+	defer os.RemoveAll(tdir)
+
+	dir := Dir(tdir)
 	// write files rooted in the dir
 	for _, c := range cases {
 		dir.writeFile(c.path, []byte(c.expected))

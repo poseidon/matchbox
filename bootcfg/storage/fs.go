@@ -17,7 +17,7 @@ var (
 
 // Dir implements access to a collection of named files, restricted to a
 // specific directory tree. It is very similar to net/http.Dir, but provides
-// io/ioutil methods.
+// write access and some io/ioutil utilities.
 // An empty directory is treated as ".".
 type Dir string
 
