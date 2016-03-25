@@ -6,7 +6,6 @@ import (
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
-// fixedStore is used for testing purposes.
 type fixedStore struct {
 	Groups          map[string]*storagepb.Group
 	Profiles        map[string]*storagepb.Profile
@@ -29,6 +28,11 @@ func (s *fixedStore) GroupList() ([]*storagepb.Group, error) {
 		i++
 	}
 	return groups, nil
+}
+
+func (s *fixedStore) ProfilePut(profile *storagepb.Profile) error {
+	s.Profiles[profile.Id] = profile
+	return nil
 }
 
 func (s *fixedStore) ProfileGet(id string) (*storagepb.Profile, error) {

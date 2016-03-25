@@ -46,6 +46,17 @@ func (s *server) GroupList(ctx context.Context, req *pb.GroupListRequest) (*pb.G
 	return &pb.GroupListResponse{Groups: groups}, nil
 }
 
+func (s *server) ProfilePut(ctx context.Context, req *pb.ProfilePutRequest) (*pb.ProfilePutResponse, error) {
+	if err := req.Profile.AssertValid(); err != nil {
+		return nil, err
+	}
+	err := s.store.ProfilePut(req.Profile)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ProfilePutResponse{}, nil
+}
+
 func (s *server) ProfileGet(ctx context.Context, req *pb.ProfileGetRequest) (*pb.ProfileGetResponse, error) {
 	profile, err := s.store.ProfileGet(req.Id)
 	if err != nil {

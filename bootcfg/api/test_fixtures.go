@@ -69,6 +69,11 @@ func (s *fixedStore) GroupList() ([]*storagepb.Group, error) {
 	return groups, nil
 }
 
+func (s *fixedStore) ProfilePut(profile *storagepb.Profile) error {
+	s.Profiles[profile.Id] = profile
+	return nil
+}
+
 func (s *fixedStore) ProfileGet(id string) (*storagepb.Profile, error) {
 	if profile, present := s.Profiles[id]; present {
 		return profile, nil
@@ -108,6 +113,10 @@ func (s *emptyStore) GroupGet(id string) (*storagepb.Group, error) {
 
 func (s *emptyStore) GroupList() (groups []*storagepb.Group, err error) {
 	return groups, nil
+}
+
+func (s *emptyStore) ProfilePut(profile *storagepb.Profile) error {
+	return fmt.Errorf("emptyStore does not accept Profiles")
 }
 
 func (s *emptyStore) ProfileGet(id string) (*storagepb.Profile, error) {

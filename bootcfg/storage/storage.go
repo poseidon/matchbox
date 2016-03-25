@@ -19,6 +19,8 @@ type Store interface {
 	// GroupList lists all machine Groups.
 	GroupList() ([]*storagepb.Group, error)
 
+	// ProfilePut creates or updates a profile
+	ProfilePut(profile *storagepb.Profile) error
 	// ProfileGet gets a profile by id.
 	ProfileGet(id string) (*storagepb.Profile, error)
 	// ProfileList lists all profiles.

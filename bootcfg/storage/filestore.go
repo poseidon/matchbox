@@ -53,6 +53,18 @@ func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 	return groups, nil
 }
 
+// ProfilePut writes a Profile.
+func (s *fileStore) ProfilePut(profile *storagepb.Profile) error {
+	if err := profile.AssertValid(); err != nil {
+		return err
+	}
+	data, err := json.MarshalIndent(profile, "", "\t")
+	if err != nil {
+		return err
+	}
+	return Dir(s.root).writeFile(filepath.Join("profiles", profile.Id+".json"), data)
+}
+
 // ProfileGet gets a profile by id.
 func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("profiles", id+".json"))

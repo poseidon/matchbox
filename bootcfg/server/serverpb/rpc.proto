@@ -11,6 +11,8 @@ service Groups {
 }
 
 service Profiles {
+  // Create a Profile.
+  rpc ProfilePut(ProfilePutRequest) returns (ProfilePutResponse) {};
   // Get a Profile by id.
   rpc ProfileGet(ProfileGetRequest) returns (ProfileGetResponse) {};
   // List all Profiles.
@@ -21,8 +23,7 @@ message GroupGetRequest {
   string id = 1;
 }
 
-message GroupListRequest {
-}
+message GroupListRequest {}
 
 message GroupGetResponse {
   storagepb.Group group = 1;
@@ -32,6 +33,12 @@ message GroupListResponse {
   repeated storagepb.Group groups = 1;
 }
 
+message ProfilePutRequest {
+  storagepb.Profile profile = 1;
+}
+
+message ProfilePutResponse {}
+
 message ProfileGetRequest {
   string id = 1;
 }
@@ -40,9 +47,7 @@ message ProfileGetResponse {
   storagepb.Profile profile = 1;
 }
 
-message ProfileListRequest {
-  string id = 1;
-}
+message ProfileListRequest {}
 
 message ProfileListResponse {
   repeated storagepb.Profile profiles = 1;
