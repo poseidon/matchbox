@@ -6,6 +6,7 @@ import (
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
+// fixedStore is used for testing purposes.
 type fixedStore struct {
 	Groups          map[string]*storagepb.Group
 	Profiles        map[string]*storagepb.Profile

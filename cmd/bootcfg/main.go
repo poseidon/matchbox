@@ -109,7 +109,7 @@ func main() {
 
 	// storage
 	store := storage.NewFileStore(&storage.Config{
-		Dir:    flags.dataPath,
+		Root:   flags.dataPath,
 		Groups: cfg.Groups,
 	})
 

@@ -34,7 +34,7 @@ func TestProfileGet(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
 
-	store := NewFileStore(&Config{Dir: dir})
+	store := NewFileStore(&Config{Root: dir})
 	profile, err := store.ProfileGet(testProfile.Id)
 	assert.Equal(t, testProfile, profile)
 	assert.Nil(t, err)
@@ -51,7 +51,7 @@ func TestProfileList(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
 
-	store := NewFileStore(&Config{Dir: dir})
+	store := NewFileStore(&Config{Root: dir})
 	profiles, err := store.ProfileList()
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(profiles)) {
@@ -67,7 +67,7 @@ func TestIgnitionGet(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
 
-	store := NewFileStore(&Config{Dir: dir})
+	store := NewFileStore(&Config{Root: dir})
 	ign, err := store.IgnitionGet("myignition.json")
 	assert.Equal(t, contents, ign)
 	assert.Nil(t, err)
@@ -81,7 +81,7 @@ func TestCloudGet(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
 
-	store := NewFileStore(&Config{Dir: dir})
+	store := NewFileStore(&Config{Root: dir})
 	cfg, err := store.CloudGet("cloudcfg.yaml")
 	assert.Nil(t, err)
 	assert.Equal(t, contents, cfg)

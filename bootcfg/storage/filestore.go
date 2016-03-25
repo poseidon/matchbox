@@ -9,7 +9,7 @@ import (
 
 // Config initializes a fileStore.
 type Config struct {
-	Dir    string
+	Root   string
 	Groups []*storagepb.Group
 }
 
@@ -27,7 +27,7 @@ func NewFileStore(config *Config) Store {
 		groups[group.Id] = group
 	}
 	return &fileStore{
-		root:   config.Dir,
+		root:   config.Root,
 		groups: groups,
 	}
 }
@@ -61,6 +61,9 @@ func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
 	profile := new(storagepb.Profile)
 	err = json.Unmarshal(data, profile)
 	if err != nil {
+		return nil, err
+	}
+	if err := profile.AssertValid(); err != nil {
 		return nil, err
 	}
 	return profile, err

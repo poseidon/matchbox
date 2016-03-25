@@ -1,5 +1,6 @@
 {
   "id": "grub",
+  "name": "CoreOS via GRUB2",
   "boot": {
     "kernel": "(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
     "initrd": ["(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],
