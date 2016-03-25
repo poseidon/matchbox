@@ -1,6 +1,6 @@
 {
-  "id": "etcd_proxy",
-  "name": "etcd_proxy",
+  "id": "etcd-proxy",
+  "name": "etcd-proxy",
   "boot": {
     "kernel": "/assets/coreos/983.0.0/coreos_production_pxe.vmlinuz",
     "initrd": ["/assets/coreos/983.0.0/coreos_production_pxe_image.cpio.gz"],
@@ -11,5 +11,5 @@
     }
   },
   "cloud_id": "",
-  "ignition_id": "etcd_proxy.yaml"
+  "ignition_id": "etcd-proxy.yaml"
 }

@@ -8,10 +8,10 @@
 
 #### Changes
 
-* Rename `Spec` to `Profile`.
-    - Rename top-level config groups field `spec` to `profile`
-    - Keep Profiles in a `profiles` data directory
 * Change default `-config` path to `/etc/bootcfg.conf`
+* Rename `Spec` to `Profile`.
+    - Rename groups field `spec` to `profile`
+    - Keep profiles in JSON files under `/etc/bootcfg/profiles`
 * Change default `-data-path` to `/etc/bootcfg`
 * Change default `-assets-path` to `/var/bootcfg`
 * Remove HTTP `/spec/id` JSON endpoint

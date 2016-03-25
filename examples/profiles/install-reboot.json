@@ -1,6 +1,6 @@
 {
-  "id": "coreos-install",
-  "name": "Install CoreOS",
+  "id": "install-reboot",
+  "name": "Install CoreOS and Reboot",
   "boot": {
     "kernel": "/assets/coreos/983.0.0/coreos_production_pxe.vmlinuz",
     "initrd": ["/assets/coreos/983.0.0/coreos_production_pxe_image.cpio.gz"],

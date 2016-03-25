@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/json"
 	"path/filepath"
+	"strings"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
@@ -54,7 +55,7 @@ func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 
 // ProfileGet gets a profile by id.
 func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
-	data, err := Dir(s.root).readFile(filepath.Join("profiles", id, "profile.json"))
+	data, err := Dir(s.root).readFile(filepath.Join("profiles", id+".json"))
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +78,8 @@ func (s *fileStore) ProfileList() ([]*storagepb.Profile, error) {
 	}
 	profiles := make([]*storagepb.Profile, 0, len(files))
 	for _, finfo := range files {
-		profile, err := s.ProfileGet(finfo.Name())
+		name := strings.TrimSuffix(finfo.Name(), filepath.Ext(finfo.Name()))
+		profile, err := s.ProfileGet(name)
 		if err == nil {
 			profiles = append(profiles, profile)
 		}

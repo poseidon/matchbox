@@ -44,7 +44,7 @@ groups:
       etcd_initial_cluster: "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
 
   - name: default
-    profile: etcd_proxy
+    profile: etcd-proxy
     metadata:
       networkd_name: ens3
       networkd_gateway: 172.15.0.1

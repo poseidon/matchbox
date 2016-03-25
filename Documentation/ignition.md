@@ -10,7 +10,7 @@ Ignition template files can be added in the `/etc/bootcfg/ignition` directory or
      ├── ignition
      │   └── simple.json
      │   └── etcd.yaml
-     │   └── etcd_proxy.yaml
+     │   └── etcd-proxy.yaml
      │   └── networking.yaml
      └── profiles
 

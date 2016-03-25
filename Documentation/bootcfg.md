@@ -35,10 +35,8 @@ Prepare `/etc/bootcfg` or a custom `-data-path` with `profile`, `ignition`, and 
      │   └── etcd.yaml
      │   └── simple_networking.yaml
      └── profiles
-         └── etcd
-             └── profile.json
-         └── worker
-             └── profile.json
+         └── etcd.json
+         └── worker.json
 
 Ignition templates can be JSON or YAML files. Cloud-Config templates can be a script or YAML file. Both may contain may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed machine group [metadata](#groups-and-metadata). For details and examples:
 
@@ -50,7 +48,8 @@ Ignition templates can be JSON or YAML files. Cloud-Config templates can be a sc
 Profiles specify the Ignition config, Cloud-Config, and network boot config to be used by machine(s).
 
     {
-        "id": "etcd_profile",
+        "id": "etcd",
+        "name": "CoreOS with etcd2"
         "cloud_id": "",
         "ignition_id": "etcd.yaml",
         "boot": {
@@ -104,13 +103,13 @@ Here is an example `/etc/bootcfg.conf` YAML file:
           ssh_authorized_keys:
             - "ssh-rsa pub-key-goes-here"
       - name: etcd Proxy
-        profile: etcd_proxy
+        profile: etcd-proxy
         require:
           mac: 52:54:00:89:d8:10
         metadata:
           etcd_initial_cluster: "node1=http://172.15.0.21:2380"
 
-For example, a request to `/cloud?mac=52:54:00:89:d8:10` would render the Cloud-Config template in the "etcd_proxy" `Profile`, with the machine group's metadata. A request to `/cloud` would match the default group (which has no selectors) and render the Cloud-Config in the "discovery" Profile. Avoid defining multiple default groups as resolution will not be deterministic.
+For example, a request to `/cloud?mac=52:54:00:89:d8:10` would render the Cloud-Config template in the "etcd-proxy" `Profile`, with the machine group's metadata. A request to `/cloud` would match the default group (which has no selectors) and render the Cloud-Config in the "discovery" Profile. Avoid defining multiple default groups as resolution will not be deterministic.
 
 ### Reserved Attributes
 

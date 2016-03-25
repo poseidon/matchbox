@@ -99,16 +99,12 @@ func setup(fixedStore *fixedStore) (root string, err error) {
 	profileDir := filepath.Join(root, "profiles")
 	ignitionDir := filepath.Join(root, "ignition")
 	cloudDir := filepath.Join(root, "cloud")
-	dirs := []string{profileDir, ignitionDir, cloudDir}
-	for _, profile := range fixedStore.Profiles {
-		dirs = append(dirs, filepath.Join(root, "profiles", profile.Id))
-	}
-	if err := mkdirs(dirs...); err != nil {
+	if err := mkdirs(profileDir, ignitionDir, cloudDir); err != nil {
 		return root, err
 	}
 	// files
 	for _, profile := range fixedStore.Profiles {
-		profileFile := filepath.Join(profileDir, profile.Id, "profile.json")
+		profileFile := filepath.Join(profileDir, profile.Id+".json")
 		data, err := json.MarshalIndent(profile, "", "\t")
 		if err != nil {
 			return root, err
