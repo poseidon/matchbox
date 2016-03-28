@@ -7,36 +7,22 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
-)
 
-var (
-	testProfile = &storagepb.Profile{
-		Id: "g1h2i3j4",
-		Boot: &storagepb.NetBoot{
-			Kernel: "/image/kernel",
-			Initrd: []string{"/image/initrd_a", "/image/initrd_b"},
-			Cmdline: map[string]string{
-				"a": "b",
-				"c": "",
-			},
-		},
-		CloudId:    "cloud-config.yml",
-		IgnitionId: "ignition.json",
-	}
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
 func TestProfileGet(t *testing.T) {
-	dir, err := setup(&fixedStore{
-		Profiles: map[string]*storagepb.Profile{testProfile.Id: testProfile},
+	dir, err := setup(&fake.FixedStore{
+		Profiles: map[string]*storagepb.Profile{fake.Profile.Id: fake.Profile},
 	})
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
 
 	store := NewFileStore(&Config{Root: dir})
-	profile, err := store.ProfileGet(testProfile.Id)
-	assert.Equal(t, testProfile, profile)
+	profile, err := store.ProfileGet(fake.Profile.Id)
+	assert.Equal(t, fake.Profile, profile)
 	assert.Nil(t, err)
 	_, err = store.ProfileGet("no-such-profile")
 	if assert.Error(t, err) {
@@ -45,8 +31,8 @@ func TestProfileGet(t *testing.T) {
 }
 
 func TestProfileList(t *testing.T) {
-	dir, err := setup(&fixedStore{
-		Profiles: map[string]*storagepb.Profile{testProfile.Id: testProfile},
+	dir, err := setup(&fake.FixedStore{
+		Profiles: map[string]*storagepb.Profile{fake.Profile.Id: fake.Profile},
 	})
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
@@ -55,13 +41,13 @@ func TestProfileList(t *testing.T) {
 	profiles, err := store.ProfileList()
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(profiles)) {
-		assert.Equal(t, testProfile, profiles[0])
+		assert.Equal(t, fake.Profile, profiles[0])
 	}
 }
 
 func TestIgnitionGet(t *testing.T) {
 	contents := `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
-	dir, err := setup(&fixedStore{
+	dir, err := setup(&fake.FixedStore{
 		IgnitionConfigs: map[string]string{"myignition.json": contents},
 	})
 	assert.Nil(t, err)
@@ -75,7 +61,7 @@ func TestIgnitionGet(t *testing.T) {
 
 func TestCloudGet(t *testing.T) {
 	contents := "#cloud-config"
-	dir, err := setup(&fixedStore{
+	dir, err := setup(&fake.FixedStore{
 		CloudConfigs: map[string]string{"cloudcfg.yaml": contents},
 	})
 	assert.Nil(t, err)
@@ -90,7 +76,7 @@ func TestCloudGet(t *testing.T) {
 // setup creates a temp fileStore directory to mirror a given fixedStore
 // for testing. Returns the directory tree root. The caller must remove the
 // temp directory when finished.
-func setup(fixedStore *fixedStore) (root string, err error) {
+func setup(fixedStore *fake.FixedStore) (root string, err error) {
 	root, err = ioutil.TempDir("", "data")
 	if err != nil {
 		return "", err

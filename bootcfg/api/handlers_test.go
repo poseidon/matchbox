@@ -11,6 +11,7 @@ import (
 
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
 func TestRequireGET(t *testing.T) {
@@ -38,8 +39,8 @@ func TestRequireGET_WrongMethod(t *testing.T) {
 }
 
 func TestSelectGroup(t *testing.T) {
-	store := &fixedStore{
-		Groups: map[string]*storagepb.Group{testGroup.Id: testGroup},
+	store := &fake.FixedStore{
+		Groups: map[string]*storagepb.Group{fake.Group.Id: fake.Group},
 	}
 	srv := server.NewServer(&server.Config{Store: store})
 	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
@@ -60,9 +61,9 @@ func TestSelectGroup(t *testing.T) {
 }
 
 func TestSelectProfile(t *testing.T) {
-	store := &fixedStore{
-		Groups:   map[string]*storagepb.Group{testGroup.Id: testGroup},
-		Profiles: map[string]*storagepb.Profile{testGroup.Profile: testProfile},
+	store := &fake.FixedStore{
+		Groups:   map[string]*storagepb.Group{fake.Group.Id: fake.Group},
+		Profiles: map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 	}
 	srv := server.NewServer(&server.Config{Store: store})
 	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {

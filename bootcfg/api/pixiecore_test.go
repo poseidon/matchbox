@@ -10,10 +10,11 @@ import (
 
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
 func TestPixiecoreHandler(t *testing.T) {
-	store := &fixedStore{
+	store := &fake.FixedStore{
 		Groups:   map[string]*storagepb.Group{testGroupWithMAC.Id: testGroupWithMAC},
 		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: testProfile},
 	}
@@ -32,7 +33,7 @@ func TestPixiecoreHandler(t *testing.T) {
 }
 
 func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &emptyStore{}})
+	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := pixiecoreHandler(srv)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -42,7 +43,7 @@ func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
 }
 
 func TestPixiecoreHandler_NoMatchingGroup(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &emptyStore{}})
+	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := pixiecoreHandler(srv)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
@@ -51,7 +52,7 @@ func TestPixiecoreHandler_NoMatchingGroup(t *testing.T) {
 }
 
 func TestPixiecoreHandler_NoMatchingProfile(t *testing.T) {
-	store := &fixedStore{
+	store := &fake.FixedStore{
 		Groups: map[string]*storagepb.Group{testGroup.Id: testGroup},
 	}
 	srv := server.NewServer(&server.Config{Store: store})

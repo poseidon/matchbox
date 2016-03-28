@@ -1,9 +1,6 @@
 package api
 
 import (
-	"fmt"
-
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
@@ -44,93 +41,3 @@ var (
 		Requirements: map[string]string{"mac": validMACStr},
 	}
 )
-
-type fixedStore struct {
-	Groups          map[string]*storagepb.Group
-	Profiles        map[string]*storagepb.Profile
-	IgnitionConfigs map[string]string
-	CloudConfigs    map[string]string
-}
-
-func (s *fixedStore) GroupGet(id string) (*storagepb.Group, error) {
-	if group, present := s.Groups[id]; present {
-		return group, nil
-	}
-	return nil, storage.ErrGroupNotFound
-}
-
-func (s *fixedStore) GroupList() ([]*storagepb.Group, error) {
-	groups := make([]*storagepb.Group, len(s.Groups))
-	i := 0
-	for _, g := range s.Groups {
-		groups[i] = g
-		i++
-	}
-	return groups, nil
-}
-
-func (s *fixedStore) ProfilePut(profile *storagepb.Profile) error {
-	s.Profiles[profile.Id] = profile
-	return nil
-}
-
-func (s *fixedStore) ProfileGet(id string) (*storagepb.Profile, error) {
-	if profile, present := s.Profiles[id]; present {
-		return profile, nil
-	}
-	return nil, storage.ErrProfileNotFound
-}
-
-func (s *fixedStore) ProfileList() ([]*storagepb.Profile, error) {
-	profiles := make([]*storagepb.Profile, len(s.Profiles))
-	i := 0
-	for _, p := range s.Profiles {
-		profiles[i] = p
-		i++
-	}
-	return profiles, nil
-}
-
-func (s *fixedStore) IgnitionGet(id string) (string, error) {
-	if config, present := s.IgnitionConfigs[id]; present {
-		return config, nil
-	}
-	return "", fmt.Errorf("no Ignition Config %s", id)
-}
-
-func (s *fixedStore) CloudGet(id string) (string, error) {
-	if config, present := s.CloudConfigs[id]; present {
-		return config, nil
-	}
-	return "", fmt.Errorf("no Cloud Config %s", id)
-}
-
-type emptyStore struct{}
-
-func (s *emptyStore) GroupGet(id string) (*storagepb.Group, error) {
-	return nil, storage.ErrGroupNotFound
-}
-
-func (s *emptyStore) GroupList() (groups []*storagepb.Group, err error) {
-	return groups, nil
-}
-
-func (s *emptyStore) ProfilePut(profile *storagepb.Profile) error {
-	return fmt.Errorf("emptyStore does not accept Profiles")
-}
-
-func (s *emptyStore) ProfileGet(id string) (*storagepb.Profile, error) {
-	return nil, storage.ErrProfileNotFound
-}
-
-func (s *emptyStore) ProfileList() (profiles []*storagepb.Profile, err error) {
-	return profiles, nil
-}
-
-func (s *emptyStore) IgnitionGet(id string) (string, error) {
-	return "", fmt.Errorf("no Ignition Config %s", id)
-}
-
-func (s *emptyStore) CloudGet(id string) (string, error) {
-	return "", fmt.Errorf("no Cloud Config %s", id)
-}

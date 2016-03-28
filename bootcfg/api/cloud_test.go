@@ -5,16 +5,18 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
 func TestCloudHandler(t *testing.T) {
 	content := "#cloud-config"
-	store := &fixedStore{
-		Profiles:     map[string]*storagepb.Profile{testGroup.Profile: testProfile},
-		CloudConfigs: map[string]string{testProfile.CloudId: content},
+	store := &fake.FixedStore{
+		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
+		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
 	}
 	h := cloudHandler(store)
 	ctx := withGroup(context.Background(), testGroup)
@@ -28,7 +30,7 @@ func TestCloudHandler(t *testing.T) {
 }
 
 func TestCloudHandler_MissingCtxProfile(t *testing.T) {
-	h := cloudHandler(&emptyStore{})
+	h := cloudHandler(&fake.EmptyStore{})
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -36,7 +38,7 @@ func TestCloudHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
-	h := cloudHandler(&emptyStore{})
+	h := cloudHandler(&fake.EmptyStore{})
 	ctx := withProfile(context.Background(), testProfile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
