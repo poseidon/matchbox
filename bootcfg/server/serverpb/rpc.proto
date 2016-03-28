@@ -19,6 +19,29 @@ service Profiles {
   rpc ProfileList(ProfileListRequest) returns (ProfileListResponse) {};
 }
 
+service Select {
+  // SelectGroup returns the Group matching the given labels.
+  rpc SelectGroup(SelectGroupRequest) returns (SelectGroupResponse) {};
+  // SelectProfile returns the Profile matching the given labels.
+  rpc SelectProfile(SelectProfileRequest) returns (SelectProfileResponse) {};
+}
+
+message SelectGroupRequest {
+  map<string, string> labels = 1;
+}
+
+message SelectGroupResponse {
+  storagepb.Group group = 1;
+}
+
+message SelectProfileRequest {
+  map<string, string> labels = 1;
+}
+
+message SelectProfileResponse {
+  storagepb.Profile profile = 1;
+}
+
 message GroupGetRequest {
   string id = 1;
 }
@@ -52,7 +75,3 @@ message ProfileListRequest {}
 message ProfileListResponse {
   repeated storagepb.Profile profiles = 1;
 }
-
-
-
-

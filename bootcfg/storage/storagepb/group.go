@@ -28,7 +28,7 @@ func (g *Group) requirementString() string {
 	return strings.Join(reqs, ",")
 }
 
-// byReqs defines a collection of Group structs which have a deterministic
+// ByReqs defines a collection of Group structs which have a deterministic
 // sorted order by increasing number of Requirements, then by sorted key/value
 // strings. For example, a Group with Requirements {a:b, c:d} should be ordered
 // after one with {a:b} and before one with {a:d, c:d}.

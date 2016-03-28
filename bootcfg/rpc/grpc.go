@@ -12,5 +12,6 @@ func NewServer(s server.Server, opts ...grpc.ServerOption) (*grpc.Server, error)
 	grpcServer := grpc.NewServer(opts...)
 	pb.RegisterGroupsServer(grpcServer, s)
 	pb.RegisterProfilesServer(grpcServer, s)
+	pb.RegisterSelectServer(grpcServer, newSelectServer(s))
 	return grpcServer, nil
 }

@@ -1,16 +1,27 @@
 package server
 
 import (
+	"errors"
+	"sort"
+
 	"golang.org/x/net/context"
 
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage"
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+)
+
+var (
+	errNoMatchingGroup = errors.New("bootcfg: No matching Group")
+	errNoProfileFound  = errors.New("bootcfg: No Profile found")
 )
 
 // Server defines a bootcfg Server.
 type Server interface {
 	pb.GroupsServer
 	pb.ProfilesServer
+	SelectGroup(ctx context.Context, req *pb.SelectGroupRequest) (*storagepb.Group, error)
+	SelectProfile(ctx context.Context, req *pb.SelectProfileRequest) (*storagepb.Profile, error)
 }
 
 // Config configures a server implementation.
@@ -71,4 +82,34 @@ func (s *server) ProfileList(ctx context.Context, req *pb.ProfileListRequest) (*
 		return nil, err
 	}
 	return &pb.ProfileListResponse{Profiles: profiles}, nil
+}
+
+// SelectGroup selects the Group whose selector matches the given labels.
+// Groups are evaluated in sorted order from most selectors to least, using
+// alphabetical order as a deterministic tie-breaker.
+func (s *server) SelectGroup(ctx context.Context, req *pb.SelectGroupRequest) (*storagepb.Group, error) {
+	groups, err := s.store.GroupList()
+	if err != nil {
+		return nil, err
+	}
+	sort.Sort(sort.Reverse(storagepb.ByReqs(groups)))
+	for _, group := range groups {
+		if group.Matches(req.Labels) {
+			return group, nil
+		}
+	}
+	return nil, errNoMatchingGroup
+}
+
+func (s *server) SelectProfile(ctx context.Context, req *pb.SelectProfileRequest) (*storagepb.Profile, error) {
+	group, err := s.SelectGroup(ctx, &pb.SelectGroupRequest{Labels: req.Labels})
+	if err == nil {
+		// lookup the Profile by id
+		resp, err := s.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		if err == nil {
+			return resp.Profile, nil
+		}
+		return nil, errNoProfileFound
+	}
+	return nil, errNoMatchingGroup
 }

@@ -4,14 +4,17 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
+	"golang.org/x/net/context"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/server"
+	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // pixiecoreHandler returns a handler that renders the boot config JSON for
 // the requester, to implement the Pixiecore API specification.
 // https://github.com/danderson/pixiecore/blob/master/README.api.md
-func pixiecoreHandler(gr *groupsResource, store storage.Store) http.Handler {
-	fn := func(w http.ResponseWriter, req *http.Request) {
+func pixiecoreHandler(srv server.Server) ContextHandler {
+	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		macAddr, err := parseMAC(filepath.Base(req.URL.Path))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -19,17 +22,17 @@ func pixiecoreHandler(gr *groupsResource, store storage.Store) http.Handler {
 		}
 		// pixiecore only provides MAC addresses
 		attrs := map[string]string{"mac": macAddr.String()}
-		group, err := gr.findMatch(attrs)
+		group, err := srv.SelectGroup(ctx, &pb.SelectGroupRequest{Labels: attrs})
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := store.ProfileGet(group.Profile)
+		resp, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-		renderJSON(w, profile.Boot)
+		renderJSON(w, resp.Profile.Boot)
 	}
-	return http.HandlerFunc(fn)
+	return ContextHandlerFunc(fn)
 }

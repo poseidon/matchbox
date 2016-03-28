@@ -10,6 +10,17 @@ import (
 	"golang.org/x/net/context"
 )
 
+func TestNewHandler(t *testing.T) {
+	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+		fmt.Fprintf(w, "ContextHandler called")
+	}
+	h := NewHandler(ContextHandlerFunc(fn))
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(w, req)
+	assert.Equal(t, "ContextHandler called", w.Body.String())
+}
+
 func TestLabelsFromRequest(t *testing.T) {
 	emptyMap := map[string]string{}
 	cases := []struct {
@@ -32,15 +43,4 @@ func TestLabelsFromRequest(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, c.labels, labelsFromRequest(req))
 	}
-}
-
-func TestNewHandler(t *testing.T) {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "ContextHandler called")
-	}
-	h := NewHandler(ContextHandlerFunc(fn))
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(w, req)
-	assert.Equal(t, "ContextHandler called", w.Body.String())
 }
