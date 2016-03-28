@@ -11,7 +11,7 @@ These examples network boot and provision VMs into CoreOS clusters using `bootcf
 | coreos-install | 2-stage Ignition: Install CoreOS, provision etcd cluster | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | etcd-rkt, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | k8s-rkt, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
-| k8s-install | Install Kubernetes cluster with 1 master and 2 workers, TLS | alpha/983.0.0+ | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
+| k8s-install | Install Kubernetes cluster with 1 master and 2 workers, TLS | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
 
 ## Experimental
 
@@ -45,7 +45,7 @@ The Kubernetes examples create Kubernetes clusters with CoreOS hosts and TLS aut
 
 Download the CoreOS PXE image assets to `assets/coreos`. These images are served to network boot machines by `bootcfg`.
 
-    ./scripts/get-coreos alpha 991.0.0
+    ./scripts/get-coreos alpha 983.0.0
 
 **Note**: TLS assets are served to any machines which request them. This is unsuitable for production where machines and networks are untrusted. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html).
 

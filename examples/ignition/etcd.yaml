@@ -2,18 +2,18 @@
 ignition_version: 1
 systemd:
   units:
-    - name: metadata.service
+    - name: etcd2.service
       enable: true
-      contents: |
-        [Unit]
-        Description=Bare Metal Metadata Agent
-        [Service]
-        Type=oneshot
-        Environment=OUTPUT=/run/metadata/bootcfg
-        ExecStart=/usr/bin/mkdir --parent /run/metadata
-        ExecStart=/usr/bin/bash -c 'curl --url "http://bootcfg.foo:8080/metadata?{{.query}}" --retry 10 --output ${OUTPUT}'
-        [Install]
-        WantedBy=multi-user.target
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_NAME={{.etcd_name}}"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
     - name: fleet.service
       enable: true
       dropins:
@@ -21,23 +21,6 @@ systemd:
           contents: |
             [Service]
             Environment="FLEET_METADATA={{.fleet_metadata}}"
-    - name: etcd2.service
-      enable: true
-      dropins:
-        - name: etcd-metadata.conf
-          contents: |
-            [Unit]
-            Requires=metadata.service
-            After=metadata.service
-            [Service]
-            # ETCD_NAME, ETCD_INITIAL_CLUSTER
-            EnvironmentFile=/run/metadata/bootcfg
-            ExecStart=
-            ExecStart=/usr/bin/etcd2 \
-              --advertise-client-urls=http://${IPV4_ADDRESS}:2379 \
-              --initial-advertise-peer-urls=http://${IPV4_ADDRESS}:2380 \
-              --listen-client-urls=http://0.0.0.0:2379 \
-              --listen-peer-urls=http://${IPV4_ADDRESS}:2380
 
 networkd:
   units:

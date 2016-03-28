@@ -2,42 +2,22 @@
 ignition_version: 1
 systemd:
   units:
-    - name: metadata.service
+    - name: etcd2.service
       enable: true
-      contents: |
-        [Unit]
-        Description=Bare Metal Metadata Agent
-        [Service]
-        Type=oneshot
-        Environment=OUTPUT=/run/metadata/bootcfg
-        ExecStart=/usr/bin/mkdir --parent /run/metadata
-        ExecStart=/usr/bin/bash -c 'curl --url "http://bootcfg.foo:8080/metadata?{{.query}}" --retry 10 --output ${OUTPUT}'
-        [Install]
-        WantedBy=multi-user.target
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_PROXY=on"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
     - name: fleet.service
       enable: true
       dropins:
         - name: fleet-metadata.conf
           contents: |
             [Service]
-            # FLEET_METADATA
-            EnvironmentFile=/run/metadata/bootcfg
-            Environment="FLEET_ETCD_SERVERS=http://127.0.0.1:2379"
-    - name: etcd2.service
-      enable: true
-      dropins:
-        - name: etcd-metadata.conf
-          contents: |
-            [Unit]
-            Requires=metadata.service
-            After=metadata.service
-            [Service]
-            # ETCD_INITIAL_CLUSTER
-            EnvironmentFile=/run/metadata/bootcfg
-            ExecStart=
-            ExecStart=/usr/bin/etcd2 \
-              --proxy on
-              --listen-client-urls=http://127.0.0.1:2379
+            Environment="FLEET_METADATA={{.fleet_metadata}}"
 
 {{ if .ssh_authorized_keys }}
 passwd:
