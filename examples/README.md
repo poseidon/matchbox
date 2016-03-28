@@ -53,19 +53,9 @@ Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver
 
     rm -rf assets/tls
     # for Kubernetes on CNI metal0, i.e. rkt
-    ./scripts/tls/gen-rkt-k8s-secrets
+    ./scripts/tls/k8s-certgen -d assets/tls -s 172.15.0.21 -m IP.1=10.3.0.1,IP.2=172.15.0.21 -w IP.1=172.15.0.22,IP.2=172.15.0.23
     # for Kubernetes on docker0
-    ./scripts/tls/gen-docker-k8s-secrets
-
-Alternately, you can add your own CA certificate, entity certificates, and entity private keys to `assets/tls`.
-
-    * ca.pem
-    * apiserver.pem
-    * apiserver-key.pem
-    * worker.pem
-    * worker-key.pem
-    * admin.pem
-    * admin-key.pem
+    ./scripts/tls/k8s-certgen -d assets/tls -s 172.17.0.21 -m IP.1=10.3.0.1,IP.2=172.17.0.21 -w IP.1=172.17.0.22,IP.2=172.17.0.23
 
 See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/latest/openssl.html) document or [Kubernetes Step by Step](https://coreos.com/kubernetes/docs/latest/getting-started.html) for more details.
 
@@ -74,14 +64,11 @@ See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/late
 Install the `kubectl` CLI on your host. Use the provided kubeconfig's to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
 
     cd /path/to/coreos-baremetal
-    # for kubernetes on CNI metal0, i.e. rkt
-    kubectl --kubeconfig=examples/kubecfg-rkt get nodes
-    # for kubernetes on docker0
-    kubectl --kubeconfig=examples/kubecfg-docker get nodes
+    kubectl --kubeconfig=assets/tls/kubeconfig get nodes
 
 Get all pods.
 
-    kubectl --kubeconfig=examples/kubecfg-rkt get pods --all-namespaces
+    kubectl --kubeconfig=assets/tls/kubeconfig get pods --all-namespaces
 
 On my laptop, VMs download and network boot CoreOS in the first 45 seconds, the Kubernetes API becomes available after about 150 seconds, and add-on pods are scheduled by 180 seconds. On physical hosts and networks, OS and container image download times are a bit longer.
 

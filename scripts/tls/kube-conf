@@ -1,0 +1,52 @@
+#!/bin/bash -e
+
+function usage {
+    echo "USAGE: $0 DEST MASTER_IP"
+    echo "example: $0 dest/path 192.168.1.21"
+}
+
+function base64_encode {
+  if [[ "$OSTYPE" == "darwin" ]]; then
+    base64 $1
+  else
+    base64 -w 0 $1
+  fi
+}
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+    usage
+    exit 1
+fi
+
+DEST="$1"
+MASTER_IP="$2"
+ADMIN_CERT_BASE64=$(base64_encode $DEST/admin.pem)
+ADMIN_KEY_BASE64="$(base64_encode $DEST/admin-key.pem)"
+CA_CERT_BASE64="$(base64_encode $DEST/ca.pem)"
+
+if [ -f "$DEST/kubeconfig" ]; then
+  echo "$DEST/kubeconfig already exists"
+  exit 1
+fi
+
+cat << EOF > $DEST/kubeconfig
+apiVersion: v1
+kind: Config
+users:
+- name: bootcfg-user
+  user:
+    client-certificate-data: ${ADMIN_CERT_BASE64}
+    client-key-data: ${ADMIN_KEY_BASE64}
+clusters:
+- name: bootcfg-cluster
+  cluster:
+    certificate-authority-data: ${CA_CERT_BASE64}
+    server: https://${MASTER_IP}:443
+contexts:
+- context:
+    cluster: bootcfg-cluster
+    user: bootcfg-user
+  name: bootcfg-context
+current-context: bootcfg-context
+EOF
+echo "Wrote kubeconfig to $DEST/kubeconfig"
