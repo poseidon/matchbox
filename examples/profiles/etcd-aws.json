@@ -1,0 +1,5 @@
+{
+  "id": "etcd",
+  "name": "etcd on AWS",
+  "ignition_id": "etcd-aws.yaml"
+}
