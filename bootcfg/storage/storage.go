@@ -12,14 +12,14 @@ var (
 	ErrProfileNotFound = errors.New("storage: No Profile found")
 )
 
-// A Store stores machine Groups and Profiles.
+// A Store stores machine Groups, Profiles, and Configs.
 type Store interface {
 	// GroupGet returns a machine Group by id.
 	GroupGet(id string) (*storagepb.Group, error)
 	// GroupList lists all machine Groups.
 	GroupList() ([]*storagepb.Group, error)
 
-	// ProfilePut creates or updates a profile
+	// ProfilePut creates or updates a Profile.
 	ProfilePut(profile *storagepb.Profile) error
 	// ProfileGet gets a profile by id.
 	ProfileGet(id string) (*storagepb.Profile, error)

@@ -1,0 +1,24 @@
+{
+  "id": "Worker 2",
+  "name": "Worker 2",
+  "profile": "k8s-worker",
+  "requirements": {
+    "uuid": "39d2e747-2648-4d68-ae92-bbc70b245055"
+  },
+  "metadata": {
+    "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380",
+    "etcd_name": "node3",
+    "fleet_metadata": "role=etcd,name=node3",
+    "ipv4_address": "172.15.0.23",
+    "k8s_cert_endpoint": "http://bootcfg.foo:8080/assets",
+    "k8s_controller_endpoint": "https://172.15.0.21",
+    "k8s_dns_service_ip": "10.3.0.1",
+    "k8s_etcd_endpoints": "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379",
+    "k8s_version": "v1.1.8_coreos.0",
+    "networkd_address": "172.15.0.23/16",
+    "networkd_dns": "172.15.0.3",
+    "networkd_gateway": "172.15.0.1",
+    "networkd_name": "ens3",
+    "pxe": "true"
+  }
+}

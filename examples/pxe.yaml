@@ -1,7 +1,0 @@
----
-api_version: v1alpha1
-groups:
-  - name: PXE CoreOS alpha
-    profile: pxe
-    metadata:
-      ssh_authorized_keys:

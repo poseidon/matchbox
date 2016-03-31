@@ -1,6 +1,8 @@
 package storagepb
 
 import (
+	"encoding/json"
+	"net"
 	"sort"
 	"strings"
 )
@@ -28,6 +30,23 @@ func (g *Group) requirementString() string {
 	return strings.Join(reqs, ",")
 }
 
+// ToRichGroup converts a Group into a RichGroup suitable for writing and
+// user manipulation.
+func (g *Group) ToRichGroup() (*RichGroup, error) {
+	metadata := make(map[string]interface{})
+	err := json.Unmarshal(g.Metadata, &metadata)
+	if err != nil {
+		return nil, err
+	}
+	return &RichGroup{
+		Id:           g.Id,
+		Name:         g.Name,
+		Profile:      g.Profile,
+		Requirements: g.Requirements,
+		Metadata:     metadata,
+	}, nil
+}
+
 // ByReqs defines a collection of Group structs which have a deterministic
 // sorted order by increasing number of Requirements, then by sorted key/value
 // strings. For example, a Group with Requirements {a:b, c:d} should be ordered
@@ -47,4 +66,47 @@ func (groups ByReqs) Less(i, j int) bool {
 		return groups[i].requirementString() < groups[j].requirementString()
 	}
 	return len(groups[i].Requirements) < len(groups[j].Requirements)
+}
+
+// RichGroup is a user provided Group definition.
+type RichGroup struct {
+	// machine readable Id
+	Id string `json:"id,omitempty"`
+	// Human readable name
+	Name string `json:"name,omitempty"`
+	// Profile id
+	Profile string `json:"profile,omitempty"`
+	// tags required to match the group
+	Requirements map[string]string `json:"requirements,omitempty"`
+	// Metadata
+	Metadata map[string]interface{} `json:"metadata,omitempty"`
+}
+
+// ToGroup converts a user provided RichGroup into a Group which can be
+// serialized as a protocol buffer.
+func (rg *RichGroup) ToGroup() (*Group, error) {
+	metadata, err := json.Marshal(rg.Metadata)
+	if err != nil {
+		return nil, err
+	}
+	return &Group{
+		Id:           rg.Id,
+		Name:         rg.Name,
+		Profile:      rg.Profile,
+		Requirements: normalizeSelectors(rg.Requirements),
+		Metadata:     metadata,
+	}, nil
+}
+
+func normalizeSelectors(selectors map[string]string) map[string]string {
+	for key, val := range selectors {
+		switch strings.ToLower(key) {
+		case "mac":
+			if macAddr, err := net.ParseMAC(val); err == nil {
+				// range iteration copy with mutable map
+				selectors[key] = macAddr.String()
+			}
+		}
+	}
+	return selectors
 }

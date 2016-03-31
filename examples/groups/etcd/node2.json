@@ -1,0 +1,18 @@
+{
+  "id": "node2",
+  "name": "etcd Node 2",
+  "profile": "etcd",
+  "requirements": {
+    "uuid": "264cd073-ca62-44b3-98c0-50aad5b5f819"
+  },
+  "metadata": {
+    "ipv4_address": "172.15.0.22",
+    "networkd_name": "ens3",
+    "networkd_gateway": "172.15.0.1",
+    "networkd_dns": "172.15.0.3",
+    "networkd_address": "172.15.0.22/16",
+    "fleet_metadata": "role=etcd,name=node2",
+    "etcd_name": "node2",
+    "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
+  }
+}

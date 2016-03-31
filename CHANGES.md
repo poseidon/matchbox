@@ -8,14 +8,17 @@
 
 #### Changes
 
-* Change default `-config` path to `/etc/bootcfg.conf`
-* Rename `Spec` to `Profile`.
+* Profiles
+    - Rename `Spec` to `Profile`
+    - Move Profiles to JSON files under `/etc/bootcfg/profiles`
+* Groups
+    - Move Groups to JSON files under `/etc/bootcfg/groups`
+    - Require Group metadata to be valid JSON
     - Rename groups field `spec` to `profile`
-    - Keep profiles in JSON files under `/etc/bootcfg/profiles`
+* Discontinue reading groups from the `-config` file. Remove the flag.
 * Change default `-data-path` to `/etc/bootcfg`
 * Change default `-assets-path` to `/var/bootcfg`
 * Remove HTTP `/spec/id` JSON endpoint
-* Require `metadata` values in the YAML config to be strings, lists of strings, or nested maps of strings. Ignore and log other values.
 
 #### New Examples
 

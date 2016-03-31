@@ -1,0 +1,5 @@
+{
+  "id": "Partition disk with Root Filesystem for PXE (non-installs)",
+  "name": "Partition disk with Root Filesystem for PXE (non-installs)",
+  "profile": "pxe-disk"
+}

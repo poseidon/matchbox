@@ -8,10 +8,10 @@ These examples network boot and provision VMs into CoreOS clusters using `bootcf
 | pxe | CoreOS via iPXE | alpha/962.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | grub | CoreOS via GRUB2 Netboot | beta/899.6.0 | RAM | NA |
 | pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| coreos-install | 2-stage Ignition: Install CoreOS, provision etcd cluster | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
-| etcd-rkt, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| k8s-rkt, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
-| k8s-install | Install Kubernetes cluster with 1 master and 2 workers, TLS | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
+| etcd, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd-install | Install a 3-node etcd cluster to disk | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
+| k8s, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
+| k8s-install | Install a Kubernetes cluster to disk (1 master) | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
 
 ## Experimental
 
@@ -26,16 +26,16 @@ Get started running the `bootcfg` on your Linux machine to boot clusters of libv
 
 ## SSH Keys
 
-Most example profiles configure machines with a `core` user and `ssh_authorized_keys`. Add your own key(s) as machine metadata.
+Most examples allow `ssh_authorized_keys` to be added for the `core` user as machine group metadata.
 
-    ---
-    api_version: v1alpha1
-    groups:
-      - name: default
-        profile: pxe
-        metadata:
-          ssh_authorized_keys:
-            - "ssh-rsa pub-key-goes-here"
+    # /var/lib/bootcfg/groups/default.json
+    {
+        "name": "Example Machine Group",
+        "profile": "pxe",
+        "metadata": {
+            "ssh_authorized_keys": ["ssh-rsa pub-key-goes-here"]
+        }
+    }
 
 ## Kubernetes
 

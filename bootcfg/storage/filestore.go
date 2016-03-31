@@ -10,45 +10,53 @@ import (
 
 // Config initializes a fileStore.
 type Config struct {
-	Root   string
-	Groups []*storagepb.Group
+	Root string
 }
 
 // fileStore implements ths Store interface. Queries to the file system
 // are restricted to the specified directory tree.
 type fileStore struct {
-	root   string
-	groups map[string]*storagepb.Group
+	root string
 }
 
 // NewFileStore returns a new memory-backed Store.
 func NewFileStore(config *Config) Store {
-	groups := make(map[string]*storagepb.Group)
-	for _, group := range config.Groups {
-		groups[group.Id] = group
-	}
 	return &fileStore{
-		root:   config.Root,
-		groups: groups,
+		root: config.Root,
 	}
 }
 
 // GroupGet returns a machine Group by id.
 func (s *fileStore) GroupGet(id string) (*storagepb.Group, error) {
-	val, ok := s.groups[id]
-	if !ok {
-		return nil, ErrGroupNotFound
+	data, err := Dir(s.root).readFile(filepath.Join("groups", id+".json"))
+	if err != nil {
+		return nil, err
 	}
-	return val, nil
+	richGroup := new(storagepb.RichGroup)
+	err = json.Unmarshal(data, richGroup)
+	if err != nil {
+		return nil, err
+	}
+	group, err := richGroup.ToGroup()
+	if err != nil {
+		return nil, err
+	}
+	return group, err
 }
 
 // GroupList lists all machine Groups.
 func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
-	groups := make([]*storagepb.Group, len(s.groups))
-	i := 0
-	for _, g := range s.groups {
-		groups[i] = g
-		i++
+	files, err := Dir(s.root).readDir("groups")
+	if err != nil {
+		return nil, err
+	}
+	groups := make([]*storagepb.Group, 0, len(files))
+	for _, finfo := range files {
+		name := strings.TrimSuffix(finfo.Name(), filepath.Ext(finfo.Name()))
+		group, err := s.GroupGet(name)
+		if err == nil {
+			groups = append(groups, group)
+		}
 	}
 	return groups, nil
 }

@@ -1,7 +1,0 @@
----
-api_version: v1alpha1
-groups:
-  - name: GRUB CoreOS alpha
-    profile: grub
-    metadata:
-      ssh_authorized_keys:

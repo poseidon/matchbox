@@ -1,0 +1,10 @@
+{
+  "id": "CoreOS Install",
+  "name": "CoreOS Install",
+  "profile": "install-reboot",
+  "metadata": {
+    "coreos_channel": "alpha",
+    "coreos_version": "983.0.0",
+    "ignition_endpoint": "http://bootcfg.foo:8080/ignition"
+  }
+}

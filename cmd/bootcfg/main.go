@@ -13,7 +13,6 @@ import (
 	"github.com/coreos/pkg/flagutil"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/api"
-	"github.com/coreos/coreos-baremetal/bootcfg/config"
 	"github.com/coreos/coreos-baremetal/bootcfg/rpc"
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/sign"
@@ -30,7 +29,6 @@ func main() {
 	flags := struct {
 		address     string
 		rpcAddress  string
-		configPath  string
 		dataPath    string
 		assetsPath  string
 		keyRingPath string
@@ -40,7 +38,6 @@ func main() {
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
 	flag.StringVar(&flags.rpcAddress, "rpcAddress", "", "RPC listen address")
-	flag.StringVar(&flags.configPath, "config", "/etc/bootcfg.conf", "Path to config file")
 	flag.StringVar(&flags.dataPath, "data-path", "/etc/bootcfg", "Path to data directory")
 	flag.StringVar(&flags.assetsPath, "assets-path", "/var/bootcfg", "Path to static assets")
 	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
@@ -72,9 +69,6 @@ func main() {
 	if url, err := url.Parse(flags.address); err != nil || url.String() == "" {
 		log.Fatal("A valid HTTP listen address is required")
 	}
-	if finfo, err := os.Stat(flags.configPath); err != nil || finfo.IsDir() {
-		log.Fatal("A path to a config file is required")
-	}
 	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
 		log.Fatal("A path to a data directory is required")
 	}
@@ -101,16 +95,9 @@ func main() {
 		armoredSigner = sign.NewArmoredGPGSigner(entity)
 	}
 
-	// load bootstrap config
-	cfg, err := config.LoadConfig(flags.configPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// storage
 	store := storage.NewFileStore(&storage.Config{
-		Root:   flags.dataPath,
-		Groups: cfg.Groups,
+		Root: flags.dataPath,
 	})
 
 	bootcfgServer := server.NewServer(&server.Config{

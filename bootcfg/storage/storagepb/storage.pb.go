@@ -28,6 +28,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 const _ = proto.ProtoPackageIsVersion1
 
+// Group selects one or more machines and matches them to a Profile.
 type Group struct {
 	// machine readable Id
 	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
@@ -53,6 +54,7 @@ func (m *Group) GetRequirements() map[string]string {
 	return nil
 }
 
+// Profile defines the boot and provisioning behavior of a group of machines.
 type Profile struct {
 	// profile id
 	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
@@ -78,6 +80,7 @@ func (m *Profile) GetBoot() *NetBoot {
 	return nil
 }
 
+// NetBoot describes network or PXE boot settings for a machine.
 type NetBoot struct {
 	// the URL of the kernel image
 	Kernel string `protobuf:"bytes,1,opt,name=kernel" json:"kernel,omitempty"`

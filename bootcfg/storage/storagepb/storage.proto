@@ -1,6 +1,7 @@
 syntax = "proto3";
 package storagepb;
 
+// Group selects one or more machines and matches them to a Profile.
 message Group {
   // machine readable Id
   string id = 1;
@@ -14,6 +15,7 @@ message Group {
   bytes metadata = 5;
 }
 
+// Profile defines the boot and provisioning behavior of a group of machines.
 message Profile {
   // profile id
   string id = 1;
@@ -27,6 +29,7 @@ message Profile {
   NetBoot boot = 5;
 }
 
+// NetBoot describes network or PXE boot settings for a machine.
 message NetBoot {
   // the URL of the kernel image
   string kernel = 1;
