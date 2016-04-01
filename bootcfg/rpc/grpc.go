@@ -3,15 +3,15 @@ package rpc
 import (
 	"google.golang.org/grpc"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // NewServer wraps the bootcfg Server to return a new gRPC Server.
 func NewServer(s server.Server, opts ...grpc.ServerOption) (*grpc.Server, error) {
 	grpcServer := grpc.NewServer(opts...)
-	pb.RegisterGroupsServer(grpcServer, newGroupServer(s))
-	pb.RegisterProfilesServer(grpcServer, newProfileServer(s))
-	pb.RegisterSelectServer(grpcServer, newSelectServer(s))
+	rpcpb.RegisterGroupsServer(grpcServer, newGroupServer(s))
+	rpcpb.RegisterProfilesServer(grpcServer, newProfileServer(s))
+	rpcpb.RegisterSelectServer(grpcServer, newSelectServer(s))
 	return grpcServer, nil
 }

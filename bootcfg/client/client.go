@@ -3,7 +3,7 @@ package client
 import (
 	"google.golang.org/grpc"
 
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
 )
 
 // Config configures a Client.
@@ -14,8 +14,8 @@ type Config struct {
 
 // Client provides a bootcfg client RPC session.
 type Client struct {
-	Groups   pb.GroupsClient
-	Profiles pb.ProfilesClient
+	Groups   rpcpb.GroupsClient
+	Profiles rpcpb.ProfilesClient
 	conn     *grpc.ClientConn
 }
 
@@ -31,8 +31,8 @@ func newClient(config *Config) (*Client, error) {
 	}
 	client := &Client{
 		conn:     conn,
-		Groups:   pb.NewGroupsClient(conn),
-		Profiles: pb.NewProfilesClient(conn),
+		Groups:   rpcpb.NewGroupsClient(conn),
+		Profiles: rpcpb.NewProfilesClient(conn),
 	}
 	return client, nil
 }

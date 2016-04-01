@@ -3,6 +3,7 @@ package rpc
 import (
 	"golang.org/x/net/context"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
@@ -13,7 +14,7 @@ type selectServer struct {
 	srv server.Server
 }
 
-func newSelectServer(s server.Server) pb.SelectServer {
+func newSelectServer(s server.Server) rpcpb.SelectServer {
 	return &selectServer{
 		srv: s,
 	}

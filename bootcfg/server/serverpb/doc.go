@@ -1,2 +1,2 @@
-// Package serverpb provides bootcfg protobuf client and server interfaces.
-package serverpb
+// Package messagepb provides bootcfg message types.
+package messagepb

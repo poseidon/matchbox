@@ -1,30 +1,7 @@
 syntax = "proto3";
-package serverpb;
+package messagepb;
 
 import "github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb/storage.proto";
-
-service Groups {
-  // Get a machine Group by id.
-  rpc GroupGet(GroupGetRequest) returns (GroupGetResponse) {};
-  // List all machine Groups.
-  rpc GroupList(GroupListRequest) returns (GroupListResponse) {};
-}
-
-service Profiles {
-  // Create a Profile.
-  rpc ProfilePut(ProfilePutRequest) returns (ProfilePutResponse) {};
-  // Get a Profile by id.
-  rpc ProfileGet(ProfileGetRequest) returns (ProfileGetResponse) {};
-  // List all Profiles.
-  rpc ProfileList(ProfileListRequest) returns (ProfileListResponse) {};
-}
-
-service Select {
-  // SelectGroup returns the Group matching the given labels.
-  rpc SelectGroup(SelectGroupRequest) returns (SelectGroupResponse) {};
-  // SelectProfile returns the Profile matching the given labels.
-  rpc SelectProfile(SelectProfileRequest) returns (SelectProfileResponse) {};
-}
 
 message SelectGroupRequest {
   map<string, string> labels = 1;
