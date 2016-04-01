@@ -23,9 +23,9 @@ func TestSelectGroup(t *testing.T) {
 		expectedErr   error
 	}{
 		{store, map[string]string{"uuid": "a1b2c3d4"}, fake.Group, nil},
-		{store, nil, nil, errNoMatchingGroup},
+		{store, nil, nil, ErrNoMatchingGroup},
 		// no groups in the store
-		{&fake.EmptyStore{}, map[string]string{"a": "b"}, nil, errNoMatchingGroup},
+		{&fake.EmptyStore{}, map[string]string{"a": "b"}, nil, ErrNoMatchingGroup},
 	}
 	for _, c := range cases {
 		srv := NewServer(&Config{c.store})

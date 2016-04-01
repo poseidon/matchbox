@@ -21,10 +21,10 @@ func newGroupServer(s server.Server) rpcpb.GroupsServer {
 
 func (s *groupServer) GroupGet(ctx context.Context, req *pb.GroupGetRequest) (*pb.GroupGetResponse, error) {
 	group, err := s.srv.GroupGet(ctx, req)
-	return &pb.GroupGetResponse{Group: group}, err
+	return &pb.GroupGetResponse{Group: group}, grpcError(err)
 }
 
 func (s *groupServer) GroupList(ctx context.Context, req *pb.GroupListRequest) (*pb.GroupListResponse, error) {
 	groups, err := s.srv.GroupList(ctx, req)
-	return &pb.GroupListResponse{Groups: groups}, err
+	return &pb.GroupListResponse{Groups: groups}, grpcError(err)
 }

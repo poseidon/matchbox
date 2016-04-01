@@ -11,9 +11,10 @@ import (
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
+// Possible service errors
 var (
-	errNoMatchingGroup = errors.New("bootcfg: No matching Group")
-	errNoProfileFound  = errors.New("bootcfg: No Profile found")
+	ErrNoMatchingGroup   = errors.New("bootcfg: No matching Group")
+	ErrNoMatchingProfile = errors.New("bootcfg: No matching Profile")
 )
 
 // Server defines a bootcfg server lib.
@@ -115,7 +116,7 @@ func (s *server) SelectGroup(ctx context.Context, req *pb.SelectGroupRequest) (*
 			return group, nil
 		}
 	}
-	return nil, errNoMatchingGroup
+	return nil, ErrNoMatchingGroup
 }
 
 func (s *server) SelectProfile(ctx context.Context, req *pb.SelectProfileRequest) (*storagepb.Profile, error) {
@@ -126,9 +127,9 @@ func (s *server) SelectProfile(ctx context.Context, req *pb.SelectProfileRequest
 		if err == nil {
 			return profile, nil
 		}
-		return nil, errNoProfileFound
+		return nil, ErrNoMatchingProfile
 	}
-	return nil, errNoMatchingGroup
+	return nil, ErrNoMatchingGroup
 }
 
 // IgnitionGet gets an Ignition Config template by name.

@@ -22,15 +22,15 @@ func newProfileServer(s server.Server) rpcpb.ProfilesServer {
 func (s *profileServer) ProfilePut(ctx context.Context, req *pb.ProfilePutRequest) (*pb.ProfilePutResponse, error) {
 	_, err := s.srv.ProfilePut(ctx, req)
 	// TODO(dghubble): Decide on create/put and response(s).
-	return &pb.ProfilePutResponse{}, err
+	return &pb.ProfilePutResponse{}, grpcError(err)
 }
 
 func (s *profileServer) ProfileGet(ctx context.Context, req *pb.ProfileGetRequest) (*pb.ProfileGetResponse, error) {
 	profile, err := s.srv.ProfileGet(ctx, req)
-	return &pb.ProfileGetResponse{Profile: profile}, err
+	return &pb.ProfileGetResponse{Profile: profile}, grpcError(err)
 }
 
 func (s *profileServer) ProfileList(ctx context.Context, req *pb.ProfileListRequest) (*pb.ProfileListResponse, error) {
 	profiles, err := s.srv.ProfileList(ctx, req)
-	return &pb.ProfileListResponse{Profiles: profiles}, err
+	return &pb.ProfileListResponse{Profiles: profiles}, grpcError(err)
 }
