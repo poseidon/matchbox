@@ -7,9 +7,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
 	"golang.org/x/net/context"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/server"
+	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // CloudConfig defines a cloud-init config.
@@ -19,19 +21,19 @@ type CloudConfig struct {
 
 // cloudHandler returns a handler that responds with the cloud config for the
 // requester.
-func cloudHandler(store storage.Store) ContextHandler {
+func cloudHandler(srv server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil || group.Profile == "" {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := store.ProfileGet(group.Profile)
-		if err != nil || profile.CloudId == "" {
+		resp, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		if err != nil || resp.Profile.CloudId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := store.CloudGet(profile.CloudId)
+		contents, err := srv.CloudGet(ctx, resp.Profile.CloudId)
 		if err != nil {
 			http.NotFound(w, req)
 			return

@@ -18,10 +18,12 @@ var (
 
 // Server defines a bootcfg Server.
 type Server interface {
-	pb.GroupsServer
-	pb.ProfilesServer
 	SelectGroup(ctx context.Context, req *pb.SelectGroupRequest) (*storagepb.Group, error)
 	SelectProfile(ctx context.Context, req *pb.SelectProfileRequest) (*storagepb.Profile, error)
+	pb.GroupsServer
+	pb.ProfilesServer
+	IgnitionGet(ctx context.Context, name string) (string, error)
+	CloudGet(ctx context.Context, name string) (string, error)
 }
 
 // Config configures a server implementation.
@@ -112,4 +114,14 @@ func (s *server) SelectProfile(ctx context.Context, req *pb.SelectProfileRequest
 		return nil, errNoProfileFound
 	}
 	return nil, errNoMatchingGroup
+}
+
+// IgnitionGet gets an Ignition Config template by name.
+func (s *server) IgnitionGet(ctx context.Context, name string) (string, error) {
+	return s.store.IgnitionGet(name)
+}
+
+// CloudGet gets a Cloud-Config template by name.
+func (s *server) CloudGet(ctx context.Context, name string) (string, error) {
+	return s.store.CloudGet(name)
 }

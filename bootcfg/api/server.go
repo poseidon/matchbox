@@ -55,9 +55,9 @@ func (s *Server) HTTPHandler() http.Handler {
 	// Boot via Pixiecore
 	mux.Handle("/pixiecore/v1/boot/", logRequests(NewHandler(pixiecoreHandler(srv))))
 	// Ignition Config
-	mux.Handle("/ignition", logRequests(NewHandler(selectGroup(srv, ignitionHandler(s.store)))))
+	mux.Handle("/ignition", logRequests(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
 	// Cloud-Config
-	mux.Handle("/cloud", logRequests(NewHandler(selectGroup(srv, cloudHandler(s.store)))))
+	mux.Handle("/cloud", logRequests(NewHandler(selectGroup(srv, cloudHandler(srv)))))
 	// metadata
 	mux.Handle("/metadata", logRequests(NewHandler(selectGroup(srv, metadataHandler()))))
 
@@ -71,8 +71,8 @@ func (s *Server) HTTPHandler() http.Handler {
 		mux.Handle("/boot.ipxe.0.sig", signerChain(ipxeInspect()))
 		mux.Handle("/ipxe.sig", signerChain(NewHandler(selectProfile(srv, ipxeHandler()))))
 		mux.Handle("/pixiecore/v1/boot.sig/", signerChain(NewHandler(pixiecoreHandler(srv))))
-		mux.Handle("/ignition.sig", signerChain(NewHandler(selectGroup(srv, ignitionHandler(s.store)))))
-		mux.Handle("/cloud.sig", signerChain(NewHandler(selectGroup(srv, cloudHandler(s.store)))))
+		mux.Handle("/ignition.sig", signerChain(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
+		mux.Handle("/cloud.sig", signerChain(NewHandler(selectGroup(srv, cloudHandler(srv)))))
 		mux.Handle("/metadata.sig", signerChain(NewHandler(selectGroup(srv, metadataHandler()))))
 	}
 	if s.armoredSigner != nil {
@@ -84,8 +84,8 @@ func (s *Server) HTTPHandler() http.Handler {
 		mux.Handle("/boot.ipxe.0.asc", signerChain(ipxeInspect()))
 		mux.Handle("/ipxe.asc", signerChain(NewHandler(selectProfile(srv, ipxeHandler()))))
 		mux.Handle("/pixiecore/v1/boot.asc/", signerChain(NewHandler(pixiecoreHandler(srv))))
-		mux.Handle("/ignition.asc", signerChain(NewHandler(selectGroup(srv, ignitionHandler(s.store)))))
-		mux.Handle("/cloud.asc", signerChain(NewHandler(selectGroup(srv, cloudHandler(s.store)))))
+		mux.Handle("/ignition.asc", signerChain(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
+		mux.Handle("/cloud.asc", signerChain(NewHandler(selectGroup(srv, cloudHandler(srv)))))
 		mux.Handle("/metadata.asc", signerChain(NewHandler(selectGroup(srv, metadataHandler()))))
 	}
 

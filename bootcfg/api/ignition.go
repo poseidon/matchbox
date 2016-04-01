@@ -7,28 +7,30 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 	ignition "github.com/coreos/ignition/src/config"
 	"golang.org/x/net/context"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/server"
+	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // ignitionHandler returns a handler that responds with the Ignition config
 // for the requester. The Ignition file referenced in the Profile is rendered
 // with metadata and parsed and validated as either YAML or JSON based on the
 // extension. The Ignition config is served as an HTTP JSON response.
-func ignitionHandler(store storage.Store) ContextHandler {
+func ignitionHandler(srv server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil || group.Profile == "" {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := store.ProfileGet(group.Profile)
-		if err != nil || profile.IgnitionId == "" {
+		resp, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		if err != nil || resp.Profile.IgnitionId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := store.IgnitionGet(profile.IgnitionId)
+		contents, err := srv.IgnitionGet(ctx, resp.Profile.IgnitionId)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -54,7 +56,7 @@ func ignitionHandler(store storage.Store) ContextHandler {
 
 		// Unmarshal YAML or JSON Ignition config
 		var cfg ignition.Config
-		if isYAML(profile.IgnitionId) {
+		if isYAML(resp.Profile.IgnitionId) {
 			if err := yaml.Unmarshal(buf.Bytes(), &cfg); err != nil {
 				log.Errorf("error parsing YAML Ignition config: %v", err)
 				http.NotFound(w, req)

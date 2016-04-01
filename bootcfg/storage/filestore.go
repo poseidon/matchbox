@@ -100,13 +100,13 @@ func (s *fileStore) ProfileList() ([]*storagepb.Profile, error) {
 }
 
 // IgnitionGet gets an Ignition Config template by name.
-func (s *fileStore) IgnitionGet(id string) (string, error) {
-	data, err := Dir(s.root).readFile(filepath.Join("ignition", id))
+func (s *fileStore) IgnitionGet(name string) (string, error) {
+	data, err := Dir(s.root).readFile(filepath.Join("ignition", name))
 	return string(data), err
 }
 
 // CloudGet gets a Cloud-Config template by name.
-func (s *fileStore) CloudGet(id string) (string, error) {
-	data, err := Dir(s.root).readFile(filepath.Join("cloud", id))
+func (s *fileStore) CloudGet(name string) (string, error) {
+	data, err := Dir(s.root).readFile(filepath.Join("cloud", name))
 	return string(data), err
 }

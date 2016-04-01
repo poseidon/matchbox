@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
+	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
@@ -20,7 +21,8 @@ func TestIgnitionHandler(t *testing.T) {
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		IgnitionConfigs: map[string]string{fake.Profile.IgnitionId: content},
 	}
-	h := ignitionHandler(store)
+	srv := server.NewServer(&server.Config{Store: store})
+	h := ignitionHandler(srv)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -46,7 +48,8 @@ systemd:
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
 	}
-	h := ignitionHandler(store)
+	srv := server.NewServer(&server.Config{Store: store})
+	h := ignitionHandler(srv)
 	ctx := withGroup(context.Background(), testGroup)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -61,7 +64,8 @@ systemd:
 }
 
 func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
-	h := ignitionHandler(&fake.EmptyStore{})
+	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := ignitionHandler(srv)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -69,7 +73,8 @@ func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
-	h := ignitionHandler(&fake.EmptyStore{})
+	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := ignitionHandler(srv)
 	ctx := withProfile(context.Background(), testProfile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
