@@ -25,12 +25,12 @@ func ignitionHandler(srv server.Server) ContextHandler {
 			http.NotFound(w, req)
 			return
 		}
-		resp, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
-		if err != nil || resp.Profile.IgnitionId == "" {
+		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		if err != nil || profile.IgnitionId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := srv.IgnitionGet(ctx, resp.Profile.IgnitionId)
+		contents, err := srv.IgnitionGet(ctx, profile.IgnitionId)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -56,7 +56,7 @@ func ignitionHandler(srv server.Server) ContextHandler {
 
 		// Unmarshal YAML or JSON Ignition config
 		var cfg ignition.Config
-		if isYAML(resp.Profile.IgnitionId) {
+		if isYAML(profile.IgnitionId) {
 			if err := yaml.Unmarshal(buf.Bytes(), &cfg); err != nil {
 				log.Errorf("error parsing YAML Ignition config: %v", err)
 				http.NotFound(w, req)

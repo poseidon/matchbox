@@ -27,12 +27,12 @@ func pixiecoreHandler(srv server.Server) ContextHandler {
 			http.NotFound(w, req)
 			return
 		}
-		resp, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-		renderJSON(w, resp.Profile.Boot)
+		renderJSON(w, profile.Boot)
 	}
 	return ContextHandlerFunc(fn)
 }

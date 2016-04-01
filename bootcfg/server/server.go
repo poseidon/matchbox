@@ -16,13 +16,28 @@ var (
 	errNoProfileFound  = errors.New("bootcfg: No Profile found")
 )
 
-// Server defines a bootcfg Server.
+// Server defines a bootcfg server lib.
 type Server interface {
-	SelectGroup(ctx context.Context, req *pb.SelectGroupRequest) (*storagepb.Group, error)
-	SelectProfile(ctx context.Context, req *pb.SelectProfileRequest) (*storagepb.Profile, error)
-	pb.GroupsServer
-	pb.ProfilesServer
+	// SelectGroup returns the Group matching the given labels.
+	SelectGroup(context.Context, *pb.SelectGroupRequest) (*storagepb.Group, error)
+	// SelectProfile returns the Profile matching the given labels.
+	SelectProfile(context.Context, *pb.SelectProfileRequest) (*storagepb.Profile, error)
+
+	// Get a machine Group by id.
+	GroupGet(context.Context, *pb.GroupGetRequest) (*storagepb.Group, error)
+	// List all machine Groups.
+	GroupList(context.Context, *pb.GroupListRequest) ([]*storagepb.Group, error)
+
+	// Create or update a Profile.
+	ProfilePut(context.Context, *pb.ProfilePutRequest) (*storagepb.Profile, error)
+	// Get a Profile by id.
+	ProfileGet(context.Context, *pb.ProfileGetRequest) (*storagepb.Profile, error)
+	// List all Profiles.
+	ProfileList(context.Context, *pb.ProfileListRequest) ([]*storagepb.Profile, error)
+
+	// Returns an Ignition config tempate by name.
 	IgnitionGet(ctx context.Context, name string) (string, error)
+	// Returns a Cloud config template by name.
 	CloudGet(ctx context.Context, name string) (string, error)
 }
 
@@ -43,23 +58,23 @@ func NewServer(config *Config) Server {
 	}
 }
 
-func (s *server) GroupGet(ctx context.Context, req *pb.GroupGetRequest) (*pb.GroupGetResponse, error) {
+func (s *server) GroupGet(ctx context.Context, req *pb.GroupGetRequest) (*storagepb.Group, error) {
 	group, err := s.store.GroupGet(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GroupGetResponse{Group: group}, nil
+	return group, nil
 }
 
-func (s *server) GroupList(ctx context.Context, req *pb.GroupListRequest) (*pb.GroupListResponse, error) {
+func (s *server) GroupList(ctx context.Context, req *pb.GroupListRequest) ([]*storagepb.Group, error) {
 	groups, err := s.store.GroupList()
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GroupListResponse{Groups: groups}, nil
+	return groups, nil
 }
 
-func (s *server) ProfilePut(ctx context.Context, req *pb.ProfilePutRequest) (*pb.ProfilePutResponse, error) {
+func (s *server) ProfilePut(ctx context.Context, req *pb.ProfilePutRequest) (*storagepb.Profile, error) {
 	if err := req.Profile.AssertValid(); err != nil {
 		return nil, err
 	}
@@ -67,23 +82,23 @@ func (s *server) ProfilePut(ctx context.Context, req *pb.ProfilePutRequest) (*pb
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ProfilePutResponse{}, nil
+	return req.Profile, nil
 }
 
-func (s *server) ProfileGet(ctx context.Context, req *pb.ProfileGetRequest) (*pb.ProfileGetResponse, error) {
+func (s *server) ProfileGet(ctx context.Context, req *pb.ProfileGetRequest) (*storagepb.Profile, error) {
 	profile, err := s.store.ProfileGet(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ProfileGetResponse{Profile: profile}, nil
+	return profile, nil
 }
 
-func (s *server) ProfileList(ctx context.Context, req *pb.ProfileListRequest) (*pb.ProfileListResponse, error) {
+func (s *server) ProfileList(ctx context.Context, req *pb.ProfileListRequest) ([]*storagepb.Profile, error) {
 	profiles, err := s.store.ProfileList()
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ProfileListResponse{Profiles: profiles}, nil
+	return profiles, nil
 }
 
 // SelectGroup selects the Group whose selector matches the given labels.
@@ -107,9 +122,9 @@ func (s *server) SelectProfile(ctx context.Context, req *pb.SelectProfileRequest
 	group, err := s.SelectGroup(ctx, &pb.SelectGroupRequest{Labels: req.Labels})
 	if err == nil {
 		// lookup the Profile by id
-		resp, err := s.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		profile, err := s.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err == nil {
-			return resp.Profile, nil
+			return profile, nil
 		}
 		return nil, errNoProfileFound
 	}

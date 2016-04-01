@@ -10,8 +10,8 @@ import (
 // NewServer wraps the bootcfg Server to return a new gRPC Server.
 func NewServer(s server.Server, opts ...grpc.ServerOption) (*grpc.Server, error) {
 	grpcServer := grpc.NewServer(opts...)
-	pb.RegisterGroupsServer(grpcServer, s)
-	pb.RegisterProfilesServer(grpcServer, s)
+	pb.RegisterGroupsServer(grpcServer, newGroupServer(s))
+	pb.RegisterProfilesServer(grpcServer, newProfileServer(s))
 	pb.RegisterSelectServer(grpcServer, newSelectServer(s))
 	return grpcServer, nil
 }

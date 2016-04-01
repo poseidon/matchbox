@@ -28,12 +28,12 @@ func cloudHandler(srv server.Server) ContextHandler {
 			http.NotFound(w, req)
 			return
 		}
-		resp, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
-		if err != nil || resp.Profile.CloudId == "" {
+		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		if err != nil || profile.CloudId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := srv.CloudGet(ctx, resp.Profile.CloudId)
+		contents, err := srv.CloudGet(ctx, profile.CloudId)
 		if err != nil {
 			http.NotFound(w, req)
 			return
