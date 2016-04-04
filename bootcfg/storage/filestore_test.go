@@ -13,6 +13,36 @@ import (
 	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
+func TestProfilePut(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// - Profile put was successful
+	// - same Profile can be retrieved
+	err = store.ProfilePut(fake.Profile)
+	assert.Nil(t, err)
+	profile, err := store.ProfileGet(fake.Profile.Id)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.Profile, profile)
+}
+
+func TestProfilePut_Invalid(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// - invalid Profile is not saved
+	err = store.ProfilePut(&storagepb.Profile{})
+	if assert.Error(t, err) {
+		assert.Equal(t, err, storagepb.ErrIdRequired)
+	}
+}
+
 func TestProfileGet(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{
 		Profiles: map[string]*storagepb.Profile{fake.Profile.Id: fake.Profile},

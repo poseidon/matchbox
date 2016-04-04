@@ -14,6 +14,16 @@ type FixedStore struct {
 	CloudConfigs    map[string]string
 }
 
+// NewFixedStore returns a new FixedStore.
+func NewFixedStore() *FixedStore {
+	return &FixedStore{
+		Groups:          make(map[string]*storagepb.Group),
+		Profiles:        make(map[string]*storagepb.Profile),
+		IgnitionConfigs: make(map[string]string),
+		CloudConfigs:    make(map[string]string),
+	}
+}
+
 // GroupGet returns the Group from the Groups map with the given id.
 func (s *FixedStore) GroupGet(id string) (*storagepb.Group, error) {
 	if group, present := s.Groups[id]; present {

@@ -91,6 +91,9 @@ func (s *server) ProfileGet(ctx context.Context, req *pb.ProfileGetRequest) (*st
 	if err != nil {
 		return nil, err
 	}
+	if err := profile.AssertValid(); err != nil {
+		return nil, err
+	}
 	return profile, nil
 }
 
