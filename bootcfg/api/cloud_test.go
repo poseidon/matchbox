@@ -21,7 +21,7 @@ func TestCloudHandler(t *testing.T) {
 	}
 	srv := server.NewServer(&server.Config{Store: store})
 	h := cloudHandler(srv)
-	ctx := withGroup(context.Background(), testGroup)
+	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
@@ -43,7 +43,7 @@ func TestCloudHandler_MissingCtxProfile(t *testing.T) {
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
 	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := cloudHandler(srv)
-	ctx := withProfile(context.Background(), testProfile)
+	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)

@@ -13,6 +13,59 @@ import (
 	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
+func TestGroupGet(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{
+		Groups: map[string]*storagepb.Group{
+			fake.Group.Id:           fake.Group,
+			fake.GroupNoMetadata.Id: fake.GroupNoMetadata,
+		},
+	})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// Groups written to the store can be retrieved
+	group, err := store.GroupGet(fake.Group.Id)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.Group, group)
+	group, err = store.GroupGet(fake.GroupNoMetadata.Id)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.GroupNoMetadata, group)
+}
+
+func TestGroupGet_NoGroup(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	_, err = store.GroupGet("no-such-group")
+	if assert.Error(t, err) {
+		assert.IsType(t, &os.PathError{}, err)
+	}
+}
+
+func TestGroupList(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{
+		Groups: map[string]*storagepb.Group{
+			fake.Group.Id:           fake.Group,
+			fake.GroupNoMetadata.Id: fake.GroupNoMetadata,
+		},
+	})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	groups, err := store.GroupList()
+	assert.Nil(t, err)
+	if assert.Equal(t, 2, len(groups)) {
+		assert.Contains(t, groups, fake.Group)
+		assert.Contains(t, groups, fake.GroupNoMetadata)
+		assert.NotContains(t, groups, &storagepb.Group{})
+	}
+}
+
 func TestProfilePut(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{})
 	assert.Nil(t, err)
@@ -113,9 +166,10 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 	}
 	// directories
 	profileDir := filepath.Join(root, "profiles")
+	groupDir := filepath.Join(root, "groups")
 	ignitionDir := filepath.Join(root, "ignition")
 	cloudDir := filepath.Join(root, "cloud")
-	if err := mkdirs(profileDir, ignitionDir, cloudDir); err != nil {
+	if err := mkdirs(profileDir, groupDir, ignitionDir, cloudDir); err != nil {
 		return root, err
 	}
 	// files
@@ -126,6 +180,21 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 			return root, err
 		}
 		err = ioutil.WriteFile(profileFile, []byte(data), defaultFileMode)
+		if err != nil {
+			return root, err
+		}
+	}
+	for _, group := range fixedStore.Groups {
+		groupFile := filepath.Join(groupDir, group.Id+".json")
+		richGroup, err := group.ToRichGroup()
+		if err != nil {
+			return root, err
+		}
+		data, err := json.MarshalIndent(richGroup, "", "\t")
+		if err != nil {
+			return root, err
+		}
+		err = ioutil.WriteFile(groupFile, []byte(data), defaultFileMode)
 		if err != nil {
 			return root, err
 		}

@@ -34,9 +34,11 @@ func (g *Group) requirementString() string {
 // user manipulation.
 func (g *Group) ToRichGroup() (*RichGroup, error) {
 	metadata := make(map[string]interface{})
-	err := json.Unmarshal(g.Metadata, &metadata)
-	if err != nil {
-		return nil, err
+	if g.Metadata != nil {
+		err := json.Unmarshal(g.Metadata, &metadata)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &RichGroup{
 		Id:           g.Id,
@@ -85,9 +87,13 @@ type RichGroup struct {
 // ToGroup converts a user provided RichGroup into a Group which can be
 // serialized as a protocol buffer.
 func (rg *RichGroup) ToGroup() (*Group, error) {
-	metadata, err := json.Marshal(rg.Metadata)
-	if err != nil {
-		return nil, err
+	var metadata []byte
+	if rg.Metadata != nil {
+		var err error
+		metadata, err = json.Marshal(rg.Metadata)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &Group{
 		Id:           rg.Id,

@@ -50,7 +50,7 @@ systemd:
 	}
 	srv := server.NewServer(&server.Config{Store: store})
 	h := ignitionHandler(srv)
-	ctx := withGroup(context.Background(), testGroup)
+	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
@@ -75,7 +75,7 @@ func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
 	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := ignitionHandler(srv)
-	ctx := withProfile(context.Background(), testProfile)
+	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)

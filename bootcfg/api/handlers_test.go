@@ -46,12 +46,12 @@ func TestSelectGroup(t *testing.T) {
 	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		assert.Nil(t, err)
-		assert.Equal(t, testGroup, group)
+		assert.Equal(t, fake.Group, group)
 		fmt.Fprintf(w, "next handler called")
 	}
 	// assert that:
-	// - query params are used to match uuid=a1b2c3d4 to testGroup
-	// - the testGroup is added to the context
+	// - query params are used to match uuid=a1b2c3d4 to fake.Group
+	// - the fake.Group is added to the context
 	// - next handler is called
 	h := selectGroup(srv, ContextHandlerFunc(next))
 	w := httptest.NewRecorder()
@@ -69,12 +69,12 @@ func TestSelectProfile(t *testing.T) {
 	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		profile, err := profileFromContext(ctx)
 		assert.Nil(t, err)
-		assert.Equal(t, testProfile, profile)
+		assert.Equal(t, fake.Profile, profile)
 		fmt.Fprintf(w, "next handler called")
 	}
 	// assert that:
-	// - query params are used to match uuid=a1b2c3d4 to testGroup's testProfile
-	// - the testProfile is added to the context
+	// - query params are used to match uuid=a1b2c3d4 to fake.Group's fakeProfile
+	// - the fake.Profile is added to the context
 	// - next handler is called
 	h := selectProfile(srv, ContextHandlerFunc(next))
 	w := httptest.NewRecorder()

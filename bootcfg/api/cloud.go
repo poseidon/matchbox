@@ -40,12 +40,14 @@ func cloudHandler(srv server.Server) ContextHandler {
 		}
 
 		// collect data for rendering
-		var data map[string]interface{}
-		err = json.Unmarshal(group.Metadata, &data)
-		if err != nil {
-			log.Error("error unmarshalling metadata")
-			http.NotFound(w, req)
-			return
+		data := make(map[string]interface{})
+		if group.Metadata != nil {
+			err = json.Unmarshal(group.Metadata, &data)
+			if err != nil {
+				log.Errorf("error unmarshalling metadata: %v", err)
+				http.NotFound(w, req)
+				return
+			}
 		}
 
 		// render the template of a cloud config with data

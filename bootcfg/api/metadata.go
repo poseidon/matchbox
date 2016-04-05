@@ -20,13 +20,16 @@ func metadataHandler() ContextHandler {
 		}
 		w.Header().Set(contentType, plainContentType)
 
-		var data map[string]interface{}
-		err = json.Unmarshal(group.Metadata, &data)
-		if err != nil {
-			log.Error("error unmarshalling metadata")
-			http.NotFound(w, req)
-			return
+		data := make(map[string]interface{})
+		if group.Metadata != nil {
+			err = json.Unmarshal(group.Metadata, &data)
+			if err != nil {
+				log.Errorf("error unmarshalling metadata: %v", err)
+				http.NotFound(w, req)
+				return
+			}
 		}
+
 		for key, value := range data {
 			fmt.Fprintf(w, "%s=%v\n", strings.ToUpper(key), value)
 		}

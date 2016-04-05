@@ -5,9 +5,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
 func TestIPXEInspect(t *testing.T) {
@@ -21,7 +23,7 @@ func TestIPXEInspect(t *testing.T) {
 
 func TestIPXEHandler(t *testing.T) {
 	h := ipxeHandler()
-	ctx := withProfile(context.Background(), testProfile)
+	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
@@ -56,7 +58,7 @@ func TestIPXEHandler_RenderTemplateError(t *testing.T) {
 
 func TestIPXEHandler_WriteError(t *testing.T) {
 	h := ipxeHandler()
-	ctx := withProfile(context.Background(), testProfile)
+	ctx := withProfile(context.Background(), fake.Profile)
 	w := NewUnwriteableResponseWriter()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)

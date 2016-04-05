@@ -16,7 +16,7 @@ import (
 func TestPixiecoreHandler(t *testing.T) {
 	store := &fake.FixedStore{
 		Groups:   map[string]*storagepb.Group{testGroupWithMAC.Id: testGroupWithMAC},
-		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: testProfile},
+		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: fake.Profile},
 	}
 	srv := server.NewServer(&server.Config{Store: store})
 	h := pixiecoreHandler(srv)
@@ -53,7 +53,7 @@ func TestPixiecoreHandler_NoMatchingGroup(t *testing.T) {
 
 func TestPixiecoreHandler_NoMatchingProfile(t *testing.T) {
 	store := &fake.FixedStore{
-		Groups: map[string]*storagepb.Group{testGroup.Id: testGroup},
+		Groups: map[string]*storagepb.Group{fake.Group.Id: fake.Group},
 	}
 	srv := server.NewServer(&server.Config{Store: store})
 	h := pixiecoreHandler(srv)

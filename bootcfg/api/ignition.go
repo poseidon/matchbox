@@ -37,12 +37,14 @@ func ignitionHandler(srv server.Server) ContextHandler {
 		}
 
 		// collect data for rendering Ignition Config
-		var data map[string]interface{}
-		err = json.Unmarshal(group.Metadata, &data)
-		if err != nil {
-			log.Errorf("error unmarshalling metadata: %v", err)
-			http.NotFound(w, req)
-			return
+		data := make(map[string]interface{})
+		if group.Metadata != nil {
+			err = json.Unmarshal(group.Metadata, &data)
+			if err != nil {
+				log.Errorf("error unmarshalling metadata: %v", err)
+				http.NotFound(w, req)
+				return
+			}
 		}
 		data["query"] = req.URL.RawQuery
 
