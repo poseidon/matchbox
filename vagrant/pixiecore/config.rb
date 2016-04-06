@@ -1,9 +1,0 @@
-
-# Vagrant Network CIDR
-$network_range="192.168.33.0/24"
-
-# Pixiecore Server IP, must be in the network_range
-$pixiecore_server_ip="192.168.33.10"
-
-# SSH Authorized Key for client CoreOS instances
-$ssh_authorized_key="AAAAB3NzaC1yc2EAAAADAQABAAACAQC+LB/Ory3Io1t2MKSB9PHR6Fk7IGVssQOFZwrCY5hnwjCYm1HxPyv3OLI13AJ2aCJTyvPsJje9A6SkXtLRDhsRFyl4T+S+2cYaMC9GSezEoR+0Ecq2yRTX/BAT4nQKclUNNuXV7Duh3EwdbLoJaFbPhoNmaQdsgkwF92uengx1YLumB8zvpGuYrJCz01gVeDeMnjU9j8a+US+Uu17ySugYPX99LampNL3hLG0MqP1uDyDKFXkAhwRDSdidHiLdZ4pbb4Rdo0FNYMjVUIxCDzt5hgu7qPKvjl8Iq/tpcA9J5Ofnp3rmbLH/Lkujrz/GfIRVyoxI28VxaPTe7c/zUvZILMbwEGVYlKhT+RKOF+0t4nIJ0KxgG89mE3EayeJflvR/R5QnIkM7KBCCo2g1diVZ8ITl91YJ+AKpKEZREBj2MyecNq3z9souwGkJPLLDNiT/2YEHCqRfExztqmnc0T9jIG0EQMXlqQLcUDZQ7+FGirriS4gBcrw9fsrtmJEhd+xY8oxu3RsAjKDOJHkHj0X941LhvNBn13neHlLOl71tmL+OByny5B+R+5NVqPzoIE9M7i5/Jor1h61kWoYO7l8vgAeTlZCPWk09sH8ogLxZuXqbdhaXCZt7mTHOfjx4fy0YXlHpMgrTbur+Bbv4oVUvpo7wyhPOc4bm0SZlptom2w== dghubble@gmail.com"
