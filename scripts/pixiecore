@@ -1,7 +1,0 @@
-#!/bin/bash -e
-
-CONFIG_SERVICE=bootcfg
-CONFIG_SERVICE_IP=$(docker inspect --format {{.NetworkSettings.IPAddress}} ${CONFIG_SERVICE})
-CONFIG_SERVICE_PORT=$(docker inspect --format '{{ (index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort }}' ${CONFIG_SERVICE})
-
-docker run -v $PWD/assets:/assets:Z danderson/pixiecore -api http://$CONFIG_SERVICE_IP:$CONFIG_SERVICE_PORT/pixiecore

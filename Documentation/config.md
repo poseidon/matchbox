@@ -5,10 +5,10 @@ Configuration arguments can be provided as flags or as environment variables.
 
 | flag | variable | example |
 |------|----------|---------|
-| -address | BOOTCFG_ADDRESS | 127.0.0.1:8080 |
-| -config | BOOTCFG_CONFIG | /etc/bootcfg.conf |
-| -data-path | BOOTCFG_DATA_PATH | /etc/bootcfg |
-| -assets-path | BOOTCFG_ASSETS_PATH | /var/bootcfg |
+| -address | BOOTCFG_ADDRESS | 0.0.0.0:8080 |
+| -rpc-address | BOOTCFG_RPC_ADDRESS | 127.0.0.1:8081
+| -data-path | BOOTCFG_DATA_PATH | /var/lib/bootcfg |
+| -assets-path | BOOTCFG_ASSETS_PATH | /var/lib/bootcfg/assets |
 | -key-ring-path | BOOTCFG_KEY_RING_PATH | ~/.secrets/vault/bootcfg/secring.gpg |
 | Disallowed | BOOTCFG_PASSPHRASE | secret passphrase |
 | -log-level | BOOTCFG_LOG_LEVEL | critical, error, warning, notice, info, debug |
@@ -17,9 +17,8 @@ Configuration arguments can be provided as flags or as environment variables.
 
 | Contents  | Default Location  |
 |-----------|-------------------|
-| conf file | /etc/bootcfg.conf |
-| configs   | /etc/bootcfg/{profiles,ignition,cloud} |
-| assets    | /var/bootcfg/     |
+| data      | /var/lib/bootcfg/{profiles,groups,ignition,cloud} |
+| assets    | /var/lib/bootcfg/assets |
 
 ## Check Version
 
@@ -27,31 +26,43 @@ Configuration arguments can be provided as flags or as environment variables.
     sudo rkt --insecure-options=image run quay.io/coreos/bootcfg:latest -- -version
     sudo docker run quay.io/coreos/bootcfg:latest -version
 
+## Minimal
+
+Start the latest ACI with rkt.
+
+    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/lib/bootcfg/assets --volume data,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+
+Start the latest Docker image.
+
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples/assets:/var/lib/bootcfg/assets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+
+To start containers with the example machine Groups and Profiles, see the commands below.
+
 ## Examples
 
 Run the binary.
 
-    ./bin/bootcfg -address=0.0.0.0:8080 -log-level=debug -data-path examples/ -config examples/etcd-rkt.yaml
+    ./bin/bootcfg -address=0.0.0.0:8080 -log-level=debug -data-path=examples -assets-path=examples/assets
 
-Run the latest ACI with rkt.
+Run the latest ACI with rkt. Mounts are used to add the provided examples.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/bootcfg --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/etc/bootcfg --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug -config /etc/bootcfg/etcd-rkt.yaml
+    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
-Run the latest Docker image.
+Run the latest Docker image. Mounts are used to add the provided examples.
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/etc/bootcfg:Z -v $PWD/assets:/var/bootcfg:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /etc/bootcfg/etcd-docker.yaml
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
 #### With [OpenPGP Signing](openpgp.md)
 
 Run with the binary with a test key.
 
     export BOOTCFG_PASSPHRASE=test
-    ./bin/bootcfg -address=0.0.0.0:8080 -key-ring-path bootcfg/sign/fixtures/secring.gpg -data-path examples/ -config examples/etcd-rkt.yaml
+    ./bin/bootcfg -address=0.0.0.0:8080 -key-ring-path bootcfg/sign/fixtures/secring.gpg -data-path=examples -assets-path=examples/assets
 
 Run the ACI with a test key.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --set-env=BOOTCFG_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/bootcfg/sign/fixtures --mount volume=assets,target=/var/bootcfg --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/etc/bootcfg --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -config /etc/bootcfg/etcd-rkt.yaml -key-ring-path secrets/secring.gpg
+    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --set-env=BOOTCFG_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/bootcfg/sign/fixtures --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
 
 Run the Docker image with a test key.
 
-    sudo docker run -p 8080:8080 --rm --env BOOTCFG_PASSPHRASE=test -v $PWD/examples:/etc/bootcfg:Z -v $PWD/assets:/var/bootcfg:Z -v $PWD/bootcfg/sign/fixtures:/secrets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /etc/bootcfg/etcd-docker.yaml -key-ring-path secrets/secring.gpg
+    sudo docker run -p 8080:8080 --rm --env BOOTCFG_PASSPHRASE=test -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z -v $PWD/bootcfg/sign/fixtures:/secrets:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -key-ring-path secrets/secring.gpg

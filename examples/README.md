@@ -43,7 +43,7 @@ The Kubernetes examples create Kubernetes clusters with CoreOS hosts and TLS aut
 
 ### Assets
 
-Download the CoreOS PXE image assets to `assets/coreos`. These images are served to network boot machines by `bootcfg`.
+Download the CoreOS PXE image assets to `examples/assets/coreos`. These images are served to network boot machines by `bootcfg`.
 
     ./scripts/get-coreos alpha 983.0.0
 
@@ -51,11 +51,11 @@ Download the CoreOS PXE image assets to `assets/coreos`. These images are served
 
 Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`).
 
-    rm -rf assets/tls
+    rm -rf examples/assets/tls
     # for Kubernetes on CNI metal0, i.e. rkt
-    ./scripts/tls/k8s-certgen -d assets/tls -s 172.15.0.21 -m IP.1=10.3.0.1,IP.2=172.15.0.21 -w IP.1=172.15.0.22,IP.2=172.15.0.23
+    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.15.0.21 -m IP.1=10.3.0.1,IP.2=172.15.0.21 -w IP.1=172.15.0.22,IP.2=172.15.0.23
     # for Kubernetes on docker0
-    ./scripts/tls/k8s-certgen -d assets/tls -s 172.17.0.21 -m IP.1=10.3.0.1,IP.2=172.17.0.21 -w IP.1=172.17.0.22,IP.2=172.17.0.23
+    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.17.0.21 -m IP.1=10.3.0.1,IP.2=172.17.0.21 -w IP.1=172.17.0.22,IP.2=172.17.0.23
 
 See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/latest/openssl.html) document or [Kubernetes Step by Step](https://coreos.com/kubernetes/docs/latest/getting-started.html) for more details.
 
@@ -64,11 +64,11 @@ See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/late
 Install the `kubectl` CLI on your host. Use the provided kubeconfig's to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
 
     cd /path/to/coreos-baremetal
-    kubectl --kubeconfig=assets/tls/kubeconfig get nodes
+    kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
 
 Get all pods.
 
-    kubectl --kubeconfig=assets/tls/kubeconfig get pods --all-namespaces
+    kubectl --kubeconfig=examples/assets/tls/kubeconfig get pods --all-namespaces
 
 On my laptop, VMs download and network boot CoreOS in the first 45 seconds, the Kubernetes API becomes available after about 150 seconds, and add-on pods are scheduled by 180 seconds. On physical hosts and networks, OS and container image download times are a bit longer.
 

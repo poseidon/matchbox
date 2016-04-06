@@ -4,25 +4,31 @@
 
 * Add initial gRPC client and server packages
 * Add initial Grub net boot support and an example
+* Add initial command line client tool
 * Add detached OpenPGP signature endpoints (`.sig`)
 
 #### Changes
 
 * Profiles
+    - Move Profiles to JSON files under `/var/lib/bootcfg/profiles`
     - Rename `Spec` to `Profile`
-    - Move Profiles to JSON files under `/etc/bootcfg/profiles`
 * Groups
-    - Move Groups to JSON files under `/etc/bootcfg/groups`
+    - Move Groups to JSON files under `/var/lib/bootcfg/groups`
     - Require Group metadata to be valid JSON
     - Rename groups field `spec` to `profile`
-* Discontinue reading groups from the `-config` file. Remove the flag.
-* Change default `-data-path` to `/etc/bootcfg`
-* Change default `-assets-path` to `/var/bootcfg`
+* Stop parsing Groups from the `-config` YAML file. Remove the flag.
+* Change default `-data-path` to `/var/lib/bootcfg`
+* Change default `-assets-path` to `/var/lib/bootcfg/assets`
+* Change the default assets download location to `examples/assets`
 * Remove HTTP `/spec/id` JSON endpoint
 
 #### New Examples
 
 * Examples which PXE boot with or without a root partition
+* Example Kubernetes cluster installed to disk
+* Example etcd cluster installed to disk
+* Setup fleet in multi-node example clusters
+* Convert all Cloud-Configs to Ignition
 
 ## v0.2.0 (2016-02-09)
 

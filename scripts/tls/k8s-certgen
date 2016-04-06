@@ -2,14 +2,14 @@
 
 USAGE="Usage: $(basename $0)
 Options:
-  -d DEST     Destination for generated files (default: ./assets/tls)
+  -d DEST     Destination for generated files (default: .examples/assets/tls)
   -s SERVER   Reachable Server IP for kubeconfig (e.g. 172.15.0.21)
   -m MASTERS  Master Node Names/Addresses in SAN format (e.g. IP.1=10.3.0.1,IP.2=172.15.0.21).
   -w WORKERS  Worker Node Names/Addresses in SAN format (e.g. IP.1=172.15.0.22,IP.2=172.15.0.23)
   -h          Show help.
 "
 
-DEST="./assets/tls"
+DEST="./examples/assets/tls"
 SERVER="172.15.0.21"
 MASTERS="IP.1=10.3.0.1,IP.2=172.15.0.21"
 WORKERS="IP.1=172.15.0.22,IP.2=172.15.0.23"

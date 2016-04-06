@@ -37,9 +37,9 @@ func main() {
 		help        bool
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
-	flag.StringVar(&flags.rpcAddress, "rpcAddress", "", "RPC listen address")
-	flag.StringVar(&flags.dataPath, "data-path", "/etc/bootcfg", "Path to data directory")
-	flag.StringVar(&flags.assetsPath, "assets-path", "/var/bootcfg", "Path to static assets")
+	flag.StringVar(&flags.rpcAddress, "rpc-address", "", "RPC listen address")
+	flag.StringVar(&flags.dataPath, "data-path", "/var/lib/bootcfg", "Path to data directory")
+	flag.StringVar(&flags.assetsPath, "assets-path", "/var/lib/bootcfg/assets", "Path to static assets")
 	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
 	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
