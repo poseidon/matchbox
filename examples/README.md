@@ -74,5 +74,5 @@ On my laptop, VMs download and network boot CoreOS in the first 45 seconds, the 
 
 ## Tectonic
 
-Now sign up for [Tectonic Starter](https://tectonic.com/starter/) and deploy the [Tectonic Console](https://tectonic.com/enterprise/docs/latest/deployer/tectonic_console.html) with a few `kubectl` commands!
+Now sign up for [Tectonic Starter](https://tectonic.com/starter/) for free and deploy the [Tectonic Console](https://tectonic.com/enterprise/docs/latest/deployer/tectonic_console.html) with a few `kubectl` commands!
 

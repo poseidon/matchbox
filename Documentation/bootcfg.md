@@ -1,9 +1,9 @@
 
 # bootcfg
 
-`bootcfg` is a HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create clusters of CoreOS machines. `bootcfg` maintains a list of **Group** definitions which match machines to profiles based on their attributes (e.g. UUID, MAC address, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config) and metadata.
+`bootcfg` is a HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create clusters of CoreOS machines. `bootcfg` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. UUID, MAC address, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config). The aim is to use CoreOS Linux's early-boot capabilities to provision CoreOS machines into clusters.
 
-The aim is to use CoreOS Linux's early-boot capabilities to network boot and provision CoreOS machines into cluster members. Network boot endpoints provide PXE, iPXE, GRUB, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) support. The `bootcfg` service can be run as binary, as an [application container](https://github.com/appc/spec) with rkt, or as a Docker container.
+Network boot endpoints provide PXE, iPXE, GRUB, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) support. The `bootcfg` service can be run as binary, as an [application container](https://github.com/appc/spec) with rkt, or as a Docker container.
 
 ## Getting Started
 
@@ -22,9 +22,9 @@ See [API](api.md)
 
 ## Data
 
-A `Store` stores Profiles, Ignition configs, cloud-configs. By default, `bootcfg` uses a `FileStore` to search a data directory (`-data-path`) for these resources.
+A `Store` stores machine Profiles, Groups, Ignition configs, and cloud-configs. By default, `bootcfg` uses a `FileStore` to search a `-data-path` for these resources ([#133](https://github.com/coreos/coreos-baremetal/issues/133)).
 
-Prepare `/etc/bootcfg` or a custom `-data-path` with `profile`, `ignition`, and `cloud` subdirectories. You may wish to keep these files under version control. The [examples](../examples) directory is a valid target with some pre-defined configs and templates.
+Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` subdirectories. You may wish to keep these files under version control. The [examples](../examples) directory is a valid target with some pre-defined configs and templates.
 
      /etc/bootcfg
      ├── cloud
@@ -34,6 +34,10 @@ Prepare `/etc/bootcfg` or a custom `-data-path` with `profile`, `ignition`, and 
      │   └── hello.json
      │   └── etcd.yaml
      │   └── simple_networking.yaml
+     ├── groups
+     │   └── default.json
+     │   └── node1.json
+     │   └── us-central1-a.json
      └── profiles
          └── etcd.json
          └── worker.json
@@ -72,48 +76,42 @@ To use Ignition, set the `coreos.config.url` kernel option to reference the `boo
 
 ## Groups and Metadata
 
-Groups define tag selectors which match zero or more machines. Machine(s) matching a group will boot and provision according to the group's `Profile` and `metadata`.
+Groups define selectors which match zero or more machines. Machine(s) matching a group will boot and provision according to the group's `Profile` and `metadata`.
 
-Define a list of groups, define the required tags, name the `Profile` that should be applied, and add any `metadata` needed to render the templates in your Ignition or Cloud configs.
+Create a group definition with a `Profile` to be applied, selectors for matching machines, and any `metadata` needed to render the Ignition or Cloud config templates.
 
-Here is an example `/etc/bootcfg.conf` YAML file:
+For example `/var/lib/bootcfg/groups/node1.json` matches a single machine with MAC address `52:54:00:89:d8:10`.
 
-    ---
-    api_version: v1alpha1
-    groups:
-      - name: default
-        profile: discovery
-      - name: Worker Node
-        profile: worker
-        require:
-          region: us-central1-a
-          zone: a
-      - name: etcd Node 1
-        profile: etcd
-        require:
-          uuid: 16e7d8a7-bfa9-428b-9117-363341bb330b
-        metadata:
-          networkd_name: ens3
-          networkd_gateway: 172.15.0.1
-          networkd_dns: 172.15.0.3
-          networkd_address: 172.15.0.21/16
-          ipv4_address: 172.15.0.21
-          etcd_name: node1
-          etcd_initial_cluster: "node1=http://172.15.0.21:2380"
-          ssh_authorized_keys:
-            - "ssh-rsa pub-key-goes-here"
-      - name: etcd Proxy
-        profile: etcd-proxy
-        require:
-          mac: 52:54:00:89:d8:10
-        metadata:
-          etcd_initial_cluster: "node1=http://172.15.0.21:2380"
+    # /var/lib/bootcfg/groups/node1.json
+    {
+      "name": "node1",
+      "profile": "etcd",
+      "require": {
+        "mac": "52:54:00:89:d8:10"
+      },
+      "metadata": {
+        "fleet_metadata": "role=etcd,name=node1",
+        "etcd_name": "node1",
+        "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
+      }
+    }
 
-For example, a request to `/cloud?mac=52:54:00:89:d8:10` would render the Cloud-Config template in the "etcd-proxy" `Profile`, with the machine group's metadata. A request to `/cloud` would match the default group (which has no selectors) and render the Cloud-Config in the "discovery" Profile. Avoid defining multiple default groups as resolution will not be deterministic.
+While `/var/lib/bootcfg/groups/proxy.json` is the default machine group, since it has no selectors.
 
-### Reserved Attributes
+    {
+      "name": "etcd-proxy",
+      "profile": "etcd-proxy",
+      "metadata": {
+        "fleet_metadata": "role=etcd-proxy",
+        "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
+      }
+    }
 
-The following attributes/tags have reserved semantic purpose. Do not use these tags for other purposes as they may be normalized or parsed specially.
+For example, a request to `/ignition?mac=52:54:00:89:d8:10` would render the Ignition template in the "etcd" `Profile`, with the machine group's metadata. A request to `/ignition` would match the default group (which has no selectors) and render the Ignition in the "etcd-proxy" Profile. Avoid defining multiple default groups as resolution will not be deterministic.
+
+### Reserved Labels
+
+Some labels are normalized or parsed specially because they have reserved semantic purpose.
 
 * `uuid` - machine UUID
 * `mac` - network interface physical address (MAC address)
@@ -138,5 +136,5 @@ See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download
 
 ## Network
 
-`bootcfg` does not implement a DHCP/TFTP server. Its easy to use the [coreos/dnsmasq](../contrib/dnsmasq) image if you need a quick DHCP, proxyDHCP, TFTP, or DNS setup.
+`bootcfg` does not implement or exec a DHCP/TFTP server. Use the [coreos/dnsmasq](../contrib/dnsmasq) image if you need a quick DHCP, proxyDHCP, TFTP, or DNS setup.
 

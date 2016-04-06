@@ -82,7 +82,7 @@ Finds the profile matching the machine and renders the network boot config as JS
 
 ## Cloud Config
 
-Finds the profile matching the machine and renders the corresponding Cloud-Config.
+Finds the profile matching the machine and renders the corresponding Cloud-Config with metadata.
 
     GET http://bootcfg.foo/cloud
 
@@ -105,7 +105,7 @@ Finds the profile matching the machine and renders the corresponding Cloud-Confi
 
 ## Ignition Config
 
-Finds the profile matching the machine and renders the corresponding Ignition Config.
+Finds the profile matching the machine and renders the corresponding Ignition Config with metadata.
 
     GET http://bootcfg.foo/ignition
 
@@ -149,8 +149,8 @@ OpenPGPG signature endpoints serve detached binary and ASCII armored signatures 
 
 Get a config and its detached ASCII armored signature.
 
-    GET http://bootcfg.foo/ipxe?attribute=value
-    GET http://bootcfg.foo/ipxe.asc?attribute=value
+    GET http://bootcfg.foo/ipxe?label=value
+    GET http://bootcfg.foo/ipxe.asc?label=value
 
 **Response**
 
@@ -173,10 +173,10 @@ If you need to serve static assets (e.g. kernel, initrd), `bootcfg` can serve ar
 
     bootcfg.foo/assets/
     └── coreos
-        └── 835.9.0
+        └── 962.0.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
-        └── 899.6.0
+        └── 983.0.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
 

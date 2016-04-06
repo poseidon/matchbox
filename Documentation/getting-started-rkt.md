@@ -1,6 +1,6 @@
 # Getting Started with rkt
 
-In this tutorial, we'll run `bootcfg` on your Linux machinem with `rkt` and `CNI`, to network boot and provision a cluster of CoreOS machines. You'll be able to create Kubernetes clustes, etcd clusters, or just install CoreOS and test network setups locally.
+In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of CoreOS machines. You'll be able to create Kubernetes clustes, etcd clusters, or just install CoreOS and test network setups locally.
 
 ## Requirements
 
@@ -21,7 +21,7 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
     git clone https://github.com/coreos/coreos-baremetal.git
     cd coreos-baremetal
 
-Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from `bootcfg`.
+Download the CoreOS PXE image assets to `examples/assets`.
 
     ./scripts/get-coreos
     ./scripts/get-coreos channel version
@@ -54,9 +54,9 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 #### Latest
 
-Run the latest ACI with rkt.
+Run the latest ACI with rkt with the `etcd` example.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/bootcfg --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/etc/bootcfg --volume data,kind=host,source=$PWD/examples quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug -config /etc/bootcfg/etcd-rkt.yaml
+    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 Note: The insecure flag is needed for this case, since [Quay.io](https://quay.io/repository/coreos/bootcfg) serves ACIs coverted from Docker images (docker2aci) and Docker images don't support signatures.
 
@@ -73,7 +73,7 @@ If you get an error about the IP assignment, garbage collect old pods.
     sudo rkt gc --grace-period=0
     ./scripts/rkt-gc-force
 
-Take a look at [etcd-rkt.yaml](../examples/etcd-rkt.yaml) to get an idea of how machines are matched to profiles. Explore some endpoints exposed by the service.
+Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service.
 
 * [node1's ipxe](http://172.15.0.2:8080/ipxe?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
 * [node1's Ignition](http://172.15.0.2:8080/ignition?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
@@ -125,6 +125,6 @@ Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
 ## Going Further
 
-Explore the [examples](../examples). Try the `k8s-rkt.yaml` [example](../examples/README.md#kubernetes) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Explore the [examples](../examples). Try the [k8s example](../examples/groups/k8s) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl` ([docs](../examples/README.md#kubernetes)).
 
-Learn more about [bootcfg](bootcfg.md), enable [OpenPGP signing](openpgp.md), or adapt an example for your own [physical hardware](physical-hardware.md) and network.
+Learn more about [bootcfg](bootcfg.md) or adapt an example for your own [physical hardware](physical-hardware.md) and network.

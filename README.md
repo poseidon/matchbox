@@ -21,21 +21,22 @@ CoreOS on Baremetal contains guides for network booting and configuring CoreOS c
     * [Profiles](Documentation/bootcfg.md#profiles)
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
-* [OpenPGP Signing](Documentation/openpgp.md)
 * [Flags](Documentation/config.md)
 * [API](Documentation/api.md)
 * [Deployment](Documentation/deployment.md)
     * [systemd](Documentation/deployment.md#systemd)
 * [Troubleshooting](Documentation/troubleshooting.md)
-* [Hacking](Documentation/dev/develop.md)
+* Going Further
+    * [OpenPGP Signing](Documentation/openpgp.md)
+    * [Development](Documentation/dev/develop.md)
 
 ### Examples
 
-Check the [examples](examples) to find Profiles for booting machines into higher-order CoreOS clusters. Quickly network boot some [libvirt](scripts/README.md#libvirt) VMs to try the flow on your Linux machine.
+Check the [examples](examples) to find Profiles for booting and provisioning machines into higher-order CoreOS clusters. Network boot [libvirt](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
 
-* Multi-node Kubernetes cluster with TLS
-* Multi-node etcd cluster
-* Multi-stage CoreOS install to disk and provision with Ignition
+* Multi-node Kubernetes cluster with TLS (network booted or installed to disk)
+* Multi-node etcd cluster (network booted or installed to disk)
+* Multi-stage CoreOS installs
 * GRUB Netboot CoreOS
-* PXE Boot CoreOS with a root fs
-* PXE Boot CoreOS
+* iPXE Boot CoreOS with a root fs
+* iPXE Boot CoreOS

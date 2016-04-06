@@ -2,7 +2,7 @@
 
 # Getting Started with Docker
 
-In this tutorial, we'll run `bootcfg` on your Linux machine, with Docker, to network boot and provision a cluster of CoreOS machines. You'll be able to create Kubernetes clustes, etcd clusters, or just install CoreOS and test network setups locally.
+In this tutorial, we'll run `bootcfg` on your Linux machine with Docker to network boot and provision a cluster of CoreOS machines. You'll be able to create Kubernetes clustes, etcd clusters, or just install CoreOS and test network setups locally.
 
 If you're ready to try [rkt](https://coreos.com/rkt/docs/latest/), see [Getting Started with rkt](getting-started-rkt.md).
 
@@ -23,7 +23,7 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
     git clone https://github.com/coreos/coreos-baremetal.git
     cd coreos-baremetal
 
-Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct machines to load these from `bootcfg`.
+Download the CoreOS PXE image assets to `examples/assets`.
 
     ./scripts/get-coreos
     ./scripts/get-coreos channel version
@@ -32,9 +32,9 @@ Download the CoreOS PXE image assets to `assets/coreos`. The examples instruct m
 
 #### Latest
 
-Run the latest Docker image from `quay.io/coreos/bootcfg`. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
+Run the latest Docker image from `quay.io/coreos/bootcfg` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/etc/bootcfg:Z -v $PWD/assets:/var/bootcfg:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug -config /etc/bootcfg/etcd-docker.yaml
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd-docker:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
 #### Release
 
@@ -42,7 +42,7 @@ Alternately, run a recent tagged [release](https://github.com/coreos/coreos-bare
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:v0.2.0 -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
 
-Take a look at [etcd-docker.yaml](../examples/etcd-docker.yaml) to get an idea of how machines are matched to profiles. Explore some endpoints port mapped to localhost:8080.
+Take a look at the [etcd groups](../examples/groups/etcd-docker) to get an idea of how machines are mapped to Profiles. Explore some endpoints port mapped to localhost:8080.
 
 * [node1's ipxe](http://127.0.0.1:8080/ipxe?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
 * [node1's Ignition](http://127.0.0.1:8080/ignition?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
@@ -87,6 +87,6 @@ Clean up the VM machines.
 
 ## Going Further
 
-Explore the [examples](../examples). Try the `k8s-docker.yaml` [example](../examples/README.md#kubernetes) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Explore the [examples](../examples). Try the [k8s-docker example](../examples/groups/k8s-docker) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl` ([docs](../examples/README.md#kubernetes)).
 
-Learn more about [bootcfg](bootcfg.md), enable [OpenPGP signing](openpgp.md), or adapt an example for your own [physical hardware](physical-hardware.md) and network.
+Learn more about [bootcfg](bootcfg.md) or adapt an example for your own [physical hardware](physical-hardware.md) and network.
