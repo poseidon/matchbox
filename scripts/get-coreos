@@ -3,7 +3,7 @@
 # USAGE: ./scripts/get-coreos channel version
 
 CHANNEL=${1:-"alpha"}
-VERSION=${2:-"983.0.0"}
+VERSION=${2:-"current"}
 DEST=${PWD}/assets/coreos/$VERSION
 BASE_URL=http://$CHANNEL.release.core-os.net/amd64-usr/$VERSION
 
@@ -14,6 +14,12 @@ if [ ! -d "$DEST" ]; then
   echo "Creating directory $DEST"
   mkdir -p $DEST
 fi
+
+[ -f $DEST/coreos_production_pxe.vmlinuz ] && rm $DEST/coreos_production_pxe.vmlinuz
+[ -f $DEST/coreos_production_pxe.vmlinuz.sig ] && rm $DEST/coreos_production_pxe.vmlinuz.sig
+[ -f $DEST/coreos_production_pxe_image.cpio.gz ] && rm $DEST/coreos_production_pxe_image.cpio.gz
+[ -f $DEST/coreos_production_pxe_image.cpio.gz.sig ] && rm $DEST/coreos_production_pxe_image.cpio.gz.sig
+[ -f $DEST/CoreOS_Image_Signing_Key.asc ] && rm $DEST/CoreOS_Image_Signing_Key.asc
 
 echo "Downloading CoreOS kernel and initrd image assets"
 
