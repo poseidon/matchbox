@@ -26,7 +26,7 @@ func NewFileStore(config *Config) Store {
 	}
 }
 
-// GroupPut writes a Group.
+// GroupPut writes the given Group.
 func (s *fileStore) GroupPut(group *storagepb.Group) error {
 	richGroup, err := group.ToRichGroup()
 	if err != nil {
@@ -45,12 +45,7 @@ func (s *fileStore) GroupGet(id string) (*storagepb.Group, error) {
 	if err != nil {
 		return nil, err
 	}
-	richGroup := new(storagepb.RichGroup)
-	err = json.Unmarshal(data, richGroup)
-	if err != nil {
-		return nil, err
-	}
-	group, err := richGroup.ToGroup()
+	group, err := storagepb.ParseGroup(data)
 	if err != nil {
 		return nil, err
 	}
@@ -74,11 +69,8 @@ func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 	return groups, nil
 }
 
-// ProfilePut writes a Profile.
+// ProfilePut writes the given Profile.
 func (s *fileStore) ProfilePut(profile *storagepb.Profile) error {
-	if err := profile.AssertValid(); err != nil {
-		return err
-	}
 	data, err := json.MarshalIndent(profile, "", "\t")
 	if err != nil {
 		return err

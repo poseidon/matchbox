@@ -62,6 +62,9 @@ func NewServer(config *Config) Server {
 }
 
 func (s *server) GroupPut(ctx context.Context, req *pb.GroupPutRequest) (*storagepb.Group, error) {
+	if err := req.Group.AssertValid(); err != nil {
+		return nil, err
+	}
 	err := s.store.GroupPut(req.Group)
 	if err != nil {
 		return nil, err

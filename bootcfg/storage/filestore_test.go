@@ -13,6 +13,22 @@ import (
 	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
+func TestGroupPut(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// - Group creation was successful
+	// - Group can be retrieved by id
+	err = store.GroupPut(fake.Group)
+	assert.Nil(t, err)
+	group, err := store.GroupGet(fake.Group.Id)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.Group, group)
+}
+
 func TestGroupGet(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{
 		Groups: map[string]*storagepb.Group{
@@ -25,7 +41,7 @@ func TestGroupGet(t *testing.T) {
 
 	store := NewFileStore(&Config{Root: dir})
 	// assert that:
-	// Groups written to the store can be retrieved
+	// - Groups written to the store can be retrieved
 	group, err := store.GroupGet(fake.Group.Id)
 	assert.Nil(t, err)
 	assert.Equal(t, fake.Group, group)
@@ -73,27 +89,13 @@ func TestProfilePut(t *testing.T) {
 
 	store := NewFileStore(&Config{Root: dir})
 	// assert that:
-	// - Profile put was successful
-	// - same Profile can be retrieved
+	// - Profile creation was successful
+	// - Profile can be retrieved by id
 	err = store.ProfilePut(fake.Profile)
 	assert.Nil(t, err)
 	profile, err := store.ProfileGet(fake.Profile.Id)
 	assert.Nil(t, err)
 	assert.Equal(t, fake.Profile, profile)
-}
-
-func TestProfilePut_Invalid(t *testing.T) {
-	dir, err := setup(&fake.FixedStore{})
-	assert.Nil(t, err)
-	defer os.RemoveAll(dir)
-
-	store := NewFileStore(&Config{Root: dir})
-	// assert that:
-	// - invalid Profile is not saved
-	err = store.ProfilePut(&storagepb.Profile{})
-	if assert.Error(t, err) {
-		assert.Equal(t, err, storagepb.ErrIdRequired)
-	}
 }
 
 func TestProfileGet(t *testing.T) {

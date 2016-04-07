@@ -2,9 +2,14 @@ package storagepb
 
 import (
 	"encoding/json"
+	"errors"
 	"net"
 	"sort"
 	"strings"
+)
+
+var (
+	ErrProfileRequired = errors.New("Group requires a Profile")
 )
 
 // ParseGroup parses bytes into a Group.
@@ -24,9 +29,11 @@ func ParseGroup(data []byte) (*Group, error) {
 // AssertValid validates a Group. Returns nil if there are no validation
 // errors.
 func (g *Group) AssertValid() error {
-	// Id is required
 	if g.Id == "" {
 		return ErrIdRequired
+	}
+	if g.Profile == "" {
+		return ErrProfileRequired
 	}
 	return nil
 }

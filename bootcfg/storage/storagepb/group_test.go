@@ -9,12 +9,14 @@ import (
 
 var (
 	testGroup = &Group{
+		Id:      "node1",
 		Name:    "test group",
 		Profile: "g1h2i3j4",
 		Requirements: map[string]string{
 			"uuid": "a1b2c3d4",
 			"mac":  "52:da:00:89:d8:10",
 		},
+		Metadata: []byte(`{"some-key":"some-val"}`),
 	}
 	testGroupWithoutProfile = &Group{
 		Name:         "test group without profile",
@@ -23,10 +25,39 @@ var (
 	}
 )
 
+func TestGroupParse(t *testing.T) {
+	cases := []struct {
+		json  string
+		group *Group
+	}{
+		{`{"id":"node1","name":"test group","profile":"g1h2i3j4","requirements":{"uuid":"a1b2c3d4","mac":"52:da:00:89:d8:10"},"metadata":{"some-key":"some-val"}}`, testGroup},
+	}
+	for _, c := range cases {
+		group, _ := ParseGroup([]byte(c.json))
+		assert.Equal(t, c.group, group)
+	}
+}
+
+func TestGroupValidate(t *testing.T) {
+	cases := []struct {
+		group *Group
+		valid bool
+	}{
+		{&Group{Id: "node1", Profile: "k8s-master"}, true},
+		{testGroupWithoutProfile, false},
+		{&Group{Id: "node1"}, false},
+		{&Group{}, false},
+	}
+	for _, c := range cases {
+		valid := c.group.AssertValid() == nil
+		assert.Equal(t, c.valid, valid)
+	}
+}
+
 func TestGroupMatches(t *testing.T) {
 	cases := []struct {
 		labels   map[string]string
-		reqs     map[string]string
+		selectors     map[string]string
 		expected bool
 	}{
 		{map[string]string{"a": "b"}, map[string]string{"a": "b"}, true},
@@ -38,7 +69,7 @@ func TestGroupMatches(t *testing.T) {
 	// - Group requirements are satisfied in order to be a match
 	// - labels may provide additional key/value pairs
 	for _, c := range cases {
-		group := &Group{Requirements: c.reqs}
+		group := &Group{Requirements: c.selectors}
 		assert.Equal(t, c.expected, group.Matches(c.labels))
 	}
 }

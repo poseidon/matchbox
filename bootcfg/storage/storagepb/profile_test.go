@@ -32,6 +32,7 @@ func TestProfileValidate(t *testing.T) {
 		profile *Profile
 		valid   bool
 	}{
+		{testProfile, true},
 		{&Profile{Id: "a1b2c3d4"}, true},
 		{&Profile{}, false},
 	}
