@@ -1,5 +1,5 @@
 {
-  "id": "etcd Proxy",
+  "id": "etcd-proxies",
   "name": "etcd Proxy",
   "profile": "etcd-proxy",
   "requirements": {

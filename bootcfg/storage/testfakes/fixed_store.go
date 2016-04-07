@@ -24,6 +24,12 @@ func NewFixedStore() *FixedStore {
 	}
 }
 
+// GroupPut write the given Group the Groups map.
+func (s *FixedStore) GroupPut(group *storagepb.Group) error {
+	s.Groups[group.Id] = group
+	return nil
+}
+
 // GroupGet returns the Group from the Groups map with the given id.
 func (s *FixedStore) GroupGet(id string) (*storagepb.Group, error) {
 	if group, present := s.Groups[id]; present {

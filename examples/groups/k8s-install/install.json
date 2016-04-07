@@ -1,5 +1,5 @@
 {
-  "id": "CoreOS Install",
+  "id": "coreos-install",
   "name": "CoreOS Install",
   "profile": "install-reboot",
   "metadata": {

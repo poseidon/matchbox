@@ -9,6 +9,11 @@ import (
 // EmptyStore is used for testing purposes.
 type EmptyStore struct{}
 
+// GroupPut returns an error writing any Group.
+func (s *EmptyStore) GroupPut(group *storagepb.Group) error {
+	return fmt.Errorf("emptyStore does not accept Groups")
+}
+
 // GroupGet returns a group not found error.
 func (s *EmptyStore) GroupGet(id string) (*storagepb.Group, error) {
 	return nil, fmt.Errorf("Group not found")

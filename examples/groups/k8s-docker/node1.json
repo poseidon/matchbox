@@ -1,5 +1,5 @@
 {
-  "id": "Master Node",
+  "id": "node1",
   "name": "Master Node",
   "profile": "k8s-master",
   "requirements": {

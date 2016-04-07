@@ -1,5 +1,5 @@
 {
-  "id": "Worker 2",
+  "id": "node3",
   "name": "Worker 2",
   "profile": "k8s-worker-install",
   "requirements": {

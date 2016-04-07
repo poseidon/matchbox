@@ -19,6 +19,12 @@ message SelectProfileResponse {
   storagepb.Profile profile = 1;
 }
 
+message GroupPutRequest {
+  storagepb.Group group = 1;
+}
+
+message GroupPutResponse {}
+
 message GroupGetRequest {
   string id = 1;
 }

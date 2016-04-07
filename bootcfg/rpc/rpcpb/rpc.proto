@@ -4,6 +4,8 @@ package rpcpb;
 import "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb/messages.proto";
 
 service Groups {
+  // Create a Group.
+  rpc GroupPut(messagepb.GroupPutRequest) returns (messagepb.GroupPutResponse) {};
   // Get a machine Group by id.
   rpc GroupGet(messagepb.GroupGetRequest) returns (messagepb.GroupGetResponse) {};
   // List all machine Groups.

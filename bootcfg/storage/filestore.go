@@ -26,6 +26,19 @@ func NewFileStore(config *Config) Store {
 	}
 }
 
+// GroupPut writes a Group.
+func (s *fileStore) GroupPut(group *storagepb.Group) error {
+	richGroup, err := group.ToRichGroup()
+	if err != nil {
+		return err
+	}
+	data, err := json.MarshalIndent(richGroup, "", "\t")
+	if err != nil {
+		return err
+	}
+	return Dir(s.root).writeFile(filepath.Join("groups", group.Id+".json"), data)
+}
+
 // GroupGet returns a machine Group by id.
 func (s *fileStore) GroupGet(id string) (*storagepb.Group, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("groups", id+".json"))

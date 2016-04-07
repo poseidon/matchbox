@@ -1,5 +1,5 @@
 {
-  "id": "etcd Node 1",
+  "id": "node1",
   "name": "etcd Node 1",
   "profile": "etcd",
   "requirements": {

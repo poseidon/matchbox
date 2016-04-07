@@ -1,5 +1,5 @@
 {
-  "id": "Worker 1",
+  "id": "node2",
   "name": "Worker 1",
   "profile": "k8s-worker",
   "requirements": {

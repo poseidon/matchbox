@@ -24,6 +24,8 @@ type Server interface {
 	// SelectProfile returns the Profile matching the given labels.
 	SelectProfile(context.Context, *pb.SelectProfileRequest) (*storagepb.Profile, error)
 
+	// Create or update a Group.
+	GroupPut(context.Context, *pb.GroupPutRequest) (*storagepb.Group, error)
 	// Get a machine Group by id.
 	GroupGet(context.Context, *pb.GroupGetRequest) (*storagepb.Group, error)
 	// List all machine Groups.
@@ -57,6 +59,14 @@ func NewServer(config *Config) Server {
 	return &server{
 		store: config.Store,
 	}
+}
+
+func (s *server) GroupPut(ctx context.Context, req *pb.GroupPutRequest) (*storagepb.Group, error) {
+	err := s.store.GroupPut(req.Group)
+	if err != nil {
+		return nil, err
+	}
+	return req.Group, nil
 }
 
 func (s *server) GroupGet(ctx context.Context, req *pb.GroupGetRequest) (*storagepb.Group, error) {

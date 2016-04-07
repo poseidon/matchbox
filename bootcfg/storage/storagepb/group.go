@@ -7,6 +7,30 @@ import (
 	"strings"
 )
 
+// ParseGroup parses bytes into a Group.
+func ParseGroup(data []byte) (*Group, error) {
+	richGroup := new(RichGroup)
+	err := json.Unmarshal(data, richGroup)
+	if err != nil {
+		return nil, err
+	}
+	group, err := richGroup.ToGroup()
+	if err != nil {
+		return nil, err
+	}
+	return group, err
+}
+
+// AssertValid validates a Group. Returns nil if there are no validation
+// errors.
+func (g *Group) AssertValid() error {
+	// Id is required
+	if g.Id == "" {
+		return ErrIdRequired
+	}
+	return nil
+}
+
 // Matches returns true if the given labels satisfy all the requirements,
 // false otherwise.
 func (g *Group) Matches(labels map[string]string) bool {

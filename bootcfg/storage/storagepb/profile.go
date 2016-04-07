@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrIdRequired = errors.New("Profile Id is required")
+	ErrIdRequired = errors.New("Id is required")
 )
 
 // ParseProfile parses bytes into a Profile.

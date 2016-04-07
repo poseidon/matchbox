@@ -14,6 +14,8 @@ var (
 
 // A Store stores machine Groups, Profiles, and Configs.
 type Store interface {
+	// GroupPut creates or updates a Group.
+	GroupPut(group *storagepb.Group) error
 	// GroupGet returns a machine Group by id.
 	GroupGet(id string) (*storagepb.Group, error)
 	// GroupList lists all machine Groups.
