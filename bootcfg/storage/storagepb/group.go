@@ -23,6 +23,9 @@ func ParseGroup(data []byte) (*Group, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := group.Normalize(); err != nil {
+		return nil, err
+	}
 	return group, err
 }
 
@@ -47,6 +50,23 @@ func (g *Group) Matches(labels map[string]string) bool {
 		}
 	}
 	return true
+}
+
+// Normalize normalizes Group selectors according to reserved selector rules
+// which require "mac" addresses to be valid, normalized MAC addresses.
+func (g *Group) Normalize() error {
+	for key, val := range g.Requirements {
+		switch strings.ToLower(key) {
+		case "mac":
+			macAddr, err := net.ParseMAC(val)
+			if err != nil {
+				return err
+			}
+			// range iteration copy with mutable map
+			g.Requirements[key] = macAddr.String()
+		}
+	}
+	return nil
 }
 
 // requirementString returns Group requirements as a string of sorted key
@@ -130,20 +150,7 @@ func (rg *RichGroup) ToGroup() (*Group, error) {
 		Id:           rg.Id,
 		Name:         rg.Name,
 		Profile:      rg.Profile,
-		Requirements: normalizeSelectors(rg.Requirements),
+		Requirements: rg.Requirements,
 		Metadata:     metadata,
 	}, nil
-}
-
-func normalizeSelectors(selectors map[string]string) map[string]string {
-	for key, val := range selectors {
-		switch strings.ToLower(key) {
-		case "mac":
-			if macAddr, err := net.ParseMAC(val); err == nil {
-				// range iteration copy with mutable map
-				selectors[key] = macAddr.String()
-			}
-		}
-	}
-	return selectors
 }

@@ -1,6 +1,7 @@
 package storagepb
 
 import (
+	"net"
 	"sort"
 	"testing"
 
@@ -54,11 +55,38 @@ func TestGroupValidate(t *testing.T) {
 	}
 }
 
+func TestNormalize(t *testing.T) {
+	expectedInvalidMAC := &net.AddrError{Err: "invalid MAC address", Addr: "not-a-mac"}
+	cases := []struct {
+		selectors  map[string]string
+		normalized map[string]string
+		err        error
+	}{
+		{map[string]string{"platform": "metal"}, map[string]string{"platform": "metal"}, nil},
+		{map[string]string{"mac": "52-da-00-89-d8-10"}, map[string]string{"mac": "52:da:00:89:d8:10"}, nil},
+		{map[string]string{"MAC": "52-da-00-89-d8-10"}, map[string]string{"MAC": "52:da:00:89:d8:10"}, nil},
+		// un-normalized MAC address should be normalized
+		{map[string]string{"mac": "52-DA-00-89-D8-10"}, map[string]string{"mac": "52:da:00:89:d8:10"}, nil},
+		{map[string]string{"MAC": "52-DA-00-89-D8-10"}, map[string]string{"MAC": "52:da:00:89:d8:10"}, nil},
+		// invalid MAC address should be rejected
+		{map[string]string{"mac": "not-a-mac"}, map[string]string{"mac": "not-a-mac"}, expectedInvalidMAC},
+	}
+	for _, c := range cases {
+		group := &Group{Id: "id", Requirements: c.selectors}
+		err := group.Normalize()
+		// assert that:
+		// - Group selectors (MAC addresses) are normalized
+		// - Invalid MAC addresses cause a normalization error
+		assert.Equal(t, c.err, err)
+		assert.Equal(t, c.normalized, group.Requirements)
+	}
+}
+
 func TestGroupMatches(t *testing.T) {
 	cases := []struct {
-		labels   map[string]string
-		selectors     map[string]string
-		expected bool
+		labels    map[string]string
+		selectors map[string]string
+		expected  bool
 	}{
 		{map[string]string{"a": "b"}, map[string]string{"a": "b"}, true},
 		{map[string]string{"a": "b"}, map[string]string{"a": "c"}, false},
@@ -66,7 +94,7 @@ func TestGroupMatches(t *testing.T) {
 		{map[string]string{"uuid": "a"}, map[string]string{"uuid": "a", "mac": "b"}, false},
 	}
 	// assert that:
-	// - Group requirements are satisfied in order to be a match
+	// - Group selectors must be satisfied for a match
 	// - labels may provide additional key/value pairs
 	for _, c := range cases {
 		group := &Group{Requirements: c.selectors}
