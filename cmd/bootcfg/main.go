@@ -12,7 +12,7 @@ import (
 	"github.com/coreos/pkg/capnslog"
 	"github.com/coreos/pkg/flagutil"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/api"
+	web "github.com/coreos/coreos-baremetal/bootcfg/http"
 	"github.com/coreos/coreos-baremetal/bootcfg/rpc"
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/sign"
@@ -100,13 +100,13 @@ func main() {
 		Root: flags.dataPath,
 	})
 
-	bootcfgServer := server.NewServer(&server.Config{
+	server := server.NewServer(&server.Config{
 		Store: store,
 	})
 
 	// gRPC Server (feature hidden)
 	if flags.rpcAddress != "" {
-		grpcServer, err := rpc.NewServer(bootcfgServer)
+		grpcServer, err := rpc.NewServer(server)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -120,13 +120,13 @@ func main() {
 	}
 
 	// HTTP Server
-	config := &api.Config{
+	config := &web.Config{
 		Store:         store,
 		AssetsPath:    flags.assetsPath,
 		Signer:        signer,
 		ArmoredSigner: armoredSigner,
 	}
-	httpServer := api.NewServer(config)
+	httpServer := web.NewServer(config)
 	log.Infof("starting bootcfg HTTP server on %s", flags.address)
 	err = http.ListenAndServe(flags.address, httpServer.HTTPHandler())
 	if err != nil {
