@@ -13,16 +13,16 @@ var (
 		Id:      "node1",
 		Name:    "test group",
 		Profile: "g1h2i3j4",
-		Requirements: map[string]string{
+		Selector: map[string]string{
 			"uuid": "a1b2c3d4",
 			"mac":  "52:da:00:89:d8:10",
 		},
 		Metadata: []byte(`{"some-key":"some-val"}`),
 	}
 	testGroupWithoutProfile = &Group{
-		Name:         "test group without profile",
-		Profile:      "",
-		Requirements: map[string]string{"uuid": "a1b2c3d4"},
+		Name:     "test group without profile",
+		Profile:  "",
+		Selector: map[string]string{"uuid": "a1b2c3d4"},
 	}
 )
 
@@ -31,7 +31,7 @@ func TestGroupParse(t *testing.T) {
 		json  string
 		group *Group
 	}{
-		{`{"id":"node1","name":"test group","profile":"g1h2i3j4","requirements":{"uuid":"a1b2c3d4","mac":"52:da:00:89:d8:10"},"metadata":{"some-key":"some-val"}}`, testGroup},
+		{`{"id":"node1","name":"test group","profile":"g1h2i3j4","selector":{"uuid":"a1b2c3d4","mac":"52:da:00:89:d8:10"},"metadata":{"some-key":"some-val"}}`, testGroup},
 	}
 	for _, c := range cases {
 		group, _ := ParseGroup([]byte(c.json))
@@ -72,13 +72,13 @@ func TestNormalize(t *testing.T) {
 		{map[string]string{"mac": "not-a-mac"}, map[string]string{"mac": "not-a-mac"}, expectedInvalidMAC},
 	}
 	for _, c := range cases {
-		group := &Group{Id: "id", Requirements: c.selectors}
+		group := &Group{Id: "id", Selector: c.selectors}
 		err := group.Normalize()
 		// assert that:
 		// - Group selectors (MAC addresses) are normalized
 		// - Invalid MAC addresses cause a normalization error
 		assert.Equal(t, c.err, err)
-		assert.Equal(t, c.normalized, group.Requirements)
+		assert.Equal(t, c.normalized, group.Selector)
 	}
 }
 
@@ -97,39 +97,39 @@ func TestGroupMatches(t *testing.T) {
 	// - Group selectors must be satisfied for a match
 	// - labels may provide additional key/value pairs
 	for _, c := range cases {
-		group := &Group{Requirements: c.selectors}
+		group := &Group{Selector: c.selectors}
 		assert.Equal(t, c.expected, group.Matches(c.labels))
 	}
 }
 
-func TestRequirementString(t *testing.T) {
+func TestSelectorString(t *testing.T) {
 	group := Group{
-		Requirements: map[string]string{
+		Selector: map[string]string{
 			"a": "b",
 			"c": "d",
 		},
 	}
 	expected := "a=b,c=d"
-	assert.Equal(t, expected, group.requirementString())
+	assert.Equal(t, expected, group.selectorString())
 }
 
 func TestGroupSort(t *testing.T) {
 	oneCondition := &Group{
-		Name: "group with one requirement",
-		Requirements: map[string]string{
+		Name: "group with one selector",
+		Selector: map[string]string{
 			"region": "a",
 		},
 	}
 	twoConditions := &Group{
-		Name: "group with two requirements",
-		Requirements: map[string]string{
+		Name: "group with two selectors",
+		Selector: map[string]string{
 			"region": "a",
 			"zone":   "z",
 		},
 	}
 	dualConditions := &Group{
-		Name: "group with two requirements",
-		Requirements: map[string]string{
+		Name: "group with two selectors",
+		Selector: map[string]string{
 			"region": "b",
 			"zone":   "z",
 		},
@@ -144,8 +144,8 @@ func TestGroupSort(t *testing.T) {
 	}
 	// assert that
 	// - Group ordering is deterministic
-	// - Groups are sorted by increasing Requirements length
-	// - when Requirements are equal in length, sort by key=value strings.
+	// - Groups are sorted by increasing Selector length
+	// - when Selectors are equal in length, sort by key=value strings.
 	for _, c := range cases {
 		sort.Sort(ByReqs(c.input))
 		assert.Equal(t, c.expected, c.input)

@@ -2,7 +2,7 @@
   "id": "node1",
   "name": "etcd Node 1",
   "profile": "etcd",
-  "requirements": {
+  "selector": {
     "uuid": "16e7d8a7-bfa9-428b-9117-363341bb330b",
     "os": "installed"
   },

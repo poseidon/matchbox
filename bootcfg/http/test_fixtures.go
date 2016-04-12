@@ -13,9 +13,9 @@ var (
 	}
 
 	testGroupWithMAC = &storagepb.Group{
-		Id:           "test-group",
-		Name:         "test group",
-		Profile:      "g1h2i3j4",
-		Requirements: map[string]string{"mac": validMACStr},
+		Id:       "test-group",
+		Name:     "test group",
+		Profile:  "g1h2i3j4",
+		Selector: map[string]string{"mac": validMACStr},
 	}
 )

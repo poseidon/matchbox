@@ -9,9 +9,9 @@ message Group {
   string name = 2;
   // Profile id
   string profile = 3;
-  // tags required to match the group
-  map<string, string> requirements = 4;
-  // JSON encoded metadata (with restrictions)
+  // Selectors to match machines
+  map<string, string> selector = 4;
+  // JSON encoded metadata
   bytes metadata = 5;
 }
 

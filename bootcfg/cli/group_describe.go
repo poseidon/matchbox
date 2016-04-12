@@ -36,5 +36,5 @@ func runGroupDescribeCmd(cmd *cobra.Command, args []string) {
 		return
 	}
 	g := resp.Group
-	fmt.Fprintf(tw, "%s\t%s\t%s\t%#v\t%s\n", g.Id, g.Name, g.Requirements, g.Profile, g.Metadata)
+	fmt.Fprintf(tw, "%s\t%s\t%s\t%#v\t%s\n", g.Id, g.Name, g.Selector, g.Profile, g.Metadata)
 }

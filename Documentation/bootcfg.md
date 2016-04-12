@@ -78,15 +78,13 @@ To use Ignition, set the `coreos.config.url` kernel option to reference the `boo
 
 Groups define selectors which match zero or more machines. Machine(s) matching a group will boot and provision according to the group's `Profile` and `metadata`.
 
-Create a group definition with a `Profile` to be applied, selectors for matching machines, and any `metadata` needed to render the Ignition or Cloud config templates.
-
-For example `/var/lib/bootcfg/groups/node1.json` matches a single machine with MAC address `52:54:00:89:d8:10`.
+Create a group definition with a `Profile` to be applied, selectors for matching machines, and any `metadata` needed to render the Ignition or Cloud config templates. For example `/var/lib/bootcfg/groups/node1.json` matches a single machine with MAC address `52:54:00:89:d8:10`.
 
     # /var/lib/bootcfg/groups/node1.json
     {
       "name": "node1",
       "profile": "etcd",
-      "require": {
+      "selector": {
         "mac": "52:54:00:89:d8:10"
       },
       "metadata": {

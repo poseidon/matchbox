@@ -2,7 +2,7 @@
 	"id": "etcd-aws",
 	"name": "etcd Node",
 	"profile": "etcd-aws",
-	"requirements": {
+	"selector": {
 		"name": "etcd",
 		"platform": "aws"
 	},

@@ -41,10 +41,10 @@ func (g *Group) AssertValid() error {
 	return nil
 }
 
-// Matches returns true if the given labels satisfy all the requirements,
-// false otherwise.
+// Matches returns true if the given labels satisfy all the selector
+// requirements, false otherwise.
 func (g *Group) Matches(labels map[string]string) bool {
-	for key, val := range g.Requirements {
+	for key, val := range g.Selector {
 		if labels == nil || labels[key] != val {
 			return false
 		}
@@ -55,7 +55,7 @@ func (g *Group) Matches(labels map[string]string) bool {
 // Normalize normalizes Group selectors according to reserved selector rules
 // which require "mac" addresses to be valid, normalized MAC addresses.
 func (g *Group) Normalize() error {
-	for key, val := range g.Requirements {
+	for key, val := range g.Selector {
 		switch strings.ToLower(key) {
 		case "mac":
 			macAddr, err := net.ParseMAC(val)
@@ -63,17 +63,17 @@ func (g *Group) Normalize() error {
 				return err
 			}
 			// range iteration copy with mutable map
-			g.Requirements[key] = macAddr.String()
+			g.Selector[key] = macAddr.String()
 		}
 	}
 	return nil
 }
 
-// requirementString returns Group requirements as a string of sorted key
-// value pairs for comparisons.
-func (g *Group) requirementString() string {
-	reqs := make([]string, 0, len(g.Requirements))
-	for key, value := range g.Requirements {
+// selectorString returns Group selectors as a string of sorted key value
+// pairs for comparisons.
+func (g *Group) selectorString() string {
+	reqs := make([]string, 0, len(g.Selector))
+	for key, value := range g.Selector {
 		reqs = append(reqs, key+"="+value)
 	}
 	// sort by "key=value" pairs for a deterministic ordering
@@ -92,11 +92,11 @@ func (g *Group) ToRichGroup() (*RichGroup, error) {
 		}
 	}
 	return &RichGroup{
-		Id:           g.Id,
-		Name:         g.Name,
-		Profile:      g.Profile,
-		Requirements: g.Requirements,
-		Metadata:     metadata,
+		Id:       g.Id,
+		Name:     g.Name,
+		Profile:  g.Profile,
+		Selector: g.Selector,
+		Metadata: metadata,
 	}, nil
 }
 
@@ -115,10 +115,10 @@ func (groups ByReqs) Swap(i, j int) {
 }
 
 func (groups ByReqs) Less(i, j int) bool {
-	if len(groups[i].Requirements) == len(groups[j].Requirements) {
-		return groups[i].requirementString() < groups[j].requirementString()
+	if len(groups[i].Selector) == len(groups[j].Selector) {
+		return groups[i].selectorString() < groups[j].selectorString()
 	}
-	return len(groups[i].Requirements) < len(groups[j].Requirements)
+	return len(groups[i].Selector) < len(groups[j].Selector)
 }
 
 // RichGroup is a user provided Group definition.
@@ -129,8 +129,8 @@ type RichGroup struct {
 	Name string `json:"name,omitempty"`
 	// Profile id
 	Profile string `json:"profile,omitempty"`
-	// tags required to match the group
-	Requirements map[string]string `json:"requirements,omitempty"`
+	// Selectors to match machines
+	Selector map[string]string `json:"selector,omitempty"`
 	// Metadata
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
 }
@@ -147,10 +147,10 @@ func (rg *RichGroup) ToGroup() (*Group, error) {
 		}
 	}
 	return &Group{
-		Id:           rg.Id,
-		Name:         rg.Name,
-		Profile:      rg.Profile,
-		Requirements: rg.Requirements,
-		Metadata:     metadata,
+		Id:       rg.Id,
+		Name:     rg.Name,
+		Profile:  rg.Profile,
+		Selector: rg.Selector,
+		Metadata: metadata,
 	}, nil
 }

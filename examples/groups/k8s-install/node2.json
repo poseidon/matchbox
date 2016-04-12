@@ -2,7 +2,7 @@
   "id": "node2",
   "name": "Worker 1",
   "profile": "k8s-worker-install",
-  "requirements": {
+  "selector": {
     "os": "installed",
     "uuid": "264cd073-ca62-44b3-98c0-50aad5b5f819"
   },

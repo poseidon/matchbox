@@ -2,7 +2,7 @@
   "id": "node3",
   "name": "Worker 2",
   "profile": "k8s-worker",
-  "requirements": {
+  "selector": {
     "uuid": "39d2e747-2648-4d68-ae92-bbc70b245055"
   },
   "metadata": {

@@ -2,7 +2,7 @@
   "id": "etcd-proxies",
   "name": "etcd Proxy",
   "profile": "etcd-proxy",
-  "requirements": {
+  "selector": {
     "os": "installed"
   },
   "metadata": {

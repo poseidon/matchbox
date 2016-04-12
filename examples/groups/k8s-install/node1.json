@@ -2,7 +2,7 @@
   "id": "node1",
   "name": "Master Node",
   "profile": "k8s-master-install",
-  "requirements": {
+  "selector": {
     "os": "installed",
     "uuid": "16e7d8a7-bfa9-428b-9117-363341bb330b"
   },

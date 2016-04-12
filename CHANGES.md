@@ -15,7 +15,8 @@
 * Groups
     - Move Groups to JSON files under `/var/lib/bootcfg/groups`
     - Require Group metadata to be valid JSON
-    - Rename groups field `spec` to `profile`
+    - Rename Group field `spec` to `profile`
+    - Rename Group field `require` to `selector`
 * Allow asset serving to be disabled with `-assets-path=""`
 * Change default `-data-path` to `/var/lib/bootcfg`
 * Change default `-assets-path` to `/var/lib/bootcfg/assets`

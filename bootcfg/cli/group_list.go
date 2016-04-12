@@ -33,6 +33,6 @@ func runGroupListCmd(cmd *cobra.Command, args []string) {
 		return
 	}
 	for _, group := range resp.Groups {
-		fmt.Fprintf(tw, "%s\t%s\t%#v\t%s\n", group.Id, group.Name, group.Requirements, group.Profile)
+		fmt.Fprintf(tw, "%s\t%s\t%#v\t%s\n", group.Id, group.Name, group.Selector, group.Profile)
 	}
 }
