@@ -14,7 +14,7 @@
     "k8s_controller_endpoint": "https://172.15.0.21",
     "k8s_dns_service_ip": "10.3.0.1",
     "k8s_etcd_endpoints": "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379",
-    "k8s_version": "v1.1.8_coreos.0",
+    "k8s_version": "v1.2.0_coreos.1",
     "networkd_address": "172.15.0.23/16",
     "networkd_dns": "172.15.0.3",
     "networkd_gateway": "172.15.0.1",

@@ -61,7 +61,7 @@ See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/late
 
 ### Verify
 
-Install the `kubectl` CLI on your host. Use the provided kubeconfig's to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
+[Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your host. Use the provided kubeconfig's to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
 
     cd /path/to/coreos-baremetal
     kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
@@ -70,7 +70,7 @@ Get all pods.
 
     kubectl --kubeconfig=examples/assets/tls/kubeconfig get pods --all-namespaces
 
-On my laptop, VMs download and network boot CoreOS in the first 45 seconds, the Kubernetes API becomes available after about 150 seconds, and add-on pods are scheduled by 180 seconds. On physical hosts and networks, OS and container image download times are a bit longer.
+On my laptop, VMs download and network boot CoreOS in the first 45 seconds, the Kubernetes API becomes available after about 150 seconds, and add-on pods are scheduled after 3 minutes. On physical hosts and networks, OS and container image download times are a bit longer.
 
 ## Tectonic
 

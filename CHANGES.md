@@ -22,8 +22,9 @@
 * Change the default assets download location to `examples/assets`
 * Remove HTTP `/spec/id` JSON endpoint
 
-#### New Examples
+#### Examples
 
+* Upgraded Kubernetes examples to v1.2.0
 * Examples which PXE boot with or without a root partition
 * Example Kubernetes cluster installed to disk
 * Example etcd cluster installed to disk

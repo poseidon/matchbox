@@ -83,7 +83,6 @@ Clean up the VM machines.
 
     sudo ./scripts/libvirt poweroff
     sudo ./scripts/libvirt destroy
-    sudo ./scripts/libvirt delete-disks
 
 ## Going Further
 
