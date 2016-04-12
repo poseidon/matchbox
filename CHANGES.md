@@ -16,10 +16,11 @@
     - Move Groups to JSON files under `/var/lib/bootcfg/groups`
     - Require Group metadata to be valid JSON
     - Rename groups field `spec` to `profile`
-* Stop parsing Groups from the `-config` YAML file. Remove the flag.
+* Allow asset serving to be disabled with `-assets-path=""`
 * Change default `-data-path` to `/var/lib/bootcfg`
 * Change default `-assets-path` to `/var/lib/bootcfg/assets`
 * Change the default assets download location to `examples/assets`
+* Stop parsing Groups from the `-config` YAML file. Remove the flag.
 * Remove HTTP `/spec/id` JSON endpoint
 
 #### Examples

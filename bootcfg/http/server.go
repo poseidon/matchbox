@@ -90,6 +90,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	}
 
 	// kernel, initrd, and TLS assets
-	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(s.assetsPath))))
+	if s.assetsPath != "" {
+		mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(s.assetsPath))))
+	}
 	return mux
 }

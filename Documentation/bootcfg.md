@@ -122,7 +122,7 @@ Client's booted with the `/ipxe.boot` endpoint will introspect and make a reques
 
 ## Assets
 
-`bootcfg` can serve arbitrary static assets from `-assets-path` at `/assets`. This is helpful for reducing bandwidth usage when serving the kernel and initrd to network booted machines.
+`bootcfg` can serve `-assets-path` static assets at `/assets`. This is helpful for reducing bandwidth usage when serving the kernel and initrd to network booted machines. The default assets-path is `/var/lib/bootcfg/assets` or you can pass `-assets-path=""` to disable asset serving.
 
     bootcfg.foo/assets/
     └── coreos

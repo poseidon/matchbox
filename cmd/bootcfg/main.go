@@ -70,10 +70,12 @@ func main() {
 		log.Fatal("A valid HTTP listen address is required")
 	}
 	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
-		log.Fatal("A path to a data directory is required")
+		log.Fatal("A valid -data-path is required")
 	}
-	if finfo, err := os.Stat(flags.assetsPath); err != nil || !finfo.IsDir() {
-		log.Fatal("A path to an assets directory is required")
+	if flags.assetsPath != "" {
+		if finfo, err := os.Stat(flags.assetsPath); err != nil || !finfo.IsDir() {
+			log.Fatalf("Provide a valid -assets-path or '' to disable asset serving: %s", flags.assetsPath)
+		}
 	}
 
 	// logging setup
@@ -104,7 +106,7 @@ func main() {
 		Store: store,
 	})
 
-	// gRPC Server (feature hidden)
+	// gRPC Server (feature disabled by default)
 	if flags.rpcAddress != "" {
 		grpcServer, err := rpc.NewServer(server)
 		if err != nil {
