@@ -24,12 +24,15 @@
 
 #### Examples
 
-* Upgraded Kubernetes examples to v1.2.0
+* Convert all Cloud-Configs to Ignition
+* Kubernetes
+    * Upgraded Kubernetes examples to v1.2.0
+    * Add example to install Kubernetes to disk
+    * Run Heapster service by default
 * Examples which PXE boot with or without a root partition
-* Example Kubernetes cluster installed to disk
 * Example etcd cluster installed to disk
 * Setup fleet in multi-node example clusters
-* Convert all Cloud-Configs to Ignition
+
 
 ## v0.2.0 (2016-02-09)
 
