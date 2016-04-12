@@ -29,12 +29,11 @@ func metadataHandler() ContextHandler {
 				return
 			}
 		}
+		for key, value := range group.Selector {
+			data[key] = value
+		}
 
 		for key, value := range data {
-			fmt.Fprintf(w, "%s=%v\n", strings.ToUpper(key), value)
-		}
-		attrs := labelsFromRequest(req)
-		for key, value := range attrs {
 			fmt.Fprintf(w, "%s=%v\n", strings.ToUpper(key), value)
 		}
 	}

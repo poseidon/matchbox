@@ -47,6 +47,9 @@ func ignitionHandler(srv server.Server) ContextHandler {
 			}
 		}
 		data["query"] = req.URL.RawQuery
+		for key, value := range group.Selector {
+			data[strings.ToLower(key)] = value
+		}
 
 		// render the template for an Ignition config with data
 		var buf bytes.Buffer

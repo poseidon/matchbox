@@ -14,7 +14,20 @@ import (
 )
 
 func TestCloudHandler(t *testing.T) {
-	content := "#cloud-config"
+	content := `#cloud-config
+coreos:
+  etcd2:
+    name: {{.uuid}}
+  units:
+    - name: {{.service_name}}
+`
+	expected := `#cloud-config
+coreos:
+  etcd2:
+    name: a1b2c3d4
+  units:
+    - name: etcd2
+`
 	store := &fake.FixedStore{
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
@@ -26,9 +39,9 @@ func TestCloudHandler(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Cloud config is rendered with Group metadata
+	// - Cloud config is rendered with Group metadata and selectors
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, content, w.Body.String())
+	assert.Equal(t, expected, w.Body.String())
 }
 
 func TestCloudHandler_MissingCtxProfile(t *testing.T) {

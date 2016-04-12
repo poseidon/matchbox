@@ -49,6 +49,9 @@ func cloudHandler(srv server.Server) ContextHandler {
 				return
 			}
 		}
+		for key, value := range group.Selector {
+			data[strings.ToLower(key)] = value
+		}
 
 		// render the template of a cloud config with data
 		var buf bytes.Buffer

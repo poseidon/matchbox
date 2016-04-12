@@ -13,10 +13,10 @@ import (
 	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
-var expectedIgnition = `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
+var expectedIgnition = `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true}]},"networkd":{},"passwd":{}}`
 
 func TestIgnitionHandler(t *testing.T) {
-	content := `{"ignitionVersion": 1,"systemd":{"units":[{"name":"{{.service_name}}.service","enable":true}]}}`
+	content := `{"ignitionVersion": 1,"systemd":{"units":[{"name":"{{.service_name}}.service","enable":true},{"name":"{{.uuid}}.service","enable":true}]}}`
 	store := &fake.FixedStore{
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		IgnitionConfigs: map[string]string{fake.Profile.IgnitionId: content},
@@ -28,7 +28,7 @@ func TestIgnitionHandler(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Ignition template is rendered with Group metadata
+	// - Ignition template is rendered with Group metadata and selectors
 	// - Rendered Ignition template is parsed as JSON
 	// - Ignition Config served as JSON
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -43,6 +43,8 @@ systemd:
   units:
     - name: {{.service_name}}.service
       enable: true
+    - name: {{.uuid}}.service
+      enable: true
 `
 	store := &fake.FixedStore{
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
@@ -55,7 +57,7 @@ systemd:
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Ignition template is rendered with Group metadata
+	// - Ignition template is rendered with Group metadata and selectors
 	// - Rendered Ignition template ending in .yaml is parsed as YAML
 	// - Ignition Config served as JSON
 	assert.Equal(t, http.StatusOK, w.Code)
