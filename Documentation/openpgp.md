@@ -9,12 +9,12 @@ Here are example signature endpoints without their query parameters.
 
 | Endpoint   | Signature Endpoint | ASCII Signature Endpoint |
 |------------|--------------------|-------------------------|
-| Ignition   | `http://bootcfg.foo/ignition.sig` | `http://bootcfg.foo/ignition.asc` |
-| Cloud-init | `http://bootcfg.foo/cloud.sig` | `http://bootcfg.foo/cloud.asc` |
-| iPXE       | `http://bootcfg.foo/boot.ipxe.sig` | `http://bootcfg.foo/boot.ipxe.asc` |
 | iPXE       | `http://bootcfg.foo/ipxe.sig` | `http://bootcfg.foo/ipxe.asc` |
 | Pixiecore  | `http://bootcfg/pixiecore/v1/boot.sig/:MAC` | `http://bootcfg/pixiecore/v1/boot.asc/:MAC` |
 | GRUB2      | `http://bootcf.foo/grub.sig` | `http://bootcfg.foo/grub.asc` |
+| Ignition   | `http://bootcfg.foo/ignition.sig` | `http://bootcfg.foo/ignition.asc` |
+| Cloud-Config | `http://bootcfg.foo/cloud.sig` | `http://bootcfg.foo/cloud.asc` |
+| Metadata   | `http://bootcfg.foo/metadata.sig` | `http://bootcfg.foo/metadata.asc` |
 
 In production, mount your signing keyring and source the passphrase from a [Kubernetes secret](http://kubernetes.io/v1.1/docs/user-guide/secrets.html). Use a signing subkey exported to a keyring by itself, which can be revoked by a primary key, if needed.
 

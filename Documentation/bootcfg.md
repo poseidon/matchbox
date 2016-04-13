@@ -1,13 +1,13 @@
 
 # bootcfg
 
-`bootcfg` is a HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create clusters of CoreOS machines. `bootcfg` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. UUID, MAC address, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config). The aim is to use CoreOS Linux's early-boot capabilities to provision CoreOS machines into clusters.
+`bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. `bootcfg` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. UUID, MAC address, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config). The aim is to use CoreOS Linux's early-boot capabilities to provision CoreOS machines.
 
-Network boot endpoints provide PXE, iPXE, GRUB, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) support. The `bootcfg` service can be run as binary, as an [application container](https://github.com/appc/spec) with rkt, or as a Docker container.
+Network boot endpoints provide PXE, iPXE, GRUB, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with rkt, or as a Docker container.
 
 ## Getting Started
 
-Get started running `bootcfg` on your laptop, with rkt or Docker, to network boot libvirt VMs into CoreOS clusters.
+Get started running `bootcfg` on your Linux machine, with rkt or Docker, to network boot virtual or physical machines into CoreOS clusters.
 
 * [Getting Started with rkt](getting-started-rkt.md)
 * [Getting Started with Docker](getting-started-docker.md)
@@ -22,11 +22,11 @@ See [API](api.md)
 
 ## Data
 
-A `Store` stores machine Profiles, Groups, Ignition configs, and cloud-configs. By default, `bootcfg` uses a `FileStore` to search a `-data-path` for these resources ([#133](https://github.com/coreos/coreos-baremetal/issues/133)).
+A `Store` stores machine Profiles, Groups, Ignition configs, and cloud-configs. By default, `bootcfg` uses a `FileStore` to search a `-data-path` for these resources.
 
 Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` subdirectories. You may wish to keep these files under version control. The [examples](../examples) directory is a valid target with some pre-defined configs and templates.
 
-     /etc/bootcfg
+     /var/lib/bootcfg
      ├── cloud
      │   ├── cloud.yaml
      │   └── worker.sh
@@ -42,14 +42,14 @@ Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` sub
          └── etcd.json
          └── worker.json
 
-Ignition templates can be JSON or YAML files. Cloud-Config templates can be a script or YAML file. Both may contain may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed machine group [metadata](#groups-and-metadata). For details and examples:
+Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Both may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
 
 * [Ignition Config](ignition.md)
 * [Cloud-Config](cloud-config.md)
 
 ### Profiles
 
-Profiles specify the Ignition config, Cloud-Config, and network boot config to be used by machine(s).
+Profiles specify a Ignition config, Cloud-Config, and network boot config.
 
     {
         "id": "etcd",
@@ -94,7 +94,7 @@ Create a group definition with a `Profile` to be applied, selectors for matching
       }
     }
 
-While `/var/lib/bootcfg/groups/proxy.json` is the default machine group, since it has no selectors.
+Meanwhile, `/var/lib/bootcfg/groups/proxy.json` acts as the default machine group since it has no selectors.
 
     {
       "name": "etcd-proxy",
@@ -113,10 +113,10 @@ Some labels are normalized or parsed specially because they have reserved semant
 
 * `uuid` - machine UUID
 * `mac` - network interface physical address (MAC address)
-* `hostname`
-* `serial`
+* `hostname` - hostname reported by a network boot program
+* `serial` - serial reported by a network boot program
 
-Client's booted with the `/ipxe.boot` endpoint will introspect and make a request to `/ipxe` with the `uuid`, `mac`, `hostname`, and `serial` value as query arguments. Pixiecore which can only detect MAC addresss and cannot substitute it into later config requests ([issue](https://github.com/coreos/coreos-baremetal/issues/36)).
+Client's booted with the `/ipxe.boot` endpoint will introspect and make a request to `/ipxe` with the `uuid`, `mac`, `hostname`, and `serial` value as query arguments. Pixiecore can only detect MAC addresss and cannot substitute it into later config requests ([issue](https://github.com/coreos/coreos-baremetal/issues/36)).
 
 ## Assets
 

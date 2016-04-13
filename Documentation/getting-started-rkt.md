@@ -1,12 +1,13 @@
+
 # Getting Started with rkt
 
-In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of CoreOS machines. You'll be able to create Kubernetes clustes, etcd clusters, or just install CoreOS and test network setups locally.
+In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
 
 ## Requirements
 
 Install [rkt](https://github.com/coreos/rkt/releases) and [acbuild](https://github.com/appc/acbuild/releases) from the latest releases ([example script](https://github.com/dghubble/phoenix/blob/master/scripts/fedora/sources.sh)). Optionally setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
 
-Install package dependencies.
+Next, install the package dependencies.
 
     # Fedora
     sudo dnf install virt-install virt-manager
@@ -54,24 +55,24 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 #### Latest
 
-Run the latest ACI with rkt with the `etcd` example.
+Run the latest ACI with rkt and the `etcd` example.
 
     sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
-Note: The insecure flag is needed for this case, since [Quay.io](https://quay.io/repository/coreos/bootcfg) serves ACIs coverted from Docker images (docker2aci) and Docker images don't support signatures.
+Note: The insecure flag is needed since [Quay.io](https://quay.io/repository/coreos/bootcfg) serves ACIs coverted from Docker images (docker2aci) and Docker images don't support signatures.
 
 #### Release
 
-Alternately, run a recent tagged and signed [release](https://github.com/coreos/coreos-baremetal/releases). Trust the [CoreOS App Signing Key](https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg) for image signature verification.
+Alternately, run the most recent tagged and signed [release](https://github.com/coreos/coreos-baremetal/releases). Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
 
     sudo rkt trust --prefix coreos.com/bootcfg
     # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/assets --volume assets,kind=host,source=$PWD/assets --mount volume=data,target=/data --volume data,kind=host,source=$PWD/examples coreos.com/bootcfg:v0.2.0 -- -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-rkt.yaml
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.3.0 -- -address=0.0.0.0:8080 -log-level=debug
 
 If you get an error about the IP assignment, garbage collect old pods.
 
     sudo rkt gc --grace-period=0
-    ./scripts/rkt-gc-force
+    ./scripts/rkt-gc-force             # sometimes needed
 
 Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service.
 
@@ -83,7 +84,7 @@ Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how 
 
 Since the virtual network has no network boot services, use the `dnsmasq` ACI to create an iPXE network boot environment which runs DHCP, DNS, and TFTP.
 
-Trust the [CoreOS App Signing Key](https://coreos.com/dist/pubkeys/app-signing-pubkey.gpg).
+Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
     sudo rkt trust --prefix coreos.com/dnsmasq
     # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E

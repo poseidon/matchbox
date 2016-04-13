@@ -1,14 +1,13 @@
 
-
 # Getting Started with Docker
 
-In this tutorial, we'll run `bootcfg` on your Linux machine with Docker to network boot and provision a cluster of CoreOS machines. You'll be able to create Kubernetes clustes, etcd clusters, or just install CoreOS and test network setups locally.
+In this tutorial, we'll run `bootcfg` on your Linux machine with Docker to network boot and provision a cluster of CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
 
 If you're ready to try [rkt](https://coreos.com/rkt/docs/latest/), see [Getting Started with rkt](getting-started-rkt.md).
 
 ## Requirements
 
-Install the dependencies and start the Docker daemon.
+Install the package dependencies and start the Docker daemon.
 
     # Fedora
     sudo dnf install docker virt-install virt-manager
@@ -38,9 +37,9 @@ Run the latest Docker image from `quay.io/coreos/bootcfg` with the `etcd-docker`
 
 #### Release
 
-Alternately, run a recent tagged [release](https://github.com/coreos/coreos-baremetal/releases).
+Alternately, run the most recent tagged [release](https://github.com/coreos/coreos-baremetal/releases).
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/data:Z -v $PWD/assets:/assets:Z quay.io/coreos/bootcfg:v0.2.0 -address=0.0.0.0:8080 -log-level=debug -config /data/etcd-docker.yaml
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd-docker:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:v0.3.0 -address=0.0.0.0:8080 -log-level=debug
 
 Take a look at the [etcd groups](../examples/groups/etcd-docker) to get an idea of how machines are mapped to Profiles. Explore some endpoints port mapped to localhost:8080.
 

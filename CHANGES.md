@@ -2,7 +2,7 @@
 
 ## Latest
 
-## v0.3.0
+## v0.3.0 (2016-04-14)
 
 #### Features
 
@@ -25,7 +25,7 @@
     - Rename Group field `spec` to `profile`
     - Rename Group field `require` to `selector` (#147)
 * Allow asset serving to be disabled with `-assets-path=""` (#118)
-* Allow `selector` key/value pairs to be used in Ignition and Cloud config teplates (#64)
+* Allow `selector` key/value pairs to be used in Ignition and Cloud config templates (#64)
 * Change default `-data-path` to `/var/lib/bootcfg` (#132)
 * Change default `-assets-path` to `/var/lib/bootcfg/assets` (#132)
 * Change the default assets download location to `examples/assets`
