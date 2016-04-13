@@ -1,6 +1,8 @@
-data/
+contrib/
+Documentation/
+examples/
 Godeps/
+scripts/
 vendor/
-assets/
 vagrant/
 *.aci

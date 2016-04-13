@@ -3,8 +3,8 @@ sudo: required
 services:
   - docker
 go:
-  - 1.5.3
-  - 1.6
+  - 1.5.4
+  - 1.6.1
   - tip
 matrix:
   allow_failures:
@@ -22,7 +22,7 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    go: '1.5.3'
+    go: '1.6.1'
     condition: "$TRAVIS_PULL_REQUEST = false"
 notifications:
   email: false

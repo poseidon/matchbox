@@ -2,24 +2,32 @@
 
 ## Latest
 
-* Add initial gRPC client and server packages
-* Add initial Grub net boot support and an example
-* Add initial command line client tool
+## v0.3.0
+
+#### Features
+
+* Add server library package for implementing servers
+* Add initial gRPC client/server and a CLI tool
+    - Allow listing, viewing, and creating Groups and Profiles
+* Add initial Grub net boot support examples
 * Add detached OpenPGP signature endpoints (`.sig`)
+* Document deployment as a binary with systemd
+* Upgrade from Go 1.5.3 to Go 1.6.1 (#139)
 
 #### Changes
 
 * Profiles
     - Move Profiles to JSON files under `/var/lib/bootcfg/profiles`
-    - Rename `Spec` to `Profile`
+    - Rename `Spec` to `Profile` (#104)
 * Groups
     - Move Groups to JSON files under `/var/lib/bootcfg/groups`
     - Require Group metadata to be valid JSON
     - Rename Group field `spec` to `profile`
-    - Rename Group field `require` to `selector`
-* Allow asset serving to be disabled with `-assets-path=""`
-* Change default `-data-path` to `/var/lib/bootcfg`
-* Change default `-assets-path` to `/var/lib/bootcfg/assets`
+    - Rename Group field `require` to `selector` (#147)
+* Allow asset serving to be disabled with `-assets-path=""` (#118)
+* Allow `selector` key/value pairs to be used in Ignition and Cloud config teplates (#64)
+* Change default `-data-path` to `/var/lib/bootcfg` (#132)
+* Change default `-assets-path` to `/var/lib/bootcfg/assets` (#132)
 * Change the default assets download location to `examples/assets`
 * Stop parsing Groups from the `-config` YAML file. Remove the flag.
 * Remove HTTP `/spec/id` JSON endpoint
@@ -28,11 +36,11 @@
 
 * Convert all Cloud-Configs to Ignition
 * Kubernetes
-    * Upgraded Kubernetes examples to v1.2.0
-    * Add example to install Kubernetes to disk
-    * Run Heapster service by default
-* Examples which PXE boot with or without a root partition
-* Example etcd cluster installed to disk
+    * Upgraded Kubernetes examples to v1.2.0 (#122)
+    * Run Heapster service by default (#142)
+    * Example multi-node Kubernetes cluster installed to disk
+* Example multi-node etcd cluster installed to disk
+* Example which PXE boots with or without a root partition
 * Setup fleet in multi-node example clusters
 
 
