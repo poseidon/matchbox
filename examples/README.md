@@ -5,9 +5,9 @@ These examples network boot and provision VMs into CoreOS clusters using `bootcf
 
 | Name       | Description | CoreOS Version | FS | Reference | 
 |------------|-------------|----------------|----|-----------|
-| pxe | CoreOS via iPXE | alpha/962.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS via GRUB2 Netboot | beta/899.6.0 | RAM | NA |
-| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/962.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| pxe | CoreOS via iPXE | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS via GRUB2 Netboot | alpha/983.0.0 | RAM | NA |
+| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | etcd, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | etcd-install | Install a 3-node etcd cluster to disk | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | k8s, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
