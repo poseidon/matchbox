@@ -452,15 +452,16 @@ storage:
                 }
               }
             }
-        - path: /srv/kubernetes/manifests/heapster-rc.json
+        - path: /srv/kubernetes/manifests/heapster-deployment.json
           contents: |
             {
-              "apiVersion": "v1",
-              "kind": "ReplicationController",
+              "apiVersion": "extensions/v1beta1",
+              "kind": "Deployment",
               "metadata": {
                 "labels": {
                   "k8s-app": "heapster",
-                  "kubernetes.io/cluster-service": "true"
+                  "kubernetes.io/cluster-service": "true",
+                  "version": "v1.0.2"
                 },
                 "name": "heapster-v1.0.2",
                 "namespace": "kube-system"
@@ -468,13 +469,16 @@ storage:
               "spec": {
                 "replicas": 1,
                 "selector": {
-                  "k8s-app": "heapster"
+                  "matchLabels": {
+                    "k8s-app": "heapster",
+                    "version": "v1.0.2"
+                  }
                 },
                 "template": {
                   "metadata": {
                     "labels": {
                       "k8s-app": "heapster",
-                      "kubernetes.io/cluster-service": "true"
+                      "version": "v1.0.2"
                     }
                   },
                   "spec": {
@@ -490,11 +494,54 @@ storage:
                         "resources": {
                           "limits": {
                             "cpu": "100m",
-                            "memory": "208Mi"
+                            "memory": "250Mi"
                           },
                           "requests": {
                             "cpu": "100m",
-                            "memory": "208Mi"
+                            "memory": "250Mi"
+                          }
+                        }
+                      },
+                      {
+                        "command": [
+                          "/pod_nanny",
+                          "--cpu=100m",
+                          "--extra-cpu=0m",
+                          "--memory=250Mi",
+                          "--extra-memory=4Mi",
+                          "--threshold=5",
+                          "--deployment=heapster-v1.0.2",
+                          "--container=heapster",
+                          "--poll-period=300000"
+                        ],
+                        "env": [
+                          {
+                            "name": "MY_POD_NAME",
+                            "valueFrom": {
+                              "fieldRef": {
+                                "fieldPath": "metadata.name"
+                              }
+                            }
+                          },
+                          {
+                            "name": "MY_POD_NAMESPACE",
+                            "valueFrom": {
+                              "fieldRef": {
+                                "fieldPath": "metadata.namespace"
+                              }
+                            }
+                          }
+                        ],
+                        "image": "gcr.io/google_containers/addon-resizer:1.0",
+                        "name": "heapster-nanny",
+                        "resources": {
+                          "limits": {
+                            "cpu": "50m",
+                            "memory": "100Mi"
+                          },
+                          "requests": {
+                            "cpu": "50m",
+                            "memory": "100Mi"
                           }
                         }
                       }
@@ -579,7 +626,7 @@ storage:
             curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-rc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
             curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
             echo "K8S: Heapster addon"
-            curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-rc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
+            curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-deployment.json)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
             curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
             
 networkd:
