@@ -5,6 +5,8 @@
 
 Network boot endpoints provide PXE, iPXE, GRUB, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with rkt, or as a Docker container.
 
+<img src='img/overview.png' class="img-center" alt="Bootcfg Overview"/>
+
 ## Getting Started
 
 Get started running `bootcfg` on your Linux machine, with rkt or Docker, to network boot virtual or physical machines into CoreOS clusters.
@@ -12,15 +14,14 @@ Get started running `bootcfg` on your Linux machine, with rkt or Docker, to netw
 * [bootcfg with rkt](getting-started-rkt.md)
 * [bootcfg with Docker](getting-started-docker.md)
 
-<img src='img/overview.png' class="img-center" alt="Bootcfg Overview"/>
-
 ## Flags
 
 See [flags and variables](config.md)
 
 ## API
 
-See [API](api.md)
+* [HTTP API](api.md)
+* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
 
 ## Data
 
@@ -43,11 +44,6 @@ Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` sub
      └── profiles
          └── etcd.json
          └── worker.json
-
-Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Both may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
-
-* [Ignition Config](ignition.md)
-* [Cloud-Config](cloud-config.md)
 
 ### Profiles
 
@@ -75,6 +71,13 @@ The `"boot"` settings will be used to render configs to network boot programs su
 To use cloud-config, set the `cloud-config-url` kernel option to reference the `bootcfg` [Cloud-Config endpoint](api.md#cloud-config), which will render the `cloud_id` file.
 
 To use Ignition, set the `coreos.config.url` kernel option to reference the `bootcfg` [Ignition endpoint](api.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
+
+### Configs
+
+Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Both may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
+
+* [Ignition Config](ignition.md)
+* [Cloud-Config](cloud-config.md)
 
 ## Groups and Metadata
 
