@@ -74,18 +74,24 @@ func (s *FixedStore) ProfileList() ([]*storagepb.Profile, error) {
 	return profiles, nil
 }
 
-// IgnitionGet returns the Ignition config with the given id.
-func (s *FixedStore) IgnitionGet(id string) (string, error) {
-	if config, present := s.IgnitionConfigs[id]; present {
-		return config, nil
-	}
-	return "", fmt.Errorf("no Ignition Config %s", id)
+// IgnitionPut create or updates an Ignition template.
+func (s *FixedStore) IgnitionPut(name string, config []byte) error {
+	s.IgnitionConfigs[name] = string(config)
+	return nil
 }
 
-// CloudGet returns the Cloud config with the given id.
-func (s *FixedStore) CloudGet(id string) (string, error) {
-	if config, present := s.CloudConfigs[id]; present {
+// IgnitionGet returns an Ignition template by name.
+func (s *FixedStore) IgnitionGet(name string) (string, error) {
+	if config, present := s.IgnitionConfigs[name]; present {
 		return config, nil
 	}
-	return "", fmt.Errorf("no Cloud Config %s", id)
+	return "", fmt.Errorf("no Ignition template %s", name)
+}
+
+// CloudGet returns a Cloud-config template by name.
+func (s *FixedStore) CloudGet(name string) (string, error) {
+	if config, present := s.CloudConfigs[name]; present {
+		return config, nil
+	}
+	return "", fmt.Errorf("no Cloud-Config template %s", name)
 }

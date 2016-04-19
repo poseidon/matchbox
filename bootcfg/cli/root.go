@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/client"
 	"github.com/spf13/cobra"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/client"
 )
 
 var (

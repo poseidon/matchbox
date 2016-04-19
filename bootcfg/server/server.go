@@ -38,9 +38,12 @@ type Server interface {
 	// List all Profiles.
 	ProfileList(context.Context, *pb.ProfileListRequest) ([]*storagepb.Profile, error)
 
-	// Returns an Ignition config tempate by name.
+	// Create or update an Ignition template.
+	IgnitionPut(context.Context, *pb.IgnitionPutRequest) (string, error)
+	// Get an Ignition template by name.
 	IgnitionGet(ctx context.Context, name string) (string, error)
-	// Returns a Cloud config template by name.
+
+	// Get a Cloud-Config template by name.
 	CloudGet(ctx context.Context, name string) (string, error)
 }
 
@@ -148,7 +151,16 @@ func (s *server) SelectProfile(ctx context.Context, req *pb.SelectProfileRequest
 	return nil, ErrNoMatchingGroup
 }
 
-// IgnitionGet gets an Ignition Config template by name.
+// IgnitionPut creates or updates an Ignition template by name.
+func (s *server) IgnitionPut(ctx context.Context, req *pb.IgnitionPutRequest) (string, error) {
+	err := s.store.IgnitionPut(req.Name, req.Config)
+	if err != nil {
+		return "", err
+	}
+	return string(req.Config), err
+}
+
+// IgnitionGet gets an Ignition template by name.
 func (s *server) IgnitionGet(ctx context.Context, name string) (string, error) {
 	return s.store.IgnitionGet(name)
 }

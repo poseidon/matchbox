@@ -39,12 +39,17 @@ func (s *EmptyStore) ProfileList() (profiles []*storagepb.Profile, err error) {
 	return profiles, nil
 }
 
-// IgnitionGet get returns an Ignition config not found error.
-func (s *EmptyStore) IgnitionGet(id string) (string, error) {
-	return "", fmt.Errorf("no Ignition Config %s", id)
+// IgnitionPut returns an error writing any Ignition template.
+func (s *EmptyStore) IgnitionPut(name string, config []byte) error {
+	return fmt.Errorf("emptyStore does not accept Ignition templates")
 }
 
-// CloudGet returns a Cloud config not found error.
-func (s *EmptyStore) CloudGet(id string) (string, error) {
-	return "", fmt.Errorf("no Cloud Config %s", id)
+// IgnitionGet get returns an Ignition template not found error.
+func (s *EmptyStore) IgnitionGet(name string) (string, error) {
+	return "", fmt.Errorf("no Ignition template %s", name)
+}
+
+// CloudGet returns a Cloud-config template not found error.
+func (s *EmptyStore) CloudGet(name string) (string, error) {
+	return "", fmt.Errorf("no Cloud-Config template %s", name)
 }

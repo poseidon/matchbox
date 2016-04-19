@@ -10,7 +10,6 @@ import (
 
 // selectServer wraps a bootcfg Server to be suitable for gRPC registration.
 type selectServer struct {
-	// bootcfg Server
 	srv server.Server
 }
 

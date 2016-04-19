@@ -28,8 +28,11 @@ type Store interface {
 	// ProfileList lists all profiles.
 	ProfileList() ([]*storagepb.Profile, error)
 
-	// IgnitionGet gets an Ignition Config template by name.
+	// IgnitionPut creates or updates an Ignition template.
+	IgnitionPut(name string, config []byte) error
+	// IgnitionGet gets an Ignition template by name.
 	IgnitionGet(name string) (string, error)
+
 	// CloudGet gets a Cloud-Config template by name.
 	CloudGet(name string) (string, error)
 }
