@@ -22,6 +22,11 @@ func init() {
 }
 
 func runProfileDescribeCmd(cmd *cobra.Command, args []string) {
+	if len(args) != 1 {
+		cmd.Help()
+		return
+	}
+
 	tw := newTabWriter(os.Stdout)
 	defer tw.Flush()
 	// legend
