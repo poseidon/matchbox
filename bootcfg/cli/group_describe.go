@@ -22,8 +22,14 @@ func init() {
 }
 
 func runGroupDescribeCmd(cmd *cobra.Command, args []string) {
+	if len(args) != 1 {
+		cmd.Help()
+		return
+	}
+
 	tw := newTabWriter(os.Stdout)
 	defer tw.Flush()
+
 	// legend
 	fmt.Fprintf(tw, "ID\tNAME\tSELECTORS\tPROFILE\tMETADATA\n")
 
