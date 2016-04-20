@@ -130,6 +130,22 @@ func TestProfileList(t *testing.T) {
 	}
 }
 
+func TestIgnitionPut(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// - Ignition template creation was successful
+	// - Ignition template can be retrieved by name
+	err = store.IgnitionPut(fake.IgnitionYAMLName, []byte(fake.IgnitionYAML))
+	assert.Nil(t, err)
+	template, err := store.IgnitionGet(fake.IgnitionYAMLName)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.IgnitionYAML, template)
+}
+
 func TestIgnitionGet(t *testing.T) {
 	contents := `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
 	dir, err := setup(&fake.FixedStore{

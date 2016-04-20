@@ -3,10 +3,11 @@ package cli
 import (
 	"io/ioutil"
 
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
+
+	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 // groupPutCmd creates and updates Groups.

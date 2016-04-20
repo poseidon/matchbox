@@ -21,6 +21,11 @@ service Profiles {
   rpc ProfileList(messagepb.ProfileListRequest) returns (messagepb.ProfileListResponse) {};
 }
 
+service Ignition {
+  // Create or update an Ignition template.
+  rpc IgnitionPut(messagepb.IgnitionPutRequest) returns (messagepb.IgnitionPutResponse) {};
+}
+
 service Select {
   // SelectGroup returns the Group matching the given labels.
   rpc SelectGroup(messagepb.SelectGroupRequest) returns (messagepb.SelectGroupResponse) {};

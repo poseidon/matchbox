@@ -43,12 +43,17 @@ func (s *BrokenStore) ProfileList() (profiles []*storagepb.Profile, err error) {
 	return profiles, errIntentional
 }
 
+// IgnitionPut returns an error.
+func (s *BrokenStore) IgnitionPut(name string, config []byte) error {
+	return errIntentional
+}
+
 // IgnitionGet returns an error.
-func (s *BrokenStore) IgnitionGet(id string) (string, error) {
+func (s *BrokenStore) IgnitionGet(name string) (string, error) {
 	return "", errIntentional
 }
 
 // CloudGet returns an error.
-func (s *BrokenStore) CloudGet(id string) (string, error) {
+func (s *BrokenStore) CloudGet(name string) (string, error) {
 	return "", errIntentional
 }

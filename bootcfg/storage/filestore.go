@@ -112,7 +112,12 @@ func (s *fileStore) ProfileList() ([]*storagepb.Profile, error) {
 	return profiles, nil
 }
 
-// IgnitionGet gets an Ignition Config template by name.
+// IgnitionPut creates or updates an Ignition template.
+func (s *fileStore) IgnitionPut(name string, config []byte) error {
+	return Dir(s.root).writeFile(filepath.Join("ignition", name), config)
+}
+
+// IgnitionGet gets an Ignition template by name.
 func (s *fileStore) IgnitionGet(name string) (string, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("ignition", name))
 	return string(data), err

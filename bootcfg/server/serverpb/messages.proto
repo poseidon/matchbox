@@ -58,3 +58,10 @@ message ProfileListRequest {}
 message ProfileListResponse {
   repeated storagepb.Profile profiles = 1;
 }
+
+message IgnitionPutRequest {
+  string name = 1;
+  bytes config = 2;
+}
+
+message IgnitionPutResponse {}

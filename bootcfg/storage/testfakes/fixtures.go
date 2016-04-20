@@ -35,4 +35,15 @@ var (
 		CloudId:    "cloud-config.yml",
 		IgnitionId: "ignition.json",
 	}
+
+	// IgnitionYAMLName is an Ignition template name for testing.
+	IgnitionYAMLName = "ignition.yaml"
+
+	// IgnitionYAML is an Ignition template for testing.
+	IgnitionYAML = `ignition_version: 1
+systemd:
+  units:
+    - name: etcd2.service
+      enable: true
+`
 )

@@ -13,5 +13,6 @@ func NewServer(s server.Server, opts ...grpc.ServerOption) (*grpc.Server, error)
 	rpcpb.RegisterGroupsServer(grpcServer, newGroupServer(s))
 	rpcpb.RegisterProfilesServer(grpcServer, newProfileServer(s))
 	rpcpb.RegisterSelectServer(grpcServer, newSelectServer(s))
+	rpcpb.RegisterIgnitionServer(grpcServer, newIgnitionServer(s))
 	return grpcServer, nil
 }

@@ -175,3 +175,29 @@ func TestProfiles_BrokenStore(t *testing.T) {
 	_, err = srv.ProfileList(context.Background(), &pb.ProfileListRequest{})
 	assert.Error(t, err)
 }
+
+func TestIgnitionPut(t *testing.T) {
+	srv := NewServer(&Config{Store: fake.NewFixedStore()})
+	req := &pb.IgnitionPutRequest{
+		Name:   fake.IgnitionYAMLName,
+		Config: []byte(fake.IgnitionYAML),
+	}
+	_, err := srv.IgnitionPut(context.Background(), req)
+	// assert that:
+	// - Ignition template creation is successful
+	// - Ignition template can be retrieved by name
+	assert.Nil(t, err)
+	template, err := srv.IgnitionGet(context.Background(), fake.IgnitionYAMLName)
+	assert.Equal(t, fake.IgnitionYAML, template)
+	assert.Nil(t, err)
+}
+
+func TestIgnition_BrokenStore(t *testing.T) {
+	srv := NewServer(&Config{&fake.BrokenStore{}})
+	req := &pb.IgnitionPutRequest{
+		Name:   fake.IgnitionYAMLName,
+		Config: []byte(fake.IgnitionYAML),
+	}
+	_, err := srv.IgnitionPut(context.Background(), req)
+	assert.Error(t, err)
+}
