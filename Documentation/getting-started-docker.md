@@ -31,13 +31,13 @@ Download the CoreOS PXE image assets to `examples/assets`.
 
 #### Latest
 
-Run the latest Docker image from `quay.io/coreos/bootcfg` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
+Run the latest `bootcfg` Docker image from `quay.io/coreos/bootcfg` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd-docker:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
 
 #### Release
 
-Alternately, run the most recent tagged [release](https://github.com/coreos/coreos-baremetal/releases).
+Alternately, run the most recent tagged `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases).
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd-docker:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:v0.3.0 -address=0.0.0.0:8080 -log-level=debug
 

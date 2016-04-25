@@ -8,18 +8,20 @@ These examples network boot and provision VMs into CoreOS clusters using `bootcf
 | pxe | CoreOS via iPXE | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | grub | CoreOS via GRUB2 Netboot | alpha/983.0.0 | RAM | NA |
 | pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| etcd, etcd-docker | Cluster with 3 etcd nodes, 2 proxies | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd, etcd-docker | iPXE boot a 3 node etcd cluster and proxy | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | etcd-install | Install a 3-node etcd cluster to disk | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | k8s, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
 | k8s-install | Install a Kubernetes cluster to disk (1 master) | alpha/983.0.0 | Disk | [reference](https://github.com/coreos/coreos-kubernetes) |
+| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/983.0.0 | Disk |
+| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/983.0.0 | Disk |
 
 ## Experimental
 
-These CoreOS clusters are experimental and have **NOT** been hardened for production yet. They demonstrate Ignition and cloud-init provisioning of higher order clusters.
+These examples demonstrate booting and provisioning various (often experimental) CoreOS clusters. They have **NOT** been hardened for production yet. You should write or adapt Ignition configs to suit your needs and hardware.
 
 ## Getting Started
 
-Get started running the `bootcfg` on your Linux machine to boot clusters of libvirt PXE VMs.
+Get started running `bootcfg` on your Linux machine to network boot clusters of libvirt VMs.
 
 * [Getting Started with rkt](../Documentation/getting-started-rkt.md)
 * [Getting Started with Docker](../Documentation/getting-started-docker.md)

@@ -34,11 +34,13 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
 
 ### Examples
 
-Check the [examples](examples) to find Profiles for booting and provisioning machines into higher-order CoreOS clusters. Network boot [libvirt](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
+The [examples](examples) show how to network boot and provision higher-order CoreOS clusters. Network boot [libvirt](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
 
-* Multi-node Kubernetes cluster with TLS (network booted or installed to disk)
-* Multi-node etcd cluster (network booted or installed to disk)
+* Multi-node [Static Kubernetes cluster](examples/README.md) with TLS
+* Multi-node [Self-hosted Kubernetes cluster](Documentation/bootkube.md)
+* Multi-node etcd cluster
+* Network boot or Install to Disk
 * Multi-stage CoreOS installs
-* GRUB Netboot CoreOS
+* [GRUB Netboot](Documentation/dev/grub.md) CoreOS
 * iPXE Boot CoreOS with a root fs
 * iPXE Boot CoreOS

@@ -2,6 +2,9 @@
 
 ## Latest
 
+* Add self-hosted Kubernetes example (PXE boot or install to disk)
+* Fix a bug in the k8s example k8s-certs@.service file check (#156)
+
 ## v0.3.0 (2016-04-14)
 
 #### Features

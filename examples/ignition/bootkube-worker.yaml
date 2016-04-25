@@ -1,0 +1,118 @@
+---
+ignition_version: 1
+systemd:
+  units:
+    - name: etcd2.service
+      enable: true
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_NAME={{.etcd_name}}"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+    - name: flanneld.service
+      enable: true
+    - name: fleet.service
+      enable: true
+      dropins:
+        - name: 40-fleet-metadata.conf
+          contents: |
+            [Service]
+            Environment="FLEET_METADATA={{.fleet_metadata}}"
+    - name: docker.service
+      enable: true
+      dropins:
+        - name: 40-flannel.conf
+          contents: |
+            [Unit]
+            Requires=flanneld.service
+            After=flanneld.service
+    - name: kubelet.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Kubelet via Hyperkube ACI
+        Requires=flanneld.service
+        After=flanneld.service
+        [Service]
+        Environment=KUBELET_ACI=quay.io/aaron_levy/hyperkube
+        Environment=KUBELET_VERSION=v1.2.2_runonce.0
+        ExecStart=/usr/lib/coreos/kubelet-wrapper \
+          --runonce \
+          --runonce-timeout=60s \
+          --api-servers={{.k8s_master_endpoint}} \
+          --kubeconfig=/etc/kubernetes/kubeconfig.yaml \
+          --lock-file=/var/run/lock/kubelet.lock \
+          --allow-privileged \
+          --hostname-override={{.ipv4_address}} \
+          --cluster_dns={{.k8s_dns_service_ip}} \
+          --cluster_domain=cluster.local
+        Restart=always
+        RestartSec=10
+        [Install]
+        WantedBy=multi-user.target
+
+storage:
+  {{ if .pxe }}
+  disks:
+    - device: /dev/sda
+      wipe_table: true
+      partitions:
+        - label: ROOT
+  filesystems:
+    - device: "/dev/sda1"
+      format: "ext4"
+      create:
+        force: true
+        options:
+          - "-LROOT"
+  {{else}}
+  filesystems:
+    - device: "/dev/disk/by-label/ROOT"
+      format: "ext4"
+  {{end}}
+      files:
+        - path: /etc/kubernetes/kubeconfig.yaml
+          mode: 0644
+          contents: |
+            apiVersion: v1
+            kind: Config
+            clusters:
+            - name: local
+              cluster:
+                server: {{.k8s_master_endpoint}}
+                certificate-authority-data: {{.k8s_ca_data}}
+            users:
+            - name: k8s
+              user:
+                token: {{.k8s_secret_token}}
+            contexts:
+            - context:
+                cluster: local
+                user: k8s
+
+networkd:
+  units:
+    - name: 00-{{.networkd_name}}.network
+      contents: |
+        [Match]
+        Name={{.networkd_name}}
+        [Network]
+        Gateway={{.networkd_gateway}}
+        DNS={{.networkd_dns}}
+        DNS=8.8.8.8
+        Address={{.networkd_address}}
+
+{{ if .ssh_authorized_keys }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
+{{end}}

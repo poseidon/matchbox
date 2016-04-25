@@ -30,7 +30,7 @@ Configuration arguments can be provided as flags or as environment variables.
 
 Start the latest ACI with rkt.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/lib/bootcfg/assets --volume data,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 Start the latest Docker image.
 
