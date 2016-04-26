@@ -1,2 +1,2 @@
-// Package messagepb provides bootcfg message types.
-package messagepb
+// Package serverpb provides bootcfg message types.
+package serverpb
