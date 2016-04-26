@@ -4,7 +4,7 @@ services:
   - docker
 go:
   - 1.5.4
-  - 1.6.1
+  - 1.6.2
   - tip
 matrix:
   allow_failures:
@@ -22,7 +22,7 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    go: '1.6.1'
+    go: '1.6.2'
     condition: "$TRAVIS_PULL_REQUEST = false"
 notifications:
   email: false
