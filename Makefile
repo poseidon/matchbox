@@ -13,8 +13,8 @@ test:
 
 install:
 	cp bin/bootcfg $(BIN_DIR)
+	cp bin/bootcmd $(BIN_DIR)
 	mkdir -p $(DATA_DIR)/{profiles,groups,ignition,cloud,assets}
-	mkdir -p $(DATA_DIR)
 	cp -n -R examples/profiles $(DATA_DIR)
 	cp -n -R examples/groups $(DATA_DIR)
 	cp -n -R examples/ignition $(DATA_DIR)
@@ -24,9 +24,11 @@ install:
 	@echo "INSTALL SUCESS"
 	@echo "**************"
 	@echo "bootcfg was installed to /usr/local/bin/bootcfg"
-	@echo "Configs for machines are located at /var/lib/bootcfg"
+	@echo "bootcmd was installed to /usr/local/bin/bootcmd"
+	@echo "The default data directory is located at /var/lib/bootcfg"
 
 uninstall:
 	rm $(BIN_DIR)/bootcfg
+	rm $(BIN_DIR)/bootcmd
 
 .PHONY: build

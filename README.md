@@ -26,6 +26,9 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
 * Backends
     * [FileStore](Documentation/bootcfg.md#data)
 * Deployment via
+    * [rkt](Documentation/deployment.md#rkt)
+    * [docker](Documentation/deployment.md#docker)
+    * [binary](Documentation/deployment.md#binary)
     * [systemd](Documentation/deployment.md#systemd)
 * [Troubleshooting](Documentation/troubleshooting.md)
 * Going Further

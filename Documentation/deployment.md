@@ -1,7 +1,45 @@
 
 # Deployment
 
+## rkt
+
+Run the most recent tagged and signed `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
+
+    sudo rkt trust --prefix coreos.com/bootcfg
+    # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
+    sudo rkt run --net=host --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:v0.3.0 -- -address=0.0.0.0:8080 -log-level=debug
+
+Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
+
+## Docker
+
+Run the latest or the most recently tagged `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases) Docker image.
+
+    sudo docker run --net=host --rm -v $PWD/examples/assets:/var/lib/bootcfg/assets:Z quay.io/coreos/bootcfg:v0.3.0 -address=0.0.0.0:8080 -log-level=debug
+
+Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
+
 ## Binary
+
+### Prebuilt
+
+Download a prebuilt binary from the Github [releases](https://github.com/coreos/coreos-baremetal/releases).
+
+    wget https://github.com/coreos/coreos-baremetal/releases/download/VERSION/bootcfg-VERSION-linux-amd64.tar.gz
+    wget https://github.com/coreos/coreos-baremetal/releases/download/VERSION/bootcfg-VERSION-linux-amd64.tar.gz.asc
+
+Verify the signature from the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
+
+    gpg --keyserver pgp.mit.edu --recv-key 18AD5014C99EF7E3BA5F6CE950BDD3E0FC8A365E
+    gpg --verify bootcfg-VERSION-linux-amd64.tar.gz.asc bootcfg-VERSION-linux-amd64.tar.gz
+    # gpg: Good signature from "CoreOS Application Signing Key <security@coreos.com>"
+
+Install the `bootcfg` static binary to `/usr/local/bin`.
+
+    tar xzvf bootcfg-VERSION-linux-amd64.tar.gz
+    sudo cp bootcfg-VERSION/bootcfg /usr/local/bin
+
+### Source
 
 Clone the coreos-baremetal project into your $GOPATH.
 
@@ -16,7 +54,9 @@ Install the `bootcfg` static binary to `/usr/local/bin`.
 
     $ sudo make install
 
-Run `bootcfg`
+### Run
+
+Run the `bootcfg` server.
 
     $ bootcfg -version
     $ bootcfg -address 0.0.0.0:8080
@@ -24,9 +64,9 @@ Run `bootcfg`
 
 See [flags and variables](config.md).
 
-### systemd
+## systemd
 
-Add and start bootcfg's example systemd unit.
+First, install the `bootcfg` binary from a pre-built binary or from source. Then add and start bootcfg's example systemd unit.
 
     sudo cp contrib/systemd/bootcfg.service /etc/systemd/system/
     sudo systemctl daemon-reload
