@@ -10,7 +10,7 @@ import (
 	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 )
 
-var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/bootcfg", "api")
+var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/bootcfg", "http")
 
 // Config configures the api Server.
 type Config struct {
