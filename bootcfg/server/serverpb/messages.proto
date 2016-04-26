@@ -1,5 +1,5 @@
 syntax = "proto3";
-package messagepb;
+package serverpb;
 
 import "github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb/storage.proto";
 

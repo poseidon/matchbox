@@ -15,7 +15,7 @@ package rpcpb
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import messagepb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+import serverpb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 
 import (
 	context "golang.org/x/net/context"
@@ -43,11 +43,11 @@ const _ = grpc.SupportPackageIsVersion1
 
 type GroupsClient interface {
 	// Create a Group.
-	GroupPut(ctx context.Context, in *messagepb.GroupPutRequest, opts ...grpc.CallOption) (*messagepb.GroupPutResponse, error)
+	GroupPut(ctx context.Context, in *serverpb.GroupPutRequest, opts ...grpc.CallOption) (*serverpb.GroupPutResponse, error)
 	// Get a machine Group by id.
-	GroupGet(ctx context.Context, in *messagepb.GroupGetRequest, opts ...grpc.CallOption) (*messagepb.GroupGetResponse, error)
+	GroupGet(ctx context.Context, in *serverpb.GroupGetRequest, opts ...grpc.CallOption) (*serverpb.GroupGetResponse, error)
 	// List all machine Groups.
-	GroupList(ctx context.Context, in *messagepb.GroupListRequest, opts ...grpc.CallOption) (*messagepb.GroupListResponse, error)
+	GroupList(ctx context.Context, in *serverpb.GroupListRequest, opts ...grpc.CallOption) (*serverpb.GroupListResponse, error)
 }
 
 type groupsClient struct {
@@ -58,8 +58,8 @@ func NewGroupsClient(cc *grpc.ClientConn) GroupsClient {
 	return &groupsClient{cc}
 }
 
-func (c *groupsClient) GroupPut(ctx context.Context, in *messagepb.GroupPutRequest, opts ...grpc.CallOption) (*messagepb.GroupPutResponse, error) {
-	out := new(messagepb.GroupPutResponse)
+func (c *groupsClient) GroupPut(ctx context.Context, in *serverpb.GroupPutRequest, opts ...grpc.CallOption) (*serverpb.GroupPutResponse, error) {
+	out := new(serverpb.GroupPutResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Groups/GroupPut", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -67,8 +67,8 @@ func (c *groupsClient) GroupPut(ctx context.Context, in *messagepb.GroupPutReque
 	return out, nil
 }
 
-func (c *groupsClient) GroupGet(ctx context.Context, in *messagepb.GroupGetRequest, opts ...grpc.CallOption) (*messagepb.GroupGetResponse, error) {
-	out := new(messagepb.GroupGetResponse)
+func (c *groupsClient) GroupGet(ctx context.Context, in *serverpb.GroupGetRequest, opts ...grpc.CallOption) (*serverpb.GroupGetResponse, error) {
+	out := new(serverpb.GroupGetResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Groups/GroupGet", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -76,8 +76,8 @@ func (c *groupsClient) GroupGet(ctx context.Context, in *messagepb.GroupGetReque
 	return out, nil
 }
 
-func (c *groupsClient) GroupList(ctx context.Context, in *messagepb.GroupListRequest, opts ...grpc.CallOption) (*messagepb.GroupListResponse, error) {
-	out := new(messagepb.GroupListResponse)
+func (c *groupsClient) GroupList(ctx context.Context, in *serverpb.GroupListRequest, opts ...grpc.CallOption) (*serverpb.GroupListResponse, error) {
+	out := new(serverpb.GroupListResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Groups/GroupList", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -89,11 +89,11 @@ func (c *groupsClient) GroupList(ctx context.Context, in *messagepb.GroupListReq
 
 type GroupsServer interface {
 	// Create a Group.
-	GroupPut(context.Context, *messagepb.GroupPutRequest) (*messagepb.GroupPutResponse, error)
+	GroupPut(context.Context, *serverpb.GroupPutRequest) (*serverpb.GroupPutResponse, error)
 	// Get a machine Group by id.
-	GroupGet(context.Context, *messagepb.GroupGetRequest) (*messagepb.GroupGetResponse, error)
+	GroupGet(context.Context, *serverpb.GroupGetRequest) (*serverpb.GroupGetResponse, error)
 	// List all machine Groups.
-	GroupList(context.Context, *messagepb.GroupListRequest) (*messagepb.GroupListResponse, error)
+	GroupList(context.Context, *serverpb.GroupListRequest) (*serverpb.GroupListResponse, error)
 }
 
 func RegisterGroupsServer(s *grpc.Server, srv GroupsServer) {
@@ -101,7 +101,7 @@ func RegisterGroupsServer(s *grpc.Server, srv GroupsServer) {
 }
 
 func _Groups_GroupPut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.GroupPutRequest)
+	in := new(serverpb.GroupPutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func _Groups_GroupPut_Handler(srv interface{}, ctx context.Context, dec func(int
 }
 
 func _Groups_GroupGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.GroupGetRequest)
+	in := new(serverpb.GroupGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -125,7 +125,7 @@ func _Groups_GroupGet_Handler(srv interface{}, ctx context.Context, dec func(int
 }
 
 func _Groups_GroupList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.GroupListRequest)
+	in := new(serverpb.GroupListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -160,11 +160,11 @@ var _Groups_serviceDesc = grpc.ServiceDesc{
 
 type ProfilesClient interface {
 	// Create a Profile.
-	ProfilePut(ctx context.Context, in *messagepb.ProfilePutRequest, opts ...grpc.CallOption) (*messagepb.ProfilePutResponse, error)
+	ProfilePut(ctx context.Context, in *serverpb.ProfilePutRequest, opts ...grpc.CallOption) (*serverpb.ProfilePutResponse, error)
 	// Get a Profile by id.
-	ProfileGet(ctx context.Context, in *messagepb.ProfileGetRequest, opts ...grpc.CallOption) (*messagepb.ProfileGetResponse, error)
+	ProfileGet(ctx context.Context, in *serverpb.ProfileGetRequest, opts ...grpc.CallOption) (*serverpb.ProfileGetResponse, error)
 	// List all Profiles.
-	ProfileList(ctx context.Context, in *messagepb.ProfileListRequest, opts ...grpc.CallOption) (*messagepb.ProfileListResponse, error)
+	ProfileList(ctx context.Context, in *serverpb.ProfileListRequest, opts ...grpc.CallOption) (*serverpb.ProfileListResponse, error)
 }
 
 type profilesClient struct {
@@ -175,8 +175,8 @@ func NewProfilesClient(cc *grpc.ClientConn) ProfilesClient {
 	return &profilesClient{cc}
 }
 
-func (c *profilesClient) ProfilePut(ctx context.Context, in *messagepb.ProfilePutRequest, opts ...grpc.CallOption) (*messagepb.ProfilePutResponse, error) {
-	out := new(messagepb.ProfilePutResponse)
+func (c *profilesClient) ProfilePut(ctx context.Context, in *serverpb.ProfilePutRequest, opts ...grpc.CallOption) (*serverpb.ProfilePutResponse, error) {
+	out := new(serverpb.ProfilePutResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Profiles/ProfilePut", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -184,8 +184,8 @@ func (c *profilesClient) ProfilePut(ctx context.Context, in *messagepb.ProfilePu
 	return out, nil
 }
 
-func (c *profilesClient) ProfileGet(ctx context.Context, in *messagepb.ProfileGetRequest, opts ...grpc.CallOption) (*messagepb.ProfileGetResponse, error) {
-	out := new(messagepb.ProfileGetResponse)
+func (c *profilesClient) ProfileGet(ctx context.Context, in *serverpb.ProfileGetRequest, opts ...grpc.CallOption) (*serverpb.ProfileGetResponse, error) {
+	out := new(serverpb.ProfileGetResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Profiles/ProfileGet", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -193,8 +193,8 @@ func (c *profilesClient) ProfileGet(ctx context.Context, in *messagepb.ProfileGe
 	return out, nil
 }
 
-func (c *profilesClient) ProfileList(ctx context.Context, in *messagepb.ProfileListRequest, opts ...grpc.CallOption) (*messagepb.ProfileListResponse, error) {
-	out := new(messagepb.ProfileListResponse)
+func (c *profilesClient) ProfileList(ctx context.Context, in *serverpb.ProfileListRequest, opts ...grpc.CallOption) (*serverpb.ProfileListResponse, error) {
+	out := new(serverpb.ProfileListResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Profiles/ProfileList", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -206,11 +206,11 @@ func (c *profilesClient) ProfileList(ctx context.Context, in *messagepb.ProfileL
 
 type ProfilesServer interface {
 	// Create a Profile.
-	ProfilePut(context.Context, *messagepb.ProfilePutRequest) (*messagepb.ProfilePutResponse, error)
+	ProfilePut(context.Context, *serverpb.ProfilePutRequest) (*serverpb.ProfilePutResponse, error)
 	// Get a Profile by id.
-	ProfileGet(context.Context, *messagepb.ProfileGetRequest) (*messagepb.ProfileGetResponse, error)
+	ProfileGet(context.Context, *serverpb.ProfileGetRequest) (*serverpb.ProfileGetResponse, error)
 	// List all Profiles.
-	ProfileList(context.Context, *messagepb.ProfileListRequest) (*messagepb.ProfileListResponse, error)
+	ProfileList(context.Context, *serverpb.ProfileListRequest) (*serverpb.ProfileListResponse, error)
 }
 
 func RegisterProfilesServer(s *grpc.Server, srv ProfilesServer) {
@@ -218,7 +218,7 @@ func RegisterProfilesServer(s *grpc.Server, srv ProfilesServer) {
 }
 
 func _Profiles_ProfilePut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.ProfilePutRequest)
+	in := new(serverpb.ProfilePutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -230,7 +230,7 @@ func _Profiles_ProfilePut_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _Profiles_ProfileGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.ProfileGetRequest)
+	in := new(serverpb.ProfileGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -242,7 +242,7 @@ func _Profiles_ProfileGet_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _Profiles_ProfileList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.ProfileListRequest)
+	in := new(serverpb.ProfileListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -277,7 +277,7 @@ var _Profiles_serviceDesc = grpc.ServiceDesc{
 
 type IgnitionClient interface {
 	// Create or update an Ignition template.
-	IgnitionPut(ctx context.Context, in *messagepb.IgnitionPutRequest, opts ...grpc.CallOption) (*messagepb.IgnitionPutResponse, error)
+	IgnitionPut(ctx context.Context, in *serverpb.IgnitionPutRequest, opts ...grpc.CallOption) (*serverpb.IgnitionPutResponse, error)
 }
 
 type ignitionClient struct {
@@ -288,8 +288,8 @@ func NewIgnitionClient(cc *grpc.ClientConn) IgnitionClient {
 	return &ignitionClient{cc}
 }
 
-func (c *ignitionClient) IgnitionPut(ctx context.Context, in *messagepb.IgnitionPutRequest, opts ...grpc.CallOption) (*messagepb.IgnitionPutResponse, error) {
-	out := new(messagepb.IgnitionPutResponse)
+func (c *ignitionClient) IgnitionPut(ctx context.Context, in *serverpb.IgnitionPutRequest, opts ...grpc.CallOption) (*serverpb.IgnitionPutResponse, error) {
+	out := new(serverpb.IgnitionPutResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Ignition/IgnitionPut", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -301,7 +301,7 @@ func (c *ignitionClient) IgnitionPut(ctx context.Context, in *messagepb.Ignition
 
 type IgnitionServer interface {
 	// Create or update an Ignition template.
-	IgnitionPut(context.Context, *messagepb.IgnitionPutRequest) (*messagepb.IgnitionPutResponse, error)
+	IgnitionPut(context.Context, *serverpb.IgnitionPutRequest) (*serverpb.IgnitionPutResponse, error)
 }
 
 func RegisterIgnitionServer(s *grpc.Server, srv IgnitionServer) {
@@ -309,7 +309,7 @@ func RegisterIgnitionServer(s *grpc.Server, srv IgnitionServer) {
 }
 
 func _Ignition_IgnitionPut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.IgnitionPutRequest)
+	in := new(serverpb.IgnitionPutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -336,9 +336,9 @@ var _Ignition_serviceDesc = grpc.ServiceDesc{
 
 type SelectClient interface {
 	// SelectGroup returns the Group matching the given labels.
-	SelectGroup(ctx context.Context, in *messagepb.SelectGroupRequest, opts ...grpc.CallOption) (*messagepb.SelectGroupResponse, error)
+	SelectGroup(ctx context.Context, in *serverpb.SelectGroupRequest, opts ...grpc.CallOption) (*serverpb.SelectGroupResponse, error)
 	// SelectProfile returns the Profile matching the given labels.
-	SelectProfile(ctx context.Context, in *messagepb.SelectProfileRequest, opts ...grpc.CallOption) (*messagepb.SelectProfileResponse, error)
+	SelectProfile(ctx context.Context, in *serverpb.SelectProfileRequest, opts ...grpc.CallOption) (*serverpb.SelectProfileResponse, error)
 }
 
 type selectClient struct {
@@ -349,8 +349,8 @@ func NewSelectClient(cc *grpc.ClientConn) SelectClient {
 	return &selectClient{cc}
 }
 
-func (c *selectClient) SelectGroup(ctx context.Context, in *messagepb.SelectGroupRequest, opts ...grpc.CallOption) (*messagepb.SelectGroupResponse, error) {
-	out := new(messagepb.SelectGroupResponse)
+func (c *selectClient) SelectGroup(ctx context.Context, in *serverpb.SelectGroupRequest, opts ...grpc.CallOption) (*serverpb.SelectGroupResponse, error) {
+	out := new(serverpb.SelectGroupResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Select/SelectGroup", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -358,8 +358,8 @@ func (c *selectClient) SelectGroup(ctx context.Context, in *messagepb.SelectGrou
 	return out, nil
 }
 
-func (c *selectClient) SelectProfile(ctx context.Context, in *messagepb.SelectProfileRequest, opts ...grpc.CallOption) (*messagepb.SelectProfileResponse, error) {
-	out := new(messagepb.SelectProfileResponse)
+func (c *selectClient) SelectProfile(ctx context.Context, in *serverpb.SelectProfileRequest, opts ...grpc.CallOption) (*serverpb.SelectProfileResponse, error) {
+	out := new(serverpb.SelectProfileResponse)
 	err := grpc.Invoke(ctx, "/rpcpb.Select/SelectProfile", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -371,9 +371,9 @@ func (c *selectClient) SelectProfile(ctx context.Context, in *messagepb.SelectPr
 
 type SelectServer interface {
 	// SelectGroup returns the Group matching the given labels.
-	SelectGroup(context.Context, *messagepb.SelectGroupRequest) (*messagepb.SelectGroupResponse, error)
+	SelectGroup(context.Context, *serverpb.SelectGroupRequest) (*serverpb.SelectGroupResponse, error)
 	// SelectProfile returns the Profile matching the given labels.
-	SelectProfile(context.Context, *messagepb.SelectProfileRequest) (*messagepb.SelectProfileResponse, error)
+	SelectProfile(context.Context, *serverpb.SelectProfileRequest) (*serverpb.SelectProfileResponse, error)
 }
 
 func RegisterSelectServer(s *grpc.Server, srv SelectServer) {
@@ -381,7 +381,7 @@ func RegisterSelectServer(s *grpc.Server, srv SelectServer) {
 }
 
 func _Select_SelectGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.SelectGroupRequest)
+	in := new(serverpb.SelectGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -393,7 +393,7 @@ func _Select_SelectGroup_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _Select_SelectProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
-	in := new(messagepb.SelectProfileRequest)
+	in := new(serverpb.SelectProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -421,25 +421,25 @@ var _Select_serviceDesc = grpc.ServiceDesc{
 }
 
 var fileDescriptor0 = []byte{
-	// 310 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x74, 0x92, 0x41, 0x4e, 0xc3, 0x30,
-	0x10, 0x45, 0xe9, 0x82, 0xaa, 0x35, 0x62, 0xe3, 0x65, 0xa0, 0x80, 0xd8, 0x93, 0x48, 0xe5, 0x0c,
-	0xa8, 0x54, 0x20, 0x54, 0x01, 0x2b, 0x76, 0x71, 0x34, 0x0d, 0x91, 0x92, 0xd8, 0x78, 0x1c, 0x8e,
-	0xc5, 0x99, 0x38, 0x04, 0x07, 0x20, 0x76, 0x6c, 0xd7, 0x51, 0x9d, 0x55, 0x46, 0xff, 0x8d, 0x9f,
-	0xf2, 0x2d, 0x93, 0xa5, 0x14, 0x45, 0x2a, 0x24, 0x57, 0x9c, 0x9e, 0xf6, 0xa3, 0x60, 0xc9, 0xb6,
-	0xac, 0xd4, 0x67, 0xc7, 0xd2, 0x82, 0x37, 0x59, 0xc1, 0x25, 0x70, 0xb4, 0x9f, 0x3b, 0x96, 0x4b,
-	0x68, 0x40, 0xe5, 0x75, 0xc6, 0x38, 0x57, 0xc5, 0xbe, 0xcc, 0x10, 0xe4, 0x37, 0x48, 0xfb, 0x11,
-	0x2c, 0x6b, 0x00, 0x31, 0x2f, 0x01, 0x07, 0xe3, 0xfa, 0x77, 0x46, 0xe6, 0x1b, 0xc9, 0x3b, 0x81,
-	0xf4, 0x81, 0x2c, 0xcc, 0xb4, 0xeb, 0x14, 0x4d, 0x52, 0xbb, 0x27, 0x58, 0xea, 0xc2, 0x57, 0xf8,
-	0xea, 0x00, 0x55, 0x72, 0x11, 0x65, 0x28, 0x78, 0x8b, 0x70, 0x7b, 0xe2, 0x35, 0x1b, 0x88, 0x68,
-	0xfa, 0x70, 0x52, 0x63, 0x98, 0xd7, 0x3c, 0x92, 0xa5, 0x49, 0x9f, 0x2b, 0x54, 0xf4, 0x68, 0x57,
-	0xa7, 0x4e, 0x74, 0x19, 0x87, 0xce, 0xb4, 0xfe, 0x9b, 0x91, 0xc5, 0x4e, 0xf2, 0x7d, 0x55, 0x03,
-	0xd2, 0x27, 0x42, 0xec, 0xac, 0x6b, 0x86, 0x47, 0x0f, 0xb1, 0x13, 0xaf, 0x26, 0xa8, 0xff, 0xc7,
-	0x83, 0x4c, 0x97, 0x8d, 0xc8, 0x82, 0xba, 0xab, 0x09, 0xea, 0x65, 0x2f, 0xe4, 0xcc, 0xe6, 0xa6,
-	0x72, 0x64, 0x3f, 0x2c, 0x7d, 0x35, 0x85, 0x7d, 0xed, 0x0f, 0xb2, 0xd8, 0x96, 0x6d, 0xa5, 0x2a,
-	0xde, 0x6a, 0xb7, 0x9b, 0x75, 0xed, 0xd0, 0x1d, 0xe4, 0x31, 0xf7, 0x08, 0x7b, 0xf7, 0x4f, 0xff,
-	0x6a, 0xde, 0xa0, 0x86, 0x42, 0x69, 0xf5, 0x30, 0x99, 0xab, 0x1f, 0xa9, 0x83, 0x3c, 0xa6, 0x1e,
-	0x61, 0x7f, 0x0d, 0xef, 0xe4, 0x7c, 0x00, 0xb6, 0x15, 0xbd, 0x3e, 0x3a, 0x62, 0x89, 0x73, 0xde,
-	0x4c, 0x2f, 0x38, 0x2b, 0x9b, 0x9b, 0xd7, 0x7e, 0xff, 0x1f, 0x00, 0x00, 0xff, 0xff, 0xa5, 0x3b,
-	0x64, 0x50, 0x4c, 0x03, 0x00, 0x00,
+	// 311 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x74, 0x92, 0x41, 0x4e, 0xeb, 0x30,
+	0x10, 0x86, 0x5f, 0x17, 0xaf, 0x6a, 0x8d, 0xd8, 0x78, 0x47, 0x29, 0x20, 0xb1, 0x27, 0x91, 0xca,
+	0x11, 0x90, 0xa8, 0x22, 0x75, 0x51, 0x95, 0x0d, 0xdb, 0x38, 0x9a, 0x86, 0x48, 0x49, 0x6c, 0x3c,
+	0x0e, 0x87, 0xe2, 0x48, 0x1c, 0x82, 0x33, 0x10, 0x3b, 0xb6, 0xeb, 0x36, 0xce, 0x2a, 0xa3, 0xff,
+	0xf3, 0x7c, 0xca, 0x6f, 0x99, 0x2c, 0xa5, 0x28, 0x12, 0x21, 0xb9, 0xe2, 0xf4, 0x7f, 0x3f, 0x0a,
+	0xb6, 0xca, 0xca, 0x4a, 0x7d, 0x74, 0x2c, 0x29, 0x78, 0x93, 0x16, 0x5c, 0x02, 0x47, 0xfb, 0x79,
+	0x62, 0xb9, 0x84, 0x06, 0x54, 0x5e, 0xa7, 0x8c, 0x73, 0x55, 0x1c, 0xcb, 0x14, 0x41, 0x7e, 0x81,
+	0xb4, 0x1f, 0xc1, 0xd2, 0x06, 0x10, 0xf3, 0x12, 0x70, 0x30, 0x6e, 0x7e, 0x66, 0x64, 0xbe, 0x95,
+	0xbc, 0x13, 0x48, 0x5f, 0xc8, 0xc2, 0x4c, 0xfb, 0x4e, 0xd1, 0x9b, 0xc4, 0x2d, 0x24, 0x2e, 0x3b,
+	0xc0, 0x67, 0x07, 0xa8, 0x56, 0xab, 0x18, 0x42, 0xc1, 0x5b, 0x84, 0xc7, 0x7f, 0x5e, 0xb2, 0x85,
+	0xb1, 0xa4, 0xcf, 0xa6, 0x24, 0x06, 0x79, 0xc9, 0x2b, 0x59, 0x9a, 0x74, 0x57, 0xa1, 0xa2, 0x97,
+	0x47, 0x75, 0xe8, 0x34, 0xb7, 0x51, 0xe6, 0x3c, 0x9b, 0xdf, 0x19, 0x59, 0xec, 0x25, 0x3f, 0x56,
+	0x35, 0x20, 0xcd, 0x08, 0xb1, 0xb3, 0x2e, 0x18, 0x6c, 0x9e, 0x52, 0xa7, 0x5d, 0xc7, 0xa1, 0xff,
+	0xbf, 0x93, 0x4a, 0xd7, 0x1c, 0xab, 0x82, 0xa2, 0xeb, 0x38, 0xf4, 0xaa, 0x1d, 0xb9, 0xb2, 0xb9,
+	0x29, 0x3b, 0x3e, 0x1e, 0xd6, 0xbd, 0x9b, 0xa0, 0xbe, 0xf0, 0x3b, 0x59, 0x64, 0x65, 0x5b, 0xa9,
+	0x8a, 0xb7, 0xda, 0xec, 0x66, 0x5d, 0x38, 0x30, 0x07, 0x71, 0xc4, 0x7c, 0x46, 0xbd, 0xf9, 0xbb,
+	0x7f, 0x27, 0x6f, 0x50, 0x43, 0xa1, 0xb4, 0x78, 0x98, 0xcc, 0x95, 0x87, 0xe2, 0x20, 0x8e, 0x88,
+	0xcf, 0xa8, 0xbf, 0x80, 0x03, 0xb9, 0x1e, 0x80, 0x6d, 0x44, 0xef, 0x2f, 0x37, 0x2c, 0x70, 0xc6,
+	0x87, 0x49, 0xee, 0x9c, 0x6c, 0x6e, 0xde, 0xf6, 0xf3, 0x5f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x9c,
+	0xbc, 0x09, 0xef, 0x3a, 0x03, 0x00, 0x00,
 }
