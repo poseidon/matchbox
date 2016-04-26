@@ -28,8 +28,8 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
 * Deployment via
     * [rkt](Documentation/deployment.md#rkt)
     * [docker](Documentation/deployment.md#docker)
-    * [binary](Documentation/deployment.md#binary)
-    * [systemd](Documentation/deployment.md#systemd)
+    * [Kubernetes](Documentation/deployment.md#kubernetes)
+    * [binary](Documentation/deployment.md#binary) / [systemd](Documentation/deployment.md#systemd)
 * [Troubleshooting](Documentation/troubleshooting.md)
 * Going Further
     * [OpenPGP Signing](Documentation/openpgp.md)

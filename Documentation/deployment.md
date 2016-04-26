@@ -19,6 +19,24 @@ Run the latest or the most recently tagged `bootcfg` [release](https://github.co
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
 
+## Kubernetes
+
+*Note: Enhancements to the gRPC API, CLI, and `EtcdStore` backend will improve this deployment strategy in the future.*
+
+Create a `bootcfg` Kubernetes `Deployment` and `Service` based on the example manifests provided in [contrib/k8s](../contrib/k8s).
+
+    kubectl apply -f contrib/k8s/bootcfg-deployment.yaml
+    kubectl apply -f contrib/k8s/bootcfg-service.yaml
+
+The `bootcfg` HTTP server should be exposed on NodePort `tcp:31488` on each node in the cluster. `BOOTCFG_LOG_LEVEL` is set to debug.
+
+    kubectl get deployments
+    kubectl get services
+    kubectl get pods
+    kubectl logs POD-NAME
+
+The example manifests use Kubernetes `emptyDir` volumes to back the `bootcfg` FileStore (`/var/lib/bootcfg`). This doesn't provide long-term persistent storage so you may wish to mount your machine groups, profiles, and Ignition configs with a [gitRepo](http://kubernetes.io/docs/user-guide/volumes/#gitrepo) and host image assets on a file server.
+
 ## Binary
 
 ### Prebuilt
@@ -85,3 +103,5 @@ Enable the `bootcfg` service if you'd like it to start at boot time.
 
     sudo systemctl stop bootcfg.service
     sudo make uninstall
+
+
