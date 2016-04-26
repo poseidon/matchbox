@@ -20,7 +20,7 @@ Configuration arguments can be provided as flags or as environment variables.
 | data      | /var/lib/bootcfg/{profiles,groups,ignition,cloud} |
 | assets    | /var/lib/bootcfg/assets |
 
-## Check Version
+## Version
 
     ./bin/bootcfg -version
     sudo rkt --insecure-options=image run quay.io/coreos/bootcfg:latest -- -version

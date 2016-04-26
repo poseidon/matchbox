@@ -46,6 +46,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 	srv := server.NewServer(&server.Config{s.store})
 
+	// bootcfg version
+	mux.Handle("/", logRequests(versionHandler()))
 	// Boot via GRUB
 	mux.Handle("/grub", logRequests(NewHandler(selectProfile(srv, grubHandler()))))
 	// Boot via iPXE
