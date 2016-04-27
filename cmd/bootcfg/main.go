@@ -17,12 +17,11 @@ import (
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/sign"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage"
+	"github.com/coreos/coreos-baremetal/bootcfg/version"
 )
 
 var (
-	// version provided by compile time flag: -ldflags "-X main.version $GIT_SHA"
-	version = "was not built properly"
-	log     = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/bootcfg", "main")
+	log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/bootcfg", "main")
 )
 
 func main() {
@@ -56,7 +55,7 @@ func main() {
 	passphrase := os.Getenv("BOOTCFG_PASSPHRASE")
 
 	if flags.version {
-		fmt.Println(version)
+		fmt.Println(version.Version)
 		return
 	}
 

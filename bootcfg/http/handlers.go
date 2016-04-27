@@ -1,12 +1,14 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"golang.org/x/net/context"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/coreos/coreos-baremetal/bootcfg/version"
 )
 
 // requireGET requires requests to be an HTTP GET. Otherwise, it responds with
@@ -27,6 +29,19 @@ func logRequests(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		log.Debugf("HTTP %s %v", req.Method, req.URL)
 		next.ServeHTTP(w, req)
+	}
+	return http.HandlerFunc(fn)
+}
+
+// versionHandler shows the server name and version for root requests.
+// Otherwise, a 404 is returned.
+func versionHandler() http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		if req.URL.Path != "/" {
+			http.NotFound(w, req)
+			return
+		}
+		fmt.Fprintf(w, "bootcfg version: %s", version.Version)
 	}
 	return http.HandlerFunc(fn)
 }
