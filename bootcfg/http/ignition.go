@@ -87,8 +87,14 @@ func ignitionHandler(srv server.Server) ContextHandler {
 // Ignition v2 Config struct.
 func parseToV2(data []byte) (cfg ignitionTypes.Config, err error) {
 	// parse JSON v2 to Ignition
-	return ignition.ParseFromLatest(data)
-	// TODO(dghubble) Allow YAML unmarshaling
+	cfg, err = ignition.ParseFromLatest(data)
+	if err == nil {
+		return cfg, nil
+	}
+	if majorVersion(data) == 2 {
+		err = yaml.Unmarshal(data, &cfg)
+	}
+	return cfg, err
 }
 
 // parseToV1 parses raw JSON or YAML in Ignition v1 format and returns the
@@ -102,4 +108,23 @@ func parseToV1(data []byte) (cfg ignitionV1Types.Config, err error) {
 	// unmarshal YAML v1 to Ignition
 	err = yaml.Unmarshal(data, &cfg)
 	return cfg, err
+}
+
+func majorVersion(data []byte) int64 {
+	var composite struct {
+		Version  *int `json:"ignitionVersion" yaml:"ignition_version"`
+		Ignition struct {
+			Version *string `json:"version" yaml:"version"`
+		} `json:"ignition" yaml:"ignition"`
+	}
+	if yaml.Unmarshal(data, &composite) != nil {
+		return 0
+	}
+	var major int64
+	if composite.Ignition.Version != nil && *composite.Ignition.Version == "2.0.0" {
+		major = 2
+	} else if composite.Version != nil {
+		major = int64(*composite.Version)
+	}
+	return major
 }
