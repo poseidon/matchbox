@@ -85,6 +85,6 @@ Clean up the VM machines.
 
 ## Going Further
 
-Explore the [examples](../examples). Try the [k8s-docker example](../examples/groups/k8s-docker) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl` ([docs](../examples/README.md#kubernetes)).
+Explore the [examples](../examples). Try the [k8s-docker example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl` ([docs](../examples/README.md#kubernetes)).
 
 Learn more about [bootcfg](bootcfg.md) or adapt an example for your own [physical hardware](physical-hardware.md) and network.
