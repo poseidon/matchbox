@@ -12,7 +12,7 @@
     "ipv4_address": "172.17.0.23",
     "k8s_cert_endpoint": "http://bootcfg.foo:8080/assets",
     "k8s_controller_endpoint": "https://172.17.0.21",
-    "k8s_dns_service_ip": "10.3.0.1",
+    "k8s_dns_service_ip": "10.3.0.10",
     "k8s_etcd_endpoints": "http://172.17.0.21:2379,http://172.17.0.22:2379,http://172.17.0.23:2379",
     "k8s_version": "v1.2.2_coreos.0",
     "networkd_address": "172.17.0.23/16",
