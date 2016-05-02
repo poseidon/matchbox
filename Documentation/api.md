@@ -134,6 +134,31 @@ Finds the profile matching the machine and renders the corresponding Ignition Co
       "passwd": {}
     }
 
+## Metadata
+
+Finds the matching machine group and renders the selectors and metadata as a `plain/text` file.
+
+    GET http://bootcfg.foo/metadata
+
+**Query Parameters**
+
+| Name | Type   | Description   |
+|------|--------|---------------|
+| uuid | string | Hardware UUID |
+| mac  | string | MAC address   |
+
+**Response**
+
+    IPV4_ADDRESS=172.15.0.21
+    NETWORKD_ADDRESS=172.15.0.21/16
+    NETWORKD_GATEWAY=172.15.0.1
+    NETWORKD_NAME=ens3
+    ETCD_NAME=node1
+    FLEET_METADATA=role=etcd,name=node1
+    UUID=16e7d8a7-bfa9-428b-9117-363341bb330b
+    ETCD_INITIAL_CLUSTER=node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380
+    NETWORKD_DNS=172.15.0.3
+
 ## OpenPGP Signatures
 
 OpenPGPG signature endpoints serve detached binary and ASCII armored signatures of rendered configs, if enabled. See [OpenPGP Signing](openpgp.md).
