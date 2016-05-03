@@ -62,7 +62,7 @@ systemd:
         After=k8s-assets.target
         [Service]
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
-        Environment=KUBELET_VERSION={{.k8s_version}}
+        Environment=KUBELET_VERSION=v1.2.2_coreos.0
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers={{.k8s_controller_endpoint}} \
           --register-node=true \
@@ -129,7 +129,7 @@ storage:
               hostNetwork: true
               containers:
               - name: kube-proxy
-                image: quay.io/coreos/hyperkube:{{.k8s_version}}
+                image: quay.io/coreos/hyperkube:v1.2.2_coreos.0
                 command:
                 - /hyperkube
                 - proxy

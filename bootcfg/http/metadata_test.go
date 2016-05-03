@@ -24,7 +24,6 @@ func TestMetadataHandler(t *testing.T) {
 	// - the Group's custom metadata and selectors are served
 	// - key names are upper case
 	expectedData := map[string]string{
-		"K8S_VERSION":  "v1.1.2",
 		"POD_NETWORK":  "10.2.0.0/16",
 		"SERVICE_NAME": "etcd2",
 		"UUID":         "a1b2c3d4",
