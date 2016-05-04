@@ -11,7 +11,7 @@ var (
 		Name:     "test group",
 		Profile:  "g1h2i3j4",
 		Selector: map[string]string{"uuid": "a1b2c3d4"},
-		Metadata: []byte(`{"k8s_version":"v1.1.2","pod_network":"10.2.0.0/16","service_name":"etcd2"}`),
+		Metadata: []byte(`{"pod_network":"10.2.0.0/16","service_name":"etcd2"}`),
 	}
 
 	// GroupNoMetadata is a Group without any metadata.
