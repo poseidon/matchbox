@@ -33,7 +33,6 @@ ignition/network.yaml:
             [Network]
             Gateway={{.networkd_gateway}}
             DNS={{.networkd_dns}}
-            DNS=8.8.8.8
             Address={{.networkd_address}}
     {{ if .ssh_authorized_keys }}
     passwd:
