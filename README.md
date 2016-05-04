@@ -44,6 +44,6 @@ The [examples](examples) show how to network boot and provision higher-order Cor
 * Multi-node etcd cluster
 * Network boot or Install to Disk
 * Multi-stage CoreOS installs
-* [GRUB Netboot](Documentation/dev/grub.md) CoreOS
+* [GRUB Netboot](Documentation/grub.md) CoreOS
 * iPXE Boot CoreOS with a root fs
 * iPXE Boot CoreOS

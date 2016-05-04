@@ -10,6 +10,7 @@ function main {
   case "$1" in
     "create-docker") create_docker;;
     "create-rkt") create_rkt;;
+    "create-uefi") create_uefi;;
     "start") start;;
     "reboot") reboot;;
     "shutdown") shutdown;;
@@ -27,6 +28,7 @@ function usage {
   echo "Commands:"
   echo -e "\tcreate-docker\tcreate libvirt nodes on the docker0 bridge"
   echo -e "\tcreate-rkt\tcreate libvirt nodes on a rkt CNI metal0 bridge"
+  echo -e "\tcreate-uefi\tcreate UEFI libvirt nodes on the rkt CNI metal0 bridge"
   echo -e "\tstart\t\tstart the libvirt nodes"
   echo -e "\treboot\t\treboot the libvirt nodes"
   echo -e "\tshutdown\tshutdown the libvirt nodes"
@@ -46,6 +48,13 @@ function create_rkt {
   virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
   virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
   virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --disk pool=default,size=6 --boot=hd,network --network=bridge:metal0 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+}
+
+function create_uefi {
+  virt-install --name node1 -u 16e7d8a7-bfa9-428b-9117-363341bb330b --pxe --disk pool=default,size=6 --boot=uefi,network --network=bridge=metal0,model=e1000 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node2 -u 264cd073-ca62-44b3-98c0-50aad5b5f819 --pxe --disk pool=default,size=6 --boot=uefi,network --network=bridge=metal0,model=e1000 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node3 -u 39d2e747-2648-4d68-ae92-bbc70b245055 --pxe --disk pool=default,size=6 --boot=uefi,network --network=bridge=metal0,model=e1000 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
+  virt-install --name node4 -u 4ed46e8e-db69-471e-b874-0990dd65649d --pxe --disk pool=default,size=6 --boot=uefi,network --network=bridge=metal0,model=e1000 --memory=1024 --vcpus=1 --os-type=linux --noautoconsole
 }
 
 nodes=(node1 node2 node3 node4)

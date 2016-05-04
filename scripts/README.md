@@ -27,12 +27,13 @@ Create libvirt VM nodes which are configured to boot from the network. The `scri
     USAGE: libvirt <command>
     Commands:
         create-docker   create libvirt nodes on the docker0 bridge
-        create-rkt      create libvirt nodes on a rkt CNI metal0 bridge
-        start           start the libvirt nodes
-        reboot          reboot the libvirt nodes
-        shutdown        shutdown the libvirt nodes
-        poweroff        poweroff the libvirt nodes
-        destroy         destroy the libvirt nodes
+        create-rkt  create libvirt nodes on a rkt CNI metal0 bridge
+        create-uefi create UEFI libvirt nodes on the rkt CNI metal0 bridge
+        start       start the libvirt nodes
+        reboot      reboot the libvirt nodes
+        shutdown    shutdown the libvirt nodes
+        poweroff    poweroff the libvirt nodes
+        destroy     destroy the libvirt nodes
 
 ## k8s-certgen
 
