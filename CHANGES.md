@@ -2,8 +2,17 @@
 
 ## Latest
 
-* Add self-hosted Kubernetes example (PXE boot or install to disk)
+* Show `bootcfg` version at the home path `/`
+* Fix http package log messages and increase request logging (#173)
+* Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
+
+#### Examples
+
+* Updated Kubernetes examples to v1.2.3 (#187)
+* Remove 8.8.8.8 from networkd example Ignition configs (#184)
 * Fix a bug in the k8s example k8s-certs@.service file check (#156)
+* Add self-hosted Kubernetes example (PXE boot or install to disk)
+* Add `create-uefi` subcommand to `scripts/libvirt` for UEFI/GRUB testing
 
 ## v0.3.0 (2016-04-14)
 
