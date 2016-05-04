@@ -24,7 +24,7 @@ The examples statically assign IP addresses for client VMs on the `metal0` CNI b
 
 Download the CoreOS PXE image referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 983.0.0
+    ./scripts/get-coreos alpha 1032.0.0
 
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an output directory.
 

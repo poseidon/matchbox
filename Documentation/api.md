@@ -198,7 +198,7 @@ If you need to serve static assets (e.g. kernel, initrd), `bootcfg` can serve ar
 
     bootcfg.foo/assets/
     └── coreos
-        └── 962.0.0
+        └── 1032.0.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
         └── 983.0.0
