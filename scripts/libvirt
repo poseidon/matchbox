@@ -76,6 +76,9 @@ function poweroff {
 
 function destroy {
   for node in ${nodes[@]}; do
+    virsh destroy $node
+  done
+  for node in ${nodes[@]}; do
     virsh undefine $node
   done
   virsh pool-refresh default

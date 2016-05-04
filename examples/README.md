@@ -5,15 +5,15 @@ These examples network boot and provision VMs into CoreOS clusters using `bootcf
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
-| pxe | CoreOS via iPXE | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS via GRUB2 Netboot | alpha/983.0.0 | RAM | NA |
-| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| etcd, etcd-docker | iPXE boot a 3 node etcd cluster and proxy | alpha/983.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| etcd-install | Install a 3-node etcd cluster to disk | alpha/983.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
-| k8s, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/983.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| k8s-install | Install a Kubernetes cluster to disk (1 master) | alpha/983.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/983.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/983.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| pxe | CoreOS via iPXE | alpha/1032.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS via GRUB2 Netboot | alpha/1032.0.0 | RAM | NA |
+| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/1032.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| etcd, etcd-docker | iPXE boot a 3 node etcd cluster and proxy | alpha/1032.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd-install | Install a 3-node etcd cluster to disk | alpha/1032.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
+| k8s, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/1032.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| k8s-install | Install a Kubernetes cluster to disk (1 master) | alpha/1032.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1032.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1032.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 
 ## Tutorials
 
@@ -21,8 +21,8 @@ Get started running `bootcfg` on your Linux machine to network boot and provisio
 
 * [bootcfg with rkt](../Documentation/getting-started-rkt.md)
 * [bootcfg with Docker](../Documentation/getting-started-docker.md)
-* [Kubernetes](../Documentation/kubernetes.md)
-* [Self-hosted Kubernetes](../Documentation/bootkube.md)
+* [Kubernetes v1.2.2](../Documentation/kubernetes.md)
+* [Self-hosted Kubernetes](../Documentation/bootkube.md) (experimental)
 
 ## Experimental
 
