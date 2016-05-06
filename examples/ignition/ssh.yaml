@@ -1,5 +1,6 @@
 ---
-ignition_version: 1
+ignition:
+  version: 2.0.0
 {{ if .ssh_authorized_keys }}
 passwd:
   users:

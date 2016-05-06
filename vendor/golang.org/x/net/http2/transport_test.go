@@ -326,28 +326,28 @@ func randString(n int) string {
 	return string(b)
 }
 
-var bodyTests = []struct {
-	body         string
-	noContentLen bool
-}{
-	{body: "some message"},
-	{body: "some message", noContentLen: true},
-	{body: ""},
-	{body: "", noContentLen: true},
-	{body: strings.Repeat("a", 1<<20), noContentLen: true},
-	{body: strings.Repeat("a", 1<<20)},
-	{body: randString(16<<10 - 1)},
-	{body: randString(16 << 10)},
-	{body: randString(16<<10 + 1)},
-	{body: randString(512<<10 - 1)},
-	{body: randString(512 << 10)},
-	{body: randString(512<<10 + 1)},
-	{body: randString(1<<20 - 1)},
-	{body: randString(1 << 20)},
-	{body: randString(1<<20 + 2)},
-}
-
 func TestTransportBody(t *testing.T) {
+	bodyTests := []struct {
+		body         string
+		noContentLen bool
+	}{
+		{body: "some message"},
+		{body: "some message", noContentLen: true},
+		{body: ""},
+		{body: "", noContentLen: true},
+		{body: strings.Repeat("a", 1<<20), noContentLen: true},
+		{body: strings.Repeat("a", 1<<20)},
+		{body: randString(16<<10 - 1)},
+		{body: randString(16 << 10)},
+		{body: randString(16<<10 + 1)},
+		{body: randString(512<<10 - 1)},
+		{body: randString(512 << 10)},
+		{body: randString(512<<10 + 1)},
+		{body: randString(1<<20 - 1)},
+		{body: randString(1 << 20)},
+		{body: randString(1<<20 + 2)},
+	}
+
 	type reqInfo struct {
 		req   *http.Request
 		slurp []byte
@@ -1642,6 +1642,11 @@ func TestTransportRejectsConnHeaders(t *testing.T) {
 			value: []string{"123"},
 			want:  "Accept-Encoding,User-Agent",
 		},
+		{
+			key:   "Keep-Alive",
+			value: []string{"doop"},
+			want:  "Accept-Encoding,User-Agent",
+		},
 	}
 
 	for _, tt := range tests {
@@ -1737,4 +1742,61 @@ func TestTransportNewTLSConfig(t *testing.T) {
 			t.Errorf("%d. got %#v; want %#v", i, got, tt.want)
 		}
 	}
+}
+
+// The Google GFE responds to HEAD requests with a HEADERS frame
+// without END_STREAM, followed by a 0-length DATA frame with
+// END_STREAM. Make sure we don't get confused by that. (We did.)
+func TestTransportReadHeadResponse(t *testing.T) {
+	ct := newClientTester(t)
+	clientDone := make(chan struct{})
+	ct.client = func() error {
+		defer close(clientDone)
+		req, _ := http.NewRequest("HEAD", "https://dummy.tld/", nil)
+		res, err := ct.tr.RoundTrip(req)
+		if err != nil {
+			return err
+		}
+		if res.ContentLength != 123 {
+			return fmt.Errorf("Content-Length = %d; want 123", res.ContentLength)
+		}
+		slurp, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return fmt.Errorf("ReadAll: %v", err)
+		}
+		if len(slurp) > 0 {
+			return fmt.Errorf("Unexpected non-empty ReadAll body: %q", slurp)
+		}
+		return nil
+	}
+	ct.server = func() error {
+		ct.greet()
+		for {
+			f, err := ct.fr.ReadFrame()
+			if err != nil {
+				t.Logf("ReadFrame: %v", err)
+				return nil
+			}
+			hf, ok := f.(*HeadersFrame)
+			if !ok {
+				continue
+			}
+			var buf bytes.Buffer
+			enc := hpack.NewEncoder(&buf)
+			enc.WriteField(hpack.HeaderField{Name: ":status", Value: "200"})
+			enc.WriteField(hpack.HeaderField{Name: "content-length", Value: "123"})
+			ct.fr.WriteHeaders(HeadersFrameParam{
+				StreamID:      hf.StreamID,
+				EndHeaders:    true,
+				EndStream:     false, // as the GFE does
+				BlockFragment: buf.Bytes(),
+			})
+			ct.fr.WriteData(hf.StreamID, true, nil)
+
+			<-clientDone
+			return nil
+		}
+		return nil
+	}
+	ct.run()
 }

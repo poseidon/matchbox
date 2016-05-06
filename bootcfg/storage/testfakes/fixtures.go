@@ -32,12 +32,12 @@ var (
 				"c": "",
 			},
 		},
-		CloudId:    "cloud-config.yml",
-		IgnitionId: "ignition.json",
+		CloudId:    "cloud-config.tmpl",
+		IgnitionId: "ignition.tmpl",
 	}
 
 	// IgnitionYAMLName is an Ignition template name for testing.
-	IgnitionYAMLName = "ignition.yaml"
+	IgnitionYAMLName = "ignition.tmpl"
 
 	// IgnitionYAML is an Ignition template for testing.
 	IgnitionYAML = `ignition_version: 1
