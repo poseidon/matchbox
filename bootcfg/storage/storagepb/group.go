@@ -29,16 +29,18 @@ func ParseGroup(data []byte) (*Group, error) {
 	return group, err
 }
 
-// AssertValid validates a Group. Returns nil if there are no validation
-// errors.
-func (g *Group) AssertValid() error {
-	if g.Id == "" {
-		return ErrIdRequired
+func (g *Group) Copy() *Group {
+	selectors := make(map[string]string)
+	for k, v := range g.Selector {
+		selectors[k] = v
 	}
-	if g.Profile == "" {
-		return ErrProfileRequired
+	return &Group{
+		Id:       g.Id,
+		Name:     g.Name,
+		Profile:  g.Profile,
+		Selector: selectors,
+		Metadata: g.Metadata,
 	}
-	return nil
 }
 
 // Matches returns true if the given labels satisfy all the selector
@@ -65,6 +67,18 @@ func (g *Group) Normalize() error {
 			// range iteration copy with mutable map
 			g.Selector[key] = macAddr.String()
 		}
+	}
+	return nil
+}
+
+// AssertValid validates a Group. Returns nil if there are no validation
+// errors.
+func (g *Group) AssertValid() error {
+	if g.Id == "" {
+		return ErrIdRequired
+	}
+	if g.Profile == "" {
+		return ErrProfileRequired
 	}
 	return nil
 }

@@ -39,19 +39,40 @@ func TestGroupParse(t *testing.T) {
 	}
 }
 
-func TestGroupValidate(t *testing.T) {
+func TestGroupCopy(t *testing.T) {
+	copy := testGroup.Copy()
+	// assert that:
+	// - Group fields are copied
+	// - mutation of the copy does not affect the original
+	assert.Equal(t, testGroup.Id, copy.Id)
+	assert.Equal(t, testGroup.Name, copy.Name)
+	assert.Equal(t, testGroup.Profile, copy.Profile)
+	assert.Equal(t, testGroup.Selector, copy.Selector)
+	assert.Equal(t, testGroup.Metadata, copy.Metadata)
+
+	copy.Id = "a-copy"
+	copy.Selector["region"] = "us-west"
+	assert.NotEqual(t, testGroup.Id, copy.Id)
+	assert.NotEqual(t, testGroup.Selector, copy.Selector)
+}
+
+func TestGroupMatches(t *testing.T) {
 	cases := []struct {
-		group *Group
-		valid bool
+		labels    map[string]string
+		selectors map[string]string
+		expected  bool
 	}{
-		{&Group{Id: "node1", Profile: "k8s-master"}, true},
-		{testGroupWithoutProfile, false},
-		{&Group{Id: "node1"}, false},
-		{&Group{}, false},
+		{map[string]string{"a": "b"}, map[string]string{"a": "b"}, true},
+		{map[string]string{"a": "b"}, map[string]string{"a": "c"}, false},
+		{map[string]string{"uuid": "a", "mac": "b"}, map[string]string{"uuid": "a"}, true},
+		{map[string]string{"uuid": "a"}, map[string]string{"uuid": "a", "mac": "b"}, false},
 	}
+	// assert that:
+	// - Group selectors must be satisfied for a match
+	// - labels may provide additional key/value pairs
 	for _, c := range cases {
-		valid := c.group.AssertValid() == nil
-		assert.Equal(t, c.valid, valid)
+		group := &Group{Selector: c.selectors}
+		assert.Equal(t, c.expected, group.Matches(c.labels))
 	}
 }
 
@@ -82,23 +103,19 @@ func TestNormalize(t *testing.T) {
 	}
 }
 
-func TestGroupMatches(t *testing.T) {
+func TestGroupValidate(t *testing.T) {
 	cases := []struct {
-		labels    map[string]string
-		selectors map[string]string
-		expected  bool
+		group *Group
+		valid bool
 	}{
-		{map[string]string{"a": "b"}, map[string]string{"a": "b"}, true},
-		{map[string]string{"a": "b"}, map[string]string{"a": "c"}, false},
-		{map[string]string{"uuid": "a", "mac": "b"}, map[string]string{"uuid": "a"}, true},
-		{map[string]string{"uuid": "a"}, map[string]string{"uuid": "a", "mac": "b"}, false},
+		{&Group{Id: "node1", Profile: "k8s-master"}, true},
+		{testGroupWithoutProfile, false},
+		{&Group{Id: "node1"}, false},
+		{&Group{}, false},
 	}
-	// assert that:
-	// - Group selectors must be satisfied for a match
-	// - labels may provide additional key/value pairs
 	for _, c := range cases {
-		group := &Group{Selector: c.selectors}
-		assert.Equal(t, c.expected, group.Matches(c.labels))
+		valid := c.group.AssertValid() == nil
+		assert.Equal(t, c.valid, valid)
 	}
 }
 

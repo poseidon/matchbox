@@ -25,3 +25,27 @@ func (p *Profile) AssertValid() error {
 	}
 	return nil
 }
+
+func (p *Profile) Copy() *Profile {
+	return &Profile{
+		Id:         p.Id,
+		Name:       p.Name,
+		IgnitionId: p.IgnitionId,
+		CloudId:    p.CloudId,
+		Boot:       p.Boot.Copy(),
+	}
+}
+
+func (b *NetBoot) Copy() *NetBoot {
+	initrd := make([]string, len(b.Initrd))
+	copy(initrd, b.Initrd)
+	cmdline := make(map[string]string)
+	for k, v := range b.Cmdline {
+		cmdline[k] = v
+	}
+	return &NetBoot{
+		Kernel:  b.Kernel,
+		Initrd:  initrd,
+		Cmdline: cmdline,
+	}
+}
