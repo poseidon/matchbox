@@ -34,6 +34,11 @@ func New(config *Config) (*Client, error) {
 	return newClient(config)
 }
 
+// Close closes the client's connections.
+func (c *Client) Close() error {
+	return c.conn.Close()
+}
+
 func newClient(config *Config) (*Client, error) {
 	conn, err := retryDialer(config)
 	if err != nil {
