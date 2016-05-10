@@ -57,9 +57,7 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 Run the latest `bootcfg` ACI with rkt and the `etcd` example.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
-
-Note: The insecure flag is needed since [Quay.io](https://quay.io/repository/coreos/bootcfg) serves ACIs coverted from Docker images (docker2aci) and Docker images don't support signatures.
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 #### Release
 
