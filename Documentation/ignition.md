@@ -3,7 +3,7 @@
 
 Ignition is a system for declaratively provisioning disks from the initramfs, before systemd starts. It runs only on the first boot and handles formatting partitioning, writing files (systemd units, networkd units, dropins, regular files), and configuring users. See the Ignition [docs](https://coreos.com/ignition/docs/latest/) for details.
 
-Ignition template files can be added in the `/var/lib/bootcfg/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files should contain Ignition JSON or YAML (which will be rendered as JSON) and may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with Group `metadata` when served.
+Ignition template files can be added in the `/var/lib/bootcfg/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with Group `metadata` and should render to JSON or YAML (which will be served by `bootcfg` as JSON).
 
     /var/lib/bootcfg
      ├── cloud
@@ -18,9 +18,9 @@ Reference an Ignition config in a [Profile](bootcfg.md#profiles). When PXE booti
 
 ## Configs
 
-Here is an example Ignition config for static networking, which will be rendered, with metadata, into YAML and tranformed into machine-friendly JSON.
+Here is an example Ignition template for static networking, which will be rendered, with metadata, into YAML and tranformed into machine-friendly JSON.
 
-ignition/network.yaml:
+ignition/network.tmpl:
 
     ---
     ignition_version: 1
@@ -63,9 +63,9 @@ Response from `/ignition?mac=address` for a particular machine.
 
 Note that rendered Ignition does **not** allow variables - the response has been fully rendered with `metadata` for the requesting machine.
 
-Ignition configs can be provided directly as JSON as well. This is useful for simple cases or if you prefer to use your own templating solution to generate Ignition configs.
+Ignition configs can be provided directly as JSON as well (`.ign` or `.ignition`). This is useful for simple cases or if you prefer to use your own templating solution to generate Ignition configs.
 
-ignition/run-hello.json:
+ignition/run-hello.ign:
 
     {
         "ignitionVersion": 1,
@@ -82,5 +82,5 @@ ignition/run-hello.json:
 
 ### Examples
 
-See [examples/ignition](../examples/ignition) for example Ignition config templates.
+See [examples/ignition](../examples/ignition) for example Ignition templates.
 

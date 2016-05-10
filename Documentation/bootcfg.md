@@ -9,8 +9,8 @@ Network boot endpoints provide PXE, iPXE, GRUB, and [Pixiecore](https://github.c
 
 Get started running `bootcfg` on your Linux machine, with rkt or Docker, to network boot virtual or physical machines into CoreOS clusters.
 
-* [Getting Started with rkt](getting-started-rkt.md)
-* [Getting Started with Docker](getting-started-docker.md)
+* [bootcfg with rkt](getting-started-rkt.md)
+* [bootcfg with Docker](getting-started-docker.md)
 
 ## Flags
 

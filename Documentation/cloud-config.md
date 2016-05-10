@@ -1,7 +1,7 @@
 
 # Cloud Config
 
-**Note:** We recommend you migrate to [Ignition](https://coreos.com/blog/introducing-ignition.html).
+**Note:** We recommend you migrate to [Ignition](https://coreos.com/blog/introducing-ignition.html) on bare metal.
 
 CoreOS Cloud-Config is a system for configuring machines with a Cloud-Config file or executable script from user-data. Cloud-Config runs in userspace on each boot and implements a subset of the [cloud-init spec](http://cloudinit.readthedocs.org/en/latest/topics/format.html#cloud-config-data). See the cloud-config [docs](https://coreos.com/os/docs/latest/cloud-config.html) for details.
 

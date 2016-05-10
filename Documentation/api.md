@@ -3,7 +3,7 @@
 
 ## iPXE Script
 
-Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Configure your DHCP server or iPXE server to boot from this script.
+Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Use DHCP/TFTP to point iPXE clients to this endpoint as the next-server.
 
     GET http://bootcfg.foo/boot.ipxe
     GET http://bootcfg.foo/boot.ipxe.0   // for dnsmasq
@@ -29,13 +29,13 @@ Finds the profile for the machine and renders the network boot config (kernel, o
 **Response**
 
     #!ipxe
-    kernel /assets/coreos/899.6.0/coreos_production_pxe.vmlinuz coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.first_boot=1 coreos.autologin
-    initrd  /assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz
+    kernel /assets/coreos/1032.0.0/coreos_production_pxe.vmlinuz coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.first_boot=1 coreos.autologin
+    initrd  /assets/coreos/1032.0.0/coreos_production_pxe_image.cpio.gz
     boot
 
 ## GRUB2
 
-Finds the profile for the machine and renders the network boot config as a GRUB config.
+Finds the profile for the machine and renders the network boot config as a GRUB config. Use DHCP/TFTP to point GRUB clients to this endpoint as the next-server.
 
     GET http://bootcfg.foo/grub
 
@@ -52,9 +52,9 @@ Finds the profile for the machine and renders the network boot config as a GRUB 
     timeout=1
     menuentry "CoreOS" {
     echo "Loading kernel"
-    linuxefi "(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz" "coreos.autologin" "coreos.config.url=http://bootcfg.foo:8080/ignition" "coreos.first_boot"
+    linuxefi "(http;bootcfg.foo:8080)/assets/coreos/1032.0.0/coreos_production_pxe.vmlinuz" "coreos.autologin" "coreos.config.url=http://bootcfg.foo:8080/ignition" "coreos.first_boot"
     echo "Loading initrd"
-    initrdefi "(http;bootcfg.foo:8080)/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"
+    initrdefi "(http;bootcfg.foo:8080)/assets/coreos/1032.0.0/coreos_production_pxe_image.cpio.gz"
     }
 
 ## Pixiecore
@@ -72,8 +72,8 @@ Finds the profile matching the machine and renders the network boot config as JS
 **Response**
 
     {
-      "kernel":"/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
-      "initrd":["/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],
+      "kernel":"/assets/coreos/1032.0.0/coreos_production_pxe.vmlinuz",
+      "initrd":["/assets/coreos/1032.0.0/coreos_production_pxe_image.cpio.gz"],
       "cmdline":{
         "cloud-config-url":"http://bootcfg.foo/cloud?mac=ADDRESS",
         "coreos.autologin":""

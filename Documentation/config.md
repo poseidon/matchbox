@@ -30,7 +30,7 @@ Configuration arguments can be provided as flags or as environment variables.
 
 Start the latest ACI with rkt.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 Start the latest Docker image.
 
@@ -46,7 +46,7 @@ Run the binary.
 
 Run the latest ACI with rkt. Mounts are used to add the provided examples.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 Run the latest Docker image. Mounts are used to add the provided examples.
 
@@ -61,7 +61,7 @@ Run with the binary with a test key.
 
 Run the ACI with a test key.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --set-env=BOOTCFG_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/bootcfg/sign/fixtures --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
+    sudo rkt run --net=metal0:IP=172.15.0.2 --set-env=BOOTCFG_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/bootcfg/sign/fixtures --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
 
 Run the Docker image with a test key.
 
