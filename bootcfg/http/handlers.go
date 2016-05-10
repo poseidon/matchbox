@@ -8,7 +8,6 @@ import (
 
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
-	"github.com/coreos/coreos-baremetal/bootcfg/version"
 )
 
 // requireGET requires requests to be an HTTP GET. Otherwise, it responds with
@@ -41,7 +40,7 @@ func versionHandler() http.Handler {
 			http.NotFound(w, req)
 			return
 		}
-		fmt.Fprintf(w, "bootcfg version: %s", version.Version)
+		fmt.Fprintf(w, "bootcfg")
 	}
 	return http.HandlerFunc(fn)
 }
