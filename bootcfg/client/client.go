@@ -1,12 +1,18 @@
 package client
 
 import (
+	"errors"
+
 	"google.golang.org/grpc"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
 )
 
-// Config configures a Client.
+var (
+	errNoEndpoints = errors.New("client: No endpoints provided")
+)
+
+// Config configures a Client.go f
 type Config struct {
 	// List of endpoint URLs
 	Endpoints []string
@@ -22,7 +28,15 @@ type Client struct {
 
 // New creates a new Client from the given Config.
 func New(config *Config) (*Client, error) {
+	if len(config.Endpoints) == 0 {
+		return nil, errNoEndpoints
+	}
 	return newClient(config)
+}
+
+// Close closes the client's connections.
+func (c *Client) Close() error {
+	return c.conn.Close()
 }
 
 func newClient(config *Config) (*Client, error) {
@@ -39,8 +53,8 @@ func newClient(config *Config) (*Client, error) {
 	return client, nil
 }
 
-// retryDialer attemps to Dial each endpoint until a client connection
-// is established.
+// retryDialer attemps to Dial each endpoint in order to establish a
+// connection.
 func retryDialer(config *Config) (*grpc.ClientConn, error) {
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
