@@ -14,6 +14,7 @@ systemd:
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
             Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+            Environment="ETCD_STRICT_RECONFIG_CHECK=true"
     - name: flanneld.service
       enable: true
       dropins:
