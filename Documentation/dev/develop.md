@@ -23,7 +23,7 @@ Alternately, build a Docker image `coreos/bootcfg:latest`.
 
     sudo ./build-docker
 
-## Check Version
+## Version
 
     ./bin/bootcfg -version
     sudo rkt --insecure-options=image run bootcfg.aci -- -version
@@ -42,3 +42,18 @@ Run the ACI with rkt on `metal0`.
 Alternately, run the Docker image on `docker0`.
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd-docker:/var/lib/bootcfg/groups:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+
+## Dependencies
+
+Project dependencies are commited to the `vendor` directory, so Go 1.6+ users can clone to their `GOPATH` and build or test immediately. Go 1.5 users should set `GO15VENDOREXPERIMENT=1`.
+
+Project developers should use [glide](https://github.com/Masterminds/glide) to manage commited dependencies under `vendor`. Configure `glide.yaml` as desired. Use `glide update` to download and update dependencies listed in `glide.yaml` into `/vendor` (do **not** use glide `get`).
+
+    glide update --update-vendored --strip-vendor --strip-vcs
+
+Recursive dependencies are also vendored. A `glide.lock` will be created to represent the exact versions of each dependency.
+
+With an empty `vendor` directory, you can install the `glide.lock` dependencies.
+
+    rm -rf vendor/
+    glide install --strip-vendor --strip-vcs

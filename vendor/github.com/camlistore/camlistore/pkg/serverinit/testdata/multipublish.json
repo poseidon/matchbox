@@ -1,0 +1,23 @@
+{
+	"listen": "localhost:3179",
+	"auth": "userpass:camlistore:pass3179",
+	"blobPath": "/tmp/blobs",
+	"kvIndexFile": "/path/to/indexkv.db",
+	"identity": "26F5ABDA",
+	"identitySecretRing": "/path/to/secring",
+	"ownerName": "Alice",
+	"shareHandlerPath": "/share/",
+	"publish": {
+		"/pics/": {
+			"camliRoot": "picsRoot",
+			"cacheRoot": "/tmp/blobs/cache",
+			"goTemplate": "gallery.html"
+		},
+		"/music/": {
+			"camliRoot": "musicRoot",
+			"baseURL": "http://localhost:3178/",
+			"cacheRoot": "/tmp/blobs/cache",
+			"goTemplate": "music.html"
+		}
+	}
+}
