@@ -1,5 +1,5 @@
-hash: 8f33fd1c87e2136cdff69364e0668a595a129b8ffd686851336c841bf7e4f705
-updated: 2016-05-12T14:04:55.653773498-07:00
+hash: e7ed76c4a5812e4c198db9d3f153cac04113225f58bb82966e4eca08386eda20
+updated: 2016-05-12T16:50:32.137050044-07:00
 imports:
 - name: github.com/alecthomas/units
   version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
@@ -38,7 +38,7 @@ imports:
   subpackages:
   - spew
 - name: github.com/golang/protobuf
-  version: f0a097ddac24fb00e07d2ac17f8671423f3ea47c
+  version: 7cc19b78d562895b13596ddce7aafb59dd789318
   subpackages:
   - proto
 - name: github.com/inconshreveable/mousetrap
@@ -80,7 +80,7 @@ imports:
   - trace
   - http2/hpack
 - name: google.golang.org/grpc
-  version: 8eeecf2291de9d171d0b1392a27ff3975679f4f5
+  version: 83e628beaa8cab332f304ad93dff7abc46722386
   subpackages:
   - codes
   - credentials

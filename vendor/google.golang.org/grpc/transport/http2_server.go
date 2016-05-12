@@ -303,6 +303,11 @@ func (t *http2Server) getStream(f http2.Frame) (*Stream, bool) {
 // Window updates will deliver to the controller for sending when
 // the cumulative quota exceeds the corresponding threshold.
 func (t *http2Server) updateWindow(s *Stream, n uint32) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.state == streamDone {
+		return
+	}
 	if w := t.fc.onRead(n); w > 0 {
 		t.controlBuf.put(&windowUpdate{0, w})
 	}
@@ -600,13 +605,15 @@ func (t *http2Server) Write(s *Stream, data []byte, opts *Options) error {
 			}
 			return err
 		}
-		if s.ctx.Err() != nil {
+		select {
+		case <-s.ctx.Done():
 			t.sendQuotaPool.add(ps)
 			if t.framer.adjustNumWriters(-1) == 0 {
 				t.controlBuf.put(&flushIO{})
 			}
 			t.writableChan <- 0
 			return ContextErr(s.ctx.Err())
+		default:
 		}
 		var forceFlush bool
 		if r.Len() == 0 && t.framer.adjustNumWriters(0) == 1 && !opts.Last {

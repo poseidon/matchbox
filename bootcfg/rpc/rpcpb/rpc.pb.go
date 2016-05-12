@@ -37,7 +37,7 @@ var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion1
+const _ = grpc.SupportPackageIsVersion2
 
 // Client API for Groups service
 
@@ -100,40 +100,58 @@ func RegisterGroupsServer(s *grpc.Server, srv GroupsServer) {
 	s.RegisterService(&_Groups_serviceDesc, srv)
 }
 
-func _Groups_GroupPut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Groups_GroupPut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.GroupPutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(GroupsServer).GroupPut(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(GroupsServer).GroupPut(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Groups/GroupPut",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupsServer).GroupPut(ctx, req.(*serverpb.GroupPutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _Groups_GroupGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Groups_GroupGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.GroupGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(GroupsServer).GroupGet(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(GroupsServer).GroupGet(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Groups/GroupGet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupsServer).GroupGet(ctx, req.(*serverpb.GroupGetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _Groups_GroupList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Groups_GroupList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.GroupListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(GroupsServer).GroupList(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(GroupsServer).GroupList(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Groups/GroupList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupsServer).GroupList(ctx, req.(*serverpb.GroupListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Groups_serviceDesc = grpc.ServiceDesc{
@@ -217,40 +235,58 @@ func RegisterProfilesServer(s *grpc.Server, srv ProfilesServer) {
 	s.RegisterService(&_Profiles_serviceDesc, srv)
 }
 
-func _Profiles_ProfilePut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Profiles_ProfilePut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.ProfilePutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ProfilesServer).ProfilePut(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ProfilesServer).ProfilePut(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Profiles/ProfilePut",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfilesServer).ProfilePut(ctx, req.(*serverpb.ProfilePutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _Profiles_ProfileGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Profiles_ProfileGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.ProfileGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ProfilesServer).ProfileGet(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ProfilesServer).ProfileGet(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Profiles/ProfileGet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfilesServer).ProfileGet(ctx, req.(*serverpb.ProfileGetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _Profiles_ProfileList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Profiles_ProfileList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.ProfileListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ProfilesServer).ProfileList(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ProfilesServer).ProfileList(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Profiles/ProfileList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfilesServer).ProfileList(ctx, req.(*serverpb.ProfileListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Profiles_serviceDesc = grpc.ServiceDesc{
@@ -308,16 +344,22 @@ func RegisterIgnitionServer(s *grpc.Server, srv IgnitionServer) {
 	s.RegisterService(&_Ignition_serviceDesc, srv)
 }
 
-func _Ignition_IgnitionPut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Ignition_IgnitionPut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.IgnitionPutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(IgnitionServer).IgnitionPut(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(IgnitionServer).IgnitionPut(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Ignition/IgnitionPut",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IgnitionServer).IgnitionPut(ctx, req.(*serverpb.IgnitionPutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Ignition_serviceDesc = grpc.ServiceDesc{
@@ -380,28 +422,40 @@ func RegisterSelectServer(s *grpc.Server, srv SelectServer) {
 	s.RegisterService(&_Select_serviceDesc, srv)
 }
 
-func _Select_SelectGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Select_SelectGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.SelectGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(SelectServer).SelectGroup(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(SelectServer).SelectGroup(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Select/SelectGroup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SelectServer).SelectGroup(ctx, req.(*serverpb.SelectGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _Select_SelectProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Select_SelectProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(serverpb.SelectProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(SelectServer).SelectProfile(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(SelectServer).SelectProfile(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rpcpb.Select/SelectProfile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SelectServer).SelectProfile(ctx, req.(*serverpb.SelectProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Select_serviceDesc = grpc.ServiceDesc{

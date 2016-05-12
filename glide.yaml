@@ -34,7 +34,7 @@ import:
   subpackages:
   - spew
 - package: github.com/golang/protobuf
-  version: f0a097ddac24fb00e07d2ac17f8671423f3ea47c
+  version: 7cc19b78d562895b13596ddce7aafb59dd789318
   subpackages:
   - proto
 - package: github.com/pmezard/go-difflib
@@ -68,7 +68,7 @@ import:
   - internal/timeseries
   - trace
 - package: google.golang.org/grpc
-  version: 8eeecf2291de9d171d0b1392a27ff3975679f4f5
+  version: 83e628beaa8cab332f304ad93dff7abc46722386
   subpackages:
   - codes
 - package: gopkg.in/yaml.v2

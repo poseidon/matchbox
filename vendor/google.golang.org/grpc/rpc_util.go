@@ -284,14 +284,11 @@ func checkRecvPayload(pf payloadFormat, recvCompress string, dc Decompressor) er
 	switch pf {
 	case compressionNone:
 	case compressionMade:
-		if recvCompress == "" {
-			return transport.StreamErrorf(codes.InvalidArgument, "grpc: invalid grpc-encoding %q with compression enabled", recvCompress)
-		}
 		if dc == nil || recvCompress != dc.Type() {
-			return transport.StreamErrorf(codes.InvalidArgument, "grpc: Decompressor is not installed for grpc-encoding %q", recvCompress)
+			return transport.StreamErrorf(codes.Unimplemented, "grpc: Decompressor is not installed for grpc-encoding %q", recvCompress)
 		}
 	default:
-		return transport.StreamErrorf(codes.InvalidArgument, "grpc: received unexpected payload format %d", pf)
+		return transport.StreamErrorf(codes.Internal, "grpc: received unexpected payload format %d", pf)
 	}
 	return nil
 }
@@ -409,10 +406,10 @@ func convertCode(err error) codes.Code {
 	return codes.Unknown
 }
 
-// SupportPackageIsVersion1 is referenced from generated protocol buffer files
+// SupportPackageIsVersion2 is referenced from generated protocol buffer files
 // to assert that that code is compatible with this version of the grpc package.
 //
 // This constant may be renamed in the future if a change in the generated code
 // requires a synchronised update of grpc-go and protoc-gen-go. This constant
 // should not be referenced from any other code.
-const SupportPackageIsVersion1 = true
+const SupportPackageIsVersion2 = true

@@ -420,6 +420,8 @@ type test struct {
 	userAgent         string
 	clientCompression bool
 	serverCompression bool
+	unaryInt          grpc.UnaryServerInterceptor
+	streamInt         grpc.StreamServerInterceptor
 
 	// srv and srvAddr are set once startServer is called.
 	srv     *grpc.Server
@@ -468,7 +470,12 @@ func (te *test) startServer() {
 			grpc.RPCDecompressor(grpc.NewGZIPDecompressor()),
 		)
 	}
-
+	if te.unaryInt != nil {
+		sopts = append(sopts, grpc.UnaryInterceptor(te.unaryInt))
+	}
+	if te.streamInt != nil {
+		sopts = append(sopts, grpc.StreamInterceptor(te.streamInt))
+	}
 	la := "localhost:0"
 	switch e.network {
 	case "unix":
@@ -741,6 +748,24 @@ func testHealthCheckServingStatus(t *testing.T, e env) {
 		t.Fatalf("Got the serving status %v, want NOT_SERVING", out.Status)
 	}
 
+}
+
+func TestErrorChanNoIO(t *testing.T) {
+	defer leakCheck(t)()
+	for _, e := range listTestEnv() {
+		testErrorChanNoIO(t, e)
+	}
+}
+
+func testErrorChanNoIO(t *testing.T, e env) {
+	te := newTest(t, e)
+	te.startServer()
+	defer te.tearDown()
+
+	tc := testpb.NewTestServiceClient(te.clientConn())
+	if _, err := tc.FullDuplexCall(context.Background()); err != nil {
+		t.Fatalf("%v.FullDuplexCall(_) = _, %v, want <nil>", tc, err)
+	}
 }
 
 func TestEmptyUnaryWithUserAgent(t *testing.T) {
@@ -1570,6 +1595,61 @@ func testExceedMaxStreamsLimit(t *testing.T, e env) {
 	}
 }
 
+func TestStreamsQuotaRecovery(t *testing.T) {
+	defer leakCheck(t)()
+	for _, e := range listTestEnv() {
+		testStreamsQuotaRecovery(t, e)
+	}
+}
+
+func testStreamsQuotaRecovery(t *testing.T, e env) {
+	te := newTest(t, e)
+	te.declareLogNoise(
+		"http2Client.notifyError got notified that the client transport was broken",
+		"Conn.resetTransport failed to create client transport",
+		"grpc: the client connection is closing",
+	)
+	te.maxStream = 1 // Allows 1 live stream.
+	te.startServer()
+	defer te.tearDown()
+
+	cc := te.clientConn()
+	tc := testpb.NewTestServiceClient(cc)
+	ctx, cancel := context.WithCancel(context.Background())
+	if _, err := tc.StreamingInputCall(ctx); err != nil {
+		t.Fatalf("%v.StreamingInputCall(_) = _, %v, want _, <nil>", tc, err)
+	}
+	// Loop until the new max stream setting is effective.
+	for {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		_, err := tc.StreamingInputCall(ctx)
+		if err == nil {
+			time.Sleep(time.Second)
+			continue
+		}
+		if grpc.Code(err) == codes.DeadlineExceeded {
+			break
+		}
+		t.Fatalf("%v.StreamingInputCall(_) = _, %v, want _, %d", tc, err, codes.DeadlineExceeded)
+	}
+	cancel()
+
+	var wg sync.WaitGroup
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			ctx, cancel := context.WithCancel(context.Background())
+			if _, err := tc.StreamingInputCall(ctx); err != nil {
+				t.Errorf("%v.StreamingInputCall(_) = _, %v, want _, <nil>", tc, err)
+			}
+			cancel()
+		}()
+	}
+	wg.Wait()
+}
+
 func TestCompressServerHasNoSupport(t *testing.T) {
 	defer leakCheck(t)()
 	for _, e := range listTestEnv() {
@@ -1596,8 +1676,8 @@ func testCompressServerHasNoSupport(t *testing.T, e env) {
 		ResponseSize: proto.Int32(respSize),
 		Payload:      payload,
 	}
-	if _, err := tc.UnaryCall(context.Background(), req); err == nil || grpc.Code(err) != codes.InvalidArgument {
-		t.Fatalf("TestService/UnaryCall(_, _) = _, %v, want _, error code %d", err, codes.InvalidArgument)
+	if _, err := tc.UnaryCall(context.Background(), req); err == nil || grpc.Code(err) != codes.Unimplemented {
+		t.Fatalf("TestService/UnaryCall(_, _) = _, %v, want _, error code %d", err, codes.Unimplemented)
 	}
 	// Streaming RPC
 	stream, err := tc.FullDuplexCall(context.Background())
@@ -1621,8 +1701,8 @@ func testCompressServerHasNoSupport(t *testing.T, e env) {
 	if err := stream.Send(sreq); err != nil {
 		t.Fatalf("%v.Send(%v) = %v, want <nil>", stream, sreq, err)
 	}
-	if _, err := stream.Recv(); err == nil || grpc.Code(err) != codes.InvalidArgument {
-		t.Fatalf("%v.Recv() = %v, want error code %d", stream, err, codes.InvalidArgument)
+	if _, err := stream.Recv(); err == nil || grpc.Code(err) != codes.Unimplemented {
+		t.Fatalf("%v.Recv() = %v, want error code %d", stream, err, codes.Unimplemented)
 	}
 }
 
@@ -1682,6 +1762,84 @@ func testCompressOK(t *testing.T, e env) {
 	}
 	if _, err := stream.Recv(); err != nil {
 		t.Fatalf("%v.Recv() = %v, want <nil>", stream, err)
+	}
+}
+
+func TestUnaryServerInterceptor(t *testing.T) {
+	defer leakCheck(t)()
+	for _, e := range listTestEnv() {
+		testUnaryServerInterceptor(t, e)
+	}
+}
+
+func errInjector(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	return nil, grpc.Errorf(codes.PermissionDenied, "")
+}
+
+func testUnaryServerInterceptor(t *testing.T, e env) {
+	te := newTest(t, e)
+	te.unaryInt = errInjector
+	te.startServer()
+	defer te.tearDown()
+
+	tc := testpb.NewTestServiceClient(te.clientConn())
+	if _, err := tc.EmptyCall(context.Background(), &testpb.Empty{}); grpc.Code(err) != codes.PermissionDenied {
+		t.Fatalf("%v.EmptyCall(_, _) = _, %v, want _, error code %d", tc, err, codes.PermissionDenied)
+	}
+}
+
+func TestStreamServerInterceptor(t *testing.T) {
+	defer leakCheck(t)()
+	for _, e := range listTestEnv() {
+		testStreamServerInterceptor(t, e)
+	}
+}
+
+func fullDuplexOnly(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	if info.FullMethod == "/grpc.testing.TestService/FullDuplexCall" {
+		return handler(srv, ss)
+	}
+	// Reject the other methods.
+	return grpc.Errorf(codes.PermissionDenied, "")
+}
+
+func testStreamServerInterceptor(t *testing.T, e env) {
+	te := newTest(t, e)
+	te.streamInt = fullDuplexOnly
+	te.startServer()
+	defer te.tearDown()
+
+	tc := testpb.NewTestServiceClient(te.clientConn())
+	respParam := []*testpb.ResponseParameters{
+		{
+			Size: proto.Int32(int32(1)),
+		},
+	}
+	payload, err := newPayload(testpb.PayloadType_COMPRESSABLE, int32(1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := &testpb.StreamingOutputCallRequest{
+		ResponseType:       testpb.PayloadType_COMPRESSABLE.Enum(),
+		ResponseParameters: respParam,
+		Payload:            payload,
+	}
+	s1, err := tc.StreamingOutputCall(context.Background(), req)
+	if err != nil {
+		t.Fatalf("%v.StreamingOutputCall(_) = _, %v, want _, <nil>", tc, err)
+	}
+	if _, err := s1.Recv(); grpc.Code(err) != codes.PermissionDenied {
+		t.Fatalf("%v.StreamingInputCall(_) = _, %v, want _, error code %d", tc, err, codes.PermissionDenied)
+	}
+	s2, err := tc.FullDuplexCall(context.Background())
+	if err != nil {
+		t.Fatalf("%v.FullDuplexCall(_) = _, %v, want <nil>", tc, err)
+	}
+	if err := s2.Send(req); err != nil {
+		t.Fatalf("%v.Send(_) = %v, want <nil>", s2, err)
+	}
+	if _, err := s2.Recv(); err != nil {
+		t.Fatalf("%v.Recv() = _, %v, want _, <nil>", s2, err)
 	}
 }
 
@@ -1843,6 +2001,7 @@ func interestingGoroutines() (gs []string) {
 			strings.Contains(stack, "testing.Main(") ||
 			strings.Contains(stack, "runtime.goexit") ||
 			strings.Contains(stack, "created by runtime.gc") ||
+			strings.Contains(stack, "created by google3/base/go/log.init") ||
 			strings.Contains(stack, "interestingGoroutines") ||
 			strings.Contains(stack, "runtime.MHeap_Scavenger") ||
 			strings.Contains(stack, "signal.signal_recv") ||

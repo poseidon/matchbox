@@ -140,29 +140,6 @@ func newHTTP2Client(addr string, opts *ConnectOptions) (_ ClientTransport, err e
 			conn.Close()
 		}
 	}()
-	// Send connection preface to server.
-	n, err := conn.Write(clientPreface)
-	if err != nil {
-		return nil, ConnectionErrorf("transport: %v", err)
-	}
-	if n != len(clientPreface) {
-		return nil, ConnectionErrorf("transport: preface mismatch, wrote %d bytes; want %d", n, len(clientPreface))
-	}
-	framer := newFramer(conn)
-	if initialWindowSize != defaultWindowSize {
-		err = framer.writeSettings(true, http2.Setting{http2.SettingInitialWindowSize, uint32(initialWindowSize)})
-	} else {
-		err = framer.writeSettings(true)
-	}
-	if err != nil {
-		return nil, ConnectionErrorf("transport: %v", err)
-	}
-	// Adjust the connection flow control window if needed.
-	if delta := uint32(initialConnWindowSize - defaultWindowSize); delta > 0 {
-		if err := framer.writeWindowUpdate(true, 0, delta); err != nil {
-			return nil, ConnectionErrorf("transport: %v", err)
-		}
-	}
 	ua := primaryUA
 	if opts.UserAgent != "" {
 		ua = opts.UserAgent + " " + ua
@@ -178,7 +155,7 @@ func newHTTP2Client(addr string, opts *ConnectOptions) (_ ClientTransport, err e
 		writableChan:    make(chan int, 1),
 		shutdownChan:    make(chan struct{}),
 		errorChan:       make(chan struct{}),
-		framer:          framer,
+		framer:          newFramer(conn),
 		hBuf:            &buf,
 		hEnc:            hpack.NewEncoder(&buf),
 		controlBuf:      newRecvBuffer(),
@@ -191,13 +168,38 @@ func newHTTP2Client(addr string, opts *ConnectOptions) (_ ClientTransport, err e
 		maxStreams:      math.MaxInt32,
 		streamSendQuota: defaultWindowSize,
 	}
+	// Start the reader goroutine for incoming message. Each transport has
+	// a dedicated goroutine which reads HTTP2 frame from network. Then it
+	// dispatches the frame to the corresponding stream entity.
+	go t.reader()
+	// Send connection preface to server.
+	n, err := t.conn.Write(clientPreface)
+	if err != nil {
+		t.Close()
+		return nil, ConnectionErrorf("transport: %v", err)
+	}
+	if n != len(clientPreface) {
+		t.Close()
+		return nil, ConnectionErrorf("transport: preface mismatch, wrote %d bytes; want %d", n, len(clientPreface))
+	}
+	if initialWindowSize != defaultWindowSize {
+		err = t.framer.writeSettings(true, http2.Setting{http2.SettingInitialWindowSize, uint32(initialWindowSize)})
+	} else {
+		err = t.framer.writeSettings(true)
+	}
+	if err != nil {
+		t.Close()
+		return nil, ConnectionErrorf("transport: %v", err)
+	}
+	// Adjust the connection flow control window if needed.
+	if delta := uint32(initialConnWindowSize - defaultWindowSize); delta > 0 {
+		if err := t.framer.writeWindowUpdate(true, 0, delta); err != nil {
+			t.Close()
+			return nil, ConnectionErrorf("transport: %v", err)
+		}
+	}
 	go t.controller()
 	t.writableChan <- 0
-	// Start the reader goroutine for incoming message. The threading model
-	// on receiving is that each transport has a dedicated goroutine which
-	// reads HTTP2 frame from network. Then it dispatches the frame to the
-	// corresponding stream entity.
-	go t.reader()
 	return t, nil
 }
 
@@ -233,8 +235,10 @@ func (t *http2Client) NewStream(ctx context.Context, callHdr *CallHdr) (_ *Strea
 	if dl, ok := ctx.Deadline(); ok {
 		timeout = dl.Sub(time.Now())
 	}
-	if err := ctx.Err(); err != nil {
-		return nil, ContextErr(err)
+	select {
+	case <-ctx.Done():
+		return nil, ContextErr(ctx.Err())
+	default:
 	}
 	pr := &peer.Peer{
 		Addr: t.conn.RemoteAddr(),
@@ -285,7 +289,10 @@ func (t *http2Client) NewStream(ctx context.Context, callHdr *CallHdr) (_ *Strea
 		}
 	}
 	if _, err := wait(ctx, t.shutdownChan, t.writableChan); err != nil {
-		// t.streamsQuota will be updated when t.CloseStream is invoked.
+		// Return the quota back now because there is no stream returned to the caller.
+		if _, ok := err.(StreamError); ok && checkStreamsQuota {
+			t.streamsQuota.add(1)
+		}
 		return nil, err
 	}
 	t.mu.Lock()
@@ -425,6 +432,9 @@ func (t *http2Client) CloseStream(s *Stream, err error) {
 // accessed any more.
 func (t *http2Client) Close() (err error) {
 	t.mu.Lock()
+	if t.state == reachable {
+		close(t.errorChan)
+	}
 	if t.state == closing {
 		t.mu.Unlock()
 		return errors.New("transport: Close() was already called")
@@ -516,13 +526,15 @@ func (t *http2Client) Write(s *Stream, data []byte, opts *Options) error {
 			}
 			return err
 		}
-		if s.ctx.Err() != nil {
+		select {
+		case <-s.ctx.Done():
 			t.sendQuotaPool.add(len(p))
 			if t.framer.adjustNumWriters(-1) == 0 {
 				t.controlBuf.put(&flushIO{})
 			}
 			t.writableChan <- 0
 			return ContextErr(s.ctx.Err())
+		default:
 		}
 		if r.Len() == 0 && t.framer.adjustNumWriters(0) == 1 {
 			// Do a force flush iff this is last frame for the entire gRPC message
@@ -570,6 +582,11 @@ func (t *http2Client) getStream(f http2.Frame) (*Stream, bool) {
 // Window updates will deliver to the controller for sending when
 // the cumulative quota exceeds the corresponding threshold.
 func (t *http2Client) updateWindow(s *Stream, n uint32) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.state == streamDone {
+		return
+	}
 	if w := t.fc.onRead(n); w > 0 {
 		t.controlBuf.put(&windowUpdate{0, w})
 	}
