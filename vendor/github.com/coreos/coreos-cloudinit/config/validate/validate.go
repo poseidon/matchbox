@@ -23,7 +23,7 @@ import (
 
 	"github.com/coreos/coreos-cloudinit/config"
 
-	"github.com/coreos/coreos-cloudinit/Godeps/_workspace/src/github.com/coreos/yaml"
+	"github.com/coreos/yaml"
 )
 
 var (

@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+use FindBin qw($Bin);
+
+my $devcam_binpath = "";
+my $gopath = $ENV{'GOPATH'};
+
+if (-e "$Bin/../bin/devcam") {
+	$devcam_binpath = "$Bin/../bin/devcam";
+} elsif (-e "$gopath/bin/devcam") {
+	$devcam_binpath = "$gopath/bin/devcam";
+} elsif (-e "$Bin\\..\\bin\\devcam.exe") {
+	$devcam_binpath = "$Bin\\..\\bin\\devcam.exe";
+} elsif (-e "$gopath\\bin\\devcam.exe") {
+	$devcam_binpath = "$gopath\\bin\\devcam.exe";
+} else {
+	die "devcam binary not found\n";
+}
+
+exec($devcam_binpath, "review");

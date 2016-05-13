@@ -1,0 +1,28 @@
+<!--
+Copyright 2013 The Camlistore Authors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="500px" height="500px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+<g id="Captions">
+</g>
+<g id="Your_Icon">
+	<g>
+		<path d="M36.818,59.693l-3.399,10.659c1.197,0.217,2.391,0.358,3.575,0.358c7.705,0,14.884-4.472,18.241-11.63l-10.654-3.396    C42.833,58.243,39.917,59.748,36.818,59.693z"/>
+		<path d="M37.154,41.308l3.4-10.665c-1.198-0.214-2.391-0.355-3.576-0.355c-7.705,0.004-14.886,4.471-18.243,11.632l10.659,3.399    C31.142,42.755,34.057,41.251,37.154,41.308z"/>
+		<path d="M45.562,32.255l-3.394,10.652c2.56,1.748,4.068,4.66,4.012,7.762l10.664,3.4c0.214-1.197,0.354-2.393,0.354-3.576    C57.195,42.792,52.724,35.609,45.562,32.255z"/>
+		<path d="M27.796,50.333l-10.667-3.399c-0.216,1.196-0.355,2.392-0.355,3.574c0.002,7.703,4.474,14.886,11.635,18.24l3.396-10.653    C29.246,56.347,27.74,53.434,27.796,50.333z"/>
+	</g>
+</g>
+</svg>

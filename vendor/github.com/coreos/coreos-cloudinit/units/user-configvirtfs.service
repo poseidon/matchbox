@@ -1,0 +1,11 @@
+[Unit]
+Description=Load cloud-config from /media/configvirtfs
+Requires=coreos-setup-environment.service
+After=coreos-setup-environment.service
+Before=user-config.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=-/etc/environment
+ExecStart=/usr/bin/coreos-cloudinit --from-configdrive=/media/configvirtfs

@@ -1,0 +1,21 @@
+{
+	"listen": "1.2.3.4:443",
+	"https": true,
+	"httpsCert": "/tls.crt",
+	"httpsKey": "/tls.key",
+	"auth": "userpass:camlistore:pass3179",
+	"blobPath": "/tmp/blobs",
+	"identity": "26F5ABDA",
+	"identitySecretRing": "/path/to/secring",
+	"kvIndexFile": "/path/to/indexkv.db",
+	"s3": "",
+	"replicateTo": [],
+	"publish": {
+		"/pics/": {
+			"camliRoot": "picsRoot",
+			"cacheRoot": "/tmp/blobs/cache",
+			"goTemplate": "gallery.html"
+		}
+	},
+	"shareHandler": true
+}

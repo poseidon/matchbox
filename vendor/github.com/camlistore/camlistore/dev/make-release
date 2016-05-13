@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+
+use strict;
+use Getopt::Long;
+my $opt_force;
+GetOptions("force" => \$opt_force) or die "Usage: make-release [-f] <version>";
+
+my $version = shift or die "Usage: make-release <version>";
+
+die "Not being run from root of Camlistore" unless -e ".git" && -e "pkg/blob/ref.go";
+
+my $cur_branch = `git rev-parse --abbrev-ref HEAD`;
+chomp $cur_branch;
+die "Not on master" unless $cur_branch eq "master";
+
+my $new_branch = "releases/$version";
+
+if ($opt_force) {
+    system("git", "tag", "-d", $version);
+    system("git", "branch", "-D", $new_branch);
+}
+
+system("git", "checkout", "-b", $new_branch) and die "Failed to create branch $new_branch from master. Does it already exist?";
+
+open(my $fh, ">VERSION") or die;
+print $fh "$version\n";
+close($fh);
+
+system("git", "add", "VERSION") and die;
+system("git", "commit", "-m", "Add VERSION file on the $new_branch branch.") and die "Failed to commit";
+system("git", "tag", $version) and die "Failed to tag";
+
+my $commit = do { open(my $f, ".git/refs/tags/$version") or die; local $/; <$f> };
+chomp $commit;
+
+system("git", "checkout", "master") and die;
+open(my $fh, ">>misc/release-history-tags");
+print $fh "$commit\t$version\n";
+close($fh);
+
+print "Created branch $new_branch from master, cleaned it and wrote VERSION file, & tagged $version.\n";
+print "\n";
+print "Push with:\n";
+print "\$ git push github refs/tags/$version:refs/tags/$version\n";
+print "\$ git push github $new_branch:$new_branch\n";

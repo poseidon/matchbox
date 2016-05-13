@@ -1,0 +1,122 @@
+Uploading a single blob is done in two parts:
+
+1) Optional: see if the server already has it with a HEAD request to
+   its blob URL, or do a multi-stat request with a single blob. If the
+   server has it, you're done. Blobs are content-addressable and have
+   no metadata or version, so if the server has it, it has the right
+   version.
+
+2) PUT that blob to its blob URL (or do a multipart batch put of a
+   single blob)
+
+
+When uploading multiple blobs (the common case), the fastest option
+depends on whether or not you're using a modern HTTP transport
+(e.g. SPDY).  If your client and server don't support SPDY, you want
+to use the batch stat and batch upload endpoints, which hopefully can
+die when the future finishes arriving.
+
+If you have SPDY, uploading 100 blobs is just like uploading 100
+single blobs, but all at once. Send all your 100 HEAD requests at
+once, wait 1 RTT for all 100 replies, and then send then the <= 100
+PUT requests with the blobs that the server didn't have.
+
+If you DON'T have SPDY on both sides, you want to use the batch stat
+and batch upload endpoints, described below.
+
+============================================================================
+Preupload request:
+============================================================================
+
+(see blob-stat-protocol.txt)
+
+============================================================================
+Batch upload request:
+============================================================================
+
+Things to note about the request:
+
+   * You do a POST to $BLOB_ROOT/camli/upload where $BLOB_ROOT is the
+     blobserver's root path. You can get the path from
+     performing "discovery" on the server and getting the
+     "blobRoot" value. See discovery.txt.
+
+   * You MUST provide a "name" parameter in each multipart part's
+     Content-Disposition value.  The part's name matters and is the
+     blobref ("digest-hexhexhexhex") of your blob.  The bytes MUST
+     match the blobref and the server MUST reject it if they don't
+     match.
+
+   * You (currently) MUST provide a Content-Type for each multipart
+     part.  It doesn't matter what it is (it's thrown away), but it's
+     necessary to satisfy various HTTP libraries.  Easiest is to just
+     set it to "application/octet-stream" Server implementions SHOULD
+     fail if you clients forget it, to encourage clients to remember
+     it for compatibility with all blob servers.
+
+   * You (currently) MUST provide a "filename" parameter in each
+     multipart's Content-Disposition value, unique per blob, but it
+     will also be thrown away and exists purely to satisfy various
+     HTTP libraries (mostly App Engine).  It's recommended to either
+     set this to an increasing number (e.g. "blob1", "blob2") or just
+     repeat the blobref value here.
+
+   * The total size of a batch upload HTTP request, including headers
+     and body (including MIME bits) should not exceed 32 MB.  (A
+     single blob can be at most 16 MB, but will in practice be much
+     smaller: claims will be at most ~1 KB, and file chunks are
+     typically at most 64 KB or 256 KB)
+
+Some of these requirements may be relaxed in the future.
+
+Example:
+
+POST /$BLOB_SERVER_PATH_ROOT/camli/upload HTTP/1.1
+Host: upload-server.example.com
+Content-Type: multipart/form-data; boundary=randomboundaryXYZ
+
+--randomboundaryXYZ
+Content-Disposition: form-data; name="sha1-9b03f7aca1ac60d40b5e570c34f79a3e07c918e8"; filename="blob1"
+Content-Type: application/octet-stream
+
+(binary or text blob data)
+--randomboundaryXYZ
+Content-Disposition: form-data; name="sha1-deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"; filename="blob2"
+Content-Type: application/octet-stream
+
+(binary or text blob data)
+--randomboundaryXYZ--
+
+-----------------------------------------------------
+Response (status may be a 200 or a 303 to this data)
+-----------------------------------------------------
+
+HTTP/1.1 200 OK
+Content-Type: text/plain
+
+{
+   "received": [
+      {"blobRef": "sha1-9b03f7aca1ac60d40b5e570c34f79a3e07c918e8",
+       "size": 12312},
+      {"blobRef": "sha1-deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+       "size": 29384933}
+   ]
+}
+
+Response keys:
+
+   received         required   Array of {"blobRef": BLOBREF, "size": INT_bytes}
+                               for blobs that were successfully saved. Empty
+                               list in the case nothing was received.
+   errorText        optional   String error message for protocol errors
+                               not relating to a particular blob.
+                               Mostly for debugging clients.  
+
+If connection drops during a POST to an upload URL, you should re-do a
+stat request to verify which objects were received by the server
+and which were not.  Also, the URL you received from stat before
+might no longer work, so stat is required to a get a valid upload
+URL.
+
+For information on resuming truncated uploads, read blob-upload-resume.txt
+
