@@ -21,7 +21,7 @@ Get started running `bootcfg` on your Linux machine to network boot and provisio
 
 * [bootcfg with rkt](../Documentation/getting-started-rkt.md)
 * [bootcfg with Docker](../Documentation/getting-started-docker.md)
-* [Kubernetes v1.2.3](../Documentation/kubernetes.md)
+* [Kubernetes v1.2.4](../Documentation/kubernetes.md)
 * [Self-hosted Kubernetes](../Documentation/bootkube.md) (experimental)
 
 ## Experimental

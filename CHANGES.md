@@ -10,7 +10,7 @@
 
 #### Examples
 
-* Updated Kubernetes examples to v1.2.3 (#187)
+* Updated Kubernetes examples to v1.2.4
 * Remove 8.8.8.8 from networkd example Ignition configs (#184)
 * Fix a bug in the k8s example k8s-certs@.service file check (#156)
 * Add self-hosted Kubernetes example (PXE boot or install to disk)

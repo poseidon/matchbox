@@ -1,7 +1,7 @@
 
 # Kubernetes
 
-The Kubernetes examples provision a 3 node v1.2.3 Kubernetes cluster with one master, two workers, and TLS authentication. A 3 node etcd cluster is run on the hosts for Kubernetes and to coordinate CoreOS auto-updates (if installed to disk).
+The Kubernetes examples provision a 3 node v1.2.4 Kubernetes cluster with one master, two workers, and TLS authentication. A 3 node etcd cluster is run on the hosts for Kubernetes and to coordinate CoreOS auto-updates (if installed to disk).
 
 ## Requirements
 
