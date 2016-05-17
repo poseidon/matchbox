@@ -4,8 +4,15 @@ Documentation=https://github.com/coreos/coreos-baremetal
 
 [Service]
 Type=simple
+User=bootcfg
+Group=bootcfg
 EnvironmentFile=/etc/bootcfg.env
 ExecStart=/usr/local/bin/bootcfg -address=0.0.0.0:8080 -log-level=debug
+
+# systemd.exec
+ProtectHome=yes
+ProtectSystem=full
+ReadWriteDirectories=/var/lib/bootcfg
 
 [Install]
 WantedBy=multi-user.target
