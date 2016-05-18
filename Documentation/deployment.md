@@ -72,6 +72,21 @@ Install the `bootcfg` static binary to `/usr/local/bin`.
 
     $ sudo make install
 
+### User/Group
+
+The `bootcfg` service should be run by a non-root user with access to the `bootcfg` data directory (e.g. `/var/lib/bootcfg`). Create a `bootcfg` user and group.
+
+    sudo useradd -U bootcfg
+
+Run the provided script to setup the `bootcfg` data directory.
+
+    sudo ./scripts/setup-data-dir
+
+Add yourself to the `bootcfg` group if you'd like to data by modifying files rather than through the `bootcmd` client.
+
+    SELF=$(whoami)
+    sudo gpasswd --add $SELF bootcfg
+
 ### Run
 
 Run the `bootcfg` server.
