@@ -39,6 +39,21 @@ The example manifests use Kubernetes `emptyDir` volumes to back the `bootcfg` Fi
 
 ## Binary
 
+### User/Group
+
+The `bootcfg` service should be run by a non-root user with access to the `bootcfg` data directory (e.g. `/var/lib/bootcfg`). Create a `bootcfg` user and group.
+
+    sudo useradd -U bootcfg
+
+Run the provided script to setup the `bootcfg` data directory.
+
+    sudo ./scripts/setup-data-dir
+
+Add yourself to the `bootcfg` group if you'd like to edit configs directly rather than through the `bootcmd` client.
+
+    SELF=$(whoami)
+    sudo gpasswd --add $SELF bootcfg
+
 ### Prebuilt
 
 Download a prebuilt binary from the Github [releases](https://github.com/coreos/coreos-baremetal/releases).
@@ -72,21 +87,6 @@ Install the `bootcfg` static binary to `/usr/local/bin`.
 
     $ sudo make install
 
-### User/Group
-
-The `bootcfg` service should be run by a non-root user with access to the `bootcfg` data directory (e.g. `/var/lib/bootcfg`). Create a `bootcfg` user and group.
-
-    sudo useradd -U bootcfg
-
-Run the provided script to setup the `bootcfg` data directory.
-
-    sudo ./scripts/setup-data-dir
-
-Add yourself to the `bootcfg` group if you'd like to data by modifying files rather than through the `bootcmd` client.
-
-    SELF=$(whoami)
-    sudo gpasswd --add $SELF bootcfg
-
 ### Run
 
 Run the `bootcfg` server.
@@ -97,7 +97,7 @@ Run the `bootcfg` server.
 
 See [flags and variables](config.md).
 
-## systemd
+### systemd
 
 First, install the `bootcfg` binary from a pre-built binary or from source. Then add and start bootcfg's example systemd unit.
 

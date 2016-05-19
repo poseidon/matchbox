@@ -22,13 +22,6 @@ systemd:
           contents: |
             [Service]
             ExecStartPre=/opt/init-flannel
-    - name: fleet.service
-      enable: true
-      dropins:
-        - name: 40-fleet-metadata.conf
-          contents: |
-            [Service]
-            Environment="FLEET_METADATA={{.fleet_metadata}}"
     - name: docker.service
       enable: true
       dropins:
@@ -51,11 +44,12 @@ systemd:
           --runonce \
           --runonce-timeout=60s \
           --api-servers={{.k8s_master_endpoint}} \
-          --kubeconfig=/etc/kubernetes/kubeconfig.yaml \
+          --kubeconfig=/etc/kubernetes/kubeconfig \
           --lock-file=/var/run/lock/kubelet.lock \
           --allow-privileged \
           --hostname-override={{.ipv4_address}} \
           --node-labels=master=true \
+          --minimum-container-ttl-duration=3m0s \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
         Restart=always
@@ -83,7 +77,7 @@ storage:
       format: "ext4"
   {{end}}
       files:
-        - path: /etc/kubernetes/kubeconfig.yaml
+        - path: /etc/kubernetes/kubeconfig
           mode: 0644
           contents: |
             apiVersion: v1
@@ -92,27 +86,16 @@ storage:
             - name: local
               cluster:
                 server: {{.k8s_master_endpoint}}
-                certificate-authority-data: {{.k8s_ca_data}}
+                certificate-authority-data: {{.k8s_certificate_authority}}
             users:
-            - name: k8s
+            - name: kubelet
               user:
-                token: {{.k8s_secret_token}}
+                client-certificate-data: {{.k8s_client_certificate}}
+                client-key-data: {{.k8s_client_key}}
             contexts:
             - context:
                 cluster: local
-                user: k8s
-        - path: /etc/ssh/sshd_config
-          mode: 0600
-          uid: 0
-          contents: |
-            # Use most defaults for sshd configuration.
-            UsePrivilegeSeparation sandbox
-            Subsystem sftp internal-sftp
-            PermitRootLogin no
-            AllowUsers core
-            PasswordAuthentication no
-            ChallengeResponseAuthentication no
-            GatewayPorts clientspecified
+                user: kubelet
         - path: /opt/init-flannel
           mode: 0544
           contents: |

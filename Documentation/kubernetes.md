@@ -5,7 +5,7 @@ The Kubernetes examples provision a 3 node v1.2.4 Kubernetes cluster with one ma
 
 ## Requirements
 
-Ensure that you've gone through the `bootcfg` [Getting Started Guide](getting-started-rkt.md) and understand the basics. In particular, you should be able to:
+Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) guide and understand the basics. In particular, you should be able to:
 
 * Use rkt or Docker to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
