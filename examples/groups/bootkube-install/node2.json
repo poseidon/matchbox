@@ -10,16 +10,19 @@
     "ipv4_address": "172.15.0.22",
     "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380",
     "etcd_name": "node2",
-    "fleet_metadata": "role=etcd,name=node2",
     "k8s_dns_service_ip": "10.3.0.10",
-    "k8s_master_endpoint": "https://172.15.0.21:6443",
+    "k8s_master_endpoint": "https://172.15.0.21:443",
     "k8s_pod_network": "10.2.0.0/16",
     "k8s_service_ip_range": "10.3.0.0/24",
-    "k8s_secret_token": "token",
-    "k8s_ca_data": "ADD ME",
+    "k8s_certificate_authority": "ADD ME",
+    "k8s_client_certificate": "ADD ME",
+    "k8s_client_key": "ADD ME",
     "networkd_address": "172.15.0.22/16",
     "networkd_dns": "172.15.0.3",
     "networkd_gateway": "172.15.0.1",
-    "networkd_name": "ens3"
+    "networkd_name": "ens3",
+    "ssh_authorized_keys": [
+      "ADD ME"
+    ]
   }
 }
