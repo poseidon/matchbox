@@ -3,7 +3,9 @@
 
 Ignition is a system for declaratively provisioning disks from the initramfs, before systemd starts. It runs only on the first boot and handles formatting partitioning, writing files (systemd units, networkd units, dropins, regular files), and configuring users. See the Ignition [docs](https://coreos.com/ignition/docs/latest/) for details.
 
-Ignition template files can be added in the `/var/lib/bootcfg/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with Group `metadata` and should render to JSON or YAML (which will be served by `bootcfg` as JSON).
+Normally Ignition configuration files are plain JSON, however using bootcfg you can actually use YAML which will be transformed into JSON when requested. In addition to supporting YAML for Ignition configs, bootcfg supports templating Ignition values to support more reuse and generic configurations. 
+
+Ignition template files can be added in the `/var/lib/bootcfg/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with Group `metadata` and should render to JSON or YAML (which will be returned by `bootcfg` as JSON after processing).
 
     /var/lib/bootcfg
      ├── cloud
@@ -18,9 +20,9 @@ Reference an Ignition config in a [Profile](bootcfg.md#profiles). When PXE booti
 
 ## Configs
 
-Here is an example Ignition template for static networking, which will be rendered, with metadata, into YAML and tranformed into machine-friendly JSON.
+Here is an example Ignition template for static networking. This template will be rendered into YAML, using metadata (from a Group) to fill in the template values. Once templated the YAML is then tranformed into standard JSON. All of this happens at query time, so that when Ignition queries bootcfg the only thing it sees is the final standard JSON output.
 
-ignition/network.tmpl:
+ignition/network.yaml:
 
     ---
     ignition_version: 1
@@ -44,7 +46,7 @@ ignition/network.tmpl:
             {{end}}
     {{end}}
 
-Response from `/ignition?mac=address` for a particular machine.
+Below is a response that you would get from making a GET request to `/ignition?mac=address` for a particular machine. As you can see, the file response is in JSON, not YAML, as Ignition only supports JSON. You can also see that the templated values such as `{{.networkd_name}}` has been filled in.
 
     {
       "ignitionVersion": 1,
@@ -63,7 +65,7 @@ Response from `/ignition?mac=address` for a particular machine.
 
 Note that rendered Ignition does **not** allow variables - the response has been fully rendered with `metadata` for the requesting machine.
 
-Ignition configs can be provided directly as JSON as well (`.ign` or `.ignition`). This is useful for simple cases or if you prefer to use your own templating solution to generate Ignition configs.
+Ignition configs can be provided directly as JSON as well (`.ign` or `.ignition`). This is useful for simple cases or if you prefer to use your own templating solution to generate Ignition configs, this would be very similar to running your own webserver to hosting Ignition configs.
 
 ignition/run-hello.ign:
 
