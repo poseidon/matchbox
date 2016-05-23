@@ -26,10 +26,10 @@ ignition/network.tmpl:
     ignition_version: 1
     networkd:
       units:
-        - name: 00-{{.networkd_name}}.network
+        - name: 10-static.network
           contents: |
             [Match]
-            Name={{.networkd_name}}
+            MACAddress={{.mac}}
             [Network]
             Gateway={{.networkd_gateway}}
             DNS={{.networkd_dns}}

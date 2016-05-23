@@ -3,7 +3,7 @@
   "name": "Master Node",
   "profile": "k8s-master",
   "selector": {
-    "uuid": "16e7d8a7-bfa9-428b-9117-363341bb330b"
+    "mac": "52:54:00:a1:9c:ae"
   },
   "metadata": {
     "etcd_initial_cluster": "node1=http://172.17.0.21:2380,node2=http://172.17.0.22:2380,node3=http://172.17.0.23:2380",
@@ -18,7 +18,6 @@
     "networkd_address": "172.17.0.21/16",
     "networkd_dns": "172.17.0.3",
     "networkd_gateway": "172.17.0.1",
-    "networkd_name": "ens3",
     "pxe": "true"
   }
 }

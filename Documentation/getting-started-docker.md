@@ -43,9 +43,9 @@ Alternately, run the most recent tagged `bootcfg` [release](https://github.com/c
 
 Take a look at the [etcd groups](../examples/groups/etcd-docker) to get an idea of how machines are mapped to Profiles. Explore some endpoints port mapped to localhost:8080.
 
-* [node1's ipxe](http://127.0.0.1:8080/ipxe?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
-* [node1's Ignition](http://127.0.0.1:8080/ignition?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
-* [node1's Metadata](http://127.0.0.1:8080/metadata?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
+* [node1's ipxe](http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae)
+* [node1's Ignition](http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae)
+* [node1's Metadata](http://127.0.0.1:8080/metadata?mac=52:54:00:a1:9c:ae)
 
 ## Network
 

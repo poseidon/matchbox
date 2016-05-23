@@ -74,9 +74,9 @@ If you get an error about the IP assignment, garbage collect old pods.
 
 Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service.
 
-* [node1's ipxe](http://172.15.0.2:8080/ipxe?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
-* [node1's Ignition](http://172.15.0.2:8080/ignition?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
-* [node1's Metadata](http://172.15.0.2:8080/metadata?uuid=16e7d8a7-bfa9-428b-9117-363341bb330b)
+* [node1's ipxe](http://172.15.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae)
+* [node1's Ignition](http://172.15.0.2:8080/ignition?mac=52:54:00:a1:9c:ae)
+* [node1's Metadata](http://172.15.0.2:8080/metadata?mac=52:54:00:a1:9c:ae)
 
 ## Network
 
