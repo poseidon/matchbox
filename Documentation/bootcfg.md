@@ -12,6 +12,8 @@ Get started running `bootcfg` on your Linux machine, with rkt or Docker, to netw
 * [bootcfg with rkt](getting-started-rkt.md)
 * [bootcfg with Docker](getting-started-docker.md)
 
+<img src='img/overview.png' class="img-center" alt="Bootcfg Overview"/>
+
 ## Flags
 
 See [flags and variables](config.md)
