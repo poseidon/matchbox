@@ -3,7 +3,7 @@
   "name": "Worker 2",
   "profile": "k8s-worker",
   "selector": {
-    "uuid": "39d2e747-2648-4d68-ae92-bbc70b245055"
+    "mac": "52:54:00:c3:61:77"
   },
   "metadata": {
     "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380",
@@ -17,7 +17,6 @@
     "networkd_address": "172.15.0.23/16",
     "networkd_dns": "172.15.0.3",
     "networkd_gateway": "172.15.0.1",
-    "networkd_name": "ens3",
     "pxe": "true"
   }
 }

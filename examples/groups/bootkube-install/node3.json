@@ -3,7 +3,7 @@
   "name": "Worker Node",
   "profile": "bootkube-worker",
   "selector": {
-    "uuid": "39d2e747-2648-4d68-ae92-bbc70b245055",
+    "mac": "52:54:00:c3:61:77",
     "os": "installed"
   },
   "metadata": {
@@ -19,10 +19,6 @@
     "k8s_client_key": "ADD ME",
     "networkd_address": "172.15.0.23/16",
     "networkd_dns": "172.15.0.3",
-    "networkd_gateway": "172.15.0.1",
-    "networkd_name": "ens3",
-    "ssh_authorized_keys": [
-      "ADD ME"
-    ]
+    "networkd_gateway": "172.15.0.1"
   }
 }

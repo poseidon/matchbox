@@ -155,7 +155,7 @@ Finds the matching machine group and renders the selectors and metadata as a `pl
     NETWORKD_NAME=ens3
     ETCD_NAME=node1
     FLEET_METADATA=role=etcd,name=node1
-    UUID=16e7d8a7-bfa9-428b-9117-363341bb330b
+    MAC=52:54:00:a1:9c:ae
     ETCD_INITIAL_CLUSTER=node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380
     NETWORKD_DNS=172.15.0.3
 

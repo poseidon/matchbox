@@ -3,11 +3,10 @@
   "name": "etcd Node 2",
   "profile": "etcd",
   "selector": {
-    "uuid": "264cd073-ca62-44b3-98c0-50aad5b5f819"
+    "mac": "52:54:00:b2:2f:86"
   },
   "metadata": {
     "ipv4_address": "172.15.0.22",
-    "networkd_name": "ens3",
     "networkd_gateway": "172.15.0.1",
     "networkd_dns": "172.15.0.3",
     "networkd_address": "172.15.0.22/16",

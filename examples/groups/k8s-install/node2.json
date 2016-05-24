@@ -4,7 +4,7 @@
   "profile": "k8s-worker-install",
   "selector": {
     "os": "installed",
-    "uuid": "264cd073-ca62-44b3-98c0-50aad5b5f819"
+    "mac": "52:54:00:b2:2f:86"
   },
   "metadata": {
     "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380",
@@ -17,7 +17,6 @@
     "k8s_etcd_endpoints": "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379",
     "networkd_address": "172.15.0.22/16",
     "networkd_dns": "172.15.0.3",
-    "networkd_gateway": "172.15.0.1",
-    "networkd_name": "ens3"
+    "networkd_gateway": "172.15.0.1"
   }
 }
