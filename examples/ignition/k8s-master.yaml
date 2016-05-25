@@ -160,7 +160,7 @@ storage:
                 - --service-cluster-ip-range={{.k8s_service_ip_range}}
                 - --secure-port=443
                 - --advertise-address={{.ipv4_address}}
-                - --admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota
+                - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
                 - --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem
                 - --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
                 - --client-ca-file=/etc/kubernetes/ssl/ca.pem
