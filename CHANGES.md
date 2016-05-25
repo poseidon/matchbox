@@ -6,15 +6,17 @@
 * Stop requiring Ignition templates to use file extensions (#176)
 * Show `bootcfg` message at the home path `/`
 * Fix http package log messages and increase request logging (#173)
+* Error when an Ignition/Cloud-config template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
 * Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
 
 #### Examples
 
+* Add self-hosted Kubernetes example (PXE boot or install to disk)
+* Add `create-uefi` subcommand to `scripts/libvirt` for UEFI/GRUB testing
 * Updated Kubernetes examples to v1.2.4
 * Remove 8.8.8.8 from networkd example Ignition configs (#184)
 * Fix a bug in the k8s example k8s-certs@.service file check (#156)
-* Add self-hosted Kubernetes example (PXE boot or install to disk)
-* Add `create-uefi` subcommand to `scripts/libvirt` for UEFI/GRUB testing
+* Match machines by MAC address in examples to simplify networkd device matching (#209)
 
 ## v0.3.0 (2016-04-14)
 

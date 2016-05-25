@@ -17,7 +17,7 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
-{{ if .ssh_authorized_keys }}
+{{ if index . "ssh_authorized_keys" }}
 passwd:
   users:
     - name: core

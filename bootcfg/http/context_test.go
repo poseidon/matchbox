@@ -3,9 +3,10 @@ package http
 import (
 	"testing"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 func TestContextProfile(t *testing.T) {

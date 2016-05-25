@@ -58,7 +58,7 @@ systemd:
         WantedBy=multi-user.target
 
 storage:
-  {{ if .pxe }}
+  {{ if index . "pxe" }}
   disks:
     - device: /dev/sda
       wipe_table: true
@@ -134,7 +134,7 @@ networkd:
         DNS={{.networkd_dns}}
         Address={{.networkd_address}}
 
-{{ if .ssh_authorized_keys }}
+{{ if index . "ssh_authorized_keys" }}
 passwd:
   users:
     - name: core

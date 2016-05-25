@@ -137,3 +137,27 @@ func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
 	h.ServeHTTP(ctx, w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
+
+func TestIgnitionHandler_MissingTemplateMetadata(t *testing.T) {
+	content := `
+ignition_version: 1
+systemd:
+  units:
+    - name: {{.missing_key}}
+      enable: true
+`
+	store := &fake.FixedStore{
+		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
+		IgnitionConfigs: map[string]string{fake.Profile.IgnitionId: content},
+	}
+	srv := server.NewServer(&server.Config{Store: store})
+	h := ignitionHandler(srv)
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(ctx, w, req)
+	// assert that:
+	// - Ignition template rendering errors because "missing_key" is not
+	// present in the Group metadata
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}

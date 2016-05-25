@@ -62,3 +62,25 @@ func TestCloudHandler_MissingCloudConfig(t *testing.T) {
 	h.ServeHTTP(ctx, w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
+
+func TestCloudHandler_MissingTemplateMetadata(t *testing.T) {
+	content := `#cloud-config
+coreos:
+  etcd2:
+    name: {{.missing_key}}
+`
+	store := &fake.FixedStore{
+		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
+		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
+	}
+	srv := server.NewServer(&server.Config{Store: store})
+	h := cloudHandler(srv)
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(ctx, w, req)
+	// assert that:
+	// - Cloud-config template rendering errors because "missing_key" is not
+	// present in the Group metadata
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}

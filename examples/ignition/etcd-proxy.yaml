@@ -19,7 +19,7 @@ systemd:
             [Service]
             Environment="FLEET_METADATA={{.fleet_metadata}}"
 
-{{ if .ssh_authorized_keys }}
+{{ if index . "ssh_authorized_keys" }}
 passwd:
   users:
     - name: core

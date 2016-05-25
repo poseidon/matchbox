@@ -3,8 +3,9 @@ package http
 import (
 	"errors"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 	"golang.org/x/net/context"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 // unexported key prevents collisions

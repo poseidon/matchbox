@@ -3,7 +3,6 @@ package http
 import (
 	"bytes"
 	"encoding/json"
-	"gopkg.in/yaml.v2"
 	"net/http"
 	"strings"
 
@@ -12,6 +11,7 @@ import (
 	ignitionV1 "github.com/coreos/ignition/config/v1"
 	ignitionV1Types "github.com/coreos/ignition/config/v1/types"
 	"golang.org/x/net/context"
+	"gopkg.in/yaml.v2"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
