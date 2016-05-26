@@ -31,7 +31,7 @@ func renderJSON(w http.ResponseWriter, v interface{}) {
 }
 
 func renderTemplate(w io.Writer, data interface{}, contents ...string) (err error) {
-	tmpl := template.New("")
+	tmpl := template.New("").Option("missingkey=error")
 	for _, content := range contents {
 		tmpl, err = tmpl.Parse(content)
 		if err != nil {

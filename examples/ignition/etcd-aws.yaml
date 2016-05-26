@@ -21,7 +21,7 @@ systemd:
               --discovery={{.etcd_discovery}}
     - name: fleet.service
       enable: true
-{{ if .ssh_authorized_keys }}
+{{ if index . "ssh_authorized_keys" }}
 passwd:
   users:
     - name: core
