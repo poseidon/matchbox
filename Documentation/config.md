@@ -3,22 +3,23 @@
 
 Configuration arguments can be provided as flags or as environment variables.
 
-| flag | variable | example |
-|------|----------|---------|
-| -address | BOOTCFG_ADDRESS | 0.0.0.0:8080 |
-| -rpc-address | BOOTCFG_RPC_ADDRESS | 127.0.0.1:8081
-| -data-path | BOOTCFG_DATA_PATH | /var/lib/bootcfg |
-| -assets-path | BOOTCFG_ASSETS_PATH | /var/lib/bootcfg/assets |
-| -key-ring-path | BOOTCFG_KEY_RING_PATH | ~/.secrets/vault/bootcfg/secring.gpg |
-| Disallowed | BOOTCFG_PASSPHRASE | secret passphrase |
-| -log-level | BOOTCFG_LOG_LEVEL | critical, error, warning, notice, info, debug |
+| flag | variable | default | example |
+|------|----------|---------|---------|
+| -address | BOOTCFG_ADDRESS | 127.0.0.1:8080 | 0.0.0.0:8080 |
+| -log-level | BOOTCFG_LOG_LEVEL | info | critical, error, warning, notice, info, debug |
+| -data-path | BOOTCFG_DATA_PATH | /var/lib/bootcfg | ~/.bootcfg |
+| -assets-path | BOOTCFG_ASSETS_PATH | /var/lib/bootcfg/assets | ~/.bootcfg/assets |
+| -rpc-address | BOOTCFG_RPC_ADDRESS | (RPC server disabled) | 127.0.0.1:8081 |
+| -key-ring-path | BOOTCFG_KEY_RING_PATH | (no key ring) | ~/.secrets/vault/bootcfg/secring.gpg |
+| (no flag) | BOOTCFG_PASSPHRASE | (no passphrase) | "secret passphrase" |
 
 ## Files and Directories
 
-| Contents  | Default Location  |
-|-----------|-------------------|
-| data      | /var/lib/bootcfg/{profiles,groups,ignition,cloud} |
-| assets    | /var/lib/bootcfg/assets |
+| Contents | Default Location                                  |
+|:---------|:--------------------------------------------------|
+| data     | /var/lib/bootcfg/{profiles,groups,ignition,cloud} |
+| assets   | /var/lib/bootcfg/assets                           |
+| environment variables         |/etc/bootcfg.env                                                   |
 
 ## Version
 
