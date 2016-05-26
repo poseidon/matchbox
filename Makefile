@@ -16,7 +16,7 @@ install:
 	cp bin/bootcfg $(BIN_DIR)
 	cp bin/bootcmd $(BIN_DIR)
 	@echo "**************"
-	@echo "INSTALL SUCESS"
+	@echo "INSTALL SUCCESS"
 	@echo "**************"
 	@echo "bootcfg was installed to /usr/local/bin/bootcfg"
 	@echo "bootcmd was installed to /usr/local/bin/bootcmd"
