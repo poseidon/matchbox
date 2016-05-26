@@ -22,10 +22,10 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
     git clone https://github.com/coreos/coreos-baremetal.git
     cd coreos-baremetal
 
-Download the CoreOS PXE image assets to `examples/assets`.
+Download CoreOS PXE image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
 
     ./scripts/get-coreos
-    ./scripts/get-coreos channel version
+    ./scripts/get-coreos channel version   # examples pin a required version
 
 ## Containers
 

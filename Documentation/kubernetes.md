@@ -23,7 +23,7 @@ The examples statically assign IP addresses for client VMs on the `metal0` CNI b
 
 Download the CoreOS PXE image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 1032.0.0
+    ./scripts/get-coreos alpha 1053.2.0
 
 Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`).
 

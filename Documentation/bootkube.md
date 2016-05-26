@@ -28,7 +28,7 @@ The examples statically assign IP addresses for client VMs on the `metal0` CNI b
 
 Download the CoreOS PXE image referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 1032.0.0
+    ./scripts/get-coreos alpha 1053.2.0
 
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 
