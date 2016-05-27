@@ -6,7 +6,6 @@ Documentation=https://github.com/coreos/coreos-baremetal
 Type=simple
 User=bootcfg
 Group=bootcfg
-EnvironmentFile=/etc/bootcfg.env
 ExecStart=/usr/local/bin/bootcfg -address=0.0.0.0:8080 -log-level=debug
 
 # systemd.exec

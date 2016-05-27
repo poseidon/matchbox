@@ -7,8 +7,8 @@ Configuration arguments can be provided as flags or as environment variables.
 |------|----------|---------|---------|
 | -address | BOOTCFG_ADDRESS | 127.0.0.1:8080 | 0.0.0.0:8080 |
 | -log-level | BOOTCFG_LOG_LEVEL | info | critical, error, warning, notice, info, debug |
-| -data-path | BOOTCFG_DATA_PATH | /var/lib/bootcfg | ~/.bootcfg |
-| -assets-path | BOOTCFG_ASSETS_PATH | /var/lib/bootcfg/assets | ~/.bootcfg/assets |
+| -data-path | BOOTCFG_DATA_PATH | /var/lib/bootcfg | ./examples |
+| -assets-path | BOOTCFG_ASSETS_PATH | /var/lib/bootcfg/assets | ./examples/assets |
 | -rpc-address | BOOTCFG_RPC_ADDRESS | (RPC server disabled) | 127.0.0.1:8081 |
 | -key-ring-path | BOOTCFG_KEY_RING_PATH | (no key ring) | ~/.secrets/vault/bootcfg/secring.gpg |
 | (no flag) | BOOTCFG_PASSPHRASE | (no passphrase) | "secret passphrase" |
