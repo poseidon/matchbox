@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+
+BIN_DIR=/usr/local/bin
+DATA_DIR=~/.bootcfg
+ENV_FILE=~/.bootcfg/env
+
+if [[ -e $DATA_DIR ]]
+then echo "Data directory ${DATA_DIR} already exists"
+else
+    mkdir -p ${DATA_DIR}/{profiles,groups,ignition,cloud,assets}
+    echo "Data directory ${DATA_DIR} created"
+fi
+
+if [[ -e $ENV_FILE ]]
+then echo "Environment file ${ENV_FILE} already exists"
+else
+    printf "export BOOTCFG_DATA_PATH=${DATA_DIR}\nexport BOOTCFG_ASSETS_PATH=${DATA_DIR}/assets\n" > ${ENV_FILE}
+    echo "Environment file ${ENV_FILE} created"
+fi
+
+cp bin/bootcfg ${BIN_DIR}
+cp bin/bootcmd ${BIN_DIR}
+echo "Copied bootcfg and bootcmd binaries to ${BIN_DIR}"
