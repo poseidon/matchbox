@@ -33,7 +33,7 @@ acbuild --debug port add dhcp udp 67
 acbuild --debug port add dns udp 53
 
 # Elevate network admin capabilities
-echo "{\"set\": [\"CAP_NET_ADMIN\"]}" | acbuild --debug isolator add os/linux/capabilities-retain-set -
+echo "{\"set\": [\"CAP_NET_ADMIN\", \"CAP_NET_BIND_SERVICE\"]}" | acbuild --debug isolator add os/linux/capabilities-retain-set -
 
 # Set the exec command
 acbuild --debug set-exec -- /usr/sbin/dnsmasq -d
