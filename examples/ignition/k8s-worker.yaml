@@ -163,6 +163,7 @@ storage:
             FLANNELD_IFACE={{.ipv4_address}}
             FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
 
+{{ if not (index . "skip_networkd") }}
 networkd:
   units:
     - name: 10-static.network
@@ -173,6 +174,7 @@ networkd:
         Gateway={{.networkd_gateway}}
         DNS={{.networkd_dns}}
         Address={{.networkd_address}}
+{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
