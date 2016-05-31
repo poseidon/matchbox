@@ -629,7 +629,8 @@ storage:
             echo "K8S: Heapster addon"
             curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-deployment.json)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
             curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
-            
+
+{{ if not (index . "skip_networkd") }}
 networkd:
   units:
     - name: 1-static.network
@@ -640,6 +641,7 @@ networkd:
         Gateway={{.networkd_gateway}}
         DNS={{.networkd_dns}}
         Address={{.networkd_address}}
+{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

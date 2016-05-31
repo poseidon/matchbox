@@ -40,3 +40,13 @@ Most examples allow `ssh_authorized_keys` to be added for the `core` user as mac
             "ssh_authorized_keys": ["ssh-rsa pub-key-goes-here"]
         }
     }
+
+## Conditional Variables
+
+### "pxe"
+
+Some examples check the `pxe` variable to determine whether to create a `/dev/sda1` filesystem and partition for PXEing with `root=/dev/sda1` ("pxe":"true") or to write files to the existing filesystem on `/dev/disk/by-label/ROOT` ("pxe":"false").
+
+### "skip_networkd"
+
+Some examples (mainly Kubernetes examples) check the `skip_networkd` variable to determine whether to skip configuring networkd. When `true`, the default networkd config is used, which uses DCHP to setup networking. Use this if you've pre-configured static IP mappings for Kubernetes nodes in your DHCP server. Otherwise, `networkd_address`, `networkd_dns`, and `networkd_gateway` machine metadata are used to populate a networkd configuration on each host.
