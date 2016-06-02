@@ -1,7 +1,7 @@
 
 # Examples
 
-These examples network boot and provision VMs into CoreOS clusters using `bootcfg`.
+These examples network boot and provision machines into CoreOS clusters using `bootcfg`. You can re-use their profiles to provision your own physical machines.
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
@@ -14,6 +14,7 @@ These examples network boot and provision VMs into CoreOS clusters using `bootcf
 | k8s-install | Install a Kubernetes cluster to disk (1 master) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| torus | CoreOS Torus distributed storage | alpha/1053.2.0 | Disk | [reference](https://github.com/coreos/torus) |
 
 ## Tutorials
 

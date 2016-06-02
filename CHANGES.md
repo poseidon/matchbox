@@ -13,6 +13,7 @@
 #### Examples
 
 * Add self-hosted Kubernetes example (PXE boot or install to disk)
+* Add CoreOS Torus distributed storage cluster example (PXE boot)
 * Add `create-uefi` subcommand to `scripts/libvirt` for UEFI/GRUB testing
 * Updated Kubernetes examples to v1.2.4
 * Remove 8.8.8.8 from networkd example Ignition configs (#184)

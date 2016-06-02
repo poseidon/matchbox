@@ -42,6 +42,7 @@ The [examples](examples) show how to network boot and provision higher-order Cor
 * Multi-node [Kubernetes cluster](Documentation/kubernetes.md) with TLS
 * Multi-node [self-hosted Kubernetes cluster](Documentation/bootkube.md)
 * Multi-node etcd cluster
+* Multi-node Torus distributed storage cluster
 * Network boot or Install to Disk
 * Multi-stage CoreOS installs
 * [GRUB Netboot](Documentation/grub.md) CoreOS
