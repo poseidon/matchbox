@@ -15,19 +15,25 @@ if [ ! -d "$DEST" ]; then
   mkdir -p $DEST
 fi
 
-echo "Downloading CoreOS kernel and initrd image assets"
+echo "Downloading CoreOS $CHANNEL $VERSION images and signatures"
 
-# kernel and sig
+# PXE kernel and sig
 echo "coreos_production_pxe.vmlinuz..."
 curl -# $BASE_URL/coreos_production_pxe.vmlinuz -o $DEST/coreos_production_pxe.vmlinuz
 echo "coreos_production_pxe.vmlinuz.sig"
 curl -# $BASE_URL/coreos_production_pxe.vmlinuz.sig -o $DEST/coreos_production_pxe.vmlinuz.sig
 
-# initrd and sig
+# PXE initrd and sig
 echo "coreos_production_pxe_image.cpio.gz"
 curl -# $BASE_URL/coreos_production_pxe_image.cpio.gz -o $DEST/coreos_production_pxe_image.cpio.gz
 echo "coreos_production_pxe_image.cpio.gz.sig"
 curl -# $BASE_URL/coreos_production_pxe_image.cpio.gz.sig -o $DEST/coreos_production_pxe_image.cpio.gz.sig
+
+# Install image
+echo "coreos_production_image.bin.bz2"
+curl -# $BASE_URL/coreos_production_image.bin.bz2 -o $DEST/coreos_production_image.bin.bz2
+echo "coreos_production_image.bin.bz2.sig"
+curl -# $BASE_URL/coreos_production_image.bin.bz2.sig -o $DEST/coreos_production_image.bin.bz2.sig
 
 # verify signatures
 echo "CoreOS Image Signing Key"
@@ -37,3 +43,4 @@ echo "Adding trust for CoreOS signing key:"
 echo "04127D0BFABEC8871FFB2CCE50E0885593D2DCB4:6:" | gpg --import-ownertrust
 gpg --verify $DEST/coreos_production_pxe.vmlinuz.sig
 gpg --verify $DEST/coreos_production_pxe_image.cpio.gz.sig
+gpg --verify $DEST/coreos_production_image.bin.bz2.sig

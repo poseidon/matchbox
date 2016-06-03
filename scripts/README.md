@@ -3,21 +3,23 @@
 
 ## get-coreos
 
-Run the `get-coreos` script to download CoreOS kernel and initrd images, verify them, and move them into `examples/assets`.
+Run the `get-coreos` script to download CoreOS images, verify them, and move them into `examples/assets`.
 
     ./scripts/get-coreos
     ./scripts/get-coreos channel version
 
 This will create:
 
-    assets/
+    examples/assets/
     └── coreos
-        └── 899.6.0
+        └── 1053.2.0
+            ├── CoreOS_Image_Signing_Key.asc
+            ├── coreos_production_image.bin.bz2
+            ├── coreos_production_image.bin.bz2.sig
+            ├── coreos_production_pxe_image.cpio.gz
+            ├── coreos_production_pxe_image.cpio.gz.sig
             ├── coreos_production_pxe.vmlinuz
-            └── coreos_production_pxe_image.cpio.gz
-        └── 942.0.0
-            ├── coreos_production_pxe.vmlinuz
-            └── coreos_production_pxe_image.cpio.gz
+            └── coreos_production_pxe.vmlinuz.sig
 
 ## libvirt
 

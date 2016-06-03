@@ -5,6 +5,7 @@
   "metadata": {
     "coreos_channel": "alpha",
     "coreos_version": "1053.2.0",
-    "ignition_endpoint": "http://bootcfg.foo:8080/ignition"
+    "ignition_endpoint": "http://bootcfg.foo:8080/ignition",
+    "baseurl": "http://bootcfg.foo:8080/assets/coreos"
   }
 }

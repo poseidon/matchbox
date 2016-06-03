@@ -21,7 +21,7 @@ The examples statically assign IP addresses for client VMs on the `metal0` CNI b
 
 ### Assets
 
-Download the CoreOS PXE image assets referenced in the target [profile](../examples/profiles).
+Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
     ./scripts/get-coreos alpha 1053.2.0
 
