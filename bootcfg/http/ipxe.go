@@ -34,6 +34,7 @@ func ipxeHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		profile, err := profileFromContext(ctx)
 		if err != nil {
+			log.Errorf("Error finding profile: %v", err)
 			http.NotFound(w, req)
 			return
 		}
