@@ -34,6 +34,7 @@ func main() {
 		logLevel    string
 		certFile    string
 		keyFile     string
+		caFile      string
 		keyRingPath string
 		version     bool
 		help        bool
@@ -49,6 +50,8 @@ func main() {
 	// gRPC Server TLS
 	flag.StringVar(&flags.certFile, "cert-file", "/etc/bootcfg/server.crt", "Path to the server TLS certificate file")
 	flag.StringVar(&flags.keyFile, "key-file", "/etc/bootcfg/server.key", "Path to the server TLS key file")
+	// TLS Client Authentication
+	flag.StringVar(&flags.caFile, "ca-file", "/etc/bootcfg/ca.crt", "Path to the CA verify and authenticate client certificates")
 
 	// Signing
 	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
@@ -133,6 +136,7 @@ func main() {
 		tlsinfo := tlsutil.TLSInfo{
 			CertFile: flags.certFile,
 			KeyFile:  flags.keyFile,
+			CAFile:   flags.caFile,
 		}
 		tlscfg, err := tlsinfo.ServerConfig()
 		if err != nil {

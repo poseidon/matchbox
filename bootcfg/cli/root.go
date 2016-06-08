@@ -22,15 +22,20 @@ To get help about a resource or command, run "bootcmd help resource"`,
 
 	// globalFlags can be set for any subcommand.
 	globalFlags = struct {
-		Endpoints []string
-		CAFile    string
+		endpoints []string
+		caFile    string
+		certFile  string
+		keyFile   string
 	}{}
 )
 
 func init() {
-	RootCmd.PersistentFlags().StringSliceVar(&globalFlags.Endpoints, "endpoints", []string{"127.0.0.1:8081"}, "gRPC Endpoints")
-	// gRPC Client TLS
-	RootCmd.PersistentFlags().StringVar(&globalFlags.CAFile, "ca-file", "/etc/bootcfg/ca.crt", "Path to the CA bundle to verify certificates of TLS servers")
+	RootCmd.PersistentFlags().StringSliceVar(&globalFlags.endpoints, "endpoints", []string{"127.0.0.1:8081"}, "gRPC Endpoints")
+	// gRPC TLS Server Verification
+	RootCmd.PersistentFlags().StringVar(&globalFlags.caFile, "ca-file", "/etc/bootcfg/ca.crt", "Path to the CA bundle to verify certificates of TLS servers")
+	// gRPC TLS Client Authentication
+	RootCmd.PersistentFlags().StringVar(&globalFlags.certFile, "cert-file", "/etc/bootcfg/client.crt", "Path to the client TLS certificate file")
+	RootCmd.PersistentFlags().StringVar(&globalFlags.keyFile, "key-file", "/etc/bootcfg/client.key", "Path to the client TLS key file")
 	cobra.EnablePrefixMatching = true
 }
 
@@ -81,5 +86,18 @@ func tlsInfoFromCmd(cmd *cobra.Command) *tlsutil.TLSInfo {
 	if err != nil {
 		exitWithError(ExitBadArgs, err)
 	}
-	return &tlsutil.TLSInfo{CAFile: caFile}
+	certFile, err := cmd.Flags().GetString("cert-file")
+	if err != nil {
+		exitWithError(ExitBadArgs, err)
+	}
+	keyFile, err := cmd.Flags().GetString("key-file")
+	if err != nil {
+		exitWithError(ExitBadArgs, err)
+	}
+
+	return &tlsutil.TLSInfo{
+		CAFile:   caFile,
+		CertFile: certFile,
+		KeyFile:  keyFile,
+	}
 }

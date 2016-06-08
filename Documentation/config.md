@@ -12,6 +12,7 @@ Configuration arguments can be provided as flags or as environment variables.
 | -rpc-address | BOOTCFG_RPC_ADDRESS | (gRPC API disabled) | 127.0.0.1:8081 |
 | -cert-file | BOOTCFG_CERT_FILE | /etc/bootcfg/server.crt | ./examples/etc/bootcfg/server.crt |
 | -key-file | BOOTCFG_KEY_FILE | /etc/bootcfg/server.key | ./examples/etc/bootcfg/server.key
+| -ca-file | BOOTCFG_CA_FILE | /etc/bootcfg/ca.crt | ./examples/etc/bootcfg/ca.crt |
 | -key-ring-path | BOOTCFG_KEY_RING_PATH | (no key ring) | ~/.secrets/vault/bootcfg/secring.gpg |
 | (no flag) | BOOTCFG_PASSPHRASE | (no passphrase) | "secret passphrase" |
 
@@ -27,7 +28,9 @@ Configuration arguments can be provided as flags or as environment variables.
 |:---------|:--------------------------------------------------|
 | CA certificate | /etc/bootcfg/ca.crt                         |
 | Server certificate | /etc/bootcfg/server.crt                 |
-| Server Private Key | /etc/bootcfg/server.key                 |
+| Server private key | /etc/bootcfg/server.key                 |
+| Client certificate | /etc/bootcfg/client.crt                 |
+| Client private key | /etc/bootcfg/client.key                 |
 
 ## Version
 
@@ -63,7 +66,7 @@ Run the Docker image. Mounts are used to add the provided examples.
 
 ### gRPC API
 
-The gRPC API can be enabled with the `-rpc-address` flag and by providing a TLS server certificate and key with `-cert-file` and `-key-file`. gRPC clients (such as `bootcmd`) must verify the server's certificate with a CA bundle.
+The gRPC API can be enabled with the `-rpc-address` flag and by providing a TLS server certificate and key with `-cert-file` and `-key-file` and a CA certificate for authenticating clients with `-ca-file`. gRPC clients (such as `bootcmd`) must verify the server's certificate with a CA bundle passed via `-ca-file` and present a client certificate and key via `-cert-file` and `-key-file`.
 
 Run the ACI with rkt and TLS credentials from `examples/etc/bootcfg`.
 
@@ -71,7 +74,7 @@ Run the ACI with rkt and TLS credentials from `examples/etc/bootcfg`.
 
 A `bootcmd` client can call the gRPC API running at the IP used in the rkt example.
 
-    ./bin/bootcmd profile list --endpoints 172.15.0.2:8081 --ca-file examples/etc/bootcfg/ca.crt
+    ./bin/bootcmd profile list --endpoints 172.15.0.2:8081 --ca-file examples/etc/bootcfg/ca.crt --cert-file examples/etc/bootcfg/client.crt --key-file examples/etc/bootcfg/client.key
 
 Run the Docker image with TLS credentials from `examples/etc/bootcfg`.
 
@@ -79,7 +82,7 @@ Run the Docker image with TLS credentials from `examples/etc/bootcfg`.
 
 A `bootcmd` client can call the gRPC API running at the IP used in the Docker example.
 
-    ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/bootcfg/root.crt
+    ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/bootcfg/ca.crt --cert-file examples/etc/bootcfg/client.crt --key-file examples/etc/bootcfg/client.key
 
 #### With [OpenPGP Signing](openpgp.md)
 
