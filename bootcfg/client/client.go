@@ -1,21 +1,26 @@
 package client
 
 import (
+	"crypto/tls"
 	"errors"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
 )
 
 var (
 	errNoEndpoints = errors.New("client: No endpoints provided")
+	errNoTLSConfig = errors.New("client: No TLS Config provided")
 )
 
-// Config configures a Client.go f
+// Config configures a Client.
 type Config struct {
 	// List of endpoint URLs
 	Endpoints []string
+	// Client TLS credentials
+	TLS *tls.Config
 }
 
 // Client provides a bootcfg client RPC session.
@@ -40,7 +45,7 @@ func (c *Client) Close() error {
 }
 
 func newClient(config *Config) (*Client, error) {
-	conn, err := retryDialer(config)
+	conn, err := dialEndpoints(config)
 	if err != nil {
 		return nil, err
 	}
@@ -53,15 +58,20 @@ func newClient(config *Config) (*Client, error) {
 	return client, nil
 }
 
-// retryDialer attemps to Dial each endpoint in order to establish a
+// dialEndpoints attemps to Dial each endpoint in order to establish a
 // connection.
-func retryDialer(config *Config) (*grpc.ClientConn, error) {
-	opts := []grpc.DialOption{
-		grpc.WithInsecure(),
+func dialEndpoints(config *Config) (*grpc.ClientConn, error) {
+	var opts []grpc.DialOption
+	if config.TLS != nil {
+		creds := credentials.NewTLS(config.TLS)
+		opts = append(opts, grpc.WithTransportCredentials(creds))
+	} else {
+		return nil, errNoTLSConfig
 	}
+
 	var err error
-	for _, endp := range config.Endpoints {
-		conn, err := grpc.Dial(endp, opts...)
+	for _, endpoint := range config.Endpoints {
+		conn, err := grpc.Dial(endpoint, opts...)
 		if err == nil {
 			return conn, nil
 		}

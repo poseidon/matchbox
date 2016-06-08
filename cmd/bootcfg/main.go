@@ -17,6 +17,7 @@ import (
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/sign"
 	"github.com/coreos/coreos-baremetal/bootcfg/storage"
+	"github.com/coreos/coreos-baremetal/bootcfg/tlsutil"
 	"github.com/coreos/coreos-baremetal/bootcfg/version"
 )
 
@@ -30,8 +31,10 @@ func main() {
 		rpcAddress  string
 		dataPath    string
 		assetsPath  string
-		keyRingPath string
 		logLevel    string
+		certFile    string
+		keyFile     string
+		keyRingPath string
 		version     bool
 		help        bool
 	}{}
@@ -39,9 +42,17 @@ func main() {
 	flag.StringVar(&flags.rpcAddress, "rpc-address", "", "RPC listen address")
 	flag.StringVar(&flags.dataPath, "data-path", "/var/lib/bootcfg", "Path to data directory")
 	flag.StringVar(&flags.assetsPath, "assets-path", "/var/lib/bootcfg/assets", "Path to static assets")
-	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
-	// available log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
+
+	// Log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
+
+	// gRPC Server TLS
+	flag.StringVar(&flags.certFile, "cert-file", "/etc/bootcfg/server.crt", "Path to the server TLS certificate file")
+	flag.StringVar(&flags.keyFile, "key-file", "/etc/bootcfg/server.key", "Path to the server TLS key file")
+
+	// Signing
+	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
+
 	// subcommands
 	flag.BoolVar(&flags.version, "version", false, "print version and exit")
 	flag.BoolVar(&flags.help, "help", false, "print usage and exit")
@@ -73,7 +84,13 @@ func main() {
 	}
 	if flags.assetsPath != "" {
 		if finfo, err := os.Stat(flags.assetsPath); err != nil || !finfo.IsDir() {
-			log.Fatalf("Provide a valid -assets-path or '' to disable asset serving: %s", flags.assetsPath)
+			log.Printf("Provide a valid -assets-path or '' to disable asset serving: %s", flags.assetsPath)
+		}
+	}
+
+	if flags.rpcAddress != "" {
+		if flags.certFile == "" || flags.keyFile == "" {
+			log.Fatalf("Provide a server -cert and -key to be able to use the gRPC API")
 		}
 	}
 
@@ -101,21 +118,27 @@ func main() {
 		Root: flags.dataPath,
 	})
 
+	// core logic
 	server := server.NewServer(&server.Config{
 		Store: store,
 	})
 
 	// gRPC Server (feature disabled by default)
 	if flags.rpcAddress != "" {
-		grpcServer, err := rpc.NewServer(server)
-		if err != nil {
-			log.Fatal(err)
-		}
 		log.Infof("starting bootcfg gRPC server on %s", flags.rpcAddress)
 		lis, err := net.Listen("tcp", flags.rpcAddress)
 		if err != nil {
 			log.Fatalf("failed to start listening: %v", err)
 		}
+		tlsinfo := tlsutil.TLSInfo{
+			CertFile: flags.certFile,
+			KeyFile:  flags.keyFile,
+		}
+		tlscfg, err := tlsinfo.ServerConfig()
+		if err != nil {
+			log.Fatalf("Invalid TLS credentials: %v", err)
+		}
+		grpcServer := rpc.NewServer(server, tlscfg)
 		go grpcServer.Serve(lis)
 		defer grpcServer.Stop()
 	}

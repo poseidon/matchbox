@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/client"
+	"github.com/coreos/coreos-baremetal/bootcfg/tlsutil"
 )
 
 var (
@@ -22,11 +23,14 @@ To get help about a resource or command, run "bootcmd help resource"`,
 	// globalFlags can be set for any subcommand.
 	globalFlags = struct {
 		Endpoints []string
+		CAFile    string
 	}{}
 )
 
 func init() {
 	RootCmd.PersistentFlags().StringSliceVar(&globalFlags.Endpoints, "endpoints", []string{"127.0.0.1:8081"}, "gRPC Endpoints")
+	// gRPC Client TLS
+	RootCmd.PersistentFlags().StringVar(&globalFlags.CAFile, "ca-file", "/etc/bootcfg/ca.crt", "Path to the CA bundle to verify certificates of TLS servers")
 	cobra.EnablePrefixMatching = true
 }
 
@@ -41,16 +45,41 @@ func Execute() {
 
 // mustClientFromCmd returns a gRPC client or exits.
 func mustClientFromCmd(cmd *cobra.Command) *client.Client {
-	endpoints, err := cmd.Flags().GetStringSlice("endpoints")
+	endpoints := endpointsFromCmd(cmd)
+	tlsinfo := tlsInfoFromCmd(cmd)
+
+	// client config
+	tlscfg, err := tlsinfo.ClientConfig()
 	if err != nil {
-		exitWithError(ExitError, err)
+		exitWithError(ExitBadArgs, err)
 	}
 	cfg := &client.Config{
 		Endpoints: endpoints,
+		TLS:       tlscfg,
 	}
+
+	// gRPC client
 	client, err := client.New(cfg)
 	if err != nil {
 		exitWithError(ExitBadConnection, err)
 	}
 	return client
+}
+
+// endpointsFromCmd returns the endpoint arguments.
+func endpointsFromCmd(cmd *cobra.Command) []string {
+	endpoints, err := cmd.Flags().GetStringSlice("endpoints")
+	if err != nil {
+		exitWithError(ExitBadArgs, err)
+	}
+	return endpoints
+}
+
+// tlsInfoFromCmd collects TLS arguments and returns a TLSInfo struct.
+func tlsInfoFromCmd(cmd *cobra.Command) *tlsutil.TLSInfo {
+	caFile, err := cmd.Flags().GetString("ca-file")
+	if err != nil {
+		exitWithError(ExitBadArgs, err)
+	}
+	return &tlsutil.TLSInfo{CAFile: caFile}
 }
