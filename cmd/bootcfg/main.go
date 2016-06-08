@@ -87,13 +87,18 @@ func main() {
 	}
 	if flags.assetsPath != "" {
 		if finfo, err := os.Stat(flags.assetsPath); err != nil || !finfo.IsDir() {
-			log.Printf("Provide a valid -assets-path or '' to disable asset serving: %s", flags.assetsPath)
+			log.Fatalf("Provide a valid -assets-path or '' to disable asset serving: %s", flags.assetsPath)
 		}
 	}
-
 	if flags.rpcAddress != "" {
-		if flags.certFile == "" || flags.keyFile == "" {
-			log.Fatalf("Provide a server -cert and -key to be able to use the gRPC API")
+		if _, err := os.Stat(flags.certFile); err != nil {
+			log.Fatalf("Provide a valid TLS server certificate with -cert-file: %v", err)
+		}
+		if _, err := os.Stat(flags.keyFile); err != nil {
+			log.Fatalf("Provide a valid TLS server key with -key-file: %v", err)
+		}
+		if _, err := os.Stat(flags.caFile); err != nil {
+			log.Fatalf("Provide a valid TLS certificate authority for authorizing client certificates: %v", err)
 		}
 	}
 
@@ -129,6 +134,9 @@ func main() {
 	// gRPC Server (feature disabled by default)
 	if flags.rpcAddress != "" {
 		log.Infof("starting bootcfg gRPC server on %s", flags.rpcAddress)
+		log.Infof("Using TLS server certificate: %s", flags.certFile)
+		log.Infof("Using TLS server key: %s", flags.keyFile)
+		log.Infof("Using CA certificate: %s to authenticate client certificates", flags.caFile)
 		lis, err := net.Listen("tcp", flags.rpcAddress)
 		if err != nil {
 			log.Fatalf("failed to start listening: %v", err)

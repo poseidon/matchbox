@@ -2,7 +2,10 @@
 
 ## Latest
 
-* Allow Ignition 2.0.0 JSON and YAML template files
+* Add gRPC API TLS and TLS client-to-server authentication (#140)
+    * Enable gRPC API by providing a TLS server `-cert-file` and `-key-file`, and a `-ca-file` to authenticate client certificates
+    * Provide `bootcmd` tool a TLS client `-cert-file` and `-key-file`, and a `-ca-file` to verify the server identity.
+* Allow Ignition 2.0.0 JSON and YAML template files (#141)
 * Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
 * Show `bootcfg` message at the home path `/`
 * Fix http package log messages and increase request logging (#173)
