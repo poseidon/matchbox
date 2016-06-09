@@ -70,7 +70,7 @@ The gRPC API can be enabled with the `-rpc-address` flag and by providing a TLS 
 
 Run the ACI with rkt and TLS credentials from `examples/etc/bootcfg`.
 
-    sudo rkt --insecure-options=image run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=$PWD/examples/etc/bootcfg --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd bootcfg.aci -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples,readOnly=true --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=$PWD/examples/etc/bootcfg --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 
 A `bootcmd` client can call the gRPC API running at the IP used in the rkt example.
 
@@ -78,7 +78,7 @@ A `bootcmd` client can call the gRPC API running at the IP used in the rkt examp
 
 Run the Docker image with TLS credentials from `examples/etc/bootcfg`.
 
-    sudo docker run -p 8080:8080 -p 8081 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/etc/bootcfg:/etc/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z coreos/bootcfg:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+    sudo docker run -p 8080:8080 -p 8081:8081 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/etc/bootcfg:/etc/bootcfg:Z,ro -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 
 A `bootcmd` client can call the gRPC API running at the IP used in the Docker example.
 
