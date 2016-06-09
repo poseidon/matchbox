@@ -19,7 +19,7 @@ Build and install [bootkube](https://github.com/coreos/bootkube).
 
 ## Examples
 
-The examples statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
+The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
 
 * [bootkube](../examples/groups/bootkube) - iPXE boot a bootkube-ready cluster (use rkt)
 * [bootkube-install](../examples/groups/bootkube-install) - Install a bootkube-ready cluster (use rkt)

@@ -1,7 +1,7 @@
 
 # Torus Storage
 
-The `torus` example provisions a 3 node CoreOS cluster with `etcd3` and Torus to demonstrate a stand-alone storage cluster. Each of the 3 nodes runs a Torus instance which makes 1GiB of space available (configured per node by "torus_storage_size" in machine group metadata).
+The `torus` example provisions a 3 node CoreOS cluster, with `etcd3` and Torus, to demonstrate a stand-alone storage cluster. Each of the 3 nodes runs a Torus instance which makes 1GiB of space available (configured per node by "torus_storage_size" in machine group metadata).
 
 ## Requirements
 
@@ -10,11 +10,11 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 * Use rkt to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
-* Install [torusctl](https://github.com/coreos/torus/releases)
+* Install the Torus [binaries](https://github.com/coreos/torus/releases)
 
 ## Examples
 
-The examples statically assign IP addresses (172.15.0.21, 172.15.0.22, 172.15.0.23) to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
+The [examples](..examples) statically assign IP addresses (172.15.0.21, 172.15.0.22, 172.15.0.23) to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
 
 * [torus](../examples/groups/torus) - iPXE boot a Torus cluster (use rkt)
 
@@ -34,7 +34,7 @@ Create a network boot environment with `coreos/dnsmasq` and create VMs with `scr
 
 ## Verify
 
-Install the [Torus binaries](https://github.com/coreos/torus/releases) on your laptop. Torus uses etcd3 for coordination and metadata storage, so any etcd node in the cluster can be queried with `torusctl`.
+Install the Torus [binaries](https://github.com/coreos/torus/releases) on your laptop. Torus uses etcd3 for coordination and metadata storage, so any etcd node in the cluster can be queried with `torusctl`.
 
     ./torusctl --etcd 172.15.0.21:2379 list-peers
 
