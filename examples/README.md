@@ -14,7 +14,7 @@ These examples network boot and provision machines into CoreOS clusters using `b
 | k8s-install | Install a Kubernetes cluster to disk (1 master) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| torus | CoreOS Torus distributed storage | alpha/1053.2.0 | Disk | [reference](https://github.com/coreos/torus) |
+| torus | CoreOS Torus distributed storage | alpha/1053.2.0 | Disk | [tutorial](../Documentation/torus.md) |
 
 ## Tutorials
 
@@ -23,7 +23,8 @@ Get started running `bootcfg` on your Linux machine to network boot and provisio
 * [bootcfg with rkt](../Documentation/getting-started-rkt.md)
 * [bootcfg with Docker](../Documentation/getting-started-docker.md)
 * [Kubernetes v1.2.4](../Documentation/kubernetes.md)
-* [Self-hosted Kubernetes](../Documentation/bootkube.md) (experimental)
+* [Self-hosted Kubernetes](../Documentation/bootkube.md)
+* [Torus Storage](..Documentation/torus.md)
 
 ## Experimental
 

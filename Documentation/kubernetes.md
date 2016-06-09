@@ -13,7 +13,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 
 ## Examples
 
-The examples statically assign IP addresses for client VMs on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. You can use the same examples for real hardware, but you'll need to update addresses and the NIC name.
+The examples statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. VMs are setup on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
 
 * [k8s](../examples/groups/k8s) - iPXE boot a Kubernetes cluster (use rkt)
 * [k8s-docker](../examples/groups/k8s-docker) - iPXE boot a Kubernetes cluster on `docker0` (use docker)
@@ -39,7 +39,7 @@ Optionally add your SSH public key to each machine group definition [as shown](.
 
 ## Containers
 
-Use rkt or docker to start `bootcfg` with the desired example machine groups. Create a network boot environment with `coreos/dnsmasq`. Finally, create client VMs with `scripts/libvirt` or power-on your physical machines. Client machines should boot and provision themselves.
+Use rkt or docker to start `bootcfg` with the desired example machine groups. Create a network boot environment with `coreos/dnsmasq` and create VMs with `scripts/libvirt` to power-on your machines. Client machines should boot and provision themselves.
 
 Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
 

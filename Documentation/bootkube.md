@@ -19,7 +19,7 @@ Build and install [bootkube](https://github.com/coreos/bootkube).
 
 ## Examples
 
-The examples statically assign IP addresses for client VMs on the `metal0` CNI bridge used by rkt. You can use the same examples for real hardware, but you'll need to update addresses and the NIC name.
+The examples statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
 
 * [bootkube](../examples/groups/bootkube) - iPXE boot a bootkube-ready cluster (use rkt)
 * [bootkube-install](../examples/groups/bootkube-install) - Install a bootkube-ready cluster (use rkt)
@@ -52,9 +52,7 @@ Run the latest `bootcfg` ACI with rkt and the `bootkube` example (or `bootkube-i
 
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/bootkube quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
-Create a network boot environment with `coreos/dnsmasq`. Finally, create client VMs with `scripts/libvirt` or power-on your machines. Client machines should network boot and provision themselves.
-
-Revisit [bootcfg with rkt](getting-started-rkt.md) for help.
+Create a network boot environment with `coreos/dnsmasq` and create VMs with `scripts/libvirt` as covered in [bootcfg with rkt](getting-started-rkt.md). Client machines should network boot and provision themselves.
 
 ## bootkube
 
