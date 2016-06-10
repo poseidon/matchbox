@@ -1,0 +1,39 @@
+#!/bin/bash -e
+# note: Script uses -subj, rather than setting distinguished names interactively
+
+rm -f ca.key ca.crt server.key server.csr server.crt client.key client.csr client.crt index.* serial*
+rm -rf certs crl newcerts
+
+echo "Creating FAKE CA, server cert/key, and client cert/key..."
+
+# basic files/directories
+mkdir -p {certs,crl,newcerts}
+touch index.txt
+echo 1000 > serial
+
+# CA private key (unencrypted)
+openssl genrsa -out ca.key 4096
+# Certificate Authority (self-signed certificate)
+openssl req -config openssl.conf -new -x509 -days 3650 -sha256 -key ca.key -extensions v3_ca -out ca.crt -subj "/CN=fake-ca"
+
+# End-entity certificates
+
+# Server private key (unencrypted)
+openssl genrsa -out server.key 2048
+# Server certificate signing request (CSR)
+openssl req -config openssl.conf -new -sha256 -key server.key -out server.csr -subj "/CN=fake-server"
+# Suitable SANs for bootcfg on 172.15.0.2(rkt example) and 127.0.0.1(docker example)
+export SAN=IP.1:127.0.0.1,IP.2:172.15.0.2
+# Certificate Authority signs CSR to grant a certificate
+openssl ca -config openssl.conf -extensions server_cert -days 365 -notext -md sha256 -in server.csr -out server.crt -cert ca.crt -keyfile ca.key
+
+# Client private key (unencrypted)
+openssl genrsa -out client.key 2048
+# Signed client certificate signing request (CSR)
+openssl req -config openssl.conf -new -sha256 -key client.key -out client.csr -subj "/CN=fake-client"
+# Certificate Authority signs CSR to grant a certificate
+openssl ca -config openssl.conf -extensions usr_cert -days 365 -notext -md sha256 -in client.csr -out client.crt -cert ca.crt -keyfile ca.key
+
+echo "******************************************************************"
+echo "WARNING: Generated TLS credentials are ONLY SUITABLE FOR EXAMPLES!"
+echo "Use your organization's production PKI for production deployments!"

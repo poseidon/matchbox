@@ -2,13 +2,19 @@
 
 ## Latest
 
-* Allow Ignition 2.0.0 JSON and YAML template files
+* TLS Authentication:
+    * Add gRPC API TLS and TLS client-to-server authentication (#140)
+    * Enable gRPC API by providing a TLS server `-cert-file` and `-key-file`, and a `-ca-file` to authenticate client certificates
+    * Provide `bootcmd` tool a TLS client `-cert-file` and `-key-file`, and a `-ca-file` to verify the server identity.
+* Improvements to Ignition Support:
+    * Allow Ignition 2.0.0 JSON and YAML template files (#141)
+    * Stop requiring Ignition templates to use file extensions (#176)
+* Logging Improvements:
+    * Show `bootcfg` message at the home path `/`
+    * Fix http package log messages and increase request logging (#173)
+    * Log requests for bootcfg hosted assets (#214)
+    * Error when an Ignition/Cloud-config template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
 * Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
-* Show `bootcfg` message at the home path `/`
-* Fix http package log messages and increase request logging (#173)
-* Log requests for bootcfg hosted assets (#214)
-* Error when an Ignition/Cloud-config template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
-* Stop requiring Ignition templates to use file extensions (#176)
 
 #### Examples
 
