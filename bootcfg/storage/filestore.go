@@ -128,3 +128,9 @@ func (s *fileStore) CloudGet(name string) (string, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("cloud", name))
 	return string(data), err
 }
+
+// GenericGet gets a generic template by name.
+func (s *fileStore) GenericGet(name string) (string, error) {
+	data, err := Dir(s.root).readFile(filepath.Join("generic", name))
+	return string(data), err
+}

@@ -32,6 +32,7 @@ func (p *Profile) Copy() *Profile {
 		Name:       p.Name,
 		IgnitionId: p.IgnitionId,
 		CloudId:    p.CloudId,
+		GenericId:  p.GenericId,
 		Boot:       p.Boot.Copy(),
 	}
 }

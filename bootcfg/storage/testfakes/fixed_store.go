@@ -12,6 +12,7 @@ type FixedStore struct {
 	Profiles        map[string]*storagepb.Profile
 	IgnitionConfigs map[string]string
 	CloudConfigs    map[string]string
+	GenericConfigs  map[string]string
 }
 
 // NewFixedStore returns a new FixedStore.
@@ -21,6 +22,7 @@ func NewFixedStore() *FixedStore {
 		Profiles:        make(map[string]*storagepb.Profile),
 		IgnitionConfigs: make(map[string]string),
 		CloudConfigs:    make(map[string]string),
+		GenericConfigs:  make(map[string]string),
 	}
 }
 
@@ -94,4 +96,12 @@ func (s *FixedStore) CloudGet(name string) (string, error) {
 		return config, nil
 	}
 	return "", fmt.Errorf("no Cloud-Config template %s", name)
+}
+
+// GenericGet returns a generic template by name.
+func (s *FixedStore) GenericGet(name string) (string, error) {
+	if config, present := s.GenericConfigs[name]; present {
+		return config, nil
+	}
+	return "", fmt.Errorf("no generic template %s", name)
 }
