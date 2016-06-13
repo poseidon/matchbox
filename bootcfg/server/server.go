@@ -45,6 +45,9 @@ type Server interface {
 
 	// Get a Cloud-Config template by name.
 	CloudGet(ctx context.Context, name string) (string, error)
+
+	// Get a generic template by name.
+	GenericGet(ctc context.Context, name string) (string, error)
 }
 
 // Config configures a server implementation.
@@ -168,4 +171,9 @@ func (s *server) IgnitionGet(ctx context.Context, name string) (string, error) {
 // CloudGet gets a Cloud-Config template by name.
 func (s *server) CloudGet(ctx context.Context, name string) (string, error) {
 	return s.store.CloudGet(name)
+}
+
+// GenericGet gets a generic template by name.
+func (s *server) GenericGet(ctx context.Context, name string) (string, error) {
+	return s.store.GenericGet(name)
 }
