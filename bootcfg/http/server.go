@@ -60,6 +60,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux.Handle("/ignition", logRequests(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
 	// Cloud-Config
 	mux.Handle("/cloud", logRequests(NewHandler(selectGroup(srv, cloudHandler(srv)))))
+	// Generic template
+	mux.Handle("/generic", logRequests(NewHandler(selectGroup(srv, genericHandler(srv)))))
 	// metadata
 	mux.Handle("/metadata", logRequests(NewHandler(selectGroup(srv, metadataHandler()))))
 
@@ -75,6 +77,7 @@ func (s *Server) HTTPHandler() http.Handler {
 		mux.Handle("/pixiecore/v1/boot.sig/", signerChain(NewHandler(pixiecoreHandler(srv))))
 		mux.Handle("/ignition.sig", signerChain(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
 		mux.Handle("/cloud.sig", signerChain(NewHandler(selectGroup(srv, cloudHandler(srv)))))
+		mux.Handle("/generic.sig", signerChain(NewHandler(selectGroup(srv, genericHandler(srv)))))
 		mux.Handle("/metadata.sig", signerChain(NewHandler(selectGroup(srv, metadataHandler()))))
 	}
 	if s.armoredSigner != nil {
@@ -88,6 +91,7 @@ func (s *Server) HTTPHandler() http.Handler {
 		mux.Handle("/pixiecore/v1/boot.asc/", signerChain(NewHandler(pixiecoreHandler(srv))))
 		mux.Handle("/ignition.asc", signerChain(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
 		mux.Handle("/cloud.asc", signerChain(NewHandler(selectGroup(srv, cloudHandler(srv)))))
+		mux.Handle("/generic.asc", signerChain(NewHandler(selectGroup(srv, genericHandler(srv)))))
 		mux.Handle("/metadata.asc", signerChain(NewHandler(selectGroup(srv, metadataHandler()))))
 	}
 
