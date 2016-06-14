@@ -30,22 +30,29 @@ systemd:
             [Unit]
             Requires=flanneld.service
             After=flanneld.service
-    - name: kubelet.service
+    - name: kubelet.path
       enable: true
+      contents: |
+        [Unit]
+        Description=Watch for kubeconfig
+        [Path]
+        PathExists=/etc/kubernetes/kubeconfig
+        [Install]
+        WantedBy=multi-user.target
+    - name: kubelet.service
       contents: |
         [Unit]
         Description=Kubelet via Hyperkube ACI
         Requires=flanneld.service
         After=flanneld.service
         [Service]
-        Environment=KUBELET_ACI=quay.io/aaron_levy/hyperkube
-        Environment=KUBELET_VERSION=v1.2.2_runonce.0
+        Environment=KUBELET_ACI=quay.io/coreos/hyperkube
+        Environment=KUBELET_VERSION=v1.3.0-alpha.5_coreos.0
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
-          --runonce \
-          --runonce-timeout=60s \
           --api-servers={{.k8s_master_endpoint}} \
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --lock-file=/var/run/lock/kubelet.lock \
+          --exit-on-lock-contention \
           --allow-privileged \
           --hostname-override={{.ipv4_address}} \
           --node-labels=master=true \
@@ -77,25 +84,9 @@ storage:
       format: "ext4"
   {{end}}
       files:
-        - path: /etc/kubernetes/kubeconfig
+        - path: /etc/kubernetes/empty
           mode: 0644
           contents: |
-            apiVersion: v1
-            kind: Config
-            clusters:
-            - name: local
-              cluster:
-                server: {{.k8s_master_endpoint}}
-                certificate-authority-data: {{.k8s_certificate_authority}}
-            users:
-            - name: kubelet
-              user:
-                client-certificate-data: {{.k8s_client_certificate}}
-                client-key-data: {{.k8s_client_key}}
-            contexts:
-            - context:
-                cluster: local
-                user: kubelet
         - path: /opt/init-flannel
           mode: 0544
           contents: |
@@ -123,6 +114,8 @@ storage:
               fi
             }
             init_flannel
+
+{{ if not (index . "skip_networkd") }}
 networkd:
   units:
     - name: 10-static.network
@@ -133,6 +126,7 @@ networkd:
         Gateway={{.networkd_gateway}}
         DNS={{.networkd_dns}}
         Address={{.networkd_address}}
+{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

@@ -5,7 +5,7 @@ The self-hosted Kubernetes examples provision a 3 node cluster with etcd, flanne
 
 ## Experimental
 
-Self-hosted Kubernetes is under very active development by CoreOS. We're working on upstreaming the required Hyperkube patches. Be aware that a deployment with a single apiserver cannot tolerate its failure without intervention. We'll be improving this to allow CoreOS auto-updates.
+Self-hosted Kubernetes is under very active development by CoreOS. We're working on upstreaming the required Hyperkube patches. Be aware that a deployment with a single apiserver cannot tolerate its failure. We'll be improving this to allow CoreOS auto-updates.
 
 ## Requirements
 
@@ -34,14 +34,11 @@ Use the `bootkube` tool to render Kubernetes manifests and credentials into an `
 
     bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --etcd-servers=http://172.15.0.21:2379 --api-server-alt-names=IP=172.15.0.21
 
-Copy the `certificate-authority-data`, `client-certificate-data`, and `client-key-data` from the generated `assets/auth/kubeconfig` file into each master group definition (e.g. under `examples/groups/bootkube` or `examples/groups/bootkube-install`). Also, add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
+Add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
     {
         "profile": "bootkube-worker",
         "metadata": {
-            "k8s_certificate_authority": "...",
-            "k8s_client_certificate": "...",
-            "k8s_client_key": "...",
             "ssh_authorized_keys": ["ssh-rsa pub-key-goes-here"]
         }
     }
@@ -58,12 +55,18 @@ Create a network boot environment with `coreos/dnsmasq` and create VMs with `scr
 
 We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a temporary control plane and bootstrap self-hosted Kubernetes cluster. This is a **one-time** procedure.
 
-Copy the `bootkube` generated assets to any one of the master nodes.
+Secure copy the `bootkube` generated assets to any one of the master nodes.
 
     scp -r assets core@172.15.0.21:/home/core/assets
     scp $(which bootkube) core@172.15.0.21:/home/core
 
-Connect to that Kubernetes master node,
+Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (repeat for 172.15.0.22, 172.15.0.23).
+
+    scp assets/auth/kubeconfig core@172.15.0.21:/home/core/kubeconfig
+    ssh core@172.15.0.21
+    sudo mv kubeconfig /etc/kubernetes/kubeconfig
+
+Connect to the Kubernetes master node,
 
     ssh core@172.15.0.21
 
