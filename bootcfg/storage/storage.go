@@ -35,4 +35,7 @@ type Store interface {
 
 	// CloudGet gets a Cloud-Config template by name.
 	CloudGet(name string) (string, error)
+
+	// GenericGet gets a generic template by name.
+	GenericGet(name string) (string, error)
 }

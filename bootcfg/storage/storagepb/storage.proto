@@ -27,6 +27,8 @@ message Profile {
   string cloud_id = 4;
   // support network boot / PXE
   NetBoot boot = 5;
+  // generic config id
+  string generic_id = 6;
 }
 
 // NetBoot describes network or PXE boot settings for a machine.

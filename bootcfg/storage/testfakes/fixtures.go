@@ -34,6 +34,7 @@ var (
 		},
 		CloudId:    "cloud-config.tmpl",
 		IgnitionId: "ignition.tmpl",
+		GenericId:  "generic.tmpl",
 	}
 
 	// IgnitionYAMLName is an Ignition template name for testing.
