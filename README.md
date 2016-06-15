@@ -7,12 +7,13 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
 
 ## Guides
 
-* [Network Booting](Documentation/network-booting.md)
+* [Network Setup](Documentation/network-setup.md)
 * [Machine Lifecycle](Documentation/machine-lifecycle.md)
+* [Background: PXE Booting](Documentation/network-booting.md)
 
 ## bootcfg
 
-`bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. UUID, MAC, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, GRUB, and Pixiecore support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
+`bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, GRUB, and Pixiecore support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
 
 * [bootcfg with rkt](Documentation/getting-started-rkt.md)
 * [bootcfg with Docker](Documentation/getting-started-docker.md)
@@ -22,7 +23,8 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
 * [Flags](Documentation/config.md)
-* [API](Documentation/api.md)
+* [HTTP API](Documentation/api.md)
+* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
 * Backends
     * [FileStore](Documentation/bootcfg.md#data)
 * Deployment via
