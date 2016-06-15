@@ -53,3 +53,8 @@ func (s *EmptyStore) IgnitionGet(name string) (string, error) {
 func (s *EmptyStore) CloudGet(name string) (string, error) {
 	return "", fmt.Errorf("no Cloud-Config template %s", name)
 }
+
+// GenericGet returns a generic template not found error.
+func (s *EmptyStore) GenericGet(name string) (string, error) {
+	return "", fmt.Errorf("no generic template %s", name)
+}

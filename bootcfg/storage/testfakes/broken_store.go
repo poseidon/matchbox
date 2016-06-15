@@ -57,3 +57,8 @@ func (s *BrokenStore) IgnitionGet(name string) (string, error) {
 func (s *BrokenStore) CloudGet(name string) (string, error) {
 	return "", errIntentional
 }
+
+// GenericGet returns an error.
+func (s *BrokenStore) GenericGet(name string) (string, error) {
+	return "", errIntentional
+}
