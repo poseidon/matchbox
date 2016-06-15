@@ -43,6 +43,7 @@ func genericHandler(srv server.Server) ContextHandler {
 				return
 			}
 		}
+		data["query"] = req.URL.RawQuery
 		for key, value := range group.Selector {
 			data[strings.ToLower(key)] = value
 		}

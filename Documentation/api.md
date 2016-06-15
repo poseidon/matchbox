@@ -134,6 +134,29 @@ Finds the profile matching the machine and renders the corresponding Ignition Co
       "passwd": {}
     }
 
+## Generic Config
+
+Finds the profile matching the machine and renders the corresponding Generic config with metadata and group selectors.
+
+    GET http://bootcfg.foo/generic
+
+**Query Parameters**
+
+| Name | Type   | Description   |
+|------|--------|---------------|
+| uuid | string | Hardware UUID |
+| mac  | string | MAC address   |
+
+**Response**
+
+    {
+      “uuid”: “”,
+      “mac”: “52:54:00:a1:9c:ae”,
+      “osInstalled”: true,
+      “rawQuery”: “mac=52:54:00:a1:9c:ae&os=installed”
+    }
+
+
 ## Metadata
 
 Finds the matching machine group and renders the selectors and metadata as a `plain/text` file.

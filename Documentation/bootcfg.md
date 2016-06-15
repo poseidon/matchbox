@@ -37,6 +37,10 @@ Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` sub
      │   └── hello.json
      │   └── etcd.yaml
      │   └── simple_networking.yaml
+     ├── generic
+     │   └── config.yaml
+     │   └── setup.cfg
+     │   └── datacenter-1.tmpl
      ├── groups
      │   └── default.json
      │   └── node1.json
@@ -47,13 +51,14 @@ Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` sub
 
 ### Profiles
 
-Profiles specify a Ignition config, Cloud-Config, and network boot config.
+Profiles specify a Ignition config, Cloud-Config, and network boot config. Generic configs can be used as well.
 
     {
         "id": "etcd",
         "name": "CoreOS with etcd2"
         "cloud_id": "",
         "ignition_id": "etcd.yaml",
+        "generic_id": "some-service.cfg",
         "boot": {
             "kernel": "/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
             "initrd": ["/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],
@@ -72,9 +77,9 @@ To use cloud-config, set the `cloud-config-url` kernel option to reference the `
 
 To use Ignition, set the `coreos.config.url` kernel option to reference the `bootcfg` [Ignition endpoint](api.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
 
-### Configs
+#### Configs
 
-Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Both may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
+Profiles can reference various templated configs. Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Generic configs can be provided in any format. Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
 
 * [Ignition Config](ignition.md)
 * [Cloud-Config](cloud-config.md)
