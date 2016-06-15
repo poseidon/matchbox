@@ -36,6 +36,10 @@ Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` sub
      │   └── hello.json
      │   └── etcd.yaml
      │   └── simple_networking.yaml
+     ├── generic
+     │   └── config.yaml
+     │   └── setup.cfg
+     │   └── datacenter-1.tmpl
      ├── groups
      │   └── default.json
      │   └── node1.json
@@ -44,20 +48,21 @@ Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` sub
          └── etcd.json
          └── worker.json
 
-Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Both may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
+Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Generic templates can be any arbitrary format. Each may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
 
 * [Ignition Config](ignition.md)
 * [Cloud-Config](cloud-config.md)
 
 ### Profiles
 
-Profiles specify a Ignition config, Cloud-Config, and network boot config.
+Profiles specify a Ignition config, Cloud-Config, and network boot config. Optionally include a Generic template.
 
     {
         "id": "etcd",
         "name": "CoreOS with etcd2"
         "cloud_id": "",
         "ignition_id": "etcd.yaml",
+        "generic_id": "some-service.cfg",
         "boot": {
             "kernel": "/assets/coreos/899.6.0/coreos_production_pxe.vmlinuz",
             "initrd": ["/assets/coreos/899.6.0/coreos_production_pxe_image.cpio.gz"],

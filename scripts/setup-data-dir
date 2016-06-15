@@ -36,3 +36,4 @@ make_bootcfg_directory "${datadir}/profiles" 2770
 make_bootcfg_directory "${datadir}/groups" 2770
 make_bootcfg_directory "${datadir}/ignition" 2770
 make_bootcfg_directory "${datadir}/cloud" 2770
+make_bootcfg_directory "${datadir}/generic" 2770
