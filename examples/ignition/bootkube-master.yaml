@@ -57,7 +57,7 @@ systemd:
           --allow-privileged \
           --hostname-override={{.ipv4_address}} \
           --node-labels=master=true \
-          --minimum-container-ttl-duration=3m0s \
+          --minimum-container-ttl-duration=6m0s \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
         Restart=always
@@ -88,6 +88,23 @@ storage:
         - path: /etc/kubernetes/empty
           mode: 0644
           contents: |
+        - path: /home/core/bootkube-start
+          mode: 0544
+          uid: 500
+          gid: 500
+          contents: |
+            #!/bin/bash
+            # Wrapper for bootkube start
+            set -e
+            BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
+            BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.1.0}"
+            BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/home/core/assets}"
+            exec /usr/bin/rkt run \
+              --trust-keys-from-https \
+              --volume assets,kind=host,source=$BOOTKUBE_ASSETS \
+              --mount volume=assets,target=/assets \
+              $RKT_OPTS \
+              ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} --net=host --exec=/bootkube -- start --asset-dir=/assets --etcd-server=http://127.0.0.1:2379 "$@"
         - path: /opt/init-flannel
           mode: 0544
           contents: |

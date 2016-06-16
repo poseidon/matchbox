@@ -51,7 +51,7 @@ systemd:
           --exit-on-lock-contention \
           --allow-privileged \
           --hostname-override={{.ipv4_address}} \
-          --minimum-container-ttl-duration=3m0s \
+          --minimum-container-ttl-duration=6m0s \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
         Restart=always
