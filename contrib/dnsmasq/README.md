@@ -20,7 +20,7 @@ Press ^] three times to kill the container.
 Alternately, Docker can be used.
 
     docker pull quay.io/coreos/dnsmasq
-    docker run quay.io/coreos/dnsmasq --cap-add=NET_ADMIN
+    docker run quay.io/coreos/dnsmasq --net=host --cap-add=NET_ADMIN
 
 ## Configuration Flags
 
@@ -59,4 +59,4 @@ Run the Docker image to run DHCP/proxyDHCP/TFTP/DNS services.
 
 DHCP+TFTP+DNS on the `docker0` bridge:
 
-    sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --address=/bootcfg.foo/172.17.0.2
+    sudo docker run --rm --net=host --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --address=/bootcfg.foo/172.17.0.2
