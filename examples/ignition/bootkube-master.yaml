@@ -64,6 +64,12 @@ systemd:
         RestartSec=10
         [Install]
         WantedBy=multi-user.target
+    - name: update-engine.service
+      enable: false
+      mask: true
+    - name: locksmithd.service
+      enable: false
+      mask : true
 
 storage:
   {{ if index . "pxe" }}

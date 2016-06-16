@@ -5,7 +5,7 @@ The self-hosted Kubernetes examples provision a 3 node cluster with etcd, flanne
 
 ## Experimental
 
-Self-hosted Kubernetes is under very active development by CoreOS. We're working on upstreaming the required Hyperkube patches. Be aware that a deployment with a single apiserver cannot tolerate its failure. We'll be improving this to allow CoreOS auto-updates.
+Self-hosted Kubernetes is under very active development by CoreOS. We're working on upstreaming the required Hyperkube patches. Be aware that this cluster disabled auto-updates until checkpointing is available to restart a the kube-apiserver.
 
 ## Requirements
 
@@ -69,7 +69,7 @@ Connect to the chosen Kubernetes master node,
 
     ssh core@172.15.0.21
 
-and run the following commands *on the node*.
+and run the following command *on the node*.
 
     sudo ./bootkube-start
 
