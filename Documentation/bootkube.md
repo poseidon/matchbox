@@ -5,7 +5,7 @@ The self-hosted Kubernetes examples provision a 3 node cluster with etcd, flanne
 
 ## Experimental
 
-Self-hosted Kubernetes is under very active development by CoreOS. We're working on upstreaming the required Hyperkube patches. Be aware that a deployment with a single apiserver cannot tolerate its failure. We'll be improving this to allow CoreOS auto-updates.
+Self-hosted Kubernetes is under very active development by CoreOS. We're working on upstreaming the required Hyperkube patches. Be aware that this cluster disabled auto-updates until checkpointing is available to restart a the kube-apiserver.
 
 ## Requirements
 
@@ -55,24 +55,23 @@ Create a network boot environment with `coreos/dnsmasq` and create VMs with `scr
 
 We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a temporary control plane and bootstrap self-hosted Kubernetes cluster. This is a **one-time** procedure.
 
-Secure copy the `bootkube` generated assets to any one of the master nodes.
-
-    scp -r assets core@172.15.0.21:/home/core/assets
-    scp $(which bootkube) core@172.15.0.21:/home/core
-
 Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (repeat for 172.15.0.22, 172.15.0.23).
 
     scp assets/auth/kubeconfig core@172.15.0.21:/home/core/kubeconfig
     ssh core@172.15.0.21
     sudo mv kubeconfig /etc/kubernetes/kubeconfig
 
-Connect to the Kubernetes master node,
+Secure copy the `bootkube` generated assets to any one of the master nodes.
+
+    scp -r assets core@172.15.0.21:/home/core/assets
+
+Connect to the chosen Kubernetes master node,
 
     ssh core@172.15.0.21
 
-and run the following commands *on the node*.
+and run the following command *on the node*.
 
-    sudo ./bootkube start --asset-dir=/home/core/assets --etcd-server=http://172.15.0.21:2379
+    sudo ./bootkube-start
 
 Watch the temporary control plane logs until the scheduled kubelet takes over in place of the runonce host kubelet.
 

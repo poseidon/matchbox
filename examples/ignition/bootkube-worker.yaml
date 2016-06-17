@@ -51,13 +51,19 @@ systemd:
           --exit-on-lock-contention \
           --allow-privileged \
           --hostname-override={{.ipv4_address}} \
-          --minimum-container-ttl-duration=3m0s \
+          --minimum-container-ttl-duration=6m0s \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
         Restart=always
         RestartSec=5
         [Install]
         WantedBy=multi-user.target
+    - name: update-engine.service
+      enable: false
+      mask: true
+    - name: locksmithd.service
+      enable: false
+      mask : true
 
 storage:
   {{ if index . "pxe" }}
