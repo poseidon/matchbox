@@ -3,7 +3,7 @@
 
 In this tutorial, we'll run `bootcfg` on your Linux machine with Docker to network boot and provision a cluster of CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
 
-If you're ready to try [rkt](https://coreos.com/rkt/docs/latest/), see [Getting Started with rkt](getting-started-rkt.md).
+*Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
 ## Requirements
 
@@ -24,8 +24,7 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
 
 Download CoreOS image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
 
-    ./scripts/get-coreos
-    ./scripts/get-coreos channel version   # examples pin a required version
+    ./scripts/get-coreos alpha 1053.2.0 ./examples/assets
 
 ## Containers
 

@@ -19,7 +19,7 @@ Build and install [bootkube](https://github.com/coreos/bootkube).
 
 ## Examples
 
-The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
+The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for physical machines, but you'll need to update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [bootkube](../examples/groups/bootkube) - iPXE boot a bootkube-ready cluster (use rkt)
 * [bootkube-install](../examples/groups/bootkube-install) - Install a bootkube-ready cluster (use rkt)
@@ -28,7 +28,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 1053.2.0
+    ./scripts/get-coreos alpha 1053.2.0 ./examples/assets
 
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 

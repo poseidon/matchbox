@@ -22,8 +22,6 @@ openssl req -config openssl.conf -new -x509 -days 3650 -sha256 -key ca.key -exte
 openssl genrsa -out server.key 2048
 # Server certificate signing request (CSR)
 openssl req -config openssl.conf -new -sha256 -key server.key -out server.csr -subj "/CN=fake-server"
-# Suitable SANs for bootcfg on 172.15.0.2(rkt example) and 127.0.0.1(docker example)
-export SAN=IP.1:127.0.0.1,IP.2:172.15.0.2
 # Certificate Authority signs CSR to grant a certificate
 openssl ca -config openssl.conf -extensions server_cert -days 365 -notext -md sha256 -in server.csr -out server.crt -cert ca.crt -keyfile ca.key
 

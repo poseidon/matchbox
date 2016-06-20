@@ -1,21 +1,22 @@
 #!/bin/bash -e
 # USAGE: ./scripts/get-coreos
-# USAGE: ./scripts/get-coreos channel version
+# USAGE: ./scripts/get-coreos channel version dest
 
 CHANNEL=${1:-"alpha"}
 VERSION=${2:-"1053.2.0"}
-DEST=${PWD}/examples/assets/coreos/$VERSION
+DEST_DIR=${3:-"$PWD/examples/assets"}
+DEST=$DEST_DIR/coreos/$VERSION
 BASE_URL=https://$CHANNEL.release.core-os.net/amd64-usr/$VERSION
 
 # check channel/version exist based on the header response
-curl -s -I $BASE_URL/coreos_production_pxe.vmlinuz | awk '/200/ {found++} /301/ {found++} END { if (found<1) { print "Channel or Version not found"; exit 1 }}'
+curl -s -I $BASE_URL/coreos_production_pxe.vmlinuz | awk '/1.1 200/ {found++} /1.1 301/ {found++} END { if (found<1) { print "Channel or Version not found"; exit 1 }}'
 
 if [ ! -d "$DEST" ]; then
   echo "Creating directory $DEST"
   mkdir -p $DEST
 fi
 
-echo "Downloading CoreOS $CHANNEL $VERSION images and signatures"
+echo "Downloading CoreOS $CHANNEL $VERSION images and sigs to $DEST"
 
 # PXE kernel and sig
 echo "coreos_production_pxe.vmlinuz..."
