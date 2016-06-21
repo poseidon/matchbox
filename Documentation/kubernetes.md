@@ -13,7 +13,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 
 ## Examples
 
-The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. VMs are setup on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
+The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. VMs are setup on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. You can use the same examples for physical machines, but you'll need to update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [k8s](../examples/groups/k8s) - iPXE boot a Kubernetes cluster (use rkt)
 * [k8s-docker](../examples/groups/k8s-docker) - iPXE boot a Kubernetes cluster on `docker0` (use docker)
@@ -23,7 +23,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 1053.2.0
+    ./scripts/get-coreos alpha 1053.2.0 ./examples/assets
 
 Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`).
 

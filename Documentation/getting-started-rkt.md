@@ -3,6 +3,8 @@
 
 In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
 
+*Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
+
 ## Requirements
 
 Install [rkt](https://github.com/coreos/rkt/releases) and [acbuild](https://github.com/appc/acbuild/releases) from the latest releases ([example script](https://github.com/dghubble/phoenix/blob/master/scripts/fedora/sources.sh)). Optionally setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
@@ -24,8 +26,7 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
 
 Download CoreOS image assets referenced by the `etcd` [example](../examples) to `examples/assets`.
 
-    ./scripts/get-coreos
-    ./scripts/get-coreos channel version
+    ./scripts/get-coreos alpha 1053.2.0 ./examples/assets
 
 Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
 

@@ -9,6 +9,14 @@ Navigate to the example directory which will be mounted as `/etc/bootcfg` in exa
 
     cd coreos-baremetal/examples/etc/bootcfg
 
+Set certificate subject alt names which should be used by exporting `SAN`. Use the DNS name or IP at which `bootcfg` is hosted.
+
+    # for examples on metal0 or docker0 bridges
+    export SAN=IP.1:127.0.0.1,IP.2:172.15.0.2
+
+    # production example
+    export SAN=DNS.1:bootcfg.example.com
+
 Create a fake `ca.crt`, `server.crt`, `server.key`, `client.crt`, and `client.key`. Type 'Y' when prompted.
 
     $ ./cert-gen

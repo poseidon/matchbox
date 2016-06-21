@@ -35,7 +35,7 @@ Configuration arguments can be provided as flags or as environment variables.
 ## Version
 
     ./bin/bootcfg -version
-    sudo rkt --insecure-options=image run quay.io/coreos/bootcfg:latest -- -version
+    sudo rkt run quay.io/coreos/bootcfg:latest -- -version
     sudo docker run quay.io/coreos/bootcfg:latest -version
 
 ## Minimal
@@ -67,6 +67,14 @@ Run the Docker image. Mounts are used to add the provided examples.
 ### gRPC API
 
 The gRPC API can be enabled with the `-rpc-address` flag and by providing a TLS server certificate and key with `-cert-file` and `-key-file` and a CA certificate for authenticating clients with `-ca-file`. gRPC clients (such as `bootcmd`) must verify the server's certificate with a CA bundle passed via `-ca-file` and present a client certificate and key via `-cert-file` and `-key-file`.
+
+Run the binary with TLS credentials from `examples/etc/bootcfg`.
+
+    ./bin/bootcfg -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug -data-path=examples -assets-path=examples/assets -cert-file examples/etc/bootcfg/server.crt -key-file examples/etc/bootcfg/server.key -ca-file examples/etc/bootcfg/ca.crt
+
+A `bootcmd` client can call the gRPC API.
+
+    ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/bootcfg/ca.crt --cert-file examples/etc/bootcfg/client.crt --key-file examples/etc/bootcfg/client.key
 
 Run the ACI with rkt and TLS credentials from `examples/etc/bootcfg`.
 
