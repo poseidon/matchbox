@@ -1,0 +1,29 @@
+#!/bin/bash -e
+# USAGE: ./release-files DEST
+
+DEST=$1
+
+if [ -z "${DEST}" ]; then
+  echo "Usage: ${0} DEST"
+  exit 255
+fi
+
+SCRIPTS=$DEST/scripts
+CONTRIB=$DEST/contrib
+
+# binaries
+mkdir -p $DEST
+cp bin/bootcfg $DEST/bootcfg
+cp bin/bootcmd $DEST/bootcmd
+
+# scripts
+mkdir -p $SCRIPTS/tls
+cp scripts/get-coreos $SCRIPTS
+
+cp examples/etc/bootcfg/README.md $SCRIPTS/tls
+cp examples/etc/bootcfg/cert-gen $SCRIPTS/tls
+cp examples/etc/bootcfg/openssl.conf $SCRIPTS/tls
+
+# systemd
+mkdir -p $CONTRIB/systemd
+cp contrib/systemd/bootcfg.service $CONTRIB/systemd

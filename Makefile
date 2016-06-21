@@ -22,4 +22,18 @@ uninstall:
 	rm $(BIN_DIR)/bootcfg
 	rm $(BIN_DIR)/bootcmd
 
-.PHONY: build test install
+release: clean _output/coreos-baremetal-linux-amd64.tar.gz
+
+_output/coreos-baremetal-%-amd64/bootcfg: build
+	@mkdir -p $(dir $@)
+	./scripts/release-files $(dir $@)
+
+_output/coreos-baremetal-%-amd64.tar.gz: _output/coreos-baremetal-%-amd64/bootcfg
+	tar zcvf $@ -C _output coreos-baremetal-$*-amd64
+
+clean:
+	rm -rf _output
+
+.PHONY: build clean install test
+
+.SECONDARY: _output/coreos-baremetal-linux-amd64/bootcfg
