@@ -1,5 +1,4 @@
 ---
-ignition_version: 1
 systemd:
   units:
     - name: etcd2.service
@@ -100,535 +99,563 @@ storage:
       partitions:
         - label: ROOT
   filesystems:
-    - device: "/dev/sda1"
-      format: "ext4"
-      create:
-        force: true
-        options:
-          - "-LROOT"
+    - name: rootfs
+      mount:
+        device: "/dev/sda1"
+        format: "ext4"
+        create:
+          force: true
+          options:
+            - "-LROOT"
   {{else}}
   filesystems:
-    - device: "/dev/disk/by-label/ROOT"
-      format: "ext4"
+    - name: rootfs
+      mount:
+        device: "/dev/disk/by-label/ROOT"
+        format: "ext4"
   {{end}}
-      files:
-        - path: /etc/kubernetes/manifests/kube-proxy.yaml
-          contents: |
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: kube-proxy
-              namespace: kube-system
-            spec:
-              hostNetwork: true
-              containers:
-              - name: kube-proxy
-                image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
-                command:
-                - /hyperkube
-                - proxy
-                - --master=http://127.0.0.1:8080
-                - --proxy-mode=iptables
-                securityContext:
-                  privileged: true
-                volumeMounts:
-                - mountPath: /etc/ssl/certs
-                  name: ssl-certs-host
-                  readOnly: true
-              volumes:
-              - hostPath:
-                  path: /usr/share/ca-certificates
+  files:
+    - path: /etc/kubernetes/manifests/kube-proxy.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kube-proxy
+            namespace: kube-system
+          spec:
+            hostNetwork: true
+            containers:
+            - name: kube-proxy
+              image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
+              command:
+              - /hyperkube
+              - proxy
+              - --master=http://127.0.0.1:8080
+              - --proxy-mode=iptables
+              securityContext:
+                privileged: true
+              volumeMounts:
+              - mountPath: /etc/ssl/certs
                 name: ssl-certs-host
-        - path: /etc/kubernetes/manifests/kube-apiserver.yaml
-          contents: |
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: kube-apiserver
-              namespace: kube-system
-            spec:
-              hostNetwork: true
-              containers:
-              - name: kube-apiserver
-                image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
-                command:
-                - /hyperkube
-                - apiserver
-                - --bind-address=0.0.0.0
-                - --etcd-servers={{.k8s_etcd_endpoints}}
-                - --allow-privileged=true
-                - --service-cluster-ip-range={{.k8s_service_ip_range}}
-                - --secure-port=443
-                - --advertise-address={{.ipv4_address}}
-                - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
-                - --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem
-                - --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
-                - --client-ca-file=/etc/kubernetes/ssl/ca.pem
-                - --service-account-key-file=/etc/kubernetes/ssl/apiserver-key.pem
-                ports:
-                - containerPort: 443
-                  hostPort: 443
-                  name: https
-                - containerPort: 8080
-                  hostPort: 8080
-                  name: local
-                volumeMounts:
-                - mountPath: /etc/kubernetes/ssl
-                  name: ssl-certs-kubernetes
-                  readOnly: true
-                - mountPath: /etc/ssl/certs
-                  name: ssl-certs-host
-                  readOnly: true
-              volumes:
-              - hostPath:
-                  path: /etc/kubernetes/ssl
+                readOnly: true
+            volumes:
+            - hostPath:
+                path: /usr/share/ca-certificates
+              name: ssl-certs-host
+    - path: /etc/kubernetes/manifests/kube-apiserver.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kube-apiserver
+            namespace: kube-system
+          spec:
+            hostNetwork: true
+            containers:
+            - name: kube-apiserver
+              image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
+              command:
+              - /hyperkube
+              - apiserver
+              - --bind-address=0.0.0.0
+              - --etcd-servers={{.k8s_etcd_endpoints}}
+              - --allow-privileged=true
+              - --service-cluster-ip-range={{.k8s_service_ip_range}}
+              - --secure-port=443
+              - --advertise-address={{.ipv4_address}}
+              - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
+              - --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem
+              - --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
+              - --client-ca-file=/etc/kubernetes/ssl/ca.pem
+              - --service-account-key-file=/etc/kubernetes/ssl/apiserver-key.pem
+              ports:
+              - containerPort: 443
+                hostPort: 443
+                name: https
+              - containerPort: 8080
+                hostPort: 8080
+                name: local
+              volumeMounts:
+              - mountPath: /etc/kubernetes/ssl
                 name: ssl-certs-kubernetes
-              - hostPath:
-                  path: /usr/share/ca-certificates
+                readOnly: true
+              - mountPath: /etc/ssl/certs
                 name: ssl-certs-host
-        - path: /etc/flannel/options.env
-          contents: |
-            FLANNELD_IFACE={{.ipv4_address}}
-            FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
-        - path: /etc/kubernetes/manifests/kube-controller-manager.yaml
-          contents: |
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: kube-controller-manager
-              namespace: kube-system
-            spec:
-              containers:
-              - name: kube-controller-manager
-                image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
-                command:
-                - /hyperkube
-                - controller-manager
-                - --master=http://127.0.0.1:8080
-                - --leader-elect=true
-                - --service-account-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
-                - --root-ca-file=/etc/kubernetes/ssl/ca.pem
-                livenessProbe:
-                  httpGet:
-                    host: 127.0.0.1
-                    path: /healthz
-                    port: 10252
-                  initialDelaySeconds: 15
-                  timeoutSeconds: 1
-                volumeMounts:
-                - mountPath: /etc/kubernetes/ssl
-                  name: ssl-certs-kubernetes
-                  readOnly: true
-                - mountPath: /etc/ssl/certs
-                  name: ssl-certs-host
-                  readOnly: true
-              hostNetwork: true
-              volumes:
-              - hostPath:
-                  path: /etc/kubernetes/ssl
+                readOnly: true
+            volumes:
+            - hostPath:
+                path: /etc/kubernetes/ssl
+              name: ssl-certs-kubernetes
+            - hostPath:
+                path: /usr/share/ca-certificates
+              name: ssl-certs-host
+    - path: /etc/flannel/options.env
+      filesystem: rootfs
+      contents:
+        inline: |
+          FLANNELD_IFACE={{.ipv4_address}}
+          FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
+    - path: /etc/kubernetes/manifests/kube-controller-manager.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kube-controller-manager
+            namespace: kube-system
+          spec:
+            containers:
+            - name: kube-controller-manager
+              image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
+              command:
+              - /hyperkube
+              - controller-manager
+              - --master=http://127.0.0.1:8080
+              - --leader-elect=true
+              - --service-account-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
+              - --root-ca-file=/etc/kubernetes/ssl/ca.pem
+              livenessProbe:
+                httpGet:
+                  host: 127.0.0.1
+                  path: /healthz
+                  port: 10252
+                initialDelaySeconds: 15
+                timeoutSeconds: 1
+              volumeMounts:
+              - mountPath: /etc/kubernetes/ssl
                 name: ssl-certs-kubernetes
-              - hostPath:
-                  path: /usr/share/ca-certificates
+                readOnly: true
+              - mountPath: /etc/ssl/certs
                 name: ssl-certs-host
-        - path: /etc/kubernetes/manifests/kube-scheduler.yaml
-          contents: |
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: kube-scheduler
-              namespace: kube-system
-            spec:
-              hostNetwork: true
-              containers:
-              - name: kube-scheduler
-                image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
-                command:
-                - /hyperkube
-                - scheduler
-                - --master=http://127.0.0.1:8080
-                - --leader-elect=true
-                livenessProbe:
-                  httpGet:
-                    host: 127.0.0.1
-                    path: /healthz
-                    port: 10251
-                  initialDelaySeconds: 15
-                  timeoutSeconds: 1
-        - path: /srv/kubernetes/manifests/kube-dns-rc.json
-          contents: |
-            {
-              "apiVersion": "v1",
-              "kind": "ReplicationController",
-              "metadata": {
-                "labels": {
+                readOnly: true
+            hostNetwork: true
+            volumes:
+            - hostPath:
+                path: /etc/kubernetes/ssl
+              name: ssl-certs-kubernetes
+            - hostPath:
+                path: /usr/share/ca-certificates
+              name: ssl-certs-host
+    - path: /etc/kubernetes/manifests/kube-scheduler.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kube-scheduler
+            namespace: kube-system
+          spec:
+            hostNetwork: true
+            containers:
+            - name: kube-scheduler
+              image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
+              command:
+              - /hyperkube
+              - scheduler
+              - --master=http://127.0.0.1:8080
+              - --leader-elect=true
+              livenessProbe:
+                httpGet:
+                  host: 127.0.0.1
+                  path: /healthz
+                  port: 10251
+                initialDelaySeconds: 15
+                timeoutSeconds: 1
+    - path: /srv/kubernetes/manifests/kube-dns-rc.json
+      filesystem: rootfs
+      contents:
+        inline: |
+          {
+            "apiVersion": "v1",
+            "kind": "ReplicationController",
+            "metadata": {
+              "labels": {
+                "k8s-app": "kube-dns",
+                "kubernetes.io/cluster-service": "true",
+                "version": "v11"
+              },
+              "name": "kube-dns-v11",
+              "namespace": "kube-system"
+            },
+            "spec": {
+              "replicas": 1,
+              "selector": {
                   "k8s-app": "kube-dns",
-                  "kubernetes.io/cluster-service": "true",
                   "version": "v11"
-                },
-                "name": "kube-dns-v11",
-                "namespace": "kube-system"
               },
-              "spec": {
-                "replicas": 1,
-                "selector": {
+              "template": {
+                "metadata": {
+                  "labels": {
                     "k8s-app": "kube-dns",
+                    "kubernetes.io/cluster-service": "true",
                     "version": "v11"
-                },
-                "template": {
-                  "metadata": {
-                    "labels": {
-                      "k8s-app": "kube-dns",
-                      "kubernetes.io/cluster-service": "true",
-                      "version": "v11"
-                    }
-                  },
-                  "spec": {
-                    "containers": [
-                        {
-                          "command": [
-                            "/usr/local/bin/etcd",
-                            "-data-dir",
-                            "/var/etcd/data",
-                            "-listen-client-urls",
-                            "http://127.0.0.1:2379,http://127.0.0.1:4001",
-                            "-advertise-client-urls",
-                            "http://127.0.0.1:2379,http://127.0.0.1:4001",
-                            "-initial-cluster-token",
-                            "skydns-etcd"
-                          ],
-                          "image": "gcr.io/google_containers/etcd-amd64:2.2.1",
-                          "name": "etcd",
-                          "resources": {
-                            "limits": {
-                              "cpu": "100m",
-                              "memory": "500Mi"
-                            },
-                            "requests": {
-                              "cpu": "100m",
-                              "memory": "50Mi"
-                            }
-                          },
-                          "volumeMounts": [
-                            {
-                              "mountPath": "/var/etcd/data",
-                              "name": "etcd-storage"
-                            }
-                          ]
-                        },
-                        {
-                          "args": [
-                            "--domain=cluster.local"
-                          ],
-                          "image": "gcr.io/google_containers/kube2sky:1.14",
-                          "livenessProbe": {
-                            "failureThreshold": 5,
-                            "httpGet": {
-                              "path": "/healthz",
-                              "port": 8080,
-                              "scheme": "HTTP"
-                            },
-                            "initialDelaySeconds": 60,
-                            "successThreshold": 1,
-                            "timeoutSeconds": 5
-                          },
-                          "name": "kube2sky",
-                          "readinessProbe": {
-                            "httpGet": {
-                              "path": "/readiness",
-                              "port": 8081,
-                              "scheme": "HTTP"
-                            },
-                            "initialDelaySeconds": 30,
-                            "timeoutSeconds": 5
-                          },
-                          "resources": {
-                            "limits": {
-                              "cpu": "100m",
-                              "memory": "200Mi"
-                            },
-                            "requests": {
-                              "cpu": "100m",
-                              "memory": "50Mi"
-                            }
-                          }
-                        },
-                        {
-                          "args": [
-                            "-machines=http://127.0.0.1:4001",
-                            "-addr=0.0.0.0:53",
-                            "-ns-rotate=false",
-                            "-domain=cluster.local."
-                          ],
-                          "image": "gcr.io/google_containers/skydns:2015-10-13-8c72f8c",
-                          "name": "skydns",
-                          "ports": [
-                            {
-                              "containerPort": 53,
-                              "name": "dns",
-                              "protocol": "UDP"
-                            },
-                            {
-                              "containerPort": 53,
-                              "name": "dns-tcp",
-                              "protocol": "TCP"
-                            }
-                          ],
-                          "resources": {
-                            "limits": {
-                              "cpu": "100m",
-                              "memory": "200Mi"
-                            },
-                            "requests": {
-                              "cpu": "100m",
-                              "memory": "50Mi"
-                            }
-                          }
-                        },
-                        {
-                          "args": [
-                            "-cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null",
-                            "-port=8080"
-                          ],
-                          "image": "gcr.io/google_containers/exechealthz:1.0",
-                          "name": "healthz",
-                          "ports": [
-                            {
-                              "containerPort": 8080,
-                              "protocol": "TCP"
-                            }
-                          ],
-                          "resources": {
-                            "limits": {
-                              "cpu": "10m",
-                              "memory": "20Mi"
-                            },
-                            "requests": {
-                              "cpu": "10m",
-                              "memory": "20Mi"
-                            }
-                          }
-                        }
-                    ],
-                    "dnsPolicy": "Default",
-                    "volumes": [
-                      {
-                        "emptyDir": {},
-                        "name": "etcd-storage"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-        - path: /srv/kubernetes/manifests/kube-dns-svc.json
-          contents: |
-            {
-              "apiVersion": "v1",
-              "kind": "Service",
-              "metadata": {
-                "name": "kube-dns",
-                "namespace": "kube-system",
-                "labels": {
-                  "k8s-app": "kube-dns",
-                  "kubernetes.io/name": "KubeDNS",
-                  "kubernetes.io/cluster-service": "true"
-                }
-              },
-              "spec": {
-                "clusterIP": "{{.k8s_dns_service_ip}}",
-                "ports": [
-                  {
-                    "protocol": "UDP",
-                    "name": "dns",
-                    "port": 53
-                  },
-                  {
-                    "protocol": "TCP",
-                    "name": "dns-tcp",
-                    "port": 53
-                  }
-                ],
-                "selector": {
-                  "k8s-app": "kube-dns"
-                }
-              }
-            }
-        - path: /srv/kubernetes/manifests/heapster-deployment.json
-          contents: |
-            {
-              "apiVersion": "extensions/v1beta1",
-              "kind": "Deployment",
-              "metadata": {
-                "labels": {
-                  "k8s-app": "heapster",
-                  "kubernetes.io/cluster-service": "true",
-                  "version": "v1.0.2"
-                },
-                "name": "heapster-v1.0.2",
-                "namespace": "kube-system"
-              },
-              "spec": {
-                "replicas": 1,
-                "selector": {
-                  "matchLabels": {
-                    "k8s-app": "heapster",
-                    "version": "v1.0.2"
                   }
                 },
-                "template": {
-                  "metadata": {
-                    "labels": {
-                      "k8s-app": "heapster",
-                      "version": "v1.0.2"
-                    }
-                  },
-                  "spec": {
-                    "containers": [
+                "spec": {
+                  "containers": [
                       {
                         "command": [
-                          "/heapster",
-                          "--source=kubernetes.summary_api:''",
-                          "--metric_resolution=60s"
+                          "/usr/local/bin/etcd",
+                          "-data-dir",
+                          "/var/etcd/data",
+                          "-listen-client-urls",
+                          "http://127.0.0.1:2379,http://127.0.0.1:4001",
+                          "-advertise-client-urls",
+                          "http://127.0.0.1:2379,http://127.0.0.1:4001",
+                          "-initial-cluster-token",
+                          "skydns-etcd"
                         ],
-                        "image": "gcr.io/google_containers/heapster:v1.0.2",
-                        "name": "heapster",
+                        "image": "gcr.io/google_containers/etcd-amd64:2.2.1",
+                        "name": "etcd",
                         "resources": {
                           "limits": {
                             "cpu": "100m",
-                            "memory": "250Mi"
+                            "memory": "500Mi"
                           },
                           "requests": {
                             "cpu": "100m",
-                            "memory": "250Mi"
+                            "memory": "50Mi"
+                          }
+                        },
+                        "volumeMounts": [
+                          {
+                            "mountPath": "/var/etcd/data",
+                            "name": "etcd-storage"
+                          }
+                        ]
+                      },
+                      {
+                        "args": [
+                          "--domain=cluster.local"
+                        ],
+                        "image": "gcr.io/google_containers/kube2sky:1.14",
+                        "livenessProbe": {
+                          "failureThreshold": 5,
+                          "httpGet": {
+                            "path": "/healthz",
+                            "port": 8080,
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 60,
+                          "successThreshold": 1,
+                          "timeoutSeconds": 5
+                        },
+                        "name": "kube2sky",
+                        "readinessProbe": {
+                          "httpGet": {
+                            "path": "/readiness",
+                            "port": 8081,
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 30,
+                          "timeoutSeconds": 5
+                        },
+                        "resources": {
+                          "limits": {
+                            "cpu": "100m",
+                            "memory": "200Mi"
+                          },
+                          "requests": {
+                            "cpu": "100m",
+                            "memory": "50Mi"
                           }
                         }
                       },
                       {
-                        "command": [
-                          "/pod_nanny",
-                          "--cpu=100m",
-                          "--extra-cpu=0m",
-                          "--memory=250Mi",
-                          "--extra-memory=4Mi",
-                          "--threshold=5",
-                          "--deployment=heapster-v1.0.2",
-                          "--container=heapster",
-                          "--poll-period=300000"
+                        "args": [
+                          "-machines=http://127.0.0.1:4001",
+                          "-addr=0.0.0.0:53",
+                          "-ns-rotate=false",
+                          "-domain=cluster.local."
                         ],
-                        "env": [
+                        "image": "gcr.io/google_containers/skydns:2015-10-13-8c72f8c",
+                        "name": "skydns",
+                        "ports": [
                           {
-                            "name": "MY_POD_NAME",
-                            "valueFrom": {
-                              "fieldRef": {
-                                "fieldPath": "metadata.name"
-                              }
-                            }
+                            "containerPort": 53,
+                            "name": "dns",
+                            "protocol": "UDP"
                           },
                           {
-                            "name": "MY_POD_NAMESPACE",
-                            "valueFrom": {
-                              "fieldRef": {
-                                "fieldPath": "metadata.namespace"
-                              }
-                            }
+                            "containerPort": 53,
+                            "name": "dns-tcp",
+                            "protocol": "TCP"
                           }
                         ],
-                        "image": "gcr.io/google_containers/addon-resizer:1.0",
-                        "name": "heapster-nanny",
                         "resources": {
                           "limits": {
-                            "cpu": "50m",
-                            "memory": "100Mi"
+                            "cpu": "100m",
+                            "memory": "200Mi"
                           },
                           "requests": {
-                            "cpu": "50m",
-                            "memory": "100Mi"
+                            "cpu": "100m",
+                            "memory": "50Mi"
+                          }
+                        }
+                      },
+                      {
+                        "args": [
+                          "-cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null",
+                          "-port=8080"
+                        ],
+                        "image": "gcr.io/google_containers/exechealthz:1.0",
+                        "name": "healthz",
+                        "ports": [
+                          {
+                            "containerPort": 8080,
+                            "protocol": "TCP"
+                          }
+                        ],
+                        "resources": {
+                          "limits": {
+                            "cpu": "10m",
+                            "memory": "20Mi"
+                          },
+                          "requests": {
+                            "cpu": "10m",
+                            "memory": "20Mi"
                           }
                         }
                       }
-                    ]
-                  }
+                  ],
+                  "dnsPolicy": "Default",
+                  "volumes": [
+                    {
+                      "emptyDir": {},
+                      "name": "etcd-storage"
+                    }
+                  ]
                 }
               }
             }
-        - path: /srv/kubernetes/manifests/heapster-svc.json
-          contents: |
-            {
-              "kind": "Service",
-              "apiVersion": "v1",
-              "metadata": {
-                "name": "heapster",
-                "namespace": "kube-system",
-                "labels": {
-                  "kubernetes.io/cluster-service": "true",
-                  "kubernetes.io/name": "Heapster"
+          }
+    - path: /srv/kubernetes/manifests/kube-dns-svc.json
+      filesystem: rootfs
+      contents:
+        inline: |
+          {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+              "name": "kube-dns",
+              "namespace": "kube-system",
+              "labels": {
+                "k8s-app": "kube-dns",
+                "kubernetes.io/name": "KubeDNS",
+                "kubernetes.io/cluster-service": "true"
+              }
+            },
+            "spec": {
+              "clusterIP": "{{.k8s_dns_service_ip}}",
+              "ports": [
+                {
+                  "protocol": "UDP",
+                  "name": "dns",
+                  "port": 53
+                },
+                {
+                  "protocol": "TCP",
+                  "name": "dns-tcp",
+                  "port": 53
+                }
+              ],
+              "selector": {
+                "k8s-app": "kube-dns"
+              }
+            }
+          }
+    - path: /srv/kubernetes/manifests/heapster-deployment.json
+      filesystem: rootfs
+      contents:
+        inline: |
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "Deployment",
+            "metadata": {
+              "labels": {
+                "k8s-app": "heapster",
+                "kubernetes.io/cluster-service": "true",
+                "version": "v1.0.2"
+              },
+              "name": "heapster-v1.0.2",
+              "namespace": "kube-system"
+            },
+            "spec": {
+              "replicas": 1,
+              "selector": {
+                "matchLabels": {
+                  "k8s-app": "heapster",
+                  "version": "v1.0.2"
                 }
               },
-              "spec": {
-                "ports": [
-                  {
-                    "port": 80,
-                    "targetPort": 8082
+              "template": {
+                "metadata": {
+                  "labels": {
+                    "k8s-app": "heapster",
+                    "version": "v1.0.2"
                   }
-                ],
-                "selector": {
-                  "k8s-app": "heapster"
+                },
+                "spec": {
+                  "containers": [
+                    {
+                      "command": [
+                        "/heapster",
+                        "--source=kubernetes.summary_api:''",
+                        "--metric_resolution=60s"
+                      ],
+                      "image": "gcr.io/google_containers/heapster:v1.0.2",
+                      "name": "heapster",
+                      "resources": {
+                        "limits": {
+                          "cpu": "100m",
+                          "memory": "250Mi"
+                        },
+                        "requests": {
+                          "cpu": "100m",
+                          "memory": "250Mi"
+                        }
+                      }
+                    },
+                    {
+                      "command": [
+                        "/pod_nanny",
+                        "--cpu=100m",
+                        "--extra-cpu=0m",
+                        "--memory=250Mi",
+                        "--extra-memory=4Mi",
+                        "--threshold=5",
+                        "--deployment=heapster-v1.0.2",
+                        "--container=heapster",
+                        "--poll-period=300000"
+                      ],
+                      "env": [
+                        {
+                          "name": "MY_POD_NAME",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "fieldPath": "metadata.name"
+                            }
+                          }
+                        },
+                        {
+                          "name": "MY_POD_NAMESPACE",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "fieldPath": "metadata.namespace"
+                            }
+                          }
+                        }
+                      ],
+                      "image": "gcr.io/google_containers/addon-resizer:1.0",
+                      "name": "heapster-nanny",
+                      "resources": {
+                        "limits": {
+                          "cpu": "50m",
+                          "memory": "100Mi"
+                        },
+                        "requests": {
+                          "cpu": "50m",
+                          "memory": "100Mi"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
-        - path: /srv/kubernetes/manifests/kube-system.json
-          contents: |
-            {
-              "apiVersion": "v1",
-              "kind": "Namespace",
-              "metadata": {
-                "name": "kube-system"
+          }
+    - path: /srv/kubernetes/manifests/heapster-svc.json
+      filesystem: rootfs
+      contents:
+        inline: |
+          {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+              "name": "heapster",
+              "namespace": "kube-system",
+              "labels": {
+                "kubernetes.io/cluster-service": "true",
+                "kubernetes.io/name": "Heapster"
+              }
+            },
+            "spec": {
+              "ports": [
+                {
+                  "port": 80,
+                  "targetPort": 8082
+                }
+              ],
+              "selector": {
+                "k8s-app": "heapster"
               }
             }
-        - path: /opt/init-flannel
-          mode: 0544
-          contents: |
-            #!/bin/bash
-            function init_flannel {
-              echo "Waiting for etcd..."
-              while true
-              do
-                  IFS=',' read -ra ES <<< "{{.k8s_etcd_endpoints}}"
-                  for ETCD in "${ES[@]}"; do
-                      echo "Trying: $ETCD"
-                      if [ -n "$(curl --silent "$ETCD/v2/machines")" ]; then
-                          local ACTIVE_ETCD=$ETCD
-                          break
-                      fi
-                      sleep 1
-                  done
-                  if [ -n "$ACTIVE_ETCD" ]; then
-                      break
-                  fi
-              done
-              RES=$(curl --silent -X PUT -d "value={\"Network\":\"{{.k8s_pod_network}}\",\"Backend\":{\"Type\":\"vxlan\"}}" "$ACTIVE_ETCD/v2/keys/coreos.com/network/config?prevExist=false")
-              if [ -z "$(echo $RES | grep '"action":"create"')" ] && [ -z "$(echo $RES | grep 'Key already exists')" ]; then
-                  echo "Unexpected error configuring flannel pod network: $RES"
-              fi
+          }
+    - path: /srv/kubernetes/manifests/kube-system.json
+      filesystem: rootfs
+      contents:
+        inline: |
+          {
+            "apiVersion": "v1",
+            "kind": "Namespace",
+            "metadata": {
+              "name": "kube-system"
             }
-            init_flannel
-        - path: /opt/k8s-addons
-          mode: 0544
-          contents: |
-            #!/bin/bash
-            echo "Waiting for Kubernetes API..."
-            until curl --silent "http://127.0.0.1:8080/version"
+          }
+    - path: /opt/init-flannel
+      filesystem: rootfs
+      mode: 0544
+      contents:
+        inline: |
+          #!/bin/bash
+          function init_flannel {
+            echo "Waiting for etcd..."
+            while true
             do
-              sleep 5
+                IFS=',' read -ra ES <<< "{{.k8s_etcd_endpoints}}"
+                for ETCD in "${ES[@]}"; do
+                    echo "Trying: $ETCD"
+                    if [ -n "$(curl --silent "$ETCD/v2/machines")" ]; then
+                        local ACTIVE_ETCD=$ETCD
+                        break
+                    fi
+                    sleep 1
+                done
+                if [ -n "$ACTIVE_ETCD" ]; then
+                    break
+                fi
             done
-            echo "K8S: kube-system namespace"
-            curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-system.json)" "http://127.0.0.1:8080/api/v1/namespaces" > /dev/null
-            echo "K8S: DNS addon"
-            curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-rc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
-            curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
-            echo "K8S: Heapster addon"
-            curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-deployment.json)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
-            curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
+            RES=$(curl --silent -X PUT -d "value={\"Network\":\"{{.k8s_pod_network}}\",\"Backend\":{\"Type\":\"vxlan\"}}" "$ACTIVE_ETCD/v2/keys/coreos.com/network/config?prevExist=false")
+            if [ -z "$(echo $RES | grep '"action":"create"')" ] && [ -z "$(echo $RES | grep 'Key already exists')" ]; then
+                echo "Unexpected error configuring flannel pod network: $RES"
+            fi
+          }
+          init_flannel
+    - path: /opt/k8s-addons
+      filesystem: rootfs
+      mode: 0544
+      contents:
+        inline: |
+          #!/bin/bash
+          echo "Waiting for Kubernetes API..."
+          until curl --silent "http://127.0.0.1:8080/version"
+          do
+            sleep 5
+          done
+          echo "K8S: kube-system namespace"
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-system.json)" "http://127.0.0.1:8080/api/v1/namespaces" > /dev/null
+          echo "K8S: DNS addon"
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-rc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
+          echo "K8S: Heapster addon"
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-deployment.json)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
 
 {{ if not (index . "skip_networkd") }}
 networkd:

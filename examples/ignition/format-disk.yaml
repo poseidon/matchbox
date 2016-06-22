@@ -1,5 +1,4 @@
 ---
-ignition_version: 1
 storage:
   disks:
     - device: /dev/sda
@@ -8,12 +7,25 @@ storage:
         - label: ROOT
           number: 0
   filesystems:
-    - device: "/dev/sda1"
-      format: "ext4"
-      create:
-        force: true
-        options:
-          - "-LROOT"
+    - name: rootfs
+      mount:
+        device: "/dev/sda1"
+        format: "ext4"
+        create:
+          force: true
+          options:
+            - "-LROOT"
+  files:
+    - filesystem: rootfs
+      path: /home/core/foo
+      mode: 0644
+      user:
+        id: 500
+      group:
+        id: 500
+      contents:
+        inline: |
+          bar
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

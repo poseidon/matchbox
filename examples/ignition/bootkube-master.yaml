@@ -1,5 +1,4 @@
 ---
-ignition_version: 1
 systemd:
   units:
     - name: etcd2.service
@@ -77,43 +76,56 @@ storage:
       partitions:
         - label: ROOT
   filesystems:
-    - device: "/dev/sda1"
-      format: "ext4"
-      create:
-        force: true
-        options:
-          - "-LROOT"
+    - name: rootfs
+      mount:
+        device: "/dev/sda1"
+        format: "ext4"
+        create:
+          force: true
+          options:
+            - "-LROOT"
   {{else}}
   filesystems:
-    - device: "/dev/disk/by-label/ROOT"
-      format: "ext4"
+    - name: rootfs
+      mount:
+        device: "/dev/disk/by-label/ROOT"
+        format: "ext4"
   {{end}}
-      files:
-        - path: /etc/kubernetes/empty
-          mode: 0644
-          contents: |
-        - path: /home/core/bootkube-start
-          mode: 0544
-          uid: 500
-          gid: 500
-          contents: |
-            #!/bin/bash
-            # Wrapper for bootkube start
-            set -e
-            BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-            BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.1.1}"
-            BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/home/core/assets}"
-            exec /usr/bin/rkt run \
-              --trust-keys-from-https \
-              --volume assets,kind=host,source=$BOOTKUBE_ASSETS \
-              --mount volume=assets,target=/assets \
-              $RKT_OPTS \
-              ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} --net=host --exec=/bootkube -- start --asset-dir=/assets --etcd-server=http://127.0.0.1:2379 "$@"
-        - path: /opt/init-flannel
-          mode: 0544
-          contents: |
-            #!/bin/bash
-            function init_flannel {
+  files:
+    - path: /etc/kubernetes/empty
+      filesystem: rootfs
+      mode: 0644
+      contents:
+        inline: |
+          empty
+    - path: /home/core/bootkube-start
+      filesystem: rootfs
+      mode: 0544
+      user:
+        id: 500
+      group:
+        id: 500
+      contents:
+        inline: |
+          #!/bin/bash
+          # Wrapper for bootkube start
+          set -e
+          BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.1.1}"
+          BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/home/core/assets}"
+          exec /usr/bin/rkt run \
+            --trust-keys-from-https \
+            --volume assets,kind=host,source=$BOOTKUBE_ASSETS \
+            --mount volume=assets,target=/assets \
+            $RKT_OPTS \
+            ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} --net=host --exec=/bootkube -- start --asset-dir=/assets --etcd-server=http://127.0.0.1:2379 "$@"
+    - path: /opt/init-flannel
+      filesystem: rootfs
+      mode: 0544
+      contents:
+        inline: |
+          #!/bin/bash
+          function init_flannel {
               echo "Waiting for etcd..."
               while true
               do
@@ -134,8 +146,8 @@ storage:
               if [ -z "$(echo $RES | grep '"action":"create"')" ] && [ -z "$(echo $RES | grep 'Key already exists')" ]; then
                   echo "Unexpected error configuring flannel pod network: $RES"
               fi
-            }
-            init_flannel
+          }
+          init_flannel
 
 {{ if not (index . "skip_networkd") }}
 networkd:

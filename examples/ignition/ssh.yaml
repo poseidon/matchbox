@@ -1,5 +1,4 @@
 ---
-ignition_version: 1
 {{ if index . "ssh_authorized_keys" }}
 passwd:
   users:
