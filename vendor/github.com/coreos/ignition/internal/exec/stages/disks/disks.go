@@ -235,6 +235,7 @@ func (s stage) createFilesystem(fs types.FilesystemMount) error {
 		}
 	case "ext4":
 		mkfs = "/sbin/mkfs.ext4"
+		args = append(args, "-p")
 		if fs.Create.Force {
 			args = append(args, "-F")
 		}

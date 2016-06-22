@@ -1,3 +1,42 @@
+15-Jun-2016 IGNITION v0.7.0
+
+  Features
+
+    - Allow HTTPS URLs
+
+  Bug Fixes
+
+    - Don't overwrite existing data when formatting ext4 unless force is set
+    - Ensure service unit in /etc doesn't exist before masking
+    - Capture and log stdout of subprocesses
+
+  Changes
+
+    - Drop YAML tags from the config package
+
+18-May-2016 IGNITION v0.6.0
+
+  Features
+
+    - All URL schemes (currently http, oem, and data) are now supported
+      everywhere a URL can be provided
+    - Add base OEM and default user configurations for GCE
+
+04-May-2016 IGNITION v0.5.0
+
+  Features
+
+    - Add support for GCE
+
+  Bug Fixes
+
+    - Write files after users and home directories are created
+
+  Changes
+
+    - Strip support for EC2 SSH keys (these are handled by coreos-metadata now)
+    - Add OEM-specific base configs and execute even if user config is empty
+
 05-Apr-2016 IGNITION v0.4.0
 
   Features

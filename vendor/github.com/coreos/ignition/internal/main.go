@@ -84,12 +84,13 @@ func main() {
 
 	oemConfig := oem.MustGet(flags.oem.String())
 	engine := exec.Engine{
-		Root:          flags.root,
-		OnlineTimeout: flags.onlineTimeout,
-		Logger:        &logger,
-		ConfigCache:   flags.configCache,
-		Provider:      oemConfig.Provider().Create(&logger),
-		OemConfig:     oemConfig.Config(),
+		Root:              flags.root,
+		OnlineTimeout:     flags.onlineTimeout,
+		Logger:            &logger,
+		ConfigCache:       flags.configCache,
+		Provider:          oemConfig.Provider().Create(&logger),
+		OemBaseConfig:     oemConfig.BaseConfig(),
+		DefaultUserConfig: oemConfig.DefaultUserConfig(),
 	}
 
 	if !engine.Run(flags.stage.String()) {

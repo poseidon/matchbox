@@ -18,8 +18,6 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
-
-	"github.com/go-yaml/yaml"
 )
 
 func TestFileModeUnmarshalJSON(t *testing.T) {
@@ -48,45 +46,6 @@ func TestFileModeUnmarshalJSON(t *testing.T) {
 	for i, test := range tests {
 		var mode FileMode
 		err := json.Unmarshal([]byte(test.in.data), &mode)
-		if !reflect.DeepEqual(test.out.err, err) {
-			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
-		}
-		if !reflect.DeepEqual(test.out.mode, mode) {
-			t.Errorf("#%d: bad mode: want %#o, got %#o", i, test.out.mode, mode)
-		}
-	}
-}
-
-func TestFileModeUnmarshalYAML(t *testing.T) {
-	type in struct {
-		data string
-	}
-	type out struct {
-		mode FileMode
-		err  error
-	}
-
-	tests := []struct {
-		in  in
-		out out
-	}{
-		{
-			in:  in{data: `0644`},
-			out: out{mode: FileMode(0644)},
-		},
-		{
-			in:  in{data: `0420`},
-			out: out{mode: FileMode(0420)},
-		},
-		{
-			in:  in{data: `017777`},
-			out: out{mode: FileMode(017777), err: ErrFileIllegalMode},
-		},
-	}
-
-	for i, test := range tests {
-		var mode FileMode
-		err := yaml.Unmarshal([]byte(test.in.data), &mode)
 		if !reflect.DeepEqual(test.out.err, err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}
@@ -131,7 +90,7 @@ func TestFileAssertValid(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := test.in.mode.assertValid()
+		err := test.in.mode.AssertValid()
 		if !reflect.DeepEqual(test.out.err, err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}

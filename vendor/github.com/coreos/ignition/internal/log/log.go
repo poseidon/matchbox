@@ -124,10 +124,12 @@ func (l *Logger) LogCmd(cmd *exec.Cmd, format string, a ...interface{}) error {
 		} else {
 			l.Debug("executing: %v %v", cmd.Path, cmd.Args[1:])
 		}
+		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
+		cmd.Stdout = stdout
 		cmd.Stderr = stderr
 		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("%v: Stderr: %q", err, stderr.Bytes())
+			return fmt.Errorf("%v: Stdout: %q Stderr: %q", err, stdout.Bytes(), stderr.Bytes())
 		}
 		return nil
 	}

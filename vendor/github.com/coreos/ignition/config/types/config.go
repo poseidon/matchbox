@@ -15,6 +15,8 @@
 package types
 
 import (
+	"reflect"
+
 	"github.com/coreos/go-semver/semver"
 )
 
@@ -26,9 +28,51 @@ var (
 )
 
 type Config struct {
-	Ignition Ignition `json:"ignition"           yaml:"ignition"`
-	Storage  Storage  `json:"storage,omitempty"  yaml:"storage"`
-	Systemd  Systemd  `json:"systemd,omitempty"  yaml:"systemd"`
-	Networkd Networkd `json:"networkd,omitempty" yaml:"networkd"`
-	Passwd   Passwd   `json:"passwd,omitempty"   yaml:"passwd"`
+	Ignition Ignition `json:"ignition"`
+	Storage  Storage  `json:"storage,omitempty"`
+	Systemd  Systemd  `json:"systemd,omitempty"`
+	Networkd Networkd `json:"networkd,omitempty"`
+	Passwd   Passwd   `json:"passwd,omitempty"`
+}
+
+func (c Config) AssertValid() error {
+	return assertStructValid(reflect.ValueOf(c))
+}
+
+func assertValid(vObj reflect.Value) error {
+	if !vObj.IsValid() {
+		return nil
+	}
+
+	if obj, ok := vObj.Interface().(interface {
+		AssertValid() error
+	}); ok && !(vObj.Kind() == reflect.Ptr && vObj.IsNil()) {
+		if err := obj.AssertValid(); err != nil {
+			return err
+		}
+	}
+
+	switch vObj.Kind() {
+	case reflect.Ptr:
+		return assertValid(vObj.Elem())
+	case reflect.Struct:
+		return assertStructValid(vObj)
+	case reflect.Slice:
+		for i := 0; i < vObj.Len(); i++ {
+			if err := assertValid(vObj.Index(i)); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func assertStructValid(vObj reflect.Value) error {
+	for i := 0; i < vObj.Type().NumField(); i++ {
+		if err := assertValid(vObj.Field(i)); err != nil {
+			return err
+		}
+	}
+	return nil
 }

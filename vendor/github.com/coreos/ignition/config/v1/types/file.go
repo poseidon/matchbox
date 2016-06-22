@@ -27,35 +27,24 @@ var (
 type FileMode os.FileMode
 
 type File struct {
-	Path     Path     `json:"path,omitempty"     yaml:"path"`
-	Contents string   `json:"contents,omitempty" yaml:"contents"`
-	Mode     FileMode `json:"mode,omitempty"     yaml:"mode"`
-	Uid      int      `json:"uid,omitempty"      yaml:"uid"`
-	Gid      int      `json:"gid,omitempty"      yaml:"gid"`
+	Path     Path     `json:"path,omitempty"`
+	Contents string   `json:"contents,omitempty"`
+	Mode     FileMode `json:"mode,omitempty"`
+	Uid      int      `json:"uid,omitempty"`
+	Gid      int      `json:"gid,omitempty"`
 }
-
-func (m *FileMode) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	return m.unmarshal(unmarshal)
-}
-
-func (m *FileMode) UnmarshalJSON(data []byte) error {
-	return m.unmarshal(func(tm interface{}) error {
-		return json.Unmarshal(data, tm)
-	})
-}
-
 type fileMode FileMode
 
-func (m *FileMode) unmarshal(unmarshal func(interface{}) error) error {
+func (m *FileMode) UnmarshalJSON(data []byte) error {
 	tm := fileMode(*m)
-	if err := unmarshal(&tm); err != nil {
+	if err := json.Unmarshal(data, &tm); err != nil {
 		return err
 	}
 	*m = FileMode(tm)
-	return m.assertValid()
+	return m.AssertValid()
 }
 
-func (m FileMode) assertValid() error {
+func (m FileMode) AssertValid() error {
 	if (m &^ 07777) != 0 {
 		return ErrFileIllegalMode
 	}

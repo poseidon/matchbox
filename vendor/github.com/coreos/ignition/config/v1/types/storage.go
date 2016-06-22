@@ -15,7 +15,7 @@
 package types
 
 type Storage struct {
-	Disks       []Disk       `json:"disks,omitempty"       yaml:"disks"`
-	Arrays      []Raid       `json:"raid,omitempty"        yaml:"raid"`
-	Filesystems []Filesystem `json:"filesystems,omitempty" yaml:"filesystems"`
+	Disks       []Disk       `json:"disks,omitempty"`
+	Arrays      []Raid       `json:"raid,omitempty"`
+	Filesystems []Filesystem `json:"filesystems,omitempty"`
 }

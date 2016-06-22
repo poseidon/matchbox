@@ -17,27 +17,19 @@ package util
 import (
 	"bytes"
 	"compress/gzip"
-	"errors"
 	"io/ioutil"
-	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 
 	"github.com/coreos/ignition/config/types"
 	"github.com/coreos/ignition/internal/log"
 	"github.com/coreos/ignition/internal/util"
-
-	"github.com/vincent-petithory/dataurl"
 )
 
 const (
 	DefaultDirectoryPermissions os.FileMode = 0755
 	DefaultFilePermissions      os.FileMode = 0644
-)
-
-var (
-	ErrSchemeUnsupported = errors.New("unsupported source scheme")
-	ErrStatusBad         = errors.New("bad HTTP response status")
 )
 
 type File struct {
@@ -53,7 +45,7 @@ func RenderFile(l *log.Logger, f types.File) *File {
 	var err error
 
 	fetch := func() error {
-		contents, err = fetchFile(l, f)
+		contents, err = util.FetchResource(l, url.URL(f.Contents.Source))
 		return err
 	}
 
@@ -82,33 +74,6 @@ func RenderFile(l *log.Logger, f types.File) *File {
 		Mode:     os.FileMode(f.Mode),
 		Uid:      f.User.Id,
 		Gid:      f.Group.Id,
-	}
-}
-
-func fetchFile(l *log.Logger, f types.File) ([]byte, error) {
-	switch f.Contents.Source.Scheme {
-	case "http":
-		client := util.NewHttpClient(l)
-		data, status, err := client.Get(f.Contents.Source.String())
-		if err != nil {
-			return nil, err
-		}
-
-		l.Debug("GET result: %s", http.StatusText(status))
-		if status != http.StatusOK {
-			return nil, ErrStatusBad
-		}
-
-		return data, nil
-	case "data":
-		url, err := dataurl.DecodeString(f.Contents.Source.String())
-		if err != nil {
-			return nil, err
-		}
-
-		return url.Data, nil
-	default:
-		return nil, ErrSchemeUnsupported
 	}
 }
 

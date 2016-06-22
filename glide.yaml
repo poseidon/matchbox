@@ -18,12 +18,13 @@ import:
   subpackages:
   - journal
 - package: github.com/coreos/ignition
-  version: 44c274ab414294a8e34b3a940e0ec1afe6b6c610
+  version: b6850837b3b9bd17b673e58b5c406b5e4192ddca
   subpackages:
   - config
-  - config/types
-  - config/v1
-  - config/v1/types
+- package: github.com/coreos/fuze
+  version: 60c987a0aba4976ac6cbc9350671c2fedc431e8b
+  subpackages:
+  - config
 - package: github.com/coreos/pkg
   version: 66fe44ad037ccb80329115cb4db0dbe8e9beb03a
   subpackages:
