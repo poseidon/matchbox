@@ -21,9 +21,13 @@ func renderJSON(w http.ResponseWriter, v interface{}) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	writeJSON(w, js)
+}
 
+// writeJSON writes the given bytes with a JSON Content-Type.
+func writeJSON(w http.ResponseWriter, data []byte) {
 	w.Header().Set(contentType, jsonContentType)
-	_, err = w.Write(js)
+	_, err := w.Write(data)
 	if err != nil {
 		log.Errorf("error writing to response: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)

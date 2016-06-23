@@ -19,7 +19,7 @@ var (
 )
 
 func TestIgnitionHandler_V2JSON(t *testing.T) {
-	content := `{"ignition":{"version":"2.0.0","config":{}},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true}]}}`
+	content := `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true}]},"networkd":{},"passwd":{}}`
 	profile := &storagepb.Profile{
 		Id:         fake.Group.Profile,
 		IgnitionId: "file.ign",

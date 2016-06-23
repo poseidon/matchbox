@@ -39,13 +39,11 @@ func ignitionHandler(srv server.Server) ContextHandler {
 
 		// Skip rendering if raw Ignition JSON is provided
 		if isIgnition(profile.IgnitionId) {
-			cfg, err := ignition.Parse([]byte(contents))
+			_, err := ignition.Parse([]byte(contents))
 			if err != nil {
-				log.Errorf("error parsing Ignition JSON: %v", err)
-				http.NotFound(w, req)
-				return
+				log.Warningf("warning parsing Ignition JSON: %v", err)
 			}
-			renderJSON(w, cfg)
+			writeJSON(w, []byte(contents))
 			return
 		}
 
