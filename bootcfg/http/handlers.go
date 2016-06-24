@@ -40,7 +40,7 @@ func versionHandler() http.Handler {
 			http.NotFound(w, req)
 			return
 		}
-		fmt.Fprintf(w, "bootcfg")
+		fmt.Fprintf(w, "bootcfg\n")
 	}
 	return http.HandlerFunc(fn)
 }
