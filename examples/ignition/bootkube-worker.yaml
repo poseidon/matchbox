@@ -43,12 +43,16 @@ systemd:
         [Service]
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
-        Environment=KUBELET_VERSION=v1.3.0-alpha.5_coreos.0
+        Environment=KUBELET_VERSION=v1.3.0-beta.2_coreos.0
+        ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
+        ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
+        ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers={{.k8s_master_endpoint}} \
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --lock-file=/var/run/lock/kubelet.lock \
           --exit-on-lock-contention \
+          --config=/etc/kubernetes/manifests \
           --allow-privileged \
           --hostname-override={{.ipv4_address}} \
           --minimum-container-ttl-duration=6m0s \
@@ -58,12 +62,6 @@ systemd:
         RestartSec=5
         [Install]
         WantedBy=multi-user.target
-    - name: update-engine.service
-      enable: false
-      mask: true
-    - name: locksmithd.service
-      enable: false
-      mask : true
 
 storage:
   {{ if index . "pxe" }}
