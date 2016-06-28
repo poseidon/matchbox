@@ -5,7 +5,7 @@ The self-hosted Kubernetes examples provision a 3 node cluster with etcd, flanne
 
 ## Experimental
 
-Self-hosted Kubernetes is under very active development by CoreOS. We're working on upstreaming the required Hyperkube patches. Be aware that this cluster disabled auto-updates until checkpointing is available to restart a the kube-apiserver.
+Self-hosted Kubernetes is under very active development by CoreOS.
 
 ## Requirements
 
@@ -15,7 +15,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 
-Build and install [bootkube](https://github.com/coreos/bootkube).
+Build and install [bootkube](https://github.com/coreos/bootkube/releases) v0.1.1.
 
 ## Examples
 
