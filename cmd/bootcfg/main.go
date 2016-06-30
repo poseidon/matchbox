@@ -157,7 +157,7 @@ func main() {
 
 	// HTTP Server
 	config := &web.Config{
-		Store:         store,
+		Core:          server,
 		AssetsPath:    flags.assetsPath,
 		Signer:        signer,
 		ArmoredSigner: armoredSigner,
