@@ -1,5 +1,5 @@
-hash: f3b21a59ce256ab9ea3bb3568d1238397d84993afa2c15fab5b30abb97c558e3
-updated: 2016-06-23T16:06:01.323815777-07:00
+hash: ed75f60308590c51616b57d4b2ecac260fe8da6fe54dc6d436dccc148d0d90c5
+updated: 2016-07-06T16:00:33.149602536-07:00
 imports:
 - name: github.com/alecthomas/units
   version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
@@ -33,7 +33,6 @@ imports:
 - name: github.com/coreos/pkg
   version: 66fe44ad037ccb80329115cb4db0dbe8e9beb03a
   subpackages:
-  - capnslog
   - flagutil
 - name: github.com/coreos/yaml
   version: 6b16a5714269b2f70720a45406b1babd947a17ef
@@ -53,6 +52,10 @@ imports:
   version: 792786c7400a136282c1664665ae0a8db921c6c2
   subpackages:
   - difflib
+- name: github.com/Sirupsen/logrus
+  version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
+  subpackages:
+  - hooks/test
 - name: github.com/spf13/cobra
   version: 65a708cee0a4424f4e353d031ce440643e312f92
 - name: github.com/spf13/pflag
@@ -85,6 +88,10 @@ imports:
   - internal/timeseries
   - trace
   - http2/hpack
+- name: golang.org/x/sys
+  version: a408501be4d17ee978c04a618e7a1b22af058c0e
+  subpackages:
+  - unix
 - name: google.golang.org/grpc
   version: 83e628beaa8cab332f304ad93dff7abc46722386
   subpackages:
