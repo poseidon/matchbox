@@ -32,8 +32,9 @@ coreos:
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := cloudHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -45,8 +46,9 @@ coreos:
 }
 
 func TestCloudHandler_MissingCtxProfile(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := cloudHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.cloudHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -54,8 +56,9 @@ func TestCloudHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := cloudHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.cloudHandler(c)
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -73,8 +76,9 @@ coreos:
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := cloudHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

@@ -22,7 +22,8 @@ func TestIPXEInspect(t *testing.T) {
 }
 
 func TestIPXEHandler(t *testing.T) {
-	h := ipxeHandler()
+	srv := NewServer(&Config{})
+	h := srv.ipxeHandler()
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -39,7 +40,8 @@ boot
 }
 
 func TestIPXEHandler_MissingCtxProfile(t *testing.T) {
-	h := ipxeHandler()
+	srv := NewServer(&Config{})
+	h := srv.ipxeHandler()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -47,7 +49,8 @@ func TestIPXEHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestIPXEHandler_RenderTemplateError(t *testing.T) {
-	h := ipxeHandler()
+	srv := NewServer(&Config{})
+	h := srv.ipxeHandler()
 	// a Profile with nil NetBoot forces a template.Execute error
 	ctx := withProfile(context.Background(), &storagepb.Profile{Boot: nil})
 	w := httptest.NewRecorder()
@@ -57,7 +60,8 @@ func TestIPXEHandler_RenderTemplateError(t *testing.T) {
 }
 
 func TestIPXEHandler_WriteError(t *testing.T) {
-	h := ipxeHandler()
+	srv := NewServer(&Config{})
+	h := srv.ipxeHandler()
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := NewUnwriteableResponseWriter()
 	req, _ := http.NewRequest("GET", "/", nil)

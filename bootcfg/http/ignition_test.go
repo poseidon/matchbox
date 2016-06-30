@@ -28,8 +28,9 @@ func TestIgnitionHandler_V2JSON(t *testing.T) {
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: profile},
 		IgnitionConfigs: map[string]string{"file.ign": content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := ignitionHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -56,8 +57,9 @@ systemd:
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := ignitionHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -72,8 +74,9 @@ systemd:
 }
 
 func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := ignitionHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.ignitionHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -81,8 +84,9 @@ func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := ignitionHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.ignitionHandler(c)
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -102,8 +106,9 @@ systemd:
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		IgnitionConfigs: map[string]string{fake.Profile.IgnitionId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := ignitionHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

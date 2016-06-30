@@ -30,7 +30,7 @@ func ipxeInspect() http.Handler {
 
 // ipxeBoot returns a handler which renders the iPXE boot script for the
 // requester.
-func ipxeHandler() ContextHandler {
+func (s *Server) ipxeHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		profile, err := profileFromContext(ctx)
 		if err != nil {

@@ -13,7 +13,7 @@ import (
 // pixiecoreHandler returns a handler that renders the boot config JSON for
 // the requester, to implement the Pixiecore API specification.
 // https://github.com/danderson/pixiecore/blob/master/README.api.md
-func pixiecoreHandler(srv server.Server) ContextHandler {
+func (s *Server) pixiecoreHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		macAddr, err := parseMAC(filepath.Base(req.URL.Path))
 		if err != nil {
@@ -22,12 +22,12 @@ func pixiecoreHandler(srv server.Server) ContextHandler {
 		}
 		// pixiecore only provides MAC addresses
 		attrs := map[string]string{"mac": macAddr.String()}
-		group, err := srv.SelectGroup(ctx, &pb.SelectGroupRequest{Labels: attrs})
+		group, err := core.SelectGroup(ctx, &pb.SelectGroupRequest{Labels: attrs})
 		if err != nil {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		profile, err := core.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err != nil {
 			http.NotFound(w, req)
 			return

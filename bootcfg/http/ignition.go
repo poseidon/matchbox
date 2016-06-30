@@ -19,19 +19,19 @@ import (
 // as raw Ignition (for .ign/.ignition) or rendered to a Fuze config (YAML)
 // and converted to Ignition. Ignition configs are served as HTTP JSON
 // responses.
-func ignitionHandler(srv server.Server) ContextHandler {
+func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil || group.Profile == "" {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		profile, err := core.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err != nil || profile.IgnitionId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := srv.IgnitionGet(ctx, profile.IgnitionId)
+		contents, err := core.IgnitionGet(ctx, profile.IgnitionId)
 		if err != nil {
 			http.NotFound(w, req)
 			return

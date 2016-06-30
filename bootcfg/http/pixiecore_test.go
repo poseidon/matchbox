@@ -18,8 +18,9 @@ func TestPixiecoreHandler(t *testing.T) {
 		Groups:   map[string]*storagepb.Group{testGroupWithMAC.Id: testGroupWithMAC},
 		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: fake.Profile},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := pixiecoreHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -33,8 +34,9 @@ func TestPixiecoreHandler(t *testing.T) {
 }
 
 func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := pixiecoreHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -43,8 +45,9 @@ func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
 }
 
 func TestPixiecoreHandler_NoMatchingGroup(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := pixiecoreHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -55,8 +58,9 @@ func TestPixiecoreHandler_NoMatchingProfile(t *testing.T) {
 	store := &fake.FixedStore{
 		Groups: map[string]*storagepb.Group{fake.Group.Id: fake.Group},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := pixiecoreHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/"+validMACStr, nil)
 	h.ServeHTTP(context.Background(), w, req)

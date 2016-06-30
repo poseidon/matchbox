@@ -26,8 +26,9 @@ SERVICE=etcd2
 		Profiles:       map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		GenericConfigs: map[string]string{fake.Profile.GenericId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := genericHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.genericHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -39,8 +40,9 @@ SERVICE=etcd2
 }
 
 func TestGenericHandler_MissingCtxProfile(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := genericHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.genericHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -48,8 +50,9 @@ func TestGenericHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestGenericHandler_MissingCloudConfig(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := genericHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.genericHandler(c)
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -65,8 +68,9 @@ KEY={{.missing_key}}
 		Profiles:       map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		GenericConfigs: map[string]string{fake.Profile.GenericId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := cloudHandler(srv)
+	srv := NewServer(&Config{})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

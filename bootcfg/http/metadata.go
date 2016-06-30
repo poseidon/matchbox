@@ -11,7 +11,7 @@ import (
 
 const plainContentType = "plain/text"
 
-func metadataHandler() ContextHandler {
+func (s *Server) metadataHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil {
