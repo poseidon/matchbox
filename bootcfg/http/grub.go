@@ -20,7 +20,7 @@ initrdefi {{ range $element := .Initrd }}"{{$element}}" {{end}}
 
 // grubHandler returns a handler which renders a GRUB2 config for the
 // requester.
-func grubHandler() ContextHandler {
+func (s *Server) grubHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		profile, err := profileFromContext(ctx)
 		if err != nil {
@@ -30,12 +30,12 @@ func grubHandler() ContextHandler {
 		var buf bytes.Buffer
 		err = grubTemplate.Execute(&buf, profile.Boot)
 		if err != nil {
-			log.Errorf("error rendering template: %v", err)
+			s.logger.Errorf("error rendering template: %v", err)
 			http.NotFound(w, req)
 			return
 		}
 		if _, err := buf.WriteTo(w); err != nil {
-			log.Errorf("error writing to response: %v", err)
+			s.logger.Errorf("error writing to response: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}

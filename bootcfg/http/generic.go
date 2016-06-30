@@ -38,7 +38,7 @@ func (s *Server) genericHandler(core server.Server) ContextHandler {
 		if group.Metadata != nil {
 			err = json.Unmarshal(group.Metadata, &data)
 			if err != nil {
-				log.Errorf("error unmarshalling metadata: %v", err)
+				s.logger.Errorf("error unmarshalling metadata: %v", err)
 				http.NotFound(w, req)
 				return
 			}
@@ -50,7 +50,7 @@ func (s *Server) genericHandler(core server.Server) ContextHandler {
 
 		// render the template of a generic config with data
 		var buf bytes.Buffer
-		err = renderTemplate(&buf, data, contents)
+		err = s.renderTemplate(&buf, data, contents)
 		if err != nil {
 			http.NotFound(w, req)
 			return

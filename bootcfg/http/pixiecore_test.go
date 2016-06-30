@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -34,7 +35,8 @@ func TestPixiecoreHandler(t *testing.T) {
 }
 
 func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()
@@ -45,7 +47,8 @@ func TestPixiecoreHandler_InvalidMACAddress(t *testing.T) {
 }
 
 func TestPixiecoreHandler_NoMatchingGroup(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()
@@ -58,7 +61,8 @@ func TestPixiecoreHandler_NoMatchingProfile(t *testing.T) {
 	store := &fake.FixedStore{
 		Groups: map[string]*storagepb.Group{fake.Group.Id: fake.Group},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()

@@ -23,15 +23,6 @@ func requireGET(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-// logRequest logs HTTP requests.
-func logRequest(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, req *http.Request) {
-		log.Debugf("HTTP %s %v", req.Method, req.URL)
-		next.ServeHTTP(w, req)
-	}
-	return http.HandlerFunc(fn)
-}
-
 // versionHandler shows the server name and version for root requests.
 // Otherwise, a 404 is returned.
 func versionHandler() http.Handler {
@@ -45,12 +36,21 @@ func versionHandler() http.Handler {
 	return http.HandlerFunc(fn)
 }
 
+// logRequest logs HTTP requests.
+func (s *Server) logRequest(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		s.logger.Debugf("HTTP %s %v", req.Method, req.URL)
+		next.ServeHTTP(w, req)
+	}
+	return http.HandlerFunc(fn)
+}
+
 // selectGroup selects the Group whose selectors match the query parameters,
 // adds the Group to the ctx, and calls the next handler. The next handler
 // should handle a missing Group.
-func selectGroup(core server.Server, next ContextHandler) ContextHandler {
+func (s *Server) selectGroup(core server.Server, next ContextHandler) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-		attrs := labelsFromRequest(req)
+		attrs := labelsFromRequest(s.logger, req)
 		// match machine request
 		group, err := core.SelectGroup(ctx, &pb.SelectGroupRequest{Labels: attrs})
 		if err == nil {
@@ -65,9 +65,9 @@ func selectGroup(core server.Server, next ContextHandler) ContextHandler {
 // selectProfile selects the Profile for the given query parameters, adds the
 // Profile to the ctx, and calls the next handler. The next handler should
 // handle a missing profile.
-func selectProfile(core server.Server, next ContextHandler) ContextHandler {
+func (s *Server) selectProfile(core server.Server, next ContextHandler) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-		attrs := labelsFromRequest(req)
+		attrs := labelsFromRequest(s.logger, req)
 		// match machine request
 		profile, err := core.SelectProfile(ctx, &pb.SelectProfileRequest{Labels: attrs})
 		if err == nil {

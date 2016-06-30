@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -28,7 +29,8 @@ func TestIgnitionHandler_V2JSON(t *testing.T) {
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: profile},
 		IgnitionConfigs: map[string]string{"file.ign": content},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.ignitionHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
@@ -57,7 +59,8 @@ systemd:
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.ignitionHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
@@ -74,7 +77,8 @@ systemd:
 }
 
 func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.ignitionHandler(c)
 	w := httptest.NewRecorder()
@@ -84,7 +88,8 @@ func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.ignitionHandler(c)
 	ctx := withProfile(context.Background(), fake.Profile)
@@ -106,7 +111,8 @@ systemd:
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		IgnitionConfigs: map[string]string{fake.Profile.IgnitionId: content},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.ignitionHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)

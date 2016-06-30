@@ -7,9 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 
-	"github.com/coreos/pkg/capnslog"
+	"github.com/Sirupsen/logrus"
 	"github.com/coreos/pkg/flagutil"
 
 	web "github.com/coreos/coreos-baremetal/bootcfg/http"
@@ -22,7 +21,8 @@ import (
 )
 
 var (
-	log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/cmd/bootcfg", "main")
+	// Defaults to info logging
+	log = logrus.New()
 )
 
 func main() {
@@ -44,7 +44,7 @@ func main() {
 	flag.StringVar(&flags.dataPath, "data-path", "/var/lib/bootcfg", "Path to data directory")
 	flag.StringVar(&flags.assetsPath, "assets-path", "/var/lib/bootcfg/assets", "Path to static assets")
 
-	// Log levels https://godoc.org/github.com/coreos/pkg/capnslog#LogLevel
+	// Log levels https://github.com/Sirupsen/logrus/blob/master/logrus.go#L36
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
 
 	// gRPC Server TLS
@@ -103,12 +103,11 @@ func main() {
 	}
 
 	// logging setup
-	lvl, err := capnslog.ParseLevel(strings.ToUpper(flags.logLevel))
+	lvl, err := logrus.ParseLevel(flags.logLevel)
 	if err != nil {
 		log.Fatalf("invalid log-level: %v", err)
 	}
-	capnslog.SetGlobalLogLevel(lvl)
-	capnslog.SetFormatter(capnslog.NewPrettyFormatter(os.Stdout, false))
+	log.Level = lvl
 
 	// (optional) signing
 	var signer, armoredSigner sign.Signer
@@ -158,6 +157,7 @@ func main() {
 	// HTTP Server
 	config := &web.Config{
 		Core:          server,
+		Logger:        log,
 		AssetsPath:    flags.assetsPath,
 		Signer:        signer,
 		ArmoredSigner: armoredSigner,

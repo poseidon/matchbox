@@ -32,7 +32,7 @@ func (s *Server) pixiecoreHandler(core server.Server) ContextHandler {
 			http.NotFound(w, req)
 			return
 		}
-		renderJSON(w, profile.Boot)
+		s.renderJSON(w, profile.Boot)
 	}
 	return ContextHandlerFunc(fn)
 }

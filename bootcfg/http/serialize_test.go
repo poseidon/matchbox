@@ -6,39 +6,48 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRenderJSON(t *testing.T) {
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	w := httptest.NewRecorder()
 	data := map[string][]string{
 		"a": []string{"b", "c"},
 	}
-	renderJSON(w, data)
+	srv.renderJSON(w, data)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
 	assert.Equal(t, `{"a":["b","c"]}`, w.Body.String())
 }
 
 func TestRenderJSON_EncodingError(t *testing.T) {
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	w := httptest.NewRecorder()
 	// channels cannot be JSON encoded
-	renderJSON(w, make(chan struct{}))
+	srv.renderJSON(w, make(chan struct{}))
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Empty(t, w.Body.String())
 }
 
 func TestRenderJSON_EncodeError(t *testing.T) {
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	w := httptest.NewRecorder()
 	// channels cannot be JSON encoded
-	renderJSON(w, make(chan struct{}))
+	srv.renderJSON(w, make(chan struct{}))
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Empty(t, w.Body.String())
 }
 
 func TestRenderJSON_WriteError(t *testing.T) {
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	w := NewUnwriteableResponseWriter()
-	renderJSON(w, map[string]string{"a": "b"})
+	srv.renderJSON(w, map[string]string{"a": "b"})
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Empty(t, w.Body.String())
 }

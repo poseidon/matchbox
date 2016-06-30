@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -32,7 +33,8 @@ coreos:
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
@@ -46,7 +48,8 @@ coreos:
 }
 
 func TestCloudHandler_MissingCtxProfile(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.cloudHandler(c)
 	w := httptest.NewRecorder()
@@ -56,7 +59,8 @@ func TestCloudHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.cloudHandler(c)
 	ctx := withProfile(context.Background(), fake.Profile)
@@ -76,7 +80,8 @@ coreos:
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)

@@ -40,12 +40,12 @@ func (s *Server) ipxeHandler() ContextHandler {
 		var buf bytes.Buffer
 		err = ipxeTemplate.Execute(&buf, profile.Boot)
 		if err != nil {
-			log.Errorf("error rendering template: %v", err)
+			s.logger.Errorf("error rendering template: %v", err)
 			http.NotFound(w, req)
 			return
 		}
 		if _, err := buf.WriteTo(w); err != nil {
-			log.Errorf("error writing to response: %v", err)
+			s.logger.Errorf("error writing to response: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}

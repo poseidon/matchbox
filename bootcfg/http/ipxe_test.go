@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -22,7 +23,8 @@ func TestIPXEInspect(t *testing.T) {
 }
 
 func TestIPXEHandler(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	h := srv.ipxeHandler()
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
@@ -40,7 +42,8 @@ boot
 }
 
 func TestIPXEHandler_MissingCtxProfile(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	h := srv.ipxeHandler()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -49,7 +52,8 @@ func TestIPXEHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestIPXEHandler_RenderTemplateError(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	h := srv.ipxeHandler()
 	// a Profile with nil NetBoot forces a template.Execute error
 	ctx := withProfile(context.Background(), &storagepb.Profile{Boot: nil})
@@ -60,7 +64,8 @@ func TestIPXEHandler_RenderTemplateError(t *testing.T) {
 }
 
 func TestIPXEHandler_WriteError(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	h := srv.ipxeHandler()
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := NewUnwriteableResponseWriter()

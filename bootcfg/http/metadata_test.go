@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -15,7 +16,8 @@ import (
 )
 
 func TestMetadataHandler(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	h := srv.metadataHandler()
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
@@ -36,7 +38,8 @@ func TestMetadataHandler(t *testing.T) {
 }
 
 func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	h := srv.metadataHandler()
 	// groups with different metadata
 	cases := []struct {
@@ -64,7 +67,8 @@ func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
 }
 
 func TestMetadataHandler_MissingCtxGroup(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	h := srv.metadataHandler()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

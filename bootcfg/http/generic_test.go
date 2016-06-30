@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -26,7 +27,8 @@ SERVICE=etcd2
 		Profiles:       map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		GenericConfigs: map[string]string{fake.Profile.GenericId: content},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.genericHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
@@ -40,7 +42,8 @@ SERVICE=etcd2
 }
 
 func TestGenericHandler_MissingCtxProfile(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.genericHandler(c)
 	w := httptest.NewRecorder()
@@ -50,7 +53,8 @@ func TestGenericHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestGenericHandler_MissingCloudConfig(t *testing.T) {
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
 	h := srv.genericHandler(c)
 	ctx := withProfile(context.Background(), fake.Profile)
@@ -68,7 +72,8 @@ KEY={{.missing_key}}
 		Profiles:       map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		GenericConfigs: map[string]string{fake.Profile.GenericId: content},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
