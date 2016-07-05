@@ -1,5 +1,4 @@
 ---
-ignition_version: 1
 systemd:
   units:
     - name: etcd2.service
@@ -88,80 +87,90 @@ storage:
       partitions:
         - label: ROOT
   filesystems:
-    - device: "/dev/sda1"
-      format: "ext4"
-      create:
-        force: true
-        options:
-          - "-LROOT"
+    - name: rootfs
+      mount:
+        device: "/dev/sda1"
+        format: "ext4"
+        create:
+          force: true
+          options:
+            - "-LROOT"
   {{else}}
   filesystems:
-    - device: "/dev/disk/by-label/ROOT"
-      format: "ext4"
+    - name: rootfs
+      mount:
+        device: "/dev/disk/by-label/ROOT"
+        format: "ext4"
   {{end}}
-      files:
-        - path: /etc/kubernetes/worker-kubeconfig.yaml
-          contents: |
-            apiVersion: v1
-            kind: Config
-            clusters:
-            - name: local
-              cluster:
-                certificate-authority: /etc/kubernetes/ssl/ca.pem
-            users:
-            - name: kubelet
-              user:
-                client-certificate: /etc/kubernetes/ssl/worker.pem
-                client-key: /etc/kubernetes/ssl/worker-key.pem
-            contexts:
-            - context:
-                cluster: local
-                user: kubelet
-              name: kubelet-context
-            current-context: kubelet-context
-        - path: /etc/kubernetes/manifests/kube-proxy.yaml
-          contents: |
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: kube-proxy
-              namespace: kube-system
-            spec:
-              hostNetwork: true
-              containers:
-              - name: kube-proxy
-                image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
-                command:
-                - /hyperkube
-                - proxy
-                - --master={{.k8s_controller_endpoint}}
-                - --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml
-                - --proxy-mode=iptables
-                securityContext:
-                  privileged: true
-                volumeMounts:
-                  - mountPath: /etc/ssl/certs
-                    name: "ssl-certs"
-                  - mountPath: /etc/kubernetes/worker-kubeconfig.yaml
-                    name: "kubeconfig"
-                    readOnly: true
-                  - mountPath: /etc/kubernetes/ssl
-                    name: "etc-kube-ssl"
-                    readOnly: true
-              volumes:
-                - name: "ssl-certs"
-                  hostPath:
-                    path: "/usr/share/ca-certificates"
-                - name: "kubeconfig"
-                  hostPath:
-                    path: "/etc/kubernetes/worker-kubeconfig.yaml"
-                - name: "etc-kube-ssl"
-                  hostPath:
-                    path: "/etc/kubernetes/ssl"
-        - path: /etc/flannel/options.env
-          contents: |
-            FLANNELD_IFACE={{.ipv4_address}}
-            FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
+  files:
+    - path: /etc/kubernetes/worker-kubeconfig.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Config
+          clusters:
+          - name: local
+            cluster:
+              certificate-authority: /etc/kubernetes/ssl/ca.pem
+          users:
+          - name: kubelet
+            user:
+              client-certificate: /etc/kubernetes/ssl/worker.pem
+              client-key: /etc/kubernetes/ssl/worker-key.pem
+          contexts:
+          - context:
+              cluster: local
+              user: kubelet
+            name: kubelet-context
+          current-context: kubelet-context
+    - path: /etc/kubernetes/manifests/kube-proxy.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kube-proxy
+            namespace: kube-system
+          spec:
+            hostNetwork: true
+            containers:
+            - name: kube-proxy
+              image: quay.io/coreos/hyperkube:v1.2.4_coreos.1
+              command:
+              - /hyperkube
+              - proxy
+              - --master={{.k8s_controller_endpoint}}
+              - --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml
+              - --proxy-mode=iptables
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - mountPath: /etc/ssl/certs
+                  name: "ssl-certs"
+                - mountPath: /etc/kubernetes/worker-kubeconfig.yaml
+                  name: "kubeconfig"
+                  readOnly: true
+                - mountPath: /etc/kubernetes/ssl
+                  name: "etc-kube-ssl"
+                  readOnly: true
+            volumes:
+              - name: "ssl-certs"
+                hostPath:
+                  path: "/usr/share/ca-certificates"
+              - name: "kubeconfig"
+                hostPath:
+                  path: "/etc/kubernetes/worker-kubeconfig.yaml"
+              - name: "etc-kube-ssl"
+                hostPath:
+                  path: "/etc/kubernetes/ssl"
+    - path: /etc/flannel/options.env
+      filesystem: rootfs
+      contents:
+        inline: |
+          FLANNELD_IFACE={{.ipv4_address}}
+          FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
 
 {{ if not (index . "skip_networkd") }}
 networkd:

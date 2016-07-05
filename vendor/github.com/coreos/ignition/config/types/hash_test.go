@@ -18,8 +18,6 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
-
-	"github.com/go-yaml/yaml"
 )
 
 func TestHashUnmarshalJSON(t *testing.T) {
@@ -48,41 +46,6 @@ func TestHashUnmarshalJSON(t *testing.T) {
 	for i, test := range tests {
 		var hash Hash
 		err := json.Unmarshal([]byte(test.in.data), &hash)
-		if !reflect.DeepEqual(test.out.err, err) {
-			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
-		}
-		if !reflect.DeepEqual(test.out.hash, hash) {
-			t.Errorf("#%d: bad hash: want %+v, got %+v", i, test.out.hash, hash)
-		}
-	}
-}
-
-func TestHashUnmarshalYAML(t *testing.T) {
-	type in struct {
-		data string
-	}
-	type out struct {
-		hash Hash
-		err  error
-	}
-
-	tests := []struct {
-		in  in
-		out out
-	}{
-		{
-			in:  in{data: `sha512-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef`},
-			out: out{hash: Hash{Function: "sha512", Sum: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}},
-		},
-		{
-			in:  in{data: `xor01234567`},
-			out: out{err: ErrHashMalformed},
-		},
-	}
-
-	for i, test := range tests {
-		var hash Hash
-		err := yaml.Unmarshal([]byte(test.in.data), &hash)
 		if !reflect.DeepEqual(test.out.err, err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}
@@ -123,7 +86,7 @@ func TestHashAssertValid(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := test.in.hash.assertValid()
+		err := test.in.hash.AssertValid()
 		if !reflect.DeepEqual(test.out.err, err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}

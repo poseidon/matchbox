@@ -1,5 +1,5 @@
-hash: e7ed76c4a5812e4c198db9d3f153cac04113225f58bb82966e4eca08386eda20
-updated: 2016-05-12T16:50:32.137050044-07:00
+hash: f3b21a59ce256ab9ea3bb3568d1238397d84993afa2c15fab5b30abb97c558e3
+updated: 2016-06-23T16:06:01.323815777-07:00
 imports:
 - name: github.com/alecthomas/units
   version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
@@ -11,6 +11,10 @@ imports:
   version: b3f805dee6a4aa5ed298a1f370284df470eecf43
   subpackages:
   - config
+- name: github.com/coreos/fuze
+  version: 60c987a0aba4976ac6cbc9350671c2fedc431e8b
+  subpackages:
+  - config
 - name: github.com/coreos/go-semver
   version: 294930c1e79c64e7dbe360054274fdad492c8cf5
   subpackages:
@@ -20,7 +24,7 @@ imports:
   subpackages:
   - journal
 - name: github.com/coreos/ignition
-  version: 44c274ab414294a8e34b3a940e0ec1afe6b6c610
+  version: b6850837b3b9bd17b673e58b5c406b5e4192ddca
   subpackages:
   - config
   - config/types
@@ -37,6 +41,8 @@ imports:
   version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
   subpackages:
   - spew
+- name: github.com/go-yaml/yaml
+  version: a83829b6f1293c91addabc89d0571c246397bbf4
 - name: github.com/golang/protobuf
   version: 7cc19b78d562895b13596ddce7aafb59dd789318
   subpackages:

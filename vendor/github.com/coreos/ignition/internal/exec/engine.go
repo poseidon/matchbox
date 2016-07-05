@@ -16,9 +16,8 @@ package exec
 
 import (
 	"encoding/json"
-	"errors"
 	"io/ioutil"
-	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/coreos/ignition/config"
@@ -35,17 +34,12 @@ const (
 )
 
 var (
-	ErrSchemeUnsupported = errors.New("unsupported url scheme")
-	ErrNetworkFailure    = errors.New("network failure")
-)
-
-var (
 	baseConfig = types.Config{
 		Ignition: types.Ignition{Version: types.IgnitionVersion(types.MaxVersion)},
 		Storage: types.Storage{
 			Filesystems: []types.Filesystem{{
 				Name: "root",
-				Path: "/sysroot",
+				Path: func(p types.Path) *types.Path { return &p }("/sysroot"),
 			}},
 		},
 	}
@@ -53,12 +47,13 @@ var (
 
 // Engine represents the entity that fetches and executes a configuration.
 type Engine struct {
-	ConfigCache   string
-	OnlineTimeout time.Duration
-	Logger        *log.Logger
-	Root          string
-	Provider      providers.Provider
-	OemConfig     types.Config
+	ConfigCache       string
+	OnlineTimeout     time.Duration
+	Logger            *log.Logger
+	Root              string
+	Provider          providers.Provider
+	OemBaseConfig     types.Config
+	DefaultUserConfig types.Config
 }
 
 // Run executes the stage of the given name. It returns true if the stage
@@ -66,17 +61,18 @@ type Engine struct {
 func (e Engine) Run(stageName string) bool {
 	cfg, err := e.acquireConfig()
 	switch err {
-	case config.ErrEmpty, nil:
-		e.Logger.PushPrefix(stageName)
-		defer e.Logger.PopPrefix()
-		return stages.Get(stageName).Create(e.Logger, e.Root).Run(config.Append(config.Append(baseConfig, e.OemConfig), cfg))
-	case config.ErrCloudConfig, config.ErrScript:
-		e.Logger.Info("%v: ignoring and exiting...", err)
-		return true
+	case nil:
+	case config.ErrCloudConfig, config.ErrScript, config.ErrEmpty:
+		e.Logger.Info("%v: ignoring user-provided config", err)
+		cfg = e.DefaultUserConfig
 	default:
 		e.Logger.Crit("failed to acquire config: %v", err)
 		return false
 	}
+
+	e.Logger.PushPrefix(stageName)
+	defer e.Logger.PopPrefix()
+	return stages.Get(stageName).Create(e.Logger, e.Root).Run(config.Append(baseConfig, config.Append(e.OemBaseConfig, cfg)))
 }
 
 // acquireConfig returns the configuration, first checking a local cache
@@ -159,16 +155,9 @@ func (e Engine) renderConfig(cfg types.Config) (types.Config, error) {
 // fetchReferencedConfig fetches, renders, and attempts to verify the requested
 // config.
 func (e Engine) fetchReferencedConfig(cfgRef types.ConfigReference) (types.Config, error) {
-	var rawCfg []byte
-	switch cfgRef.Source.Scheme {
-	case "http":
-		rawCfg = util.NewHttpClient(e.Logger).
-			FetchConfig(cfgRef.Source.String(), http.StatusOK, http.StatusNoContent)
-		if rawCfg == nil {
-			return types.Config{}, ErrNetworkFailure
-		}
-	default:
-		return types.Config{}, ErrSchemeUnsupported
+	rawCfg, err := util.FetchResource(e.Logger, url.URL(cfgRef.Source))
+	if err != nil {
+		return types.Config{}, err
 	}
 
 	if err := util.AssertValid(cfgRef.Verification, rawCfg); err != nil {

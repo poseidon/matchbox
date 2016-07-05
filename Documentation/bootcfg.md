@@ -31,12 +31,12 @@ Prepare `/var/lib/bootcfg` with `profile`, `groups`, `ignition`, and `cloud` sub
 
      /var/lib/bootcfg
      ├── cloud
-     │   ├── cloud.yaml
-     │   └── worker.sh
+     │   ├── cloud.yaml.tmpl
+     │   └── worker.sh.tmpl
      ├── ignition
-     │   └── hello.json
-     │   └── etcd.yaml
-     │   └── simple_networking.yaml
+     │   └── raw.ign
+     │   └── etcd.yaml.tmpl
+     │   └── simple.yaml.tmpl
      ├── generic
      │   └── config.yaml
      │   └── setup.cfg
@@ -79,7 +79,7 @@ To use Ignition, set the `coreos.config.url` kernel option to reference the `boo
 
 #### Configs
 
-Profiles can reference various templated configs. Ignition templates can be JSON or YAML files (rendered as JSON). Cloud-Config templates can be a script or YAML file. Generic configs can be provided in any format. Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
+Profiles can reference various templated configs. Ignition JSON configs can be generated from [Fuze config](https://github.com/coreos/fuze/blob/master/doc/configuration.md) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files configs can be used to render arbitrary untyped configs. Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be executed with machine Group [metadata](#groups-and-metadata). For details and examples:
 
 * [Ignition Config](ignition.md)
 * [Cloud-Config](cloud-config.md)

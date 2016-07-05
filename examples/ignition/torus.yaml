@@ -1,5 +1,4 @@
 ---
-ignition_version: 1
 systemd:
   units:
     - name: etcd3.service
@@ -61,16 +60,20 @@ storage:
       partitions:
         - label: ROOT
   filesystems:
-    - device: "/dev/sda1"
-      format: "ext4"
-      create:
-        force: true
-        options:
-          - "-LROOT"
+    - name: rootfs
+      mount:
+        device: "/dev/sda1"
+        format: "ext4"
+        create:
+          force: true
+          options:
+            - "-LROOT"
   {{else}}
   filesystems:
-    - device: "/dev/disk/by-label/ROOT"
-      format: "ext4"
+    - name: rootfs
+      mount:
+        device: "/dev/disk/by-label/ROOT"
+        format: "ext4"
   {{end}}
 
 {{ if not (index . "skip_networkd") }}

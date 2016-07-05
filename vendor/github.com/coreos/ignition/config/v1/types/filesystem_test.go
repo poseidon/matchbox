@@ -18,8 +18,6 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
-
-	"github.com/go-yaml/yaml"
 )
 
 func TestFilesystemFormatUnmarshalJSON(t *testing.T) {
@@ -57,41 +55,6 @@ func TestFilesystemFormatUnmarshalJSON(t *testing.T) {
 	}
 }
 
-func TestFilesystemFormatUnmarshalYAML(t *testing.T) {
-	type in struct {
-		data string
-	}
-	type out struct {
-		format FilesystemFormat
-		err    error
-	}
-
-	tests := []struct {
-		in  in
-		out out
-	}{
-		{
-			in:  in{data: `"ext4"`},
-			out: out{format: FilesystemFormat("ext4")},
-		},
-		{
-			in:  in{data: `"bad"`},
-			out: out{format: FilesystemFormat("bad"), err: ErrFilesystemInvalidFormat},
-		},
-	}
-
-	for i, test := range tests {
-		var format FilesystemFormat
-		err := yaml.Unmarshal([]byte(test.in.data), &format)
-		if !reflect.DeepEqual(test.out.err, err) {
-			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
-		}
-		if !reflect.DeepEqual(test.out.format, format) {
-			t.Errorf("#%d: bad format: want %#v, got %#v", i, test.out.format, format)
-		}
-	}
-}
-
 func TestFilesystemFormatAssertValid(t *testing.T) {
 	type in struct {
 		format FilesystemFormat
@@ -119,7 +82,7 @@ func TestFilesystemFormatAssertValid(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := test.in.format.assertValid()
+		err := test.in.format.AssertValid()
 		if !reflect.DeepEqual(test.out.err, err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}
@@ -157,37 +120,6 @@ func TestMkfsOptionsUnmarshalJSON(t *testing.T) {
 	}
 }
 
-func TestMkfsOptionsUnmarshalYAML(t *testing.T) {
-	type in struct {
-		data string
-	}
-	type out struct {
-		options MkfsOptions
-		err     error
-	}
-
-	tests := []struct {
-		in  in
-		out out
-	}{
-		{
-			in:  in{data: `["--label=ROOT"]`},
-			out: out{options: MkfsOptions([]string{"--label=ROOT"})},
-		},
-	}
-
-	for i, test := range tests {
-		var options MkfsOptions
-		err := yaml.Unmarshal([]byte(test.in.data), &options)
-		if !reflect.DeepEqual(test.out.err, err) {
-			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
-		}
-		if !reflect.DeepEqual(test.out.options, options) {
-			t.Errorf("#%d: bad device: want %#v, got %#v", i, test.out.options, options)
-		}
-	}
-}
-
 func TestFilesystemUnmarshalJSON(t *testing.T) {
 	type in struct {
 		data string
@@ -214,41 +146,6 @@ func TestFilesystemUnmarshalJSON(t *testing.T) {
 	for i, test := range tests {
 		var filesystem Filesystem
 		err := json.Unmarshal([]byte(test.in.data), &filesystem)
-		if !reflect.DeepEqual(test.out.err, err) {
-			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
-		}
-		if !reflect.DeepEqual(test.out.filesystem, filesystem) {
-			t.Errorf("#%d: bad filesystem: want %#v, got %#v", i, test.out.filesystem, filesystem)
-		}
-	}
-}
-
-func TestFilesystemUnmarshalYAML(t *testing.T) {
-	type in struct {
-		data string
-	}
-	type out struct {
-		filesystem Filesystem
-		err        error
-	}
-
-	tests := []struct {
-		in  in
-		out out
-	}{
-		{
-			in:  in{data: "device: /foo\nformat: ext4"},
-			out: out{filesystem: Filesystem{Device: "/foo", Format: "ext4"}},
-		},
-		{
-			in:  in{data: "format: ext4"},
-			out: out{filesystem: Filesystem{Format: "ext4"}, err: ErrPathRelative},
-		},
-	}
-
-	for i, test := range tests {
-		var filesystem Filesystem
-		err := yaml.Unmarshal([]byte(test.in.data), &filesystem)
 		if !reflect.DeepEqual(test.out.err, err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}
@@ -289,7 +186,7 @@ func TestFilesystemAssertValid(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := test.in.filesystem.assertValid()
+		err := test.in.filesystem.AssertValid()
 		if !reflect.DeepEqual(test.out.err, err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}

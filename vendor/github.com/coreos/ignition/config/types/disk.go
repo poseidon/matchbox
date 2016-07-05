@@ -20,44 +20,22 @@ import (
 )
 
 type Disk struct {
-	Device     Path        `json:"device,omitempty"     yaml:"device"`
-	WipeTable  bool        `json:"wipeTable,omitempty"  yaml:"wipe_table"`
-	Partitions []Partition `json:"partitions,omitempty" yaml:"partitions"`
+	Device     Path        `json:"device,omitempty"`
+	WipeTable  bool        `json:"wipeTable,omitempty"`
+	Partitions []Partition `json:"partitions,omitempty"`
 }
-
-func (n *Disk) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	if err := n.unmarshal(unmarshal); err != nil {
-		return err
-	}
-	if err := n.preparePartitions(); err != nil {
-		return err
-	}
-	return n.assertValid()
-}
-
-func (n *Disk) UnmarshalJSON(data []byte) error {
-	err := n.unmarshal(func(tn interface{}) error {
-		return json.Unmarshal(data, tn)
-	})
-	if err != nil {
-		return err
-	}
-	return n.assertValid()
-}
-
 type disk Disk
 
-func (n *Disk) unmarshal(unmarshal func(interface{}) error) error {
+func (n *Disk) UnmarshalJSON(data []byte) error {
 	tn := disk(*n)
-	if err := unmarshal(&tn); err != nil {
+	if err := json.Unmarshal(data, &tn); err != nil {
 		return err
 	}
 	*n = Disk(tn)
-	return nil
+	return n.AssertValid()
 }
 
-func (n Disk) assertValid() error {
-	// This applies to YAML (post-prepare) and JSON unmarshals equally:
+func (n Disk) AssertValid() error {
 	if len(n.Device) == 0 {
 		return fmt.Errorf("disk device is required")
 	}
@@ -139,29 +117,4 @@ func (n Disk) partitionsMisaligned() bool {
 		}
 	}
 	return false
-}
-
-// preparePartitions performs some checks and potentially adjusts the partitions for alignment.
-// This is only invoked when unmarshalling YAML, since there we parse human-friendly units.
-func (n *Disk) preparePartitions() error {
-	// On the YAML side we accept human-friendly units which may require massaging.
-
-	// align partition starts
-	for i := range n.Partitions {
-		// skip automatically placed partitions
-		if n.Partitions[i].Start == 0 {
-			continue
-		}
-
-		// keep partitions out of the first 2048 sectors
-		if n.Partitions[i].Start < 2048 {
-			n.Partitions[i].Start = 2048
-		}
-
-		// toss the bottom 11 bits
-		n.Partitions[i].Start &= ^PartitionDimension(2048 - 1)
-	}
-
-	// TODO(vc): may be interesting to do something about potentially overlapping partitions
-	return nil
 }

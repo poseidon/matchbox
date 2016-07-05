@@ -54,19 +54,9 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 ## Containers
 
-#### Latest
-
 Run the latest `bootcfg` ACI with rkt and the `etcd` example.
 
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
-
-#### Release
-
-Alternately, run the most recent tagged and signed `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases). Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
-
-    sudo rkt trust --prefix coreos.com/bootcfg
-    # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.3.0 -- -address=0.0.0.0:8080 -log-level=debug
 
 If you get an error about the IP assignment, garbage collect old pods.
 

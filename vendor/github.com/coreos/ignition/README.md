@@ -10,6 +10,6 @@ Odds are good that you don't want to invoke Ignition directly. In fact, it isn't
 
 **Ignition is under very active development!**
 
-Please check out the [roadmap](ROADMAP.md) for information about the timeline. Use the [bug tracker][issues] to report bugs, but please avoid the urge to report lack of features for now.
+Use the [bug tracker][issues] to report bugs, but please avoid the urge to report lack of features for now.
 
 [issues]: https://github.com/coreos/bugs/issues/new?labels=component/ignition

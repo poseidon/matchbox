@@ -45,7 +45,7 @@ func Begin(logger *log.Logger, dev string) *Operation {
 
 // CreatePartition adds the supplied partition to the list of partitions to be created as part of an operation.
 func (op *Operation) CreatePartition(p Partition) {
-	// XXX(vc): no checking is performed here, since we perform checking at yaml/json parsing, Commit() will just fail on badness.
+	// XXX(vc): no checking is performed here, since we perform checking at json parsing, Commit() will just fail on badness.
 	op.parts = append(op.parts, p)
 }
 

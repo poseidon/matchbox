@@ -20,34 +20,23 @@ import (
 )
 
 type Raid struct {
-	Name    string `json:"name"              yaml:"name"`
-	Level   string `json:"level"             yaml:"level"`
-	Devices []Path `json:"devices,omitempty" yaml:"devices"`
-	Spares  int    `json:"spares,omitempty"  yaml:"spares"`
+	Name    string `json:"name"`
+	Level   string `json:"level"`
+	Devices []Path `json:"devices,omitempty"`
+	Spares  int    `json:"spares,omitempty"`
 }
-
-func (n *Raid) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	return n.unmarshal(unmarshal)
-}
-
-func (n *Raid) UnmarshalJSON(data []byte) error {
-	return n.unmarshal(func(tn interface{}) error {
-		return json.Unmarshal(data, tn)
-	})
-}
-
 type raid Raid
 
-func (n *Raid) unmarshal(unmarshal func(interface{}) error) error {
+func (n *Raid) UnmarshalJSON(data []byte) error {
 	tn := raid(*n)
-	if err := unmarshal(&tn); err != nil {
+	if err := json.Unmarshal(data, &tn); err != nil {
 		return err
 	}
 	*n = Raid(tn)
-	return n.assertValid()
+	return n.AssertValid()
 }
 
-func (n Raid) assertValid() error {
+func (n Raid) AssertValid() error {
 	switch n.Level {
 	case "linear", "raid0", "0", "stripe":
 		if n.Spares != 0 {

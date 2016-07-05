@@ -32,6 +32,9 @@ func TestMapFilesToFilesystems(t *testing.T) {
 		err   error
 	}
 
+	fs1 := types.Path("/fs1")
+	fs2 := types.Path("/fs2")
+
 	tests := []struct {
 		in  in
 		out out
@@ -53,21 +56,21 @@ func TestMapFilesToFilesystems(t *testing.T) {
 		},
 		{
 			in: in{config: types.Config{Storage: types.Storage{
-				Filesystems: []types.Filesystem{{Name: "fs1", Path: "/fs1"}, {Name: "fs2", Path: "/fs2"}},
+				Filesystems: []types.Filesystem{{Name: "fs1", Path: &fs1}, {Name: "fs2", Path: &fs2}},
 				Files:       []types.File{{Filesystem: "fs1", Path: "/foo"}, {Filesystem: "fs2", Path: "/bar"}},
 			}}},
 			out: out{files: map[types.Filesystem][]types.File{
-				types.Filesystem{Name: "fs1", Path: "/fs1"}: {{Filesystem: "fs1", Path: "/foo"}},
-				types.Filesystem{Name: "fs2", Path: "/fs2"}: {{Filesystem: "fs2", Path: "/bar"}},
+				types.Filesystem{Name: "fs1", Path: &fs1}: {{Filesystem: "fs1", Path: "/foo"}},
+				types.Filesystem{Name: "fs2", Path: &fs2}: {{Filesystem: "fs2", Path: "/bar"}},
 			}},
 		},
 		{
 			in: in{config: types.Config{Storage: types.Storage{
-				Filesystems: []types.Filesystem{{Name: "fs1"}, {Name: "fs1", Path: "/fs1"}},
+				Filesystems: []types.Filesystem{{Name: "fs1"}, {Name: "fs1", Path: &fs1}},
 				Files:       []types.File{{Filesystem: "fs1", Path: "/foo"}, {Filesystem: "fs1", Path: "/bar"}},
 			}}},
 			out: out{files: map[types.Filesystem][]types.File{
-				types.Filesystem{Name: "fs1", Path: "/fs1"}: {{Filesystem: "fs1", Path: "/foo"}, {Filesystem: "fs1", Path: "/bar"}},
+				types.Filesystem{Name: "fs1", Path: &fs1}: {{Filesystem: "fs1", Path: "/foo"}, {Filesystem: "fs1", Path: "/bar"}},
 			}},
 		},
 	}

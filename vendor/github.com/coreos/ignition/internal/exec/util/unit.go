@@ -56,6 +56,9 @@ func (u Util) MaskUnit(unit types.SystemdUnit) error {
 	if err := mkdirForFile(path); err != nil {
 		return err
 	}
+	if err := os.RemoveAll(path); err != nil {
+		return err
+	}
 	return os.Symlink("/dev/null", path)
 }
 

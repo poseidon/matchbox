@@ -18,14 +18,9 @@
 package cmdline
 
 import (
-	"fmt"
 	"io/ioutil"
-	"net/http"
 	"net/url"
-	"os"
-	"path/filepath"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/coreos/ignition/config"
@@ -33,7 +28,6 @@ import (
 	"github.com/coreos/ignition/internal/log"
 	"github.com/coreos/ignition/internal/providers"
 	putil "github.com/coreos/ignition/internal/providers/util"
-	"github.com/coreos/ignition/internal/systemd"
 	"github.com/coreos/ignition/internal/util"
 )
 
@@ -42,9 +36,6 @@ const (
 	maxBackoff     = 30 * time.Second
 	cmdlinePath    = "/proc/cmdline"
 	cmdlineUrlFlag = "coreos.config.url"
-	oemDevicePath  = "/dev/disk/by-label/OEM" // Device link where oem partition is found.
-	oemDirPath     = "/usr/share/oem"         // OEM dir within root fs to consider for pxe scenarios.
-	oemMountPath   = "/mnt/oem"               // Mountpoint where oem partition is mounted when present.
 )
 
 type Creator struct{}
@@ -132,77 +123,12 @@ func (p *provider) getRawConfig() bool {
 		return false
 	}
 
-	switch url.Scheme {
-	case "http":
-		p.rawConfig = p.client.FetchConfig(p.configUrl, http.StatusOK, http.StatusNoContent)
-		if p.rawConfig == nil {
-			return false
-		}
-	case "oem":
-		path := filepath.Clean(url.Path)
-		if !filepath.IsAbs(path) {
-			p.logger.Err("oem path is not absolute: %q", url.Path)
-			return false
-		}
-
-		// check if present under oemDirPath, if so use it.
-		absPath := filepath.Join(oemDirPath, path)
-		p.rawConfig, err = ioutil.ReadFile(absPath)
-		if os.IsNotExist(err) {
-			p.logger.Info("oem config not found in %q, trying %q",
-				oemDirPath, oemMountPath)
-
-			// try oemMountPath, requires mounting it.
-			err = p.mountOEM()
-			if err == nil {
-				absPath := filepath.Join(oemMountPath, path)
-				p.rawConfig, err = ioutil.ReadFile(absPath)
-				p.umountOEM()
-			}
-		}
-
-		if err != nil {
-			p.logger.Err("failed to read oem config: %v", err)
-			return false
-		}
-	default:
-		p.logger.Err("unsupported url scheme: %q", url.Scheme)
+	data, err := util.FetchResource(p.logger, *url)
+	if err != nil {
+		p.logger.Err("failed to fetch %v: %v", url, err)
 		return false
 	}
 
+	p.rawConfig = data
 	return true
-}
-
-// mountOEM waits for the presence of and mounts the oem partition @ oemMountPath.
-func (p *provider) mountOEM() error {
-	dev := []string{oemDevicePath}
-	if err := systemd.WaitOnDevices(dev, "oem-cmdline"); err != nil {
-		p.logger.Err("failed to wait for oem device: %v", err)
-		return err
-	}
-
-	if err := os.MkdirAll(oemMountPath, 0700); err != nil {
-		p.logger.Err("failed to create oem mount point: %v", err)
-		return err
-	}
-
-	if err := p.logger.LogOp(
-		func() error {
-			return syscall.Mount(dev[0], oemMountPath, "ext4", 0, "")
-		},
-		"mounting %q at %q", oemDevicePath, oemMountPath,
-	); err != nil {
-		return fmt.Errorf("failed to mount device %q at %q: %v",
-			oemDevicePath, oemMountPath, err)
-	}
-
-	return nil
-}
-
-// umountOEM unmounts the oem partition @ oemMountPath.
-func (p *provider) umountOEM() {
-	p.logger.LogOp(
-		func() error { return syscall.Unmount(oemMountPath, 0) },
-		"unmounting %q", oemMountPath,
-	)
 }
