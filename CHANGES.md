@@ -16,6 +16,14 @@
     * Error when an Ignition/Cloud-config template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
 * Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
 
+#### Changes
+
+* Replace Ignition YAML templates with Fuze templates (**breaking**)
+    - Fuze formalizes the transform from Fuze configs (YAML) to Ignition 2.0.0 (JSON)
+    - [Migrate from bootcfg v0.3.0](Documentation/ignition.md#migration-from-v030)
+    - Require CoreOS 1010.1.0 or newer
+    - Drop support for Ignition v1 format
+
 #### Examples
 
 * Add self-hosted Kubernetes example (PXE boot or install to disk)

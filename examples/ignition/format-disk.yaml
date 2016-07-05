@@ -25,7 +25,7 @@ storage:
         id: 500
       contents:
         inline: |
-          bar
+          Example file contents
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
