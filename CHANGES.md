@@ -33,6 +33,7 @@
 * Remove 8.8.8.8 from networkd example Ignition configs (#184)
 * Fix a bug in the k8s example k8s-certs@.service file check (#156)
 * Match machines by MAC address in examples to simplify networkd device matching (#209)
+* With rkt 1.8+, you can use `rkt gc --grace-period=0` to cleanup rkt IP assignments in examples. The `rkt-gc-force` script has been removed.
 
 ## v0.3.0 (2016-04-14)
 

@@ -37,12 +37,12 @@ systemd:
       contents: |
         [Unit]
         Description=Kubelet via Hyperkube ACI
-        Requires=flanneld.service
-        After=flanneld.service
+        Wants=flanneld.service
         [Service]
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
         Environment=KUBELET_VERSION=v1.3.0-beta.2_coreos.0
+        ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets

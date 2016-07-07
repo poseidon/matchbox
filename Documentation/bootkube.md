@@ -53,9 +53,9 @@ Create a network boot environment with `coreos/dnsmasq` and create VMs with `scr
 
 ## bootkube
 
-We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a temporary control plane and bootstrap self-hosted Kubernetes cluster. This is a **one-time** procedure.
+We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
 
-Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (repeat for 172.15.0.22, 172.15.0.23).
+Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (i.e. repeat for 172.15.0.22, 172.15.0.23).
 
     scp assets/auth/kubeconfig core@172.15.0.21:/home/core/kubeconfig
     ssh core@172.15.0.21
@@ -65,13 +65,9 @@ Secure copy the `bootkube` generated assets to any one of the master nodes.
 
     scp -r assets core@172.15.0.21:/home/core/assets
 
-Connect to the chosen Kubernetes master node,
+SSH to the chosen master node and bootstrap the cluster with `bootkube-start`.
 
-    ssh core@172.15.0.21
-
-and run the following command *on the node*.
-
-    sudo ./bootkube-start
+    ssh core@172.15.0.21 'sudo ./bootkube-start'
 
 Watch the temporary control plane logs until the scheduled kubelet takes over in place of the runonce host kubelet.
 
@@ -93,15 +89,16 @@ You may cleanup the `bootkube` assets on the node, but you should keep the copy 
     172.15.0.23   Ready     3m
 
     $ kubectl --kubeconfig=assets/auth/kubeconfig get pods --all-namespaces
-    NAMESPACE     NAME                            READY     STATUS    RESTARTS   AGE
-    kube-system   kube-apiserver-z6f9e            1/1       Running   0          3m
-    kube-system   kube-controller-manager-slia7   1/1       Running   0          3m
-    kube-system   kube-dns-v11-1943182923-7embo   4/4       Running   0          3m
-    kube-system   kube-proxy-ed6af                1/1       Running   0          3m
-    kube-system   kube-proxy-fbhfq                1/1       Running   0          3m
-    kube-system   kube-proxy-fzy8r                1/1       Running   0          3m
-    kube-system   kube-scheduler-djgdh            1/1       Running   0          3m
-    kube-system   kubelet-crywn                   1/1       Running   0          3m
-    kube-system   kubelet-rmdjq                   1/1       Running   0          3m
-    kube-system   kubelet-wjj0g                   1/1       Running   0          3m
+    kube-system   kube-api-checkpoint-172.15.0.21            1/1       Running   0          2m
+    kube-system   kube-apiserver-wq4mh                       2/2       Running   0          2m
+    kube-system   kube-controller-manager-2834499578-y9cnl   1/1       Running   0          2m
+    kube-system   kube-dns-v11-2259792283-5tpld              4/4       Running   0          2m
+    kube-system   kube-proxy-8zr1b                           1/1       Running   0          2m
+    kube-system   kube-proxy-i9cgw                           1/1       Running   0          2m
+    kube-system   kube-proxy-n6qg3                           1/1       Running   0          2m
+    kube-system   kube-scheduler-4136156790-v9892            1/1       Running   0          2m
+    kube-system   kubelet-9wilx                              1/1       Running   0          2m
+    kube-system   kubelet-a6mmj                              1/1       Running   0          2m
+    kube-system   kubelet-eomnb                              1/1       Running   0          2m
 
+Try deleting pods to see that the cluster is resilient to failures and machine restarts (CoreOS auto-updates).
