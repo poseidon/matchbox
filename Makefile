@@ -3,7 +3,10 @@ BIN_DIR=/usr/local/bin
 
 all: build
 
-build:
+bin/bootcfg:
+	./build
+
+bin/bootcmd:
 	./build
 
 test:
@@ -24,16 +27,18 @@ uninstall:
 
 release: clean _output/coreos-baremetal-linux-amd64.tar.gz
 
-_output/coreos-baremetal-%-amd64/bootcfg: build
-	@mkdir -p $(dir $@)
-	./scripts/release-files $(dir $@)
+_output/coreos-baremetal-%-amd64:
+	mkdir -p $@
 
-_output/coreos-baremetal-%-amd64.tar.gz: _output/coreos-baremetal-%-amd64/bootcfg
+_output/coreos-baremetal-%-amd64.tar.gz: bin/bootcfg bin/bootcmd | _output/coreos-baremetal-%-amd64
+	./scripts/release-files $|
 	tar zcvf $@ -C _output coreos-baremetal-$*-amd64
 
 clean:
+	rm bin/bootcfg
+	rm bin/bootcmd
 	rm -rf _output
 
 .PHONY: build clean install test
 
-.SECONDARY: _output/coreos-baremetal-linux-amd64/bootcfg
+.SECONDARY: _output/coreos-baremetal-linux-amd64
