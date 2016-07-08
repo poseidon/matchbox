@@ -1,20 +1,29 @@
 ---
 systemd:
   units:
-    - name: install.service
+    - name: installer.service
       enable: true
       contents: |
         [Unit]
         Requires=network-online.target
         After=network-online.target
         [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/curl {{.ignition_endpoint}}?{{.query}}&os=installed -o ignition.json
-        ExecStart=/usr/bin/coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json {{if index . "baseurl"}}-b {{.baseurl}}{{end}}
-        ExecStart=/usr/bin/udevadm settle
-        ExecStart=/usr/bin/systemctl reboot
+        Type=simple
+        ExecStart=/opt/installer
         [Install]
         WantedBy=multi-user.target
+storage:
+  files:
+    - path: /opt/installer
+      filesystem: root
+      mode: 0500
+      contents:
+        inline: |
+          #!/bin/bash -e
+          curl "{{.ignition_endpoint}}?{{.query}}&os=installed" -o ignition.json
+          coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json {{if index . "baseurl"}}-b {{.baseurl}}{{end}}
+          udevadm settle
+          systemctl reboot
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
