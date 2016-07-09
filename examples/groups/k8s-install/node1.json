@@ -7,12 +7,12 @@
     "mac": "52:54:00:a1:9c:ae"
   },
   "metadata": {
-    "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380",
+    "etcd_initial_cluster": "node1=http://172.15.0.21:2380",
     "etcd_name": "node1",
     "ipv4_address": "172.15.0.21",
     "k8s_cert_endpoint": "http://bootcfg.foo:8080/assets",
     "k8s_dns_service_ip": "10.3.0.10",
-    "k8s_etcd_endpoints": "http://172.15.0.21:2379,http://172.15.0.22:2379,http://172.15.0.23:2379",
+    "k8s_etcd_endpoints": "http://172.15.0.21:2379",
     "k8s_pod_network": "10.2.0.0/16",
     "k8s_service_ip_range": "10.3.0.0/24",
     "networkd_address": "172.15.0.21/16",
