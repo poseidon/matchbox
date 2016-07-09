@@ -1,7 +1,7 @@
 
 # Kubernetes
 
-The Kubernetes examples provision a 3 node v1.2.4 Kubernetes cluster with one master, two workers, and TLS authentication. A 3 node etcd cluster is run on the hosts for Kubernetes and to coordinate CoreOS auto-updates (if installed to disk).
+The Kubernetes examples provision a 3 node v1.2.4 Kubernetes cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -50,7 +50,7 @@ Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](gett
     cd /path/to/coreos-baremetal
     kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
     NAME          STATUS                     AGE
-    172.15.0.21   Ready,SchedulingDisabled   6m
+    172.15.0.21   Ready                      6m
     172.15.0.22   Ready                      5m
     172.15.0.23   Ready                      6m
 

@@ -7,20 +7,9 @@ systemd:
         - name: 40-etcd-cluster.conf
           contents: |
             [Service]
-            Environment="ETCD_NAME={{.etcd_name}}"
-            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
-            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_PROXY=on"
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
-            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
-            Environment="ETCD_STRICT_RECONFIG_CHECK=true"
-    - name: fleet.service
-      enable: true
-      dropins:
-        - name: 40-fleet-metadata.conf
-          contents: |
-            [Service]
-            Environment="FLEET_METADATA={{.fleet_metadata}}"
     - name: flanneld.service
       dropins:
         - name: 40-ExecStartPre-symlink.conf
@@ -61,6 +50,7 @@ systemd:
         Requires=k8s-assets.target
         After=k8s-assets.target
         [Service]
+        Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         Environment=KUBELET_VERSION=v1.2.4_coreos.1
         ExecStart=/usr/lib/coreos/kubelet-wrapper \

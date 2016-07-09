@@ -7,7 +7,7 @@ In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI`
 
 ## Requirements
 
-Install [rkt](https://github.com/coreos/rkt/releases) and [acbuild](https://github.com/appc/acbuild/releases) from the latest releases ([example script](https://github.com/dghubble/phoenix/blob/master/scripts/fedora/sources.sh)). Optionally setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
+Install [rkt](https://coreos.com/rkt/docs/latest/distributions.html) 1.8 or higher ([example script](https://github.com/dghubble/phoenix/blob/master/scripts/fedora/sources.sh)) and setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
 
 Next, install the package dependencies.
 
