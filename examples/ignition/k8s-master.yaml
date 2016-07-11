@@ -607,7 +607,7 @@ storage:
       mode: 0544
       contents:
         inline: |
-          #!/bin/bash
+          #!/bin/bash -ex
           function init_flannel {
             echo "Waiting for etcd..."
             while true
@@ -636,7 +636,7 @@ storage:
       mode: 0544
       contents:
         inline: |
-          #!/bin/bash
+          #!/bin/bash -ex
           echo "Waiting for Kubernetes API..."
           until curl --silent "http://127.0.0.1:8080/version"
           do
