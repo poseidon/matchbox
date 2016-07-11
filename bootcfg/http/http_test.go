@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 )
@@ -23,6 +24,7 @@ func TestNewHandler(t *testing.T) {
 
 func TestLabelsFromRequest(t *testing.T) {
 	emptyMap := map[string]string{}
+	logger, _ := logtest.NewNullLogger()
 	cases := []struct {
 		urlString string
 		labels    map[string]string
@@ -41,6 +43,6 @@ func TestLabelsFromRequest(t *testing.T) {
 	for _, c := range cases {
 		req, err := http.NewRequest("GET", c.urlString, nil)
 		assert.Nil(t, err)
-		assert.Equal(t, c.labels, labelsFromRequest(req))
+		assert.Equal(t, c.labels, labelsFromRequest(logger, req))
 	}
 }

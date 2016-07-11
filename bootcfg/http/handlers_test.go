@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -42,7 +43,9 @@ func TestSelectGroup(t *testing.T) {
 	store := &fake.FixedStore{
 		Groups: map[string]*storagepb.Group{fake.Group.Id: fake.Group},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
 	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		assert.Nil(t, err)
@@ -53,7 +56,7 @@ func TestSelectGroup(t *testing.T) {
 	// - query params are used to match uuid=a1b2c3d4 to fake.Group
 	// - the fake.Group is added to the context
 	// - next handler is called
-	h := selectGroup(srv, ContextHandlerFunc(next))
+	h := srv.selectGroup(c, ContextHandlerFunc(next))
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -65,7 +68,9 @@ func TestSelectProfile(t *testing.T) {
 		Groups:   map[string]*storagepb.Group{fake.Group.Id: fake.Group},
 		Profiles: map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
 	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		profile, err := profileFromContext(ctx)
 		assert.Nil(t, err)
@@ -76,7 +81,7 @@ func TestSelectProfile(t *testing.T) {
 	// - query params are used to match uuid=a1b2c3d4 to fake.Group's fakeProfile
 	// - the fake.Profile is added to the context
 	// - next handler is called
-	h := selectProfile(srv, ContextHandlerFunc(next))
+	h := srv.selectProfile(c, ContextHandlerFunc(next))
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
 	h.ServeHTTP(context.Background(), w, req)

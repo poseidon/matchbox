@@ -11,7 +11,7 @@ import (
 
 const plainContentType = "plain/text"
 
-func metadataHandler() ContextHandler {
+func (s *Server) metadataHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil {
@@ -24,7 +24,7 @@ func metadataHandler() ContextHandler {
 		if group.Metadata != nil {
 			err = json.Unmarshal(group.Metadata, &data)
 			if err != nil {
-				log.Errorf("error unmarshalling metadata: %v", err)
+				s.logger.Errorf("error unmarshalling metadata: %v", err)
 				http.NotFound(w, req)
 				return
 			}

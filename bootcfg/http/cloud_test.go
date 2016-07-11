@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
@@ -32,8 +33,10 @@ coreos:
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := cloudHandler(srv)
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -45,8 +48,10 @@ coreos:
 }
 
 func TestCloudHandler_MissingCtxProfile(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := cloudHandler(srv)
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.cloudHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(context.Background(), w, req)
@@ -54,8 +59,10 @@ func TestCloudHandler_MissingCtxProfile(t *testing.T) {
 }
 
 func TestCloudHandler_MissingCloudConfig(t *testing.T) {
-	srv := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := cloudHandler(srv)
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.cloudHandler(c)
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -73,8 +80,10 @@ coreos:
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
 		CloudConfigs: map[string]string{fake.Profile.CloudId: content},
 	}
-	srv := server.NewServer(&server.Config{Store: store})
-	h := cloudHandler(srv)
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

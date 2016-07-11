@@ -19,19 +19,19 @@ import (
 // as raw Ignition (for .ign/.ignition) or rendered to a Fuze config (YAML)
 // and converted to Ignition. Ignition configs are served as HTTP JSON
 // responses.
-func ignitionHandler(srv server.Server) ContextHandler {
+func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil || group.Profile == "" {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		profile, err := core.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err != nil || profile.IgnitionId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := srv.IgnitionGet(ctx, profile.IgnitionId)
+		contents, err := core.IgnitionGet(ctx, profile.IgnitionId)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -41,9 +41,9 @@ func ignitionHandler(srv server.Server) ContextHandler {
 		if isIgnition(profile.IgnitionId) {
 			_, err := ignition.Parse([]byte(contents))
 			if err != nil {
-				log.Warningf("warning parsing Ignition JSON: %v", err)
+				s.logger.Warningf("warning parsing Ignition JSON: %v", err)
 			}
-			writeJSON(w, []byte(contents))
+			s.writeJSON(w, []byte(contents))
 			return
 		}
 
@@ -54,7 +54,7 @@ func ignitionHandler(srv server.Server) ContextHandler {
 		if group.Metadata != nil {
 			err = json.Unmarshal(group.Metadata, &data)
 			if err != nil {
-				log.Errorf("error unmarshalling metadata: %v", err)
+				s.logger.Errorf("error unmarshalling metadata: %v", err)
 				http.NotFound(w, req)
 				return
 			}
@@ -66,7 +66,7 @@ func ignitionHandler(srv server.Server) ContextHandler {
 
 		// render the template for an Ignition config with data
 		var buf bytes.Buffer
-		err = renderTemplate(&buf, data, contents)
+		err = s.renderTemplate(&buf, data, contents)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -75,11 +75,11 @@ func ignitionHandler(srv server.Server) ContextHandler {
 		// Parse fuze config into an Ignition config
 		config, err := fuze.ParseAsV2_0_0(buf.Bytes())
 		if err == nil {
-			renderJSON(w, config)
+			s.renderJSON(w, config)
 			return
 		}
 
-		log.Errorf("error parsing Ignition config: %v", err)
+		s.logger.Errorf("error parsing Ignition config: %v", err)
 		http.NotFound(w, req)
 		return
 	}

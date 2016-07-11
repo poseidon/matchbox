@@ -30,7 +30,7 @@ func ipxeInspect() http.Handler {
 
 // ipxeBoot returns a handler which renders the iPXE boot script for the
 // requester.
-func ipxeHandler() ContextHandler {
+func (s *Server) ipxeHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		profile, err := profileFromContext(ctx)
 		if err != nil {
@@ -40,12 +40,12 @@ func ipxeHandler() ContextHandler {
 		var buf bytes.Buffer
 		err = ipxeTemplate.Execute(&buf, profile.Boot)
 		if err != nil {
-			log.Errorf("error rendering template: %v", err)
+			s.logger.Errorf("error rendering template: %v", err)
 			http.NotFound(w, req)
 			return
 		}
 		if _, err := buf.WriteTo(w); err != nil {
-			log.Errorf("error writing to response: %v", err)
+			s.logger.Errorf("error writing to response: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}

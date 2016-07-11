@@ -3,19 +3,16 @@ package http
 import (
 	"net/http"
 
-	"github.com/coreos/pkg/capnslog"
+	"github.com/Sirupsen/logrus"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/server"
 	"github.com/coreos/coreos-baremetal/bootcfg/sign"
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
 )
 
-var log = capnslog.NewPackageLogger("github.com/coreos/coreos-baremetal/bootcfg", "http")
-
-// Config configures the api Server.
+// Config configures a Server.
 type Config struct {
-	// Store for configs
-	Store storage.Store
+	Core   server.Server
+	Logger *logrus.Logger
 	// Path to static assets
 	AssetsPath string
 	// config signers (.sig and .asc)
@@ -25,7 +22,8 @@ type Config struct {
 
 // Server serves boot and provisioning configs to machines via HTTP.
 type Server struct {
-	store         storage.Store
+	core          server.Server
+	logger        *logrus.Logger
 	assetsPath    string
 	signer        sign.Signer
 	armoredSigner sign.Signer
@@ -34,7 +32,8 @@ type Server struct {
 // NewServer returns a new Server.
 func NewServer(config *Config) *Server {
 	return &Server{
-		store:         config.Store,
+		core:          config.Core,
+		logger:        config.Logger,
 		assetsPath:    config.AssetsPath,
 		signer:        config.Signer,
 		armoredSigner: config.ArmoredSigner,
@@ -44,60 +43,59 @@ func NewServer(config *Config) *Server {
 // HTTPHandler returns a HTTP handler for the server.
 func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
-	srv := server.NewServer(&server.Config{s.store})
 
 	// bootcfg version
-	mux.Handle("/", logRequests(versionHandler()))
+	mux.Handle("/", s.logRequest(versionHandler()))
 	// Boot via GRUB
-	mux.Handle("/grub", logRequests(NewHandler(selectProfile(srv, grubHandler()))))
+	mux.Handle("/grub", s.logRequest(NewHandler(s.selectProfile(s.core, s.grubHandler()))))
 	// Boot via iPXE
-	mux.Handle("/boot.ipxe", logRequests(ipxeInspect()))
-	mux.Handle("/boot.ipxe.0", logRequests(ipxeInspect()))
-	mux.Handle("/ipxe", logRequests(NewHandler(selectProfile(srv, ipxeHandler()))))
+	mux.Handle("/boot.ipxe", s.logRequest(ipxeInspect()))
+	mux.Handle("/boot.ipxe.0", s.logRequest(ipxeInspect()))
+	mux.Handle("/ipxe", s.logRequest(NewHandler(s.selectProfile(s.core, s.ipxeHandler()))))
 	// Boot via Pixiecore
-	mux.Handle("/pixiecore/v1/boot/", logRequests(NewHandler(pixiecoreHandler(srv))))
+	mux.Handle("/pixiecore/v1/boot/", s.logRequest(NewHandler(s.pixiecoreHandler(s.core))))
 	// Ignition Config
-	mux.Handle("/ignition", logRequests(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
+	mux.Handle("/ignition", s.logRequest(NewHandler(s.selectGroup(s.core, s.ignitionHandler(s.core)))))
 	// Cloud-Config
-	mux.Handle("/cloud", logRequests(NewHandler(selectGroup(srv, cloudHandler(srv)))))
+	mux.Handle("/cloud", s.logRequest(NewHandler(s.selectGroup(s.core, s.cloudHandler(s.core)))))
 	// Generic template
-	mux.Handle("/generic", logRequests(NewHandler(selectGroup(srv, genericHandler(srv)))))
-	// metadata
-	mux.Handle("/metadata", logRequests(NewHandler(selectGroup(srv, metadataHandler()))))
+	mux.Handle("/generic", s.logRequest(NewHandler(s.selectGroup(s.core, s.genericHandler(s.core)))))
+	// Metadata
+	mux.Handle("/metadata", s.logRequest(NewHandler(s.selectGroup(s.core, s.metadataHandler()))))
 
 	// Signatures
 	if s.signer != nil {
 		signerChain := func(next http.Handler) http.Handler {
-			return logRequests(sign.SignatureHandler(s.signer, next))
+			return s.logRequest(sign.SignatureHandler(s.signer, next))
 		}
-		mux.Handle("/grub.sig", signerChain(NewHandler(selectProfile(srv, grubHandler()))))
+		mux.Handle("/grub.sig", signerChain(NewHandler(s.selectProfile(s.core, s.grubHandler()))))
 		mux.Handle("/boot.ipxe.sig", signerChain(ipxeInspect()))
 		mux.Handle("/boot.ipxe.0.sig", signerChain(ipxeInspect()))
-		mux.Handle("/ipxe.sig", signerChain(NewHandler(selectProfile(srv, ipxeHandler()))))
-		mux.Handle("/pixiecore/v1/boot.sig/", signerChain(NewHandler(pixiecoreHandler(srv))))
-		mux.Handle("/ignition.sig", signerChain(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
-		mux.Handle("/cloud.sig", signerChain(NewHandler(selectGroup(srv, cloudHandler(srv)))))
-		mux.Handle("/generic.sig", signerChain(NewHandler(selectGroup(srv, genericHandler(srv)))))
-		mux.Handle("/metadata.sig", signerChain(NewHandler(selectGroup(srv, metadataHandler()))))
+		mux.Handle("/ipxe.sig", signerChain(NewHandler(s.selectProfile(s.core, s.ipxeHandler()))))
+		mux.Handle("/pixiecore/v1/boot.sig/", signerChain(NewHandler(s.pixiecoreHandler(s.core))))
+		mux.Handle("/ignition.sig", signerChain(NewHandler(s.selectGroup(s.core, s.ignitionHandler(s.core)))))
+		mux.Handle("/cloud.sig", signerChain(NewHandler(s.selectGroup(s.core, s.cloudHandler(s.core)))))
+		mux.Handle("/generic.sig", signerChain(NewHandler(s.selectGroup(s.core, s.genericHandler(s.core)))))
+		mux.Handle("/metadata.sig", signerChain(NewHandler(s.selectGroup(s.core, s.metadataHandler()))))
 	}
 	if s.armoredSigner != nil {
 		signerChain := func(next http.Handler) http.Handler {
-			return logRequests(sign.SignatureHandler(s.armoredSigner, next))
+			return s.logRequest(sign.SignatureHandler(s.armoredSigner, next))
 		}
-		mux.Handle("/grub.asc", signerChain(NewHandler(selectProfile(srv, grubHandler()))))
+		mux.Handle("/grub.asc", signerChain(NewHandler(s.selectProfile(s.core, s.grubHandler()))))
 		mux.Handle("/boot.ipxe.asc", signerChain(ipxeInspect()))
 		mux.Handle("/boot.ipxe.0.asc", signerChain(ipxeInspect()))
-		mux.Handle("/ipxe.asc", signerChain(NewHandler(selectProfile(srv, ipxeHandler()))))
-		mux.Handle("/pixiecore/v1/boot.asc/", signerChain(NewHandler(pixiecoreHandler(srv))))
-		mux.Handle("/ignition.asc", signerChain(NewHandler(selectGroup(srv, ignitionHandler(srv)))))
-		mux.Handle("/cloud.asc", signerChain(NewHandler(selectGroup(srv, cloudHandler(srv)))))
-		mux.Handle("/generic.asc", signerChain(NewHandler(selectGroup(srv, genericHandler(srv)))))
-		mux.Handle("/metadata.asc", signerChain(NewHandler(selectGroup(srv, metadataHandler()))))
+		mux.Handle("/ipxe.asc", signerChain(NewHandler(s.selectProfile(s.core, s.ipxeHandler()))))
+		mux.Handle("/pixiecore/v1/boot.asc/", signerChain(NewHandler(s.pixiecoreHandler(s.core))))
+		mux.Handle("/ignition.asc", signerChain(NewHandler(s.selectGroup(s.core, s.ignitionHandler(s.core)))))
+		mux.Handle("/cloud.asc", signerChain(NewHandler(s.selectGroup(s.core, s.cloudHandler(s.core)))))
+		mux.Handle("/generic.asc", signerChain(NewHandler(s.selectGroup(s.core, s.genericHandler(s.core)))))
+		mux.Handle("/metadata.asc", signerChain(NewHandler(s.selectGroup(s.core, s.metadataHandler()))))
 	}
 
 	// kernel, initrd, and TLS assets
 	if s.assetsPath != "" {
-		mux.Handle("/assets/", logRequests(http.StripPrefix("/assets/", http.FileServer(http.Dir(s.assetsPath)))))
+		mux.Handle("/assets/", s.logRequest(http.StripPrefix("/assets/", http.FileServer(http.Dir(s.assetsPath)))))
 	}
 	return mux
 }

@@ -21,19 +21,19 @@ type CloudConfig struct {
 
 // cloudHandler returns a handler that responds with the cloud config for the
 // requester.
-func cloudHandler(srv server.Server) ContextHandler {
+func (s *Server) cloudHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil || group.Profile == "" {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		profile, err := core.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err != nil || profile.CloudId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := srv.CloudGet(ctx, profile.CloudId)
+		contents, err := core.CloudGet(ctx, profile.CloudId)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -44,7 +44,7 @@ func cloudHandler(srv server.Server) ContextHandler {
 		if group.Metadata != nil {
 			err = json.Unmarshal(group.Metadata, &data)
 			if err != nil {
-				log.Errorf("error unmarshalling metadata: %v", err)
+				s.logger.Errorf("error unmarshalling metadata: %v", err)
 				http.NotFound(w, req)
 				return
 			}
@@ -55,7 +55,7 @@ func cloudHandler(srv server.Server) ContextHandler {
 
 		// render the template of a cloud config with data
 		var buf bytes.Buffer
-		err = renderTemplate(&buf, data, contents)
+		err = s.renderTemplate(&buf, data, contents)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -63,14 +63,14 @@ func cloudHandler(srv server.Server) ContextHandler {
 
 		config := buf.String()
 		if !cloudinit.IsCloudConfig(config) && !cloudinit.IsScript(config) {
-			log.Error("error parsing user-data")
+			s.logger.Error("error parsing user-data")
 			http.NotFound(w, req)
 			return
 		}
 
 		if cloudinit.IsCloudConfig(config) {
 			if _, err = cloudinit.NewCloudConfig(config); err != nil {
-				log.Errorf("error parsing cloud config: %v", err)
+				s.logger.Errorf("error parsing cloud config: %v", err)
 				http.NotFound(w, req)
 				return
 			}

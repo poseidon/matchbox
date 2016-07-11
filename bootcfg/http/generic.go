@@ -15,19 +15,19 @@ import (
 
 // genericHandler returns a handler that responds with generic file for
 // the requester.
-func genericHandler(srv server.Server) ContextHandler {
+func (s *Server) genericHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
 		if err != nil || group.Profile == "" {
 			http.NotFound(w, req)
 			return
 		}
-		profile, err := srv.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
+		profile, err := core.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
 		if err != nil || profile.GenericId == "" {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := srv.GenericGet(ctx, profile.GenericId)
+		contents, err := core.GenericGet(ctx, profile.GenericId)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -38,7 +38,7 @@ func genericHandler(srv server.Server) ContextHandler {
 		if group.Metadata != nil {
 			err = json.Unmarshal(group.Metadata, &data)
 			if err != nil {
-				log.Errorf("error unmarshalling metadata: %v", err)
+				s.logger.Errorf("error unmarshalling metadata: %v", err)
 				http.NotFound(w, req)
 				return
 			}
@@ -50,7 +50,7 @@ func genericHandler(srv server.Server) ContextHandler {
 
 		// render the template of a generic config with data
 		var buf bytes.Buffer
-		err = renderTemplate(&buf, data, contents)
+		err = s.renderTemplate(&buf, data, contents)
 		if err != nil {
 			http.NotFound(w, req)
 			return

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Sirupsen/logrus"
 	"golang.org/x/net/context"
 )
 
@@ -49,7 +50,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // labelsFromRequest returns request query parameters.
-func labelsFromRequest(req *http.Request) map[string]string {
+func labelsFromRequest(logger *logrus.Logger, req *http.Request) map[string]string {
 	values := req.URL.Query()
 	labels := map[string]string{}
 	for key := range values {
@@ -58,6 +59,9 @@ func labelsFromRequest(req *http.Request) map[string]string {
 			// set mac if and only if it parses
 			if hw, err := parseMAC(values.Get(key)); err == nil {
 				labels[key] = hw.String()
+			} else {
+				// invalid MAC arguments may be common
+				logger.Debugf("error parsing MAC address: %s", err)
 			}
 		default:
 			// matchers don't use multi-value keys, drop later values
@@ -71,8 +75,6 @@ func labelsFromRequest(req *http.Request) map[string]string {
 func parseMAC(s string) (net.HardwareAddr, error) {
 	macAddr, err := net.ParseMAC(s)
 	if err != nil {
-		// invalid MAC arguments may be common
-		log.Debugf("error parsing MAC address: %s", err)
 		return nil, err
 	}
 	return macAddr, err
