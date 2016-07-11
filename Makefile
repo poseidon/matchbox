@@ -1,44 +1,45 @@
 
-BIN_DIR=/usr/local/bin
+export CGO_ENABLED:=0
+LD_FLAGS="-w -X github.com/coreos/coreos-baremetal/bootcfg/version.Version=$(shell ./git-version)"
+LOCAL_BIN=/usr/local/bin
 
 all: build
+build: clean bin/bootcfg bin/bootcmd
 
 bin/bootcfg:
-	./build
+	go build -o bin/bootcfg -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
 
 bin/bootcmd:
-	./build
+	go build -o bin/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcmd
 
 test:
 	./test
 
 install:
-	cp bin/bootcfg $(BIN_DIR)
-	cp bin/bootcmd $(BIN_DIR)
-	@echo "**************"
-	@echo "INSTALL SUCCESS"
-	@echo "**************"
-	@echo "bootcfg was installed to /usr/local/bin/bootcfg"
-	@echo "bootcmd was installed to /usr/local/bin/bootcmd"
+	cp bin/bootcfg $(LOCAL_BIN)
+	cp bin/bootcmd $(LOCAL_BIN)
 
-uninstall:
-	rm $(BIN_DIR)/bootcfg
-	rm $(BIN_DIR)/bootcmd
+release: clean _output/coreos-baremetal-linux-amd64.tar.gz _output/coreos-baremetal-darwin-amd64.tar.gz
 
-release: clean _output/coreos-baremetal-linux-amd64.tar.gz
+bin/%/bootcfg:
+	GOOS=$* go build -o bin/$*/bootcfg -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
 
-_output/coreos-baremetal-%-amd64:
-	mkdir -p $@
+bin/%/bootcmd:
+	GOOS=$* go build -o bin/$*/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcmd
 
-_output/coreos-baremetal-%-amd64.tar.gz: bin/bootcfg bin/bootcmd | _output/coreos-baremetal-%-amd64
-	./scripts/release-files $|
-	tar zcvf $@ -C _output coreos-baremetal-$*-amd64
+_output/coreos-baremetal-%-amd64.tar.gz: NAME=coreos-baremetal-$(VERSION)-$*-amd64
+_output/coreos-baremetal-%-amd64.tar.gz: DEST=_output/$(NAME)
+_output/coreos-baremetal-%-amd64.tar.gz: bin/%/bootcfg bin/%/bootcmd
+	mkdir -p $(DEST)
+	cp bin/$*/bootcfg $(DEST)
+	cp bin/$*/bootcmd $(DEST)
+	./scripts/release-files $(DEST)
+	tar zcvf $(DEST).tar.gz -C _output $(NAME)
 
 clean:
-	rm bin/bootcfg
-	rm bin/bootcmd
+	rm -rf bin
 	rm -rf _output
 
-.PHONY: build clean install test
+.PHONY: all build test install release clean
+.SECONDARY: _output/coreos-baremetal-linux-amd64 _output/coreos-baremetal-darwin-amd64
 
-.SECONDARY: _output/coreos-baremetal-linux-amd64

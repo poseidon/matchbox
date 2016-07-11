@@ -11,15 +11,13 @@ fi
 SCRIPTS=$DEST/scripts
 CONTRIB=$DEST/contrib
 
-# binaries
-mkdir -p $DEST
-cp bin/bootcfg $DEST/bootcfg
-cp bin/bootcmd $DEST/bootcmd
+cp CHANGES.md $DEST
+cp LICENSE $DEST
+cp README.md $DEST
 
 # scripts
 mkdir -p $SCRIPTS/tls
 cp scripts/get-coreos $SCRIPTS
-
 cp examples/etc/bootcfg/README.md $SCRIPTS/tls
 cp examples/etc/bootcfg/cert-gen $SCRIPTS/tls
 cp examples/etc/bootcfg/openssl.conf $SCRIPTS/tls
@@ -27,3 +25,12 @@ cp examples/etc/bootcfg/openssl.conf $SCRIPTS/tls
 # systemd
 mkdir -p $CONTRIB/systemd
 cp contrib/systemd/bootcfg.service $CONTRIB/systemd
+
+# examples
+mkdir -p $DEST/examples
+cp -r examples/{cloud,groups,ignition,profiles,README.md} $DEST/examples
+
+# docs
+mkdir -p $DEST/docs
+cp -r Documentation $DEST/docs
+
