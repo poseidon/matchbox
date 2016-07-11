@@ -19,7 +19,7 @@ storage:
       mode: 0500
       contents:
         inline: |
-          #!/bin/bash -e
+          #!/bin/bash -ex
           curl "{{.ignition_endpoint}}?{{.query}}&os=installed" -o ignition.json
           coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json {{if index . "baseurl"}}-b {{.baseurl}}{{end}}
           udevadm settle
@@ -34,3 +34,4 @@ passwd:
         - {{$element}}
         {{end}}
 {{end}}
+
