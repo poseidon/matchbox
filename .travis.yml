@@ -25,4 +25,5 @@ deploy:
     go: '1.6.2'
     condition: "$TRAVIS_PULL_REQUEST = false"
 notifications:
-  email: false
+  email: change
+
