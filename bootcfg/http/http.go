@@ -60,8 +60,11 @@ func labelsFromRequest(logger *logrus.Logger, req *http.Request) map[string]stri
 			if hw, err := parseMAC(values.Get(key)); err == nil {
 				labels[key] = hw.String()
 			} else {
-				// invalid MAC arguments may be common
-				logger.Debugf("error parsing MAC address: %s", err)
+				if logger != nil {
+					logger.WithFields(logrus.Fields{
+						"mac": values.Get(key),
+					}).Warningf("ignoring unparseable MAC address: %v", err)
+				}
 			}
 		default:
 			// matchers don't use multi-value keys, drop later values

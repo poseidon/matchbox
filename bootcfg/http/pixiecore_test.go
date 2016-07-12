@@ -19,7 +19,8 @@ func TestPixiecoreHandler(t *testing.T) {
 		Groups:   map[string]*storagepb.Group{testGroupWithMAC.Id: testGroupWithMAC},
 		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: fake.Profile},
 	}
-	srv := NewServer(&Config{})
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.pixiecoreHandler(c)
 	w := httptest.NewRecorder()

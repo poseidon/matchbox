@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Sirupsen/logrus"
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
 	"golang.org/x/net/context"
 
@@ -24,20 +25,43 @@ type CloudConfig struct {
 func (s *Server) cloudHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
-		if err != nil || group.Profile == "" {
+		if err != nil {
+			s.logger.WithFields(logrus.Fields{
+				"labels": labelsFromRequest(nil, req),
+			}).Infof("No matching group")
 			http.NotFound(w, req)
 			return
 		}
+
 		profile, err := core.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
-		if err != nil || profile.CloudId == "" {
+		if err != nil {
+			s.logger.WithFields(logrus.Fields{
+				"labels":     labelsFromRequest(nil, req),
+				"group":      group.Id,
+				"group_name": group.Name,
+			}).Infof("No profile named: %s", group.Profile)
 			http.NotFound(w, req)
 			return
 		}
+
 		contents, err := core.CloudGet(ctx, profile.CloudId)
 		if err != nil {
+			s.logger.WithFields(logrus.Fields{
+				"labels":     labelsFromRequest(nil, req),
+				"group":      group.Id,
+				"group_name": group.Name,
+				"profile":    group.Profile,
+			}).Infof("No cloud-config template named: %s", profile.CloudId)
 			http.NotFound(w, req)
 			return
 		}
+
+		// match was successful
+		s.logger.WithFields(logrus.Fields{
+			"labels":  labelsFromRequest(nil, req),
+			"group":   group.Id,
+			"profile": profile.Id,
+		}).Debug("Matched a cloud-config template")
 
 		// collect data for rendering
 		data := make(map[string]interface{})

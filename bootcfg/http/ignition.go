@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Sirupsen/logrus"
 	fuze "github.com/coreos/fuze/config"
 	ignition "github.com/coreos/ignition/config"
 	"golang.org/x/net/context"
@@ -22,20 +23,43 @@ import (
 func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
-		if err != nil || group.Profile == "" {
+		if err != nil {
+			s.logger.WithFields(logrus.Fields{
+				"labels": labelsFromRequest(nil, req),
+			}).Infof("No matching group")
 			http.NotFound(w, req)
 			return
 		}
+
 		profile, err := core.ProfileGet(ctx, &pb.ProfileGetRequest{Id: group.Profile})
-		if err != nil || profile.IgnitionId == "" {
+		if err != nil {
+			s.logger.WithFields(logrus.Fields{
+				"labels":     labelsFromRequest(nil, req),
+				"group":      group.Id,
+				"group_name": group.Name,
+			}).Infof("No profile named: %s", group.Profile)
 			http.NotFound(w, req)
 			return
 		}
+
 		contents, err := core.IgnitionGet(ctx, profile.IgnitionId)
 		if err != nil {
+			s.logger.WithFields(logrus.Fields{
+				"labels":     labelsFromRequest(nil, req),
+				"group":      group.Id,
+				"group_name": group.Name,
+				"profile":    group.Profile,
+			}).Infof("No Ignition or Fuze template named: %s", profile.IgnitionId)
 			http.NotFound(w, req)
 			return
 		}
+
+		// match was successful
+		s.logger.WithFields(logrus.Fields{
+			"labels":  labelsFromRequest(nil, req),
+			"group":   group.Id,
+			"profile": profile.Id,
+		}).Debug("Matched an Ignition or Fuze template")
 
 		// Skip rendering if raw Ignition JSON is provided
 		if isIgnition(profile.IgnitionId) {
@@ -49,7 +73,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 
 		// Fuze Config template
 
-		// collect data for rendering Ignition Config
+		// collect data for rendering
 		data := make(map[string]interface{})
 		if group.Metadata != nil {
 			err = json.Unmarshal(group.Metadata, &data)
