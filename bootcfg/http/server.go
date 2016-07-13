@@ -44,24 +44,27 @@ func NewServer(config *Config) *Server {
 func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 
+	chain := func(next ContextHandler) http.Handler {
+		return s.logRequest(NewHandler(next))
+	}
 	// bootcfg version
 	mux.Handle("/", s.logRequest(versionHandler()))
 	// Boot via GRUB
-	mux.Handle("/grub", s.logRequest(NewHandler(s.selectProfile(s.core, s.grubHandler()))))
+	mux.Handle("/grub", chain(s.selectProfile(s.core, s.grubHandler())))
 	// Boot via iPXE
 	mux.Handle("/boot.ipxe", s.logRequest(ipxeInspect()))
 	mux.Handle("/boot.ipxe.0", s.logRequest(ipxeInspect()))
-	mux.Handle("/ipxe", s.logRequest(NewHandler(s.selectProfile(s.core, s.ipxeHandler()))))
+	mux.Handle("/ipxe", chain(s.selectProfile(s.core, s.ipxeHandler())))
 	// Boot via Pixiecore
-	mux.Handle("/pixiecore/v1/boot/", s.logRequest(NewHandler(s.pixiecoreHandler(s.core))))
+	mux.Handle("/pixiecore/v1/boot/", chain(s.pixiecoreHandler(s.core)))
 	// Ignition Config
-	mux.Handle("/ignition", s.logRequest(NewHandler(s.selectGroup(s.core, s.ignitionHandler(s.core)))))
+	mux.Handle("/ignition", chain(s.selectGroup(s.core, s.ignitionHandler(s.core))))
 	// Cloud-Config
-	mux.Handle("/cloud", s.logRequest(NewHandler(s.selectGroup(s.core, s.cloudHandler(s.core)))))
+	mux.Handle("/cloud", chain(s.selectGroup(s.core, s.cloudHandler(s.core))))
 	// Generic template
-	mux.Handle("/generic", s.logRequest(NewHandler(s.selectGroup(s.core, s.genericHandler(s.core)))))
+	mux.Handle("/generic", chain(s.selectGroup(s.core, s.genericHandler(s.core))))
 	// Metadata
-	mux.Handle("/metadata", s.logRequest(NewHandler(s.selectGroup(s.core, s.metadataHandler()))))
+	mux.Handle("/metadata", chain(s.selectGroup(s.core, s.metadataHandler())))
 
 	// Signatures
 	if s.signer != nil {
