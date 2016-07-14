@@ -39,7 +39,7 @@ func versionHandler() http.Handler {
 // logRequest logs HTTP requests.
 func (s *Server) logRequest(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		s.logger.Debugf("HTTP %s %v", req.Method, req.URL)
+		s.logger.Infof("HTTP %s %v", req.Method, req.URL)
 		next.ServeHTTP(w, req)
 	}
 	return http.HandlerFunc(fn)

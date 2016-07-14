@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/Sirupsen/logrus"
 	"golang.org/x/net/context"
 )
 
@@ -34,9 +35,19 @@ func (s *Server) ipxeHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		profile, err := profileFromContext(ctx)
 		if err != nil {
+			s.logger.WithFields(logrus.Fields{
+				"labels": labelsFromRequest(nil, req),
+			}).Infof("No matching profile")
 			http.NotFound(w, req)
 			return
 		}
+
+		// match was successful
+		s.logger.WithFields(logrus.Fields{
+			"labels":  labelsFromRequest(nil, req),
+			"profile": profile.Id,
+		}).Debug("Matched an iPXE config")
+
 		var buf bytes.Buffer
 		err = ipxeTemplate.Execute(&buf, profile.Boot)
 		if err != nil {
