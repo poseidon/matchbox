@@ -3,6 +3,7 @@ package client
 import (
 	"crypto/tls"
 	"errors"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -19,6 +20,8 @@ var (
 type Config struct {
 	// List of endpoint URLs
 	Endpoints []string
+	// DialTimeout is the timeout for dialing a client connection
+	DialTimeout time.Duration
 	// Client TLS credentials
 	TLS *tls.Config
 }
@@ -60,8 +63,11 @@ func newClient(config *Config) (*Client, error) {
 
 // dialEndpoints attemps to Dial each endpoint in order to establish a
 // connection.
-func dialEndpoints(config *Config) (*grpc.ClientConn, error) {
-	var opts []grpc.DialOption
+func dialEndpoints(config *Config) (conn *grpc.ClientConn, err error) {
+	opts := []grpc.DialOption{
+		grpc.WithBlock(),
+		grpc.WithTimeout(config.DialTimeout),
+	}
 	if config.TLS != nil {
 		creds := credentials.NewTLS(config.TLS)
 		opts = append(opts, grpc.WithTransportCredentials(creds))
@@ -69,9 +75,8 @@ func dialEndpoints(config *Config) (*grpc.ClientConn, error) {
 		return nil, errNoTLSConfig
 	}
 
-	var err error
 	for _, endpoint := range config.Endpoints {
-		conn, err := grpc.Dial(endpoint, opts...)
+		conn, err = grpc.Dial(endpoint, opts...)
 		if err == nil {
 			return conn, nil
 		}

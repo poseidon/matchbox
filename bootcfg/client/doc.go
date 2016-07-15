@@ -4,6 +4,7 @@
 //
 //     cfg := &client.Config{
 //       Endpoints: []string{"127.0.0.1:8081"},
+//       DialTimeout: 10 * time.Second,
 //     }
 //     client, err := client.New(cfg)
 //     defer client.Close()
