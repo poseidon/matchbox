@@ -68,6 +68,10 @@ systemd:
         RestartSec=10
         [Install]
         WantedBy=multi-user.target
+    {{ if index . "enable_dtc" }}
+    - name: tpmd.service
+      enable: true
+    {{ end }}
 
 storage:
   {{ if index . "pxe" }}
