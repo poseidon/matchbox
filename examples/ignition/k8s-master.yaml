@@ -52,14 +52,14 @@ systemd:
       contents: |
         [Unit]
         Description=Kubelet via Hyperkube ACI
-        Requires=flanneld.service
-        After=flanneld.service
+        Wants=flanneld.service
         Requires=k8s-assets.target
         After=k8s-assets.target
         [Service]
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
-        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         Environment=KUBELET_VERSION=v1.3.0_coreos.1
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+        ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers=http://127.0.0.1:8080 \
           --register-schedulable=true \
@@ -77,8 +77,6 @@ systemd:
       contents: |
         [Unit]
         Description=Kubernetes Addons
-        Requires=kubelet.service
-        After=kubelet.service
         [Service]
         Type=oneshot
         ExecStart=/opt/k8s-addons
