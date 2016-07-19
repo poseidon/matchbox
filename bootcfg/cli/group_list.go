@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
+
+	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // groupListCmd lists Groups.
