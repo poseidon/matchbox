@@ -83,7 +83,13 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 				return
 			}
 		}
+
 		data["query"] = req.URL.RawQuery
+		values := req.URL.Query()
+		for k := range values {
+			data["http"]["query_params"][strings.ToLower(k)] = values.Get(k)
+		}
+
 		for key, value := range group.Selector {
 			data[strings.ToLower(key)] = value
 		}
