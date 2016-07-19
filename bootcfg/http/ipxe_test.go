@@ -17,7 +17,7 @@ func TestIPXEInspect(t *testing.T) {
 	h := ipxeInspect()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(w, req)
+	h.ServeHTTP(context.Background(), w, req)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, ipxeBootstrap, w.Body.String())
 }

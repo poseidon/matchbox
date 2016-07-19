@@ -20,8 +20,8 @@ type CloudConfig struct {
 	Content string
 }
 
-// cloudHandler returns a handler that responds with the cloud config for the
-// requester.
+// cloudHandler returns a handler that responds with the cloud config matching
+// the request.
 func (s *Server) cloudHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)

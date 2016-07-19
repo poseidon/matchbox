@@ -14,8 +14,8 @@ import (
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
 
-// genericHandler returns a handler that responds with generic file for
-// the requester.
+// genericHandler returns a handler that responds with the generic config
+// matching the request.
 func (s *Server) genericHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)

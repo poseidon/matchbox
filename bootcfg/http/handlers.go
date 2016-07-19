@@ -10,22 +10,9 @@ import (
 	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
 )
 
-// requireGET requires requests to be an HTTP GET. Otherwise, it responds with
-// a 405 status code.
-func requireGET(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, req *http.Request) {
-		if req.Method != "GET" {
-			http.Error(w, "only HTTP GET is supported", http.StatusMethodNotAllowed)
-			return
-		}
-		next.ServeHTTP(w, req)
-	}
-	return http.HandlerFunc(fn)
-}
-
-// versionHandler shows the server name and version for root requests.
-// Otherwise, a 404 is returned.
-func versionHandler() http.Handler {
+// homeHandler shows the server name for rooted requests. Otherwise, a 404 is
+// returned.
+func homeHandler() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		if req.URL.Path != "/" {
 			http.NotFound(w, req)

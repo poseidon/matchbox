@@ -22,11 +22,11 @@ boot
 
 // ipxeInspect returns a handler that responds with the iPXE script to gather
 // client machine data and chainload to the ipxeHandler.
-func ipxeInspect() http.Handler {
-	fn := func(w http.ResponseWriter, req *http.Request) {
+func ipxeInspect() ContextHandler {
+	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, ipxeBootstrap)
 	}
-	return http.HandlerFunc(fn)
+	return ContextHandlerFunc(fn)
 }
 
 // ipxeBoot returns a handler which renders the iPXE boot script for the
