@@ -7,7 +7,7 @@ Run the most recent tagged and signed `bootcfg` [release](https://github.com/cor
 
     sudo rkt trust --prefix coreos.com/bootcfg
     # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-    sudo rkt run --net=host --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:v0.3.0 -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=host --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:v0.4.0 -- -address=0.0.0.0:8080 -log-level=debug
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
 
@@ -15,7 +15,7 @@ Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` o
 
 Run the latest or the most recently tagged `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases) Docker image.
 
-    sudo docker run --net=host --rm -v $PWD/examples/assets:/var/lib/bootcfg/assets:Z quay.io/coreos/bootcfg:v0.3.0 -address=0.0.0.0:8080 -log-level=debug
+    sudo docker run --net=host --rm -v $PWD/examples/assets:/var/lib/bootcfg/assets:Z quay.io/coreos/bootcfg:v0.4.0 -address=0.0.0.0:8080 -log-level=debug
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
 
@@ -44,10 +44,8 @@ The example manifests use Kubernetes `emptyDir` volumes to back the `bootcfg` Fi
 The `bootcfg` service should be run by a non-root user with access to the `bootcfg` data directory (e.g. `/var/lib/bootcfg`). Create a `bootcfg` user and group.
 
     sudo useradd -U bootcfg
-
-Run the provided script to setup the `bootcfg` data directory.
-
-    sudo ./scripts/setup-data-dir
+    sudo mkdir -p /var/lib/bootcfg/assets
+    sudo chown -R bootcfg:bootcfg /var/lib/bootcfg
 
 Add yourself to the `bootcfg` group if you'd like to edit configs directly rather than through the `bootcmd` client.
 
@@ -70,7 +68,7 @@ Verify the signature from the [CoreOS App Signing Key](https://coreos.com/securi
 Install the `bootcfg` static binary to `/usr/local/bin`.
 
     tar xzvf bootcfg-VERSION-linux-amd64.tar.gz
-    sudo cp bootcfg-VERSION/bootcfg /usr/local/bin
+    sudo cp bootcfg /usr/local/bin
 
 ### Source
 
@@ -84,8 +82,6 @@ Build `bootcfg` from source.
     make
 
 Install the `bootcfg` static binary to `/usr/local/bin`.
-
-    $ sudo make install
 
 ### Run
 

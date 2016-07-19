@@ -1,7 +1,7 @@
 
 # Torus Storage
 
-The `torus` example provisions a 3 node CoreOS cluster, with `etcd3` and Torus, to demonstrate a stand-alone storage cluster. Each of the 3 nodes runs a Torus instance which makes 1GiB of space available (configured per node by "torus_storage_size" in machine group metadata).
+The Torus example provisions a 3 node CoreOS cluster, with `etcd3` and Torus, to demonstrate a stand-alone storage cluster. Each of the 3 nodes runs a Torus instance which makes 1GiB of space available (configured per node by "torus_storage_size" in machine group metadata).
 
 ## Requirements
 
@@ -14,7 +14,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 
 ## Examples
 
-The [examples](..examples) statically assign IP addresses (172.15.0.21, 172.15.0.22, 172.15.0.23) to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for real hardware, but you'll need to update the MAC/IP addresses.
+The [examples](..examples) statically assign IP addresses (172.15.0.21, 172.15.0.22, 172.15.0.23) to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [torus](../examples/groups/torus) - iPXE boot a Torus cluster (use rkt)
 
@@ -30,7 +30,7 @@ Run the latest `bootcfg` ACI with rkt and the `torus` example.
 
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/torus quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
-Create a network boot environment with `coreos/dnsmasq` and create VMs with `scripts/libvirt` as covered in [bootcfg with rkt](getting-started-rkt.md). Client machines should network boot and provision themselves.
+Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) for help. Client machines should network boot and provision themselves.
 
 ## Verify
 

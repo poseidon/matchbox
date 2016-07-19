@@ -1,11 +1,11 @@
 
 # Cloud Config
 
-**Note:** We recommend you migrate to [Ignition](https://coreos.com/blog/introducing-ignition.html) on bare metal.
+**Note:** We recommend migrating to [Ignition](ignition.md) for hardware provisioning.
 
 CoreOS Cloud-Config is a system for configuring machines with a Cloud-Config file or executable script from user-data. Cloud-Config runs in userspace on each boot and implements a subset of the [cloud-init spec](http://cloudinit.readthedocs.org/en/latest/topics/format.html#cloud-config-data). See the cloud-config [docs](https://coreos.com/os/docs/latest/cloud-config.html) for details.
 
-Cloud-Config template files can be added in `/var/lib/bootcfg/cloud` or in a `cloud` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with Group `metadata` when served.
+Cloud-Config template files can be added in `/var/lib/bootcfg/cloud` or in a `cloud` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
 
     /var/lib/bootcfg
     ├── cloud
@@ -14,9 +14,11 @@ Cloud-Config template files can be added in `/var/lib/bootcfg/cloud` or in a `cl
     ├── ignition
     └── profiles
 
-Reference a Cloud-Config in a [Profile](bootcfg.md#profiles). When PXE booting, use the kernel option `cloud-config-url` to point to `bootcfg` [cloud-config endpoint](api.md#cloud-config).
+## Reference
 
-## Configs
+Reference a Cloud-Config in a [Profile](bootcfg.md#profiles) with `cloud_id`. When PXE booting, use the kernel option `cloud-config-url` to point to `bootcfg` [cloud-config endpoint](api.md#cloud-config).
+
+## Examples
 
 Here is an example Cloud-Config which starts some units and writes a file.
 
@@ -34,13 +36,7 @@ Here is an example Cloud-Config which starts some units and writes a file.
         content: |
           {{.greeting}}
 
-### Examples
-
-See [examples/cloud](../examples/cloud) for example Cloud-Config files.
-
-### Validator
-
-The Cloud-Config [Validator](https://coreos.com/validate/) is useful for checking your Cloud-Config files for errors.
+The Cloud-Config [Validator](https://coreos.com/validate/) is also useful for checking your Cloud-Config files for errors.
 
 ## Comparison with Ignition
 

@@ -1,7 +1,7 @@
 
 # CoreOS on Baremetal
 
-[![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](https://godoc.org/github.com/coreos/coreos-baremetal?status.png)](https://godoc.org/github.com/coreos/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/bootcfg/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bootcfg) [![IRC](https://img.shields.io/badge/irc-%23coreos-F04C5C.svg)](https://botbot.me/freenode/coreos)
+[![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](https://godoc.org/github.com/coreos/coreos-baremetal?status.png)](https://godoc.org/github.com/coreos/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/bootcfg/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bootcfg) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
 
 Guides and a service for network booting and provisioning CoreOS clusters on virtual or physical hardware.
 
@@ -16,13 +16,14 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 `bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, GRUB, and Pixiecore support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
 
 * [bootcfg Service](Documentation/bootcfg.md)
-    * [Profiles](Documentation/bootcfg.md#profiles)
-    * [Groups](Documentation/bootcfg.md#groups-and-metadata)
+* [Profiles](Documentation/bootcfg.md#profiles)
+* [Groups](Documentation/bootcfg.md#groups-and-metadata)
+* Config Templates
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
 * Tutorials (libvirt)
     * [bootcfg with rkt](Documentation/getting-started-rkt.md)
-    * [bootcfg with Docker](Documentation/getting-started-docker.md) 
+    * [bootcfg with Docker](Documentation/getting-started-docker.md)
 * [Configuration](Documentation/config.md)
 * [HTTP API](Documentation/api.md)
 * [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
@@ -35,8 +36,9 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
     * [binary](Documentation/deployment.md#binary) / [systemd](Documentation/deployment.md#systemd)
 * [Troubleshooting](Documentation/troubleshooting.md)
 * Going Further
-    * [OpenPGP Signing](Documentation/openpgp.md)
-    * [Development](Documentation/dev/develop.md)
+    * [gRPC API Usage](config.md#grpc-api)
+    * [Metadata](api.md#metadata)
+    * OpenPGP [Signing](api.md#openpgp-signatures)
 
 ### Examples
 
