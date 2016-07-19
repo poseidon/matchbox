@@ -16,7 +16,7 @@ import (
 )
 
 // ignitionHandler returns a handler that responds with the Ignition config
-// for the requester. The Ignition file referenced in the Profile is parsed
+// matching the request. The Ignition file referenced in the Profile is parsed
 // as raw Ignition (for .ign/.ignition) or rendered to a Fuze config (YAML)
 // and converted to Ignition. Ignition configs are served as HTTP JSON
 // responses.

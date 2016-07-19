@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](https://godoc.org/github.com/coreos/coreos-baremetal?status.png)](https://godoc.org/github.com/coreos/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/bootcfg/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bootcfg) [![IRC](https://img.shields.io/badge/irc-%23coreos-F04C5C.svg)](https://botbot.me/freenode/coreos)
 
-CoreOS on Baremetal provides guides and a service for network booting and provisioning CoreOS clusters on virtual or physical hardware.
+Guides and a service for network booting and provisioning CoreOS clusters on virtual or physical hardware.
 
 ## Guides
 
@@ -16,14 +16,14 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
 `bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, GRUB, and Pixiecore support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
 
 * [bootcfg Service](Documentation/bootcfg.md)
-    * [Groups](Documentation/bootcfg.md#groups-and-metadata)
     * [Profiles](Documentation/bootcfg.md#profiles)
+    * [Groups](Documentation/bootcfg.md#groups-and-metadata)
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
 * Tutorials (libvirt)
     * [bootcfg with rkt](Documentation/getting-started-rkt.md)
     * [bootcfg with Docker](Documentation/getting-started-docker.md) 
-* [Flags](Documentation/config.md)
+* [Configuration](Documentation/config.md)
 * [HTTP API](Documentation/api.md)
 * [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
 * Backends
@@ -40,7 +40,7 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
 
 ### Examples
 
-The [examples](examples) show how to network boot and provision higher-order CoreOS clusters. Network boot [libvirt](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
+The [examples](examples) network boot and provision CoreOS clusters. Network boot [libvirt](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
 
 * Multi-node [Kubernetes cluster](Documentation/kubernetes.md) with TLS
 * Multi-node [self-hosted Kubernetes cluster](Documentation/bootkube.md)
@@ -51,4 +51,4 @@ The [examples](examples) show how to network boot and provision higher-order Cor
 * [GRUB Netboot](Documentation/grub.md) CoreOS
 * iPXE Boot CoreOS with a root fs
 * iPXE Boot CoreOS
-
+* Lab [examples](https://github.com/dghubble/metal)

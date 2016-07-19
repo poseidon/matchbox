@@ -12,6 +12,8 @@ import (
 
 const plainContentType = "plain/text"
 
+// genericHandler returns a handler that responds with the metadata env file
+// matching the request.
 func (s *Server) metadataHandler() ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)

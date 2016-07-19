@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 func TestLabelsFromRequest(t *testing.T) {
 	emptyMap := map[string]string{}
 	logger, _ := logtest.NewNullLogger()

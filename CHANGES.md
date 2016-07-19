@@ -11,10 +11,12 @@
     * Stop requiring Ignition templates to use file extensions (#176)
 * Logging Improvements:
     * Show `bootcfg` message at the home path `/`
-    * Fix http package log messages and increase request logging (#173)
+    * Add structured loggging with Logrus (#254, #268)
     * Log requests for bootcfg hosted assets (#214)
-    * Error when an Ignition/Cloud-config template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
+    * Fix http package log messages (#173)
+    * Error when a template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
 * Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
+* Add DialTimeout to gRPC client config (#273)
 
 #### Changes
 
@@ -26,12 +28,16 @@
 
 #### Examples
 
-* Add self-hosted Kubernetes example (PXE boot or install to disk)
+* Kubernetes
+    * Upgrade Kubernetes (static manifest) examples to v1.3.0
+    * Add Kubernetes (self-hosted) example (PXE boot or install to disk)
+    * Mount /etc/resolv.conf into host kubelet for skydns and pod lookups (#237,#260)
+    * Fix a bug in the k8s example k8s-certs@.service file check (#156)
+    * Avoid systemd dependency failures and restart components (#257,#274)
 * Add CoreOS Torus distributed storage cluster example (PXE boot)
 * Add `create-uefi` subcommand to `scripts/libvirt` for UEFI/GRUB testing
-* Upgrade Kubernetes examples to v1.3.0
+* Show CoreOS install to disk from a cached copy via bootcfg baseurl (#228)
 * Remove 8.8.8.8 from networkd example Ignition configs (#184)
-* Fix a bug in the k8s example k8s-certs@.service file check (#156)
 * Match machines by MAC address in examples to simplify networkd device matching (#209)
 * With rkt 1.8+, you can use `rkt gc --grace-period=0` to cleanup rkt IP assignments in examples. The `rkt-gc-force` script has been removed.
 
