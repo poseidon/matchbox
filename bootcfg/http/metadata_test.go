@@ -12,28 +12,43 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
-	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
 func TestMetadataHandler(t *testing.T) {
+	group := &storagepb.Group{
+		Id:       "test-group",
+		Selector: map[string]string{"mac": "52:54:00:a1:9c:ae"},
+		Metadata: []byte(`{"meta":"data", "etcd":{"name":"node1"},"some":{"nested":{"data":"some-value"}}}`),
+	}
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
 	h := srv.metadataHandler()
-	ctx := withGroup(context.Background(), fake.Group)
+	ctx := withGroup(context.Background(), group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/?uuid=a1b2c3d4", nil)
+	req, _ := http.NewRequest("GET", "/?mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - the Group's custom metadata and selectors are served
+	// - Group selectors, metadata, and query variables are formatted
+	// - nested metadata are namespaced
 	// - key names are upper case
-	expectedData := map[string]string{
-		"POD_NETWORK":  "10.2.0.0/16",
-		"SERVICE_NAME": "etcd2",
-		"UUID":         "a1b2c3d4",
+	// - key/value pairs are newline separated
+	expectedLines := map[string]string{
+		// group metadata
+		"META":             "data",
+		"ETCD_NAME":        "node1",
+		"SOME_NESTED_DATA": "some-value",
+		// group selector
+		"MAC": "52:54:00:a1:9c:ae",
+		// request
+		"REQUEST_QUERY_MAC":   "52:54:00:a1:9c:ae",
+		"REQUEST_QUERY_FOO":   "bar",
+		"REQUEST_QUERY_COUNT": "3",
+		"REQUEST_QUERY_GATE":  "true",
+		"REQUEST_RAW_QUERY":   "mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true",
 	}
 	assert.Equal(t, http.StatusOK, w.Code)
 	// convert response (random order) to map (tests compare in order)
-	assert.Equal(t, expectedData, metadataToMap(w.Body.String()))
+	assert.Equal(t, expectedLines, metadataToMap(w.Body.String()))
 	assert.Equal(t, plainContentType, w.HeaderMap.Get(contentType))
 }
 
@@ -49,8 +64,6 @@ func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
 		{&storagepb.Group{Metadata: []byte(`{"num":3}`)}, "NUM=3\n"},
 		{&storagepb.Group{Metadata: []byte(`{"yes":true}`)}, "YES=true\n"},
 		{&storagepb.Group{Metadata: []byte(`{"no":false}`)}, "NO=false\n"},
-		// Issue #84 - improve list and map printouts
-		{&storagepb.Group{Metadata: []byte(`{"list":["3","d"]}`)}, "LIST=[3 d]\n"},
 	}
 	for _, c := range cases {
 		ctx := withGroup(context.Background(), c.group)
@@ -58,10 +71,10 @@ func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/", nil)
 		h.ServeHTTP(ctx, w, req)
 		// assert that:
-		// - the Group's custom metadata is served
-		// - key names are upper case
+		// - Group metadata key names are upper case
+		// - key/value pairs are newline separated
 		assert.Equal(t, http.StatusOK, w.Code)
-		assert.Equal(t, c.expected, w.Body.String())
+		assert.Contains(t, w.Body.String(), c.expected)
 		assert.Equal(t, plainContentType, w.HeaderMap.Get(contentType))
 	}
 }

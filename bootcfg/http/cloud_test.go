@@ -21,6 +21,7 @@ coreos:
     name: {{.uuid}}
   units:
     - name: {{.service_name}}
+    - name: {{.request.query.foo}}
 `
 	expected := `#cloud-config
 coreos:
@@ -28,6 +29,7 @@ coreos:
     name: a1b2c3d4
   units:
     - name: etcd2
+    - name: some-param
 `
 	store := &fake.FixedStore{
 		Profiles:     map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
@@ -39,10 +41,10 @@ coreos:
 	h := srv.cloudHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/?foo=some-param", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Cloud config is rendered with Group metadata and selectors
+	// - Cloud config is rendered with Group selectors, metadata, and query variables
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, expected, w.Body.String())
 }
@@ -90,6 +92,6 @@ coreos:
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
 	// - Cloud-config template rendering errors because "missing_key" is not
-	// present in the Group metadata
+	// present in the template variables
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }

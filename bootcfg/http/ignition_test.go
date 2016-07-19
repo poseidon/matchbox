@@ -14,13 +14,8 @@ import (
 	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
-var (
-	expectedIgnitionV1 = `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true}]},"networkd":{},"passwd":{}}`
-	expectedIgnitionV2 = `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true}]},"networkd":{},"passwd":{}}`
-)
-
 func TestIgnitionHandler_V2JSON(t *testing.T) {
-	content := `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true}]},"networkd":{},"passwd":{}}`
+	content := `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
 	profile := &storagepb.Profile{
 		Id:         fake.Group.Profile,
 		IgnitionId: "file.ign",
@@ -38,15 +33,14 @@ func TestIgnitionHandler_V2JSON(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Ignition template is rendered with Group metadata and selectors
-	// - Rendered Ignition template is parsed as JSON
-	// - Ignition Config served as JSON
+	// - raw Ignition config served directly
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
-	assert.Equal(t, expectedIgnitionV2, w.Body.String())
+	assert.Equal(t, content, w.Body.String())
 }
 
 func TestIgnitionHandler_V2YAML(t *testing.T) {
+	// exercise templating features, not a realistic Fuze template
 	content := `
 systemd:
   units:
@@ -54,7 +48,11 @@ systemd:
       enable: true
     - name: {{.uuid}}.service
       enable: true
+    - name: {{.request.query.foo}}.service
+      enable: true
+      contents: {{.request.raw_query}}
 `
+	expectedIgnitionV2 := `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true},{"name":"some-param.service","enable":true,"contents":"foo=some-param\u0026bar=b"}]},"networkd":{},"passwd":{}}`
 	store := &fake.FixedStore{
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
@@ -65,12 +63,11 @@ systemd:
 	h := srv.ignitionHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/?foo=some-param&bar=b", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Ignition template is rendered with Group metadata and selectors
-	// - Rendered Ignition template is parsed as YAML
-	// - Ignition Config served as JSON
+	// - Fuze template rendered with Group selectors, metadata, and query variables
+	// - Transformed to an Ignition config (JSON)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
 	assert.Equal(t, expectedIgnitionV2, w.Body.String())
@@ -121,6 +118,6 @@ systemd:
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
 	// - Ignition template rendering errors because "missing_key" is not
-	// present in the Group metadata
+	// present in the template variables
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }

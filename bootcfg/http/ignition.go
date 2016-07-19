@@ -2,7 +2,6 @@ package http
 
 import (
 	"bytes"
-	"encoding/json"
 	"net/http"
 	"strings"
 
@@ -74,18 +73,11 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 		// Fuze Config template
 
 		// collect data for rendering
-		data := make(map[string]interface{})
-		if group.Metadata != nil {
-			err = json.Unmarshal(group.Metadata, &data)
-			if err != nil {
-				s.logger.Errorf("error unmarshalling metadata: %v", err)
-				http.NotFound(w, req)
-				return
-			}
-		}
-		data["query"] = req.URL.RawQuery
-		for key, value := range group.Selector {
-			data[strings.ToLower(key)] = value
+		data, err := collectVariables(req, group)
+		if err != nil {
+			s.logger.Errorf("error collecting variables: %v", err)
+			http.NotFound(w, req)
+			return
 		}
 
 		// render the template for an Ignition config with data
