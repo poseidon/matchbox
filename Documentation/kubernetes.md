@@ -1,7 +1,7 @@
 
 # Kubernetes
 
-The Kubernetes examples provision a 3 node v1.2.4 Kubernetes cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The Kubernetes examples provision a 3 node v1.3.0 Kubernetes cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -47,8 +47,8 @@ Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](gett
 
 [Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
 
-    cd /path/to/coreos-baremetal
-    kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
+    $ cd /path/to/coreos-baremetal
+    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
     NAME          STATUS                     AGE
     172.15.0.21   Ready                      6m
     172.15.0.22   Ready                      5m
@@ -56,18 +56,30 @@ Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](gett
 
 Get all pods.
 
-    kubectl --kubeconfig=examples/assets/tls/kubeconfig get pods --all-namespaces
+    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get pods --all-namespaces
     NAMESPACE     NAME                                  READY     STATUS    RESTARTS   AGE
-    kube-system   heapster-v1.0.2-808903792-yyyvw       2/2       Running   0          6m
-    kube-system   kube-apiserver-172.15.0.21            1/1       Running   0          5m
-    kube-system   kube-controller-manager-172.15.0.21   1/1       Running   0          5m
-    kube-system   kube-dns-v11-uaajz                    4/4       Running   0          6m
-    kube-system   kube-proxy-172.15.0.21                1/1       Running   0          6m
-    kube-system   kube-proxy-172.15.0.22                1/1       Running   0          6m
-    kube-system   kube-proxy-172.15.0.23                1/1       Running   0          6m
-    kube-system   kube-scheduler-172.15.0.21            1/1       Running   0          6m
+    kube-system   heapster-v1.1.0-3647315203-tes6g      2/2       Running   0          14m
+    kube-system   kube-apiserver-172.15.0.21            1/1       Running   0          14m
+    kube-system   kube-controller-manager-172.15.0.21   1/1       Running   0          14m
+    kube-system   kube-dns-v15-nfbz4                    3/3       Running   0          14m
+    kube-system   kube-proxy-172.15.0.21                1/1       Running   0          14m
+    kube-system   kube-proxy-172.15.0.22                1/1       Running   0          14m
+    kube-system   kube-proxy-172.15.0.23                1/1       Running   0          14m
+    kube-system   kube-scheduler-172.15.0.21            1/1       Running   0          13m
+    kube-system   kubernetes-dashboard-v1.1.0-m1gyy     1/1       Running   0          14m
 
 Machines should download and network boot CoreOS in about a minute. It can take 2-3 minutes for the Kubernetes API to become available and for add-on pods to be scheduled.
+
+## Kubernetes Dashboard
+
+Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding to the dashboard pod.
+
+    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig port-forward kubernetes-dashboard-v1.1.0-SOME-ID 9090 --namespace=kube-system
+    Forwarding from 127.0.0.1:9090 -> 9090
+
+Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).
+
+<img src='img/kubernetes-dashboard.png' class="img-center" alt="Kubernetes Dashboard"/>
 
 ## Tectonic
 
