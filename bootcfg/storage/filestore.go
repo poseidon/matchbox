@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 // Config initializes a fileStore.
@@ -121,6 +121,11 @@ func (s *fileStore) IgnitionPut(name string, config []byte) error {
 func (s *fileStore) IgnitionGet(name string) (string, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("ignition", name))
 	return string(data), err
+}
+
+// IgnitionPut creates or updates an Cloud-Config template.
+func (s *fileStore) CloudPut(name string, config []byte) error {
+	return Dir(s.root).writeFile(filepath.Join("cloud", name), config)
 }
 
 // CloudGet gets a Cloud-Config template by name.

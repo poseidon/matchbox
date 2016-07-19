@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	pb "github.com/mikeynap/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // ignitionPutCmd creates and updates Ignition templates.

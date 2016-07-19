@@ -17,9 +17,9 @@ Install the package dependencies and start the Docker daemon.
     # check Docker's docs to install Docker 1.8+ on Debian/Ubuntu
     sudo apt-get install virt-manager virtinst qemu-kvm
 
-Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source which contains the examples and scripts.
+Clone the [coreos-baremetal](https://github.com/mikeynap/coreos-baremetal) source which contains the examples and scripts.
 
-    git clone https://github.com/coreos/coreos-baremetal.git
+    git clone https://github.com/mikeynap/coreos-baremetal.git
     cd coreos-baremetal
 
 Download CoreOS image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.

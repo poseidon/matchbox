@@ -3,7 +3,7 @@
 
 ## rkt
 
-Run the most recent tagged and signed `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
+Run the most recent tagged and signed `bootcfg` [release](https://github.com/mikeynap/coreos-baremetal/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
 
     sudo rkt trust --prefix coreos.com/bootcfg
     # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
@@ -13,7 +13,7 @@ Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` o
 
 ## Docker
 
-Run the latest or the most recently tagged `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases) Docker image.
+Run the latest or the most recently tagged `bootcfg` [release](https://github.com/mikeynap/coreos-baremetal/releases) Docker image.
 
     sudo docker run --net=host --rm -v $PWD/examples/assets:/var/lib/bootcfg/assets:Z quay.io/coreos/bootcfg:v0.3.0 -address=0.0.0.0:8080 -log-level=debug
 
@@ -56,10 +56,10 @@ Add yourself to the `bootcfg` group if you'd like to edit configs directly rathe
 
 ### Prebuilt
 
-Download a prebuilt binary from the Github [releases](https://github.com/coreos/coreos-baremetal/releases).
+Download a prebuilt binary from the Github [releases](https://github.com/mikeynap/coreos-baremetal/releases).
 
-    wget https://github.com/coreos/coreos-baremetal/releases/download/VERSION/bootcfg-VERSION-linux-amd64.tar.gz
-    wget https://github.com/coreos/coreos-baremetal/releases/download/VERSION/bootcfg-VERSION-linux-amd64.tar.gz.asc
+    wget https://github.com/mikeynap/coreos-baremetal/releases/download/VERSION/bootcfg-VERSION-linux-amd64.tar.gz
+    wget https://github.com/mikeynap/coreos-baremetal/releases/download/VERSION/bootcfg-VERSION-linux-amd64.tar.gz.asc
 
 Verify the signature from the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
@@ -76,8 +76,8 @@ Install the `bootcfg` static binary to `/usr/local/bin`.
 
 Clone the coreos-baremetal project into your $GOPATH.
 
-    go get github.com/coreos/coreos-baremetal/cmd/bootcfg
-    cd $GOPATH/src/github.com/coreos/coreos-baremetal
+    go get github.com/mikeynap/coreos-baremetal/cmd/bootcfg
+    cd $GOPATH/src/github.com/mikeynap/coreos-baremetal
 
 Build `bootcfg` from source.
 

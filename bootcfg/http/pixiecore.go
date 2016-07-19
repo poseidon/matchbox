@@ -7,8 +7,8 @@ import (
 	"github.com/Sirupsen/logrus"
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
+	pb "github.com/mikeynap/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // pixiecoreHandler returns a handler that renders the boot config JSON for

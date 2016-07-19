@@ -5,8 +5,8 @@ import (
 
 	"github.com/Sirupsen/logrus"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	"github.com/coreos/coreos-baremetal/bootcfg/sign"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/sign"
 )
 
 // Config configures a Server.

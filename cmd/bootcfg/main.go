@@ -11,13 +11,13 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/coreos/pkg/flagutil"
 
-	web "github.com/coreos/coreos-baremetal/bootcfg/http"
-	"github.com/coreos/coreos-baremetal/bootcfg/rpc"
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	"github.com/coreos/coreos-baremetal/bootcfg/sign"
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
-	"github.com/coreos/coreos-baremetal/bootcfg/tlsutil"
-	"github.com/coreos/coreos-baremetal/bootcfg/version"
+	web "github.com/mikeynap/coreos-baremetal/bootcfg/http"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/rpc"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/sign"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/storage"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/tlsutil"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/version"
 )
 
 var (

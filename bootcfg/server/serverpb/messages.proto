@@ -1,7 +1,7 @@
 syntax = "proto3";
 package serverpb;
 
-import "github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb/storage.proto";
+import "github.com/mikeynap/coreos-baremetal/bootcfg/storage/storagepb/storage.proto";
 
 message SelectGroupRequest {
   map<string, string> labels = 1;
@@ -65,3 +65,10 @@ message IgnitionPutRequest {
 }
 
 message IgnitionPutResponse {}
+
+message CloudPutRequest {
+  string name = 1;
+  bytes config = 2;
+}
+
+message CloudPutResponse {}

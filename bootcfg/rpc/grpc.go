@@ -6,8 +6,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/rpc/rpcpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
 )
 
 // NewServer wraps the bootcfg Server to return a new gRPC Server.

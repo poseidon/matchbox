@@ -3,9 +3,9 @@ package rpc
 import (
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/rpc/rpcpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
+	pb "github.com/mikeynap/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // ignitionServer takes a bootcfg Server and implements a gRPC IgnitionServer.

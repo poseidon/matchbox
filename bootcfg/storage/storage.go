@@ -3,7 +3,7 @@ package storage
 import (
 	"errors"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 // Storage errors
@@ -33,6 +33,8 @@ type Store interface {
 	// IgnitionGet gets an Ignition template by name.
 	IgnitionGet(name string) (string, error)
 
+	// CloudPut creates or updates an Cloud-Config template.
+	CloudPut(name string, config []byte) error
 	// CloudGet gets a Cloud-Config template by name.
 	CloudGet(name string) (string, error)
 
