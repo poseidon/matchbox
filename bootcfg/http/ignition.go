@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"encoding/json"
+	"net"
 	"net/http"
 	"strings"
 
@@ -87,6 +88,14 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 		for key, value := range group.Selector {
 			data[strings.ToLower(key)] = value
 		}
+
+		host, _, err := net.SplitHostPort(req.RemoteAddr)
+		if err != nil {
+			log.Errorf("error getting client IP from request: %v", err)
+			http.NotFound(w, req)
+			return
+		}
+		data["http"]["remote_host"] = host
 
 		// render the template for an Ignition config with data
 		var buf bytes.Buffer
