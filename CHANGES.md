@@ -17,6 +17,7 @@
     * Error when a template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
 * Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
 * Add DialTimeout to gRPC client config (#273)
+* Allow query parameters to be used as template variables as `{{.request.query.foo}}` (#182)
 
 #### Changes
 
@@ -25,6 +26,7 @@
     - [Migrate from bootcfg v0.3.0](Documentation/ignition.md#migration-from-v030)
     - Require CoreOS 1010.1.0 or newer
     - Drop support for Ignition v1 format
+* Replace template variable `{{.query}}` with `{{.request.raw_query}}` (**breaking**)
 
 #### Examples
 

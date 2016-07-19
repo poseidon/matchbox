@@ -1,12 +1,38 @@
 package http
 
 import (
+	"encoding/json"
 	"net"
 	"net/http"
 	"strings"
 
 	"github.com/Sirupsen/logrus"
+
+	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
 )
+
+// collectVariables collects group selectors, metadata, and request-scoped
+// query parameters into a single structured map suitable for rendering
+// templates.
+func collectVariables(req *http.Request, group *storagepb.Group) (map[string]interface{}, error) {
+	data := make(map[string]interface{})
+	data["request"] = make(map[string]interface{})
+	if group.Metadata != nil {
+		err := json.Unmarshal(group.Metadata, &data)
+		if err != nil {
+			return nil, err
+		}
+	}
+	for key, value := range group.Selector {
+		data[strings.ToLower(key)] = value
+	}
+	// reserved variables
+	data["request"] = map[string]interface{}{
+		"query":     labelsFromRequest(nil, req),
+		"raw_query": req.URL.RawQuery,
+	}
+	return data, nil
+}
 
 // labelsFromRequest returns request query parameters.
 func labelsFromRequest(logger *logrus.Logger, req *http.Request) map[string]string {

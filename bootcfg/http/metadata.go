@@ -1,7 +1,6 @@
 package http
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -31,18 +30,12 @@ func (s *Server) metadataHandler() ContextHandler {
 			"group":  group.Id,
 		}).Debug("Matched group metadata")
 
-		// collect data for response
-		data := make(map[string]interface{})
-		if group.Metadata != nil {
-			err = json.Unmarshal(group.Metadata, &data)
-			if err != nil {
-				s.logger.Errorf("error unmarshalling metadata: %v", err)
-				http.NotFound(w, req)
-				return
-			}
-		}
-		for key, value := range group.Selector {
-			data[key] = value
+		// collect data for rendering
+		data, err := collectVariables(req, group)
+		if err != nil {
+			s.logger.Errorf("error collecting variables: %v", err)
+			http.NotFound(w, req)
+			return
 		}
 
 		w.Header().Set(contentType, plainContentType)

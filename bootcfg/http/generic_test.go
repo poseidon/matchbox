@@ -18,10 +18,12 @@ func TestGenericHandler(t *testing.T) {
 	content := `#foo-bar-baz template
 UUID={{.uuid}}
 SERVICE={{.service_name}}
+FOO={{.request.query.foo}}
 `
 	expected := `#foo-bar-baz template
 UUID=a1b2c3d4
 SERVICE=etcd2
+FOO=some-param
 `
 	store := &fake.FixedStore{
 		Profiles:       map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
@@ -33,10 +35,10 @@ SERVICE=etcd2
 	h := srv.genericHandler(c)
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/?foo=some-param", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Generic config is rendered with Group metadata and selectors
+	// - Generic config is rendered with Group selectors, metadata, and query variables
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, expected, w.Body.String())
 }
@@ -82,6 +84,6 @@ KEY={{.missing_key}}
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
 	// - Generic template rendering errors because "missing_key" is not
-	// present in the Group metadata
+	// present in the template variables
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
