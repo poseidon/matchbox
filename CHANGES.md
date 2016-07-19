@@ -18,6 +18,7 @@
 * Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
 * Add DialTimeout to gRPC client config (#273)
 * Allow query parameters to be used as template variables as `{{.request.query.foo}}` (#182)
+* Support nested metadata in responses from the "env file" style metadata endpoint (#84)
 
 #### Changes
 

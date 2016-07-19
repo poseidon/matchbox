@@ -25,23 +25,30 @@ func TestMetadataHandler(t *testing.T) {
 	h := srv.metadataHandler()
 	ctx := withGroup(context.Background(), group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/?mac=52-54-00-a1-9c-ae", nil)
+	req, _ := http.NewRequest("GET", "/?mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - the Group's custom metadata and selectors are served
+	// - Group selectors, metadata, and query variables are formatted
+	// - nested metadata are namespaced
 	// - key names are upper case
-	expectedData := map[string]string{
+	// - key/value pairs are newline separated
+	expectedLines := map[string]string{
 		// group metadata
-		"META": "data",
-		"ETCD": "map[name:node1]",
-		"SOME": "map[nested:map[data:some-value]]",
+		"META":             "data",
+		"ETCD_NAME":        "node1",
+		"SOME_NESTED_DATA": "some-value",
 		// group selector
 		"MAC": "52:54:00:a1:9c:ae",
-		// HACK(dghubble): Not testing query params until #84
+		// request
+		"REQUEST_QUERY_MAC":   "52:54:00:a1:9c:ae",
+		"REQUEST_QUERY_FOO":   "bar",
+		"REQUEST_QUERY_COUNT": "3",
+		"REQUEST_QUERY_GATE":  "true",
+		"REQUEST_RAW_QUERY":   "mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true",
 	}
 	assert.Equal(t, http.StatusOK, w.Code)
 	// convert response (random order) to map (tests compare in order)
-	assert.Equal(t, expectedData, metadataToMap(w.Body.String()))
+	assert.Equal(t, expectedLines, metadataToMap(w.Body.String()))
 	assert.Equal(t, plainContentType, w.HeaderMap.Get(contentType))
 }
 
@@ -57,16 +64,14 @@ func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
 		{&storagepb.Group{Metadata: []byte(`{"num":3}`)}, "NUM=3\n"},
 		{&storagepb.Group{Metadata: []byte(`{"yes":true}`)}, "YES=true\n"},
 		{&storagepb.Group{Metadata: []byte(`{"no":false}`)}, "NO=false\n"},
-		// Issue #84 - improve list and map printouts
-		{&storagepb.Group{Metadata: []byte(`{"list":["3","d"]}`)}, "LIST=[3 d]\n"},
 	}
 	for _, c := range cases {
 		ctx := withGroup(context.Background(), c.group)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", "/", nil)
 		h.ServeHTTP(ctx, w, req)
-		// assert that each Group's metadata is formatted:
-		// - key names are upper case
+		// assert that:
+		// - Group metadata key names are upper case
 		// - key/value pairs are newline separated
 		assert.Equal(t, http.StatusOK, w.Code)
 		assert.Contains(t, w.Body.String(), c.expected)
@@ -93,10 +98,6 @@ func metadataToMap(metadata string) map[string]string {
 		token := scanner.Text()
 		pair := strings.SplitN(token, "=", 2)
 		if len(pair) != 2 {
-			continue
-		}
-		// HACK(dghubble) - Skip map unwinding until #84
-		if pair[0] == "REQUEST" {
 			continue
 		}
 		data[pair[0]] = pair[1]
