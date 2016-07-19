@@ -1,6 +1,7 @@
-#!/bin/bash -e
+#!/bin/bash
 # USAGE: ./scripts/get-coreos
 # USAGE: ./scripts/get-coreos channel version dest
+set -eou pipefail
 
 CHANNEL=${1:-"alpha"}
 VERSION=${2:-"1053.2.0"}
@@ -17,6 +18,10 @@ if [ ! -d "$DEST" ]; then
 fi
 
 echo "Downloading CoreOS $CHANNEL $VERSION images and sigs to $DEST"
+
+echo "CoreOS Image Signing Key"
+curl -# https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.asc -o $DEST/CoreOS_Image_Signing_Key.asc
+gpg --import < "$DEST/CoreOS_Image_Signing_Key.asc" || true
 
 # PXE kernel and sig
 echo "coreos_production_pxe.vmlinuz..."
@@ -37,11 +42,6 @@ echo "coreos_production_image.bin.bz2.sig"
 curl -# $BASE_URL/coreos_production_image.bin.bz2.sig -o $DEST/coreos_production_image.bin.bz2.sig
 
 # verify signatures
-echo "CoreOS Image Signing Key"
-curl -# https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.asc -o $DEST/CoreOS_Image_Signing_Key.asc
-gpg --import < "$DEST/CoreOS_Image_Signing_Key.asc"
-echo "Adding trust for CoreOS signing key:"
-echo "04127D0BFABEC8871FFB2CCE50E0885593D2DCB4:6:" | gpg --import-ownertrust
 gpg --verify $DEST/coreos_production_pxe.vmlinuz.sig
 gpg --verify $DEST/coreos_production_pxe_image.cpio.gz.sig
 gpg --verify $DEST/coreos_production_image.bin.bz2.sig
