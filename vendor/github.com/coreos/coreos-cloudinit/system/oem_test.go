@@ -36,7 +36,7 @@ func TestOEMFile(t *testing.T) {
 				Name:         "Rackspace Cloud Servers",
 				VersionID:    "168.0.0",
 				HomeURL:      "https://www.rackspace.com/cloud/servers/",
-				BugReportURL: "https://github.com/coreos/coreos-overlay",
+				BugReportURL: "https://github.com/mikeynap/coreos-overlay",
 			},
 			&File{config.File{
 				Path:               "etc/oem-release",
@@ -45,7 +45,7 @@ func TestOEMFile(t *testing.T) {
 VERSION_ID=168.0.0
 NAME="Rackspace Cloud Servers"
 HOME_URL="https://www.rackspace.com/cloud/servers/"
-BUG_REPORT_URL="https://github.com/coreos/coreos-overlay"
+BUG_REPORT_URL="https://github.com/mikeynap/coreos-overlay"
 `,
 			}},
 		},

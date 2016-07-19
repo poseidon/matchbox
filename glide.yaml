@@ -1,4 +1,4 @@
-package: github.com/coreos/coreos-baremetal
+package: github.com/mikeynap/coreos-baremetal
 import:
 - package: github.com/alecthomas/units
   version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a

@@ -1,7 +1,7 @@
 
 # CoreOS on Baremetal
 
-[![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](https://godoc.org/github.com/coreos/coreos-baremetal?status.png)](https://godoc.org/github.com/coreos/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/bootcfg/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bootcfg) [![IRC](https://img.shields.io/badge/irc-%23coreos-F04C5C.svg)](https://botbot.me/freenode/coreos)
+[![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](https://godoc.org/github.com/mikeynap/coreos-baremetal?status.png)](https://godoc.org/github.com/mikeynap/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/bootcfg/status "Docker Repository on Quay")](https://quay.io/repository/coreos/bootcfg) [![IRC](https://img.shields.io/badge/irc-%23coreos-F04C5C.svg)](https://botbot.me/freenode/coreos)
 
 CoreOS on Baremetal provides guides and a service for network booting and provisioning CoreOS clusters on virtual or physical hardware.
 
@@ -25,7 +25,7 @@ CoreOS on Baremetal provides guides and a service for network booting and provis
     * [bootcfg with Docker](Documentation/getting-started-docker.md) 
 * [Flags](Documentation/config.md)
 * [HTTP API](Documentation/api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
+* [gRPC API](https://godoc.org/github.com/mikeynap/coreos-baremetal/bootcfg/client)
 * Backends
     * [FileStore](Documentation/bootcfg.md#data)
 * Deployment via

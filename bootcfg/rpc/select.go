@@ -3,9 +3,9 @@ package rpc
 import (
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/rpc/rpcpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
+	pb "github.com/mikeynap/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // selectServer wraps a bootcfg Server to be suitable for gRPC registration.

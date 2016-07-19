@@ -6,8 +6,8 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
+	pb "github.com/mikeynap/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // requireGET requires requests to be an HTTP GET. Otherwise, it responds with

@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
-	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/storage/storagepb"
+	fake "github.com/mikeynap/coreos-baremetal/bootcfg/storage/testfakes"
 )
 
 func TestMetadataHandler(t *testing.T) {

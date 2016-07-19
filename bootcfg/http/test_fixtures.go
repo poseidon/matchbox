@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 var (

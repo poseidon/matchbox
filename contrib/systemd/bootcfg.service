@@ -1,6 +1,6 @@
 [Unit]
 Description=CoreOS bootcfg Server
-Documentation=https://github.com/coreos/coreos-baremetal
+Documentation=https://github.com/mikeynap/coreos-baremetal
 
 [Service]
 Type=simple

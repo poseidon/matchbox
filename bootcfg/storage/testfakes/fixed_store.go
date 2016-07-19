@@ -3,7 +3,7 @@ package testfakes
 import (
 	"fmt"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/storage/storagepb"
 )
 
 // FixedStore is used for testing purposes.

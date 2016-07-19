@@ -11,8 +11,8 @@ import (
 	ignition "github.com/coreos/ignition/config"
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
+	pb "github.com/mikeynap/coreos-baremetal/bootcfg/server/serverpb"
 )
 
 // ignitionHandler returns a handler that responds with the Ignition config

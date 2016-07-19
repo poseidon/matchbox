@@ -250,7 +250,7 @@ coreos:
     name: Rackspace Cloud Servers
     version_id: 168.0.0
     home_url: https://www.rackspace.com/cloud/servers/
-    bug_report_url: https://github.com/coreos/coreos-overlay
+    bug_report_url: https://github.com/mikeynap/coreos-overlay
 ssh_authorized_keys:
   - foobar
   - foobaz

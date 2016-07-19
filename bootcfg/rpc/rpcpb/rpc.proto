@@ -1,7 +1,7 @@
 syntax = "proto3";
 package rpcpb;
 
-import "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb/messages.proto";
+import "github.com/mikeynap/coreos-baremetal/bootcfg/server/serverpb/messages.proto";
 
 service Groups {
   // Create a Group.
@@ -24,6 +24,11 @@ service Profiles {
 service Ignition {
   // Create or update an Ignition template.
   rpc IgnitionPut(serverpb.IgnitionPutRequest) returns (serverpb.IgnitionPutResponse) {};
+}
+
+service Cloud {
+  // Create or update a Cloud-Config template
+  rpc CloudPut(serverpb.CloudPutRequest) returns (serverpb.CloudPutResponse) {};
 }
 
 service Select {

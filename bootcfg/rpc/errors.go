@@ -4,7 +4,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
+	"github.com/mikeynap/coreos-baremetal/bootcfg/server"
 )
 
 var (

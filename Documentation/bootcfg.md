@@ -21,7 +21,7 @@ See [flags and variables](config.md)
 ## API
 
 * [HTTP API](api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
+* [gRPC API](https://godoc.org/github.com/mikeynap/coreos-baremetal/bootcfg/client)
 
 ## Data
 
@@ -126,7 +126,7 @@ Some labels are normalized or parsed specially because they have reserved semant
 * `hostname` - hostname reported by a network boot program
 * `serial` - serial reported by a network boot program
 
-Client's booted with the `/ipxe.boot` endpoint will introspect and make a request to `/ipxe` with the `uuid`, `mac`, `hostname`, and `serial` value as query arguments. Pixiecore can only detect MAC addresss and cannot substitute it into later config requests ([issue](https://github.com/coreos/coreos-baremetal/issues/36)).
+Client's booted with the `/ipxe.boot` endpoint will introspect and make a request to `/ipxe` with the `uuid`, `mac`, `hostname`, and `serial` value as query arguments. Pixiecore can only detect MAC addresss and cannot substitute it into later config requests ([issue](https://github.com/mikeynap/coreos-baremetal/issues/36)).
 
 ## Assets
 
