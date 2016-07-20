@@ -160,6 +160,22 @@ func TestIgnitionGet(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestCloudPut(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// - CloudConfig template creation was successful
+	// - CloudConfig template can be retrieved by name
+	err = store.CloudPut(fake.CloudYAMLName, []byte(fake.CloudYAML))
+	assert.Nil(t, err)
+	template, err := store.CloudGet(fake.CloudYAMLName)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.CloudYAML, template)
+}
+
 func TestCloudGet(t *testing.T) {
 	contents := "#cloud-config"
 	dir, err := setup(&fake.FixedStore{

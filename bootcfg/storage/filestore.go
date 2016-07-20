@@ -123,6 +123,11 @@ func (s *fileStore) IgnitionGet(name string) (string, error) {
 	return string(data), err
 }
 
+// IgnitionPut creates or updates an Cloud-Config template.
+func (s *fileStore) CloudPut(name string, config []byte) error {
+	return Dir(s.root).writeFile(filepath.Join("cloud", name), config)
+}
+
 // CloudGet gets a Cloud-Config template by name.
 func (s *fileStore) CloudGet(name string) (string, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("cloud", name))

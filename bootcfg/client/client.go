@@ -31,6 +31,7 @@ type Client struct {
 	Groups   rpcpb.GroupsClient
 	Profiles rpcpb.ProfilesClient
 	Ignition rpcpb.IgnitionClient
+	Cloud    rpcpb.CloudClient
 	conn     *grpc.ClientConn
 }
 
@@ -57,6 +58,7 @@ func newClient(config *Config) (*Client, error) {
 		Groups:   rpcpb.NewGroupsClient(conn),
 		Profiles: rpcpb.NewProfilesClient(conn),
 		Ignition: rpcpb.NewIgnitionClient(conn),
+		Cloud:    rpcpb.NewCloudClient(conn),
 	}
 	return client, nil
 }

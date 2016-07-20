@@ -21,6 +21,7 @@ func NewServer(s server.Server, tls *tls.Config) *grpc.Server {
 	grpcServer := grpc.NewServer(opts...)
 	rpcpb.RegisterGroupsServer(grpcServer, newGroupServer(s))
 	rpcpb.RegisterProfilesServer(grpcServer, newProfileServer(s))
+	rpcpb.RegisterCloudServer(grpcServer, newCloudServer(s))
 	rpcpb.RegisterSelectServer(grpcServer, newSelectServer(s))
 	rpcpb.RegisterIgnitionServer(grpcServer, newIgnitionServer(s))
 	return grpcServer

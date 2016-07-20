@@ -39,7 +39,7 @@ var (
 
 	// IgnitionYAMLName is an Ignition template name for testing.
 	IgnitionYAMLName = "ignition.tmpl"
-
+	
 	// IgnitionYAML is an Ignition template for testing.
 	IgnitionYAML = `ignition_version: 1
 systemd:
@@ -47,4 +47,15 @@ systemd:
     - name: etcd2.service
       enable: true
 `
+	// CloudYAMLName is an CloudConfig template name for testing.
+	CloudYAMLName = "ignition.tmpl"
+	
+	// CloudYAML is an CloudConfig template for testing.
+	CloudYAML = `users:
+  - name: demo
+    shell: /bin/bash
+runcmd:
+  - touch /tmp/test.txt
+`
 )
+

@@ -26,6 +26,11 @@ service Ignition {
   rpc IgnitionPut(serverpb.IgnitionPutRequest) returns (serverpb.IgnitionPutResponse) {};
 }
 
+service Cloud {
+  // Create or update a Cloud-Config template
+  rpc CloudPut(serverpb.CloudPutRequest) returns (serverpb.CloudPutResponse) {};
+}
+
 service Select {
   // SelectGroup returns the Group matching the given labels.
   rpc SelectGroup(serverpb.SelectGroupRequest) returns (serverpb.SelectGroupResponse) {};
