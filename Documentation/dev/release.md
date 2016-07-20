@@ -1,47 +1,55 @@
 
-# bootcfg Release Guide
+# Release Guide
 
-This guide covers releasing new versions of `bootcfg`.
-
-## Release Notes
-
-Create a pre-release with the [changelog](../CHANGES.md) contents.
+This guide covers releasing new versions of coreos-baremetal.
 
 ## Tag
 
-Tag, sign the release version, and push to Github.
+Tag, sign the release version, and push it to Github.
 
     git tag -s vX.Y.Z -m 'vX.Y.Z'
+    git push origin --tags
 
 Travis CI will build the Docker image and push it to Quay.io when the tag is pushed to master.
 
-## Binaries and Images
+## Github Release
 
-Build the binary and ACI. Check that their version is correct/clean.
+Publish the release on Github with release notes.
 
-    ./build
+## Tarballs
+
+Build the release tarballs.
+
+    export VERSION=v0.4.0
+    make release
+
+## ACI
+
+Build the rkt ACI on a Linux host with `acbuild`,
+
+    make build
     ./build-aci
+    mv bootcfg.aci _output/bootcfg-$VERSION-linux-amd64.aci
 
-Prepare the binary tarball and ACI.
+Check that the listed version is correct/clean.
 
-    export VERSION=v0.3.0
-    mkdir bootcfg-$VERSION
-    cp bin/bootcfg bootcfg-$VERSION
-    cp bootcfg.aci bootcfg-$VERSION-linux-amd64.aci
-    tar -zcvf bootcfg-$VERSION-linux-amd64.tar.gz bootcfg-$VERSION
+    sudo rkt --insecure-options=image run bootcfg.aci -- -version
 
 ## Signing
 
-Sign the binary tarball and ACI.
+Sign the release tarballs and ACI with a [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) subkey.
 
-    gpg2 -a --default-key FC8A365E --detach-sign bootcfg-$VERSION-linux-amd64.tar.gz
+    cd _output
     gpg2 -a --default-key FC8A365E --detach-sign bootcfg-$VERSION-linux-amd64.aci
+    gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-linux-amd64.tar.gz
+    gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-darwin-amd64.tar.gz
 
 Verify the signatures.
 
-    gpg2 --verify bootcfg-$VERSION-linux-amd64.tar.gz.asc bootcfg-$VERSION-linux-amd64.tar.gz
     gpg2 --verify bootcfg-$VERSION-linux-amd64.aci.asc bootcfg-$VERSION-linux-amd64.aci
+    gpg2 --verify coreos-baremetal-$VERSION-linux-amd64.tar.gz.asc coreos-baremetal-$VERSION-linux-amd64.tar.gz
+    gpg2 --verify coreos-baremetal-$VERSION-darwin-amd64.tar.gz.asc coreos-baremetal-$VERSION-darwin-amd64.tar.gz
 
 ## Publish
 
-Publish the signed binary tarball(s) and the signed ACI with the Github release. The Docker image is published to Quay.io when the tag is pushed to master.
+Publish the signed tarball(s) and ACI with the Github release. Verify the Docker image was published to Quay.io when the release tag was pushed.
