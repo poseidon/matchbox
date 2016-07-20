@@ -1,5 +1,5 @@
 
-# API
+# HTTP API
 
 ## iPXE Script
 
@@ -13,18 +13,21 @@ Serves a static iPXE boot script which gathers client machine attributes and cha
     #!ipxe
     chain ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
 
+Client's booted with the `/ipxe.boot` endpoint will introspect and make a request to `/ipxe` with the `uuid`, `mac`, `hostname`, and `serial` value as query arguments.
+
 ## iPXE
 
 Finds the profile for the machine and renders the network boot config (kernel, options, initrd) as an iPXE script.
 
-    GET http://bootcfg.foo/ipxe
+    GET http://bootcfg.foo/ipxe?label=value
 
 **Query Parameters**
 
-| Name | Type   | Description   |
-|------|--------|---------------|
-| uuid | string | Hardware UUID |
-| mac  | string | MAC address   |
+| Name | Type   | Description     |
+|------|--------|-----------------|
+| uuid | string | Hardware UUID   |
+| mac  | string | MAC address     |
+| *    | string | Arbitrary label |
 
 **Response**
 
@@ -37,14 +40,15 @@ Finds the profile for the machine and renders the network boot config (kernel, o
 
 Finds the profile for the machine and renders the network boot config as a GRUB config. Use DHCP/TFTP to point GRUB clients to this endpoint as the next-server.
 
-    GET http://bootcfg.foo/grub
+    GET http://bootcfg.foo/grub?label=value
 
 **Query Parameters**
 
-| Name | Type   | Description   |
-|------|--------|---------------|
-| uuid | string | Hardware UUID |
-| mac  | string | MAC address   |
+| Name | Type   | Description     |
+|------|--------|-----------------|
+| uuid | string | Hardware UUID   |
+| mac  | string | MAC address     |
+| *    | string | Arbitrary label |
 
 **Response**
 
@@ -82,16 +86,17 @@ Finds the profile matching the machine and renders the network boot config as JS
 
 ## Cloud Config
 
-Finds the profile matching the machine and renders the corresponding Cloud-Config with metadata.
+Finds the profile matching the machine and renders the corresponding Cloud-Config with group metadata, selectors, and query params.
 
-    GET http://bootcfg.foo/cloud
+    GET http://bootcfg.foo/cloud?label=value
 
 **Query Parameters**
 
-| Name | Type   | Description   |
-|------|--------|---------------|
-| uuid | string | Hardware UUID |
-| mac  | string | MAC address   |
+| Name | Type   | Description     |
+|------|--------|-----------------|
+| uuid | string | Hardware UUID   |
+| mac  | string | MAC address     |
+| *    | string | Arbitrary label |
 
 **Response**
 
@@ -105,47 +110,44 @@ Finds the profile matching the machine and renders the corresponding Cloud-Confi
 
 ## Ignition Config
 
-Finds the profile matching the machine and renders the corresponding Ignition Config with metadata.
+Finds the profile matching the machine and renders the corresponding Ignition Config with group metadata, selectors, and query params.
 
-    GET http://bootcfg.foo/ignition
+    GET http://bootcfg.foo/ignition?label=value
 
 **Query Parameters**
 
-| Name | Type   | Description   |
-|------|--------|---------------|
-| uuid | string | Hardware UUID |
-| mac  | string | MAC address   |
+| Name | Type   | Description     |
+|------|--------|-----------------|
+| uuid | string | Hardware UUID   |
+| mac  | string | MAC address     |
+| *    | string | Arbitrary label |
 
 **Response**
 
     {
-      "ignitionVersion": 1,
-      "storage": {},
+      "ignition": { "version": "2.0.0" },
       "systemd": {
-        "units": [
-          {
-            "name": "hello.service",
-            "enable": true,
-            "contents": "[Service]\nType=oneshot\nExecStart=\/usr\/bin\/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
-          }
-        ]
-      },
-      "networkd": {},
-      "passwd": {}
+        "units": [{
+          "name": "example.service",
+          "enable": true,
+          "contents": "[Service]\nType=oneshot\nExecStart=/usr/bin/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
+        }]
+      }
     }
 
 ## Generic Config
 
-Finds the profile matching the machine and renders the corresponding Generic config with metadata and group selectors.
+Finds the profile matching the machine and renders the corresponding generic config with group metadata, selectors, and query params.
 
-    GET http://bootcfg.foo/generic
+    GET http://bootcfg.foo/generic?label=value
 
 **Query Parameters**
 
-| Name | Type   | Description   |
-|------|--------|---------------|
-| uuid | string | Hardware UUID |
-| mac  | string | MAC address   |
+| Name | Type   | Description     |
+|------|--------|-----------------|
+| uuid | string | Hardware UUID   |
+| mac  | string | MAC address     |
+| *    | string | Arbitrary label |
 
 **Response**
 
@@ -159,28 +161,29 @@ Finds the profile matching the machine and renders the corresponding Generic con
 
 ## Metadata
 
-Finds the matching machine group and renders the selectors and metadata as a `plain/text` file.
+Finds the matching machine group and renders the group metadata, selectors, and query params in an "env file" style response.
 
-    GET http://bootcfg.foo/metadata
+    GET http://bootcfg.foo/metadata?mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true
 
 **Query Parameters**
 
-| Name | Type   | Description   |
-|------|--------|---------------|
-| uuid | string | Hardware UUID |
-| mac  | string | MAC address   |
+| Name | Type   | Description     |
+|------|--------|-----------------|
+| uuid | string | Hardware UUID   |
+| mac  | string | MAC address     |
+| *    | string | Arbitrary label |
 
 **Response**
 
-    IPV4_ADDRESS=172.15.0.21
-    NETWORKD_ADDRESS=172.15.0.21/16
-    NETWORKD_GATEWAY=172.15.0.1
-    NETWORKD_NAME=ens3
+    META=data
     ETCD_NAME=node1
-    FLEET_METADATA=role=etcd,name=node1
+    SOME_NESTED_DATA=some-value
     MAC=52:54:00:a1:9c:ae
-    ETCD_INITIAL_CLUSTER=node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380
-    NETWORKD_DNS=172.15.0.3
+    REQUEST_QUERY_MAC=52:54:00:a1:9c:ae
+    REQUEST_QUERY_FOO=bar
+    REQUEST_QUERY_COUNT=3
+    REQUEST_QUERY_GATE=true
+    REQUEST_RAW_QUERY=mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true
 
 ## OpenPGP Signatures
 
@@ -193,6 +196,7 @@ OpenPGPG signature endpoints serve detached binary and ASCII armored signatures 
 | GRUB2      | `http://bootcf.foo/grub.sig` | `http://bootcfg.foo/grub.asc` |
 | Ignition   | `http://bootcfg.foo/ignition.sig` | `http://bootcfg.foo/ignition.asc` |
 | Cloud-Config | `http://bootcfg.foo/cloud.sig` | `http://bootcfg.foo/cloud.asc` |
+| Generic    | `http://bootcfg.foo/generic.sig` | `http://bootcfg.foo/generic.asc` |
 | Metadata   | `http://bootcfg.foo/metadata.sig` | `http://bootcfg.foo/metadata.asc` |
 
 Get a config and its detached ASCII armored signature.

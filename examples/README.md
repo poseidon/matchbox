@@ -10,25 +10,23 @@ These examples network boot and provision machines into CoreOS clusters using `b
 | pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/1053.2.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | etcd, etcd-docker | iPXE boot a 3 node etcd cluster and proxy | alpha/1053.2.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | etcd-install | Install a 3-node etcd cluster to disk | alpha/1053.2.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
-| k8s, k8s-docker | Kubernetes cluster with 1 master and 2 workers, TLS-authentication | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| k8s-install | Install a Kubernetes cluster to disk (1 master) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| k8s, k8s-docker | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| k8s-install | Install a Kubernetes cluster to disk | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| torus | CoreOS Torus distributed storage | alpha/1053.2.0 | Disk | [tutorial](../Documentation/torus.md) |
+| torus | Torus distributed storage | alpha/1053.2.0 | Disk | [tutorial](../Documentation/torus.md) |
 
 ## Tutorials
 
 Get started running `bootcfg` on your Linux machine to network boot and provision clusters of VMs or physical hardware.
 
-* [bootcfg with rkt](../Documentation/getting-started-rkt.md)
-* [bootcfg with Docker](../Documentation/getting-started-docker.md)
-* [Static Kubernetes](../Documentation/kubernetes.md) v1.3.0
-* [Self-hosted Kubernetes](../Documentation/bootkube.md) v1.3.0-beta.2
+* Getting Started
+	* [bootcfg with rkt](../Documentation/getting-started-rkt.md)
+	* [bootcfg with Docker](../Documentation/getting-started-docker.md)
+* [Kubernetes (static manifests)](../Documentation/kubernetes.md)
+* [Kubernetes (self-hosted)](../Documentation/bootkube.md)
 * [Torus Storage](..Documentation/torus.md)
-
-## Experimental
-
-These examples demonstrate booting and provisioning various (often experimental) CoreOS clusters. They have **NOT** been hardened for production yet. You should write or adapt Ignition configs to suit your needs and hardware.
+* [Lab Examples](https://github.com/dghubble/metal)
 
 ## SSH Keys
 

@@ -2,44 +2,53 @@
 
 ## Latest
 
-* TLS Authentication:
+## v0.4.0 (2016-06-21)
+
+#### Features
+
+* Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
+* TLS Client Authentication:
     * Add gRPC API TLS and TLS client-to-server authentication (#140)
     * Enable gRPC API by providing a TLS server `-cert-file` and `-key-file`, and a `-ca-file` to authenticate client certificates
-    * Provide `bootcmd` tool a TLS client `-cert-file` and `-key-file`, and a `-ca-file` to verify the server identity.
+    * Provide the `bootcmd` tool a TLS client `-cert-file` and `-key-file`, and a `-ca-file` to verify the server identity.
 * Improvements to Ignition Support:
-    * Allow Ignition 2.0.0 JSON and YAML template files (#141)
+    * Allow Fuze YAML template files for Ignition 2.0.0 (#141)
     * Stop requiring Ignition templates to use file extensions (#176)
 * Logging Improvements:
-    * Show `bootcfg` message at the home path `/`
     * Add structured loggging with Logrus (#254, #268)
-    * Log requests for bootcfg hosted assets (#214)
+    * Log requests for bootcfg assets (#214)
+    * Show `bootcfg` message at the home path `/`
     * Fix http package log messages (#173)
-    * Error when a template is rendered with a machine Group which is missing a metadata value. Previously, missing values defaulted to "no value" (#210)
-* Add/improve rkt, Docker, Kubernetes, and binary/systemd deployment docs
-* Add DialTimeout to gRPC client config (#273)
-* Allow query parameters to be used as template variables as `{{.request.query.foo}}` (#182)
-* Support nested metadata in responses from the "env file" style metadata endpoint (#84)
+* Templating:
+    * Allow query parameters to be used as template variables as `{{.request.query.foo}}` (#182)
+    * Support nested maps in responses from the "env file" metadata endpoint (#84)
+    * Error when a template is rendered with variables which are missing a referenced key. Previously, missing lookups defaulted to "no value" (#210)
+* gRPC API
+    * Add DialTimeout to gRPC client config (#273)
+    * Add IgnitionPut and Close to the client (#160,#193)
 
 #### Changes
 
-* Replace Ignition YAML templates with Fuze templates (**breaking**)
+* gRPC API requires TLS client authentication
+* Replace Ignition YAML templates with Fuze templates
     - Fuze formalizes the transform from Fuze configs (YAML) to Ignition 2.0.0 (JSON)
-    - [Migrate from bootcfg v0.3.0](Documentation/ignition.md#migration-from-v030)
+    - [Migrate templates from v0.3.0](Documentation/ignition.md#migration-from-v030)
     - Require CoreOS 1010.1.0 or newer
     - Drop support for Ignition v1 format
-* Replace template variable `{{.query}}` with `{{.request.raw_query}}` (**breaking**)
+* Replace template variable `{{.query}}` with `{{.request.raw_query}}`
 
 #### Examples
 
 * Kubernetes
-    * Upgrade Kubernetes (static manifest) examples to v1.3.0
-    * Add Kubernetes (self-hosted) example (PXE boot or install to disk)
-    * Mount /etc/resolv.conf into host kubelet for skydns and pod lookups (#237,#260)
+    * Upgrade Kubernetes v1.3.0 (static manifest) example clusters
+    * Add Kubernetes v1.3.0-beta.2 (self-hosted) example cluster
+    * Mount /etc/resolv.conf into host kubelet for skydns and pod DNS lookups (#237,#260)
     * Fix a bug in the k8s example k8s-certs@.service file check (#156)
-    * Avoid systemd dependency failures and restart components (#257,#274)
-* Add CoreOS Torus distributed storage cluster example (PXE boot)
+    * Avoid systemd dependency failures by restarting components (#257,#274)
+    * Verify Kubernetes v1.2.4 and v1.3.0 clusters pass conformance tests (#71,#265)
+* Add Torus distributed storage cluster example (PXE boot)
 * Add `create-uefi` subcommand to `scripts/libvirt` for UEFI/GRUB testing
-* Show CoreOS install to disk from a cached copy via bootcfg baseurl (#228)
+* Install CoreOS to disk from a cached copy via bootcfg baseurl (#228)
 * Remove 8.8.8.8 from networkd example Ignition configs (#184)
 * Match machines by MAC address in examples to simplify networkd device matching (#209)
 * With rkt 1.8+, you can use `rkt gc --grace-period=0` to cleanup rkt IP assignments in examples. The `rkt-gc-force` script has been removed.

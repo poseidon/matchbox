@@ -1,7 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes examples provision a 3 node cluster with etcd, flannel, and a special "runonce" host Kublet. The CoreOS [bootkube](https://github.com/coreos/bootkube) tool used to bootstrap kubelet, apiserver, scheduler, and controller-manager pods which can be managed via kubectl. `bootkube start` is run on any controller (master) exactly once to create a temporary control-plane, create Kubernetes components, and stop itself. The `bootkube` examples network boot and provision CoreOS nodes for use with the `bootkube` tool.
+The self-hosted Kubernetes example provisions a 3 node Kubernetes v1.3.0-beta.2 cluster with etcd, flannel, and a special "runonce" host Kublet. The CoreOS [bootkube](https://github.com/coreos/bootkube) tool is used to bootstrap kubelet, apiserver, scheduler, and controller-manager as pods, which can be managed via kubectl. `bootkube start` is run on any controller (master) to create a temporary control-plane and start Kubernetes components initially. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Experimental
 
@@ -19,7 +19,7 @@ Build and install [bootkube](https://github.com/coreos/bootkube/releases) v0.1.1
 
 ## Examples
 
-The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. You can use the same examples for physical machines, but you'll need to update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
+The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [bootkube](../examples/groups/bootkube) - iPXE boot a bootkube-ready cluster (use rkt)
 * [bootkube-install](../examples/groups/bootkube-install) - Install a bootkube-ready cluster (use rkt)
@@ -30,10 +30,6 @@ Download the CoreOS image assets referenced in the target [profile](../examples/
 
     ./scripts/get-coreos alpha 1053.2.0 ./examples/assets
 
-Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
-
-    bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --etcd-servers=http://172.15.0.21:2379 --api-server-alt-names=IP=172.15.0.21
-
 Add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
     {
@@ -43,13 +39,19 @@ Add your SSH public key to each machine group definition [as shown](../examples/
         }
     }
 
+Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
+
+    bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --etcd-servers=http://172.15.0.21:2379 --api-server-alt-names=IP=172.15.0.21
+
 ## Containers
 
 Run the latest `bootcfg` ACI with rkt and the `bootkube` example (or `bootkube-install`).
 
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/bootkube quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
-Create a network boot environment with `coreos/dnsmasq` and create VMs with `scripts/libvirt` as covered in [bootcfg with rkt](getting-started-rkt.md). Client machines should network boot and provision themselves.
+Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) for help.
+
+Client machines should boot and provision themselves. Local client VMs should network boot CoreOS and become available via SSH in about 1 minute. If you chose `bootkube-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 
 ## bootkube
 

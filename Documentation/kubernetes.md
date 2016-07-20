@@ -1,11 +1,11 @@
 
 # Kubernetes
 
-The Kubernetes examples provision a 3 node v1.3.0 Kubernetes cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The Kubernetes example provisions a 3 node Kubernetes v1.3.0 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
-Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) guide and understand the basics. In particular, you should be able to:
+Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with docker](getting-started-docker.md) guide and understand the basics. In particular, you should be able to:
 
 * Use rkt or Docker to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
@@ -13,17 +13,20 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 
 ## Examples
 
-The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. VMs are setup on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. You can use the same examples for physical machines, but you'll need to update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
+The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. VMs are setup on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [k8s](../examples/groups/k8s) - iPXE boot a Kubernetes cluster (use rkt)
 * [k8s-docker](../examples/groups/k8s-docker) - iPXE boot a Kubernetes cluster on `docker0` (use docker)
 * [k8s-install](../examples/groups/k8s-install) - Install a Kubernetes cluster to disk (use rkt)
+* [Lab examples](https://github.com/dghubble/metal) - Lab hardware examples
 
 ### Assets
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
     ./scripts/get-coreos alpha 1053.2.0 ./examples/assets
+
+Add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
 Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`).
 
@@ -33,15 +36,13 @@ Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver
     # for Kubernetes on docker0
     ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.17.0.21 -m IP.1=10.3.0.1,IP.2=172.17.0.21 -w IP.1=172.17.0.22,IP.2=172.17.0.23
 
-**Note**: TLS assets are served to any machines which request them. This is unsuitable for production where machines and networks are untrusted. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html). See the [Cluster TLS OpenSSL Generation](https://coreos.com/kubernetes/docs/latest/openssl.html) document or [Kubernetes Step by Step](https://coreos.com/kubernetes/docs/latest/getting-started.html) for more details.
-
-Optionally add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
+**Note**: TLS assets are served to any machines which request them, which requires a trusted network. Alternately, provisioning may be tweaked to require TLS assets be securely copied to each host. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html).
 
 ## Containers
 
-Use rkt or docker to start `bootcfg` with the desired example machine groups. Create a network boot environment with `coreos/dnsmasq` and create VMs with `scripts/libvirt` to power-on your machines. Client machines should boot and provision themselves.
+Use rkt or docker to start `bootcfg` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
 
-Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
+Client machines should boot and provision themselves. Local client VMs should network boot CoreOS in about a 1 minute and the Kubernetes API should be available after 2-3 minutes. If you chose `k8s-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision Kubernetes clusters on physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 
 ## Verify
 
@@ -68,8 +69,6 @@ Get all pods.
     kube-system   kube-scheduler-172.15.0.21            1/1       Running   0          13m
     kube-system   kubernetes-dashboard-v1.1.0-m1gyy     1/1       Running   0          14m
 
-Machines should download and network boot CoreOS in about a minute. It can take 2-3 minutes for the Kubernetes API to become available and for add-on pods to be scheduled.
-
 ## Kubernetes Dashboard
 
 Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding to the dashboard pod.
@@ -83,7 +82,7 @@ Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).
 
 ## Tectonic
 
-Now sign up for [Tectonic Starter](https://tectonic.com/starter/) for free and deploy the [Tectonic Console](https://tectonic.com/enterprise/docs/latest/deployer/tectonic_console.html) with a few `kubectl` commands!
+Sign up for [Tectonic Starter](https://tectonic.com/starter/) for free and deploy the [Tectonic Console](https://tectonic.com/enterprise/docs/latest/deployer/tectonic_console.html) with a few `kubectl` commands!
 
 <img src='img/tectonic-console.png' class="img-center" alt="Tectonic Console"/>
 

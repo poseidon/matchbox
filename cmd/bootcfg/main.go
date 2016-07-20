@@ -132,7 +132,7 @@ func main() {
 
 	// gRPC Server (feature disabled by default)
 	if flags.rpcAddress != "" {
-		log.Infof("starting bootcfg gRPC server on %s", flags.rpcAddress)
+		log.Infof("Starting bootcfg gRPC server on %s", flags.rpcAddress)
 		log.Infof("Using TLS server certificate: %s", flags.certFile)
 		log.Infof("Using TLS server key: %s", flags.keyFile)
 		log.Infof("Using CA certificate: %s to authenticate client certificates", flags.caFile)
@@ -163,7 +163,7 @@ func main() {
 		ArmoredSigner: armoredSigner,
 	}
 	httpServer := web.NewServer(config)
-	log.Infof("starting bootcfg HTTP server on %s", flags.address)
+	log.Infof("Starting bootcfg HTTP server on %s", flags.address)
 	err = http.ListenAndServe(flags.address, httpServer.HTTPHandler())
 	if err != nil {
 		log.Fatalf("failed to start listening: %v", err)
