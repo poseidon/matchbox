@@ -12,7 +12,7 @@ This will create:
 
     examples/assets/
     └── coreos
-        └── 1053.2.0
+        └── 1109.1.0
             ├── CoreOS_Image_Signing_Key.asc
             ├── coreos_production_image.bin.bz2
             ├── coreos_production_image.bin.bz2.sig
