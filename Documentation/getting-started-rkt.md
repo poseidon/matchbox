@@ -58,6 +58,10 @@ Run the latest `bootcfg` ACI with rkt and the `etcd` example.
 
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
+or run the latest tagged release signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
+
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.4.0 -- -address=0.0.0.0:8080 -log-level=debug
+
 If you get an error about the IP assignment, stop old pods and run garbage collection.
 
     sudo rkt gc --grace-period=0
