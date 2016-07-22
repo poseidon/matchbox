@@ -8,10 +8,10 @@ systemd:
           contents: |
             [Service]
             Environment="ETCD_NAME={{.etcd_name}}"
-            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
-            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380"
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
-            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_LISTEN_PEER_URLS=http://{{.domain_name}}:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
             Environment="ETCD_STRICT_RECONFIG_CHECK=true"
     - name: flanneld.service
@@ -19,7 +19,7 @@ systemd:
         - name: 40-ExecStartPre-symlink.conf
           contents: |
             [Service]
-            ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
+            EnvironmentFile=-/etc/flannel/options.env
             ExecStartPre=/opt/init-flannel
     - name: docker.service
       dropins:
@@ -65,7 +65,7 @@ systemd:
           --register-schedulable=true \
           --allow-privileged=true \
           --config=/etc/kubernetes/manifests \
-          --hostname-override={{.ipv4_address}} \
+          --hostname-override={{.domain_name}} \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
         Restart=always
@@ -157,7 +157,6 @@ storage:
               - --allow-privileged=true
               - --service-cluster-ip-range={{.k8s_service_ip_range}}
               - --secure-port=443
-              - --advertise-address={{.ipv4_address}}
               - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
               - --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem
               - --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
@@ -196,7 +195,6 @@ storage:
       filesystem: rootfs
       contents:
         inline: |
-          FLANNELD_IFACE={{.ipv4_address}}
           FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
     - path: /etc/kubernetes/manifests/kube-controller-manager.yaml
       filesystem: rootfs
@@ -707,19 +705,6 @@ storage:
           echo "K8S: Dashboard addon"
           curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-rc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
           curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
-
-{{ if not (index . "skip_networkd") }}
-networkd:
-  units:
-    - name: 10-static.network
-      contents: |
-        [Match]
-        MACAddress={{.mac}}
-        [Network]
-        Gateway={{.networkd_gateway}}
-        DNS={{.networkd_dns}}
-        Address={{.networkd_address}}
-{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
