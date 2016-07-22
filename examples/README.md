@@ -5,16 +5,16 @@ These examples network boot and provision machines into CoreOS clusters using `b
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
-| pxe | CoreOS via iPXE | alpha/1053.2.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS via GRUB2 Netboot | alpha/1053.2.0 | RAM | NA |
-| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/1053.2.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| etcd, etcd-docker | iPXE boot a 3 node etcd cluster and proxy | alpha/1053.2.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| etcd-install | Install a 3-node etcd cluster to disk | alpha/1053.2.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
-| k8s, k8s-docker | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| k8s-install | Install a Kubernetes cluster to disk | alpha/1053.2.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1053.2.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| torus | Torus distributed storage | alpha/1053.2.0 | Disk | [tutorial](../Documentation/torus.md) |
+| pxe | CoreOS via iPXE | alpha/1109.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS via GRUB2 Netboot | alpha/1109.1.0 | RAM | NA |
+| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/1109.1.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| etcd, etcd-docker | iPXE boot a 3 node etcd cluster and proxy | alpha/1109.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd-install | Install a 3-node etcd cluster to disk | alpha/1109.1.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
+| k8s, k8s-docker | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | alpha/1109.1.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| k8s-install | Install a Kubernetes cluster to disk | alpha/1109.1.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1109.1.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1109.1.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| torus | Torus distributed storage | alpha/1109.1.0 | Disk | [tutorial](../Documentation/torus.md) |
 
 ## Tutorials
 

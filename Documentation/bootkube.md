@@ -1,7 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node Kubernetes v1.3.0-beta.2 cluster with etcd, flannel, and a special "runonce" host Kublet. The CoreOS [bootkube](https://github.com/coreos/bootkube) tool is used to bootstrap kubelet, apiserver, scheduler, and controller-manager as pods, which can be managed via kubectl. `bootkube start` is run on any controller (master) to create a temporary control-plane and start Kubernetes components initially. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node Kubernetes v1.3.0 cluster with etcd, flannel, and a special "runonce" host Kublet. The CoreOS [bootkube](https://github.com/coreos/bootkube) tool is used to bootstrap kubelet, apiserver, scheduler, and controller-manager as pods, which can be managed via kubectl. `bootkube start` is run on any controller (master) to create a temporary control-plane and start Kubernetes components initially. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Experimental
 
@@ -15,7 +15,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 
-Build and install [bootkube](https://github.com/coreos/bootkube/releases) v0.1.1.
+Build and install [bootkube](https://github.com/coreos/bootkube/releases) v0.1.2.
 
 ## Examples
 
@@ -28,7 +28,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 1053.2.0 ./examples/assets
+    ./scripts/get-coreos alpha 1109.1.0 ./examples/assets
 
 Add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
