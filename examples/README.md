@@ -8,7 +8,7 @@ These examples network boot and provision machines into CoreOS clusters using `b
 | pxe | CoreOS via iPXE | alpha/1109.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | grub | CoreOS via GRUB2 Netboot | alpha/1109.1.0 | RAM | NA |
 | pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/1109.1.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| etcd, etcd-docker | iPXE boot a 3 node etcd cluster and proxy | alpha/1109.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd | iPXE boot a 3 node etcd cluster and proxy | alpha/1109.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
 | etcd-install | Install a 3-node etcd cluster to disk | alpha/1109.1.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | k8s, k8s-docker | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | alpha/1109.1.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | k8s-install | Install a Kubernetes cluster to disk | alpha/1109.1.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
