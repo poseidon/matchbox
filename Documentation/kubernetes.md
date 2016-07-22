@@ -15,9 +15,8 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) o
 
 The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. VMs are setup on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
-* [k8s](../examples/groups/k8s) - iPXE boot a Kubernetes cluster (use rkt)
-* [k8s-docker](../examples/groups/k8s-docker) - iPXE boot a Kubernetes cluster on `docker0` (use docker)
-* [k8s-install](../examples/groups/k8s-install) - Install a Kubernetes cluster to disk (use rkt)
+* [k8s](../examples/groups/k8s) - iPXE boot a Kubernetes cluster
+* [k8s-install](../examples/groups/k8s-install) - Install a Kubernetes cluster to disk
 * [Lab examples](https://github.com/dghubble/metal) - Lab hardware examples
 
 ### Assets
@@ -31,10 +30,10 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`).
 
     rm -rf examples/assets/tls
-    # for Kubernetes on CNI metal0, i.e. rkt
-    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.15.0.21 -m IP.1=10.3.0.1,IP.2=172.15.0.21 -w IP.1=172.15.0.22,IP.2=172.15.0.23
-    # for Kubernetes on docker0
-    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.17.0.21 -m IP.1=10.3.0.1,IP.2=172.17.0.21 -w IP.1=172.17.0.22,IP.2=172.17.0.23
+    # for Kubernetes on CNI metal0 (for rkt)
+    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.15.0.21 -m IP.1=10.3.0.1,IP.2=172.15.0.21,DNS.1=node1.example.com -w DNS.1=node2.example.com,DNS.2=node3.example.com
+    # for Kubernetes on docker0 (for docker)
+    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.17.0.21 -m IP.1=10.3.0.1,IP.2=172.17.0.21,DNS.1=node1.example.com -w DNS.1=node2.example.com,DNS.2=node3.example.com
 
 **Note**: TLS assets are served to any machines which request them, which requires a trusted network. Alternately, provisioning may be tweaked to require TLS assets be securely copied to each host. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html).
 
@@ -42,7 +41,7 @@ Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver
 
 Use rkt or docker to start `bootcfg` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
 
-Client machines should boot and provision themselves. Local client VMs should network boot CoreOS in about a 1 minute and the Kubernetes API should be available after 2-3 minutes. If you chose `k8s-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision Kubernetes clusters on physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
+Client machines should boot and provision themselves. Local client VMs should network boot CoreOS in about a 1 minute and the Kubernetes API should be available after 3-4 minutes (each node downloads a ~160MB Hyperkube). If you chose `k8s-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision Kubernetes clusters on physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 
 ## Verify
 
@@ -50,10 +49,10 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
     $ cd /path/to/coreos-baremetal
     $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
-    NAME          STATUS                     AGE
-    172.15.0.21   Ready                      6m
-    172.15.0.22   Ready                      5m
-    172.15.0.23   Ready                      6m
+    NAME                STATUS    AGE
+    node1.example.com   Ready     43s
+    node2.example.com   Ready     38s
+    node3.example.com   Ready     37s
 
 Get all pods.
 

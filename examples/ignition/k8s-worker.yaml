@@ -12,10 +12,10 @@ systemd:
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
     - name: flanneld.service
       dropins:
-        - name: 40-ExecStartPre-symlink.conf
+        - name: 40-add-options.conf
           contents: |
             [Service]
-            ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
+            EnvironmentFile=-/etc/flannel/options.env
     - name: docker.service
       dropins:
         - name: 40-flannel.conf
@@ -58,7 +58,7 @@ systemd:
           --register-node=true \
           --allow-privileged=true \
           --config=/etc/kubernetes/manifests \
-          --hostname-override={{.ipv4_address}} \
+          --hostname-override={{.domain_name}} \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local \
           --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml \
@@ -158,21 +158,7 @@ storage:
       filesystem: rootfs
       contents:
         inline: |
-          FLANNELD_IFACE={{.ipv4_address}}
           FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
-
-{{ if not (index . "skip_networkd") }}
-networkd:
-  units:
-    - name: 10-static.network
-      contents: |
-        [Match]
-        MACAddress={{.mac}}
-        [Network]
-        Gateway={{.networkd_gateway}}
-        DNS={{.networkd_dns}}
-        Address={{.networkd_address}}
-{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
