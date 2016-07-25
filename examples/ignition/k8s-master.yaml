@@ -711,7 +711,7 @@ storage:
 {{ if not (index . "skip_networkd") }}
 networkd:
   units:
-    - name: 1-static.network
+    - name: 10-static.network
       contents: |
         [Match]
         MACAddress={{.mac}}

@@ -10,13 +10,6 @@ systemd:
             Environment="ETCD_PROXY=on"
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
-    - name: fleet.service
-      enable: true
-      dropins:
-        - name: fleet-metadata.conf
-          contents: |
-            [Service]
-            Environment="FLEET_METADATA={{.fleet_metadata}}"
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

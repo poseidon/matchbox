@@ -7,12 +7,8 @@
     "os": "installed"
   },
   "metadata": {
-    "ipv4_address": "172.15.0.23",
-    "networkd_gateway": "172.15.0.1",
-    "networkd_dns": "172.15.0.3",
-    "networkd_address": "172.15.0.23/16",
-    "fleet_metadata": "role=etcd,name=node3",
+    "domain_name": "node3.example.com",
     "etcd_name": "node3",
-    "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
+    "etcd_initial_cluster": "node1=http://node1.example.com:2380,node2=http://node2.example.com:2380,node3=http://node3.example.com:2380"
   }
 }

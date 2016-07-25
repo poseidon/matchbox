@@ -8,30 +8,12 @@ systemd:
           contents: |
             [Service]
             Environment="ETCD_NAME={{.etcd_name}}"
-            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
-            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380"
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
-            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_LISTEN_PEER_URLS=http://{{.domain_name}}:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
             Environment="ETCD_STRICT_RECONFIG_CHECK=true"
-    - name: fleet.service
-      enable: true
-      dropins:
-        - name: fleet-metadata.conf
-          contents: |
-            [Service]
-            Environment="FLEET_METADATA={{.fleet_metadata}}"
-
-networkd:
-  units:
-    - name: 10-static.network
-      contents: |
-        [Match]
-        MACAddress={{.mac}}
-        [Network]
-        Gateway={{.networkd_gateway}}
-        DNS={{.networkd_dns}}
-        Address={{.networkd_address}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
