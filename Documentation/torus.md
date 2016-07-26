@@ -7,14 +7,14 @@ The Torus example provisions a 3 node CoreOS cluster, with `etcd3` and Torus, to
 
 Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) guide and understand the basics. In particular, you should be able to:
 
-* Use rkt to start `bootcfg`
+* Use rkt or Docker to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 * Install the Torus [binaries](https://github.com/coreos/torus/releases)
 
 ## Examples
 
-The [examples](..examples) statically assign IP addresses (172.15.0.21, 172.15.0.22, 172.15.0.23) to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
+The [examples](..examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [torus](../examples/groups/torus) - iPXE boot a Torus cluster (use rkt)
 
@@ -41,13 +41,14 @@ Install the Torus [binaries](https://github.com/coreos/torus/releases) on your l
 Run `list-peers` to report the status of data nodes in the Torus cluster.
 
 ```
-+--------------------------+--------------------------------------+---------+------+--------+---------------+--------------+
-|         ADDRESS          |                 UUID                 |  SIZE   | USED | MEMBER |    UPDATED    | REB/REP DATA |
-+--------------------------+--------------------------------------+---------+------+--------+---------------+--------------+
-| http://172.15.0.21:40000 | 016fad6a-2e23-11e6-8ced-525400a19cae | 1.0 GiB | 0 B  | OK     | 1 second ago  | 0 B/sec      |
-| http://172.15.0.23:40000 | 0408cbba-2e23-11e6-9871-525400c36177 | 1.0 GiB | 0 B  | OK     | 2 seconds ago | 0 B/sec      |
-| http://172.15.0.22:40000 | 0c67d31c-2e23-11e6-91f5-525400b22f86 | 1.0 GiB | 0 B  | OK     | 3 seconds ago | 0 B/sec      |
-+--------------------------+--------------------------------------+---------+------+--------+---------------+--------------+
++--------------------------------+--------------------------------------+---------+------+--------+---------------+--------------+
+|            ADDRESS             |                 UUID                 |  SIZE   | USED | MEMBER |    UPDATED    | REB/REP DATA |
++--------------------------------+--------------------------------------+---------+------+--------+---------------+--------------+
+| http://node1.example.com:40000 | 67145622-52cb-11e6-a886-525400a19cae | 1.0 GiB | 0 B  | OK     | 2 seconds ago | 0 B/sec      |
+| http://node2.example.com:40000 | 6978182a-52cb-11e6-b41d-525400b22f86 | 1.0 GiB | 0 B  | OK     | 3 seconds ago | 0 B/sec      |
+| http://node3.example.com:40000 | 6e0e4d7d-52cb-11e6-af25-525400c36177 | 1.0 GiB | 0 B  | OK     | now           | 0 B/sec      |
++--------------------------------+--------------------------------------+---------+------+--------+---------------+--------------+
+
 ```
 
 Torus has already initialized its metadata within etcd3 to format the cluster and added all peers to the pool. Each node provides 1 GiB of storage and has `MEMBER` status `OK`.
@@ -56,7 +57,7 @@ Torus has already initialized its metadata within etcd3 to format the cluster an
 
 Create a new replicated, virtual block device or `volume` on Torus.
 
-    ./torusblk --etcd=172.15.0.21:2379 volume create hello 500MiB
+    ./torusctl block create --etcd=172.15.0.21:2379 hello 500MiB
 
 List the current volumes,
 

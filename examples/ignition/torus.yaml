@@ -14,10 +14,10 @@ systemd:
         ExecStart=/usr/bin/docker run \
           --net=host \
           -e ETCD_NAME={{.etcd_name}} \
-          -e ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379 \
-          -e ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380 \
+          -e ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379 \
+          -e ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380 \
           -e ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379 \
-          -e ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380 \
+          -e ETCD_LISTEN_PEER_URLS=http://{{.domain_name}}:2380 \
           -e ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}} \
           -e ETCD_DATA_DIR=/var/lib/etcd3 \
           quay.io/coreos/etcd:v3.0.1
@@ -41,7 +41,7 @@ systemd:
           --net=host \
           -v /srv/torus:/data \
           -e STORAGE_SIZE={{.torus_storage_size}} \
-          -e LISTEN_HOST={{.ipv4_address}} \
+          -e LISTEN_HOST={{.domain_name}} \
           -e ETCD_HOST=127.0.0.1 \
           -e ETCD_PORT=2379 \
           -e AUTO_JOIN=1 \
@@ -75,19 +75,6 @@ storage:
         device: "/dev/disk/by-label/ROOT"
         format: "ext4"
   {{end}}
-
-{{ if not (index . "skip_networkd") }}
-networkd:
-  units:
-    - name: 10-static.network
-      contents: |
-        [Match]
-        MACAddress={{.mac}}
-        [Network]
-        Gateway={{.networkd_gateway}}
-        DNS={{.networkd_dns}}
-        Address={{.networkd_address}}
-{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
