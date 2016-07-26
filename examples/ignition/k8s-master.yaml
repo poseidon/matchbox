@@ -158,12 +158,20 @@ storage:
               - --service-cluster-ip-range={{.k8s_service_ip_range}}
               - --secure-port=443
               - --advertise-address={{.ipv4_address}}
+              {{ if index . "enable_dtc" }}
+              - --admission-control=TaintAdmit,NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
+              {{ else }}
               - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
+              {{ end }}
               - --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem
               - --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
               - --client-ca-file=/etc/kubernetes/ssl/ca.pem
               - --service-account-key-file=/etc/kubernetes/ssl/apiserver-key.pem
+              {{ if index . "enable_dtc" }}
+              - --runtime-config=extensions/v1beta1/networkpolicies=true,extensions/v1beta1/thirdpartyresources=true,rbac.authorization.k8s.io/v1alpha1=true
+              {{ else }}
               - --runtime-config=extensions/v1beta1/networkpolicies=true
+              {{ end }}
               livenessProbe:
                 httpGet:
                   host: 127.0.0.1
@@ -192,6 +200,24 @@ storage:
             - hostPath:
                 path: /usr/share/ca-certificates
               name: ssl-certs-host
+    {{ if index . "enable_dtc" }}
+    - path: /etc/kubernetes/manifests/tpm-manager.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: tpm-manager
+            namespace: kube-system
+          spec:
+            hostNetwork: true
+            containers:
+            - name: kube-manager
+              image: quay.io/coreos/tpm-manager
+              command:
+              - /tpm-manager
+    {{ end }}
     - path: /etc/flannel/options.env
       filesystem: rootfs
       contents:
@@ -658,6 +684,91 @@ storage:
               }
             }
           }
+    {{ if index . "enable_dtc" }}
+    - path: /srv/kubernetes/manifests/tpm-policy.json
+      filesystem: rootfs
+      contents:
+        inline: |
+        {
+          "kind": "ThirdPartyResource",
+          "apiVersion": "extensions/v1beta1",
+          "metadata": {
+            "name": "policy.tpm.coreos.com"
+          },
+          "description": "Policy describing TPM attestation measurements",
+          "versions": [
+            {
+            "name": "v1"
+            }
+          ]
+        }
+    - path: /srv/kubernetes/manifests/tpm.json
+      filesystem: rootfs
+      contents:
+        inline: |
+        {
+          "kind": "ThirdPartyResource",
+          "apiVersion": "extensions/v1beta1",
+          "metadata": {
+            "name": "tpm.coreos.com"
+          },
+          "description": "Data tied to a specific TPM",
+          "versions": [
+            {
+              "name": "v1"
+            }
+          ]
+        }
+    - path: /srv/kubernetes/manifests/tpm-admin.json
+      filesystem: rootfs
+      contents:
+        inline: |
+        {
+          "kind": "Role",
+          "apiVersion": "rbac.authorization.k8s.io/v1alpha1",
+          "metadata": {
+            "namespace": "kube-system",
+            "name": "tpm-admin"
+          },
+          "rules": [{
+            "apiGroups": [""],
+            "verbs": [],
+            "resources": [],
+            "attributeRestrictions": "tpmadmin"
+          }]
+        }
+    - path: /srv/kubernetes/manifests/taintconfig.json
+      filesystem: rootfs
+      contents:
+        inline: |
+        {
+          "kind": "ConfigMap",
+          "apiVersion": "v1",
+          "metadata": {
+            "namespace": "kube-system",
+            "name": "taint.coreos.com"
+          },
+          "data": {
+            "taint": "false"
+          }
+        }
+    - path: /srv/kubernetes/manifests/tpmconfig.json
+      filesystem: rootfs
+      contents:
+        inline: |
+        {
+          "kind": "ConfigMap",
+          "apiVersion": "v1",
+          "metadata": {
+            "namespace": "kube-system",
+            "name": "tpm-manager.coreos.com"
+          },
+          "data": {
+            "allowunknown": "true",
+            "reverify": "0"
+          }
+        }
+    {{ end }}
     - path: /opt/init-flannel
       filesystem: rootfs
       mode: 0544
@@ -707,6 +818,14 @@ storage:
           echo "K8S: Dashboard addon"
           curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-rc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
           curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-svc.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
+          {{ if index . "enable_dtc" }}
+          echo "K8S: DTC policy"
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/tpm-policy.json)" "http://127.0.0.1:8080/apis/extensions/v1beta1/thirdpartyresources" >/dev/null
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/tpm.json)" "http://127.0.0.1:8080/apis/extensions/v1beta1/thirdpartyresources" >/dev/null
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/tpm-admin.json)" "http://127.0.0.1:8080/apis/rbac.authorization.k8s.io/v1alpha1/namespaces/kube-system/roles" >/dev/null
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/tpmconfig.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/configmaps" >/dev/null
+          curl --silent -H "Content-Type: application/json" -XPOST -d"$(cat /srv/kubernetes/manifests/taintconfig.json)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/configmaps" >/dev/null
+          {{ end }}
 
 {{ if not (index . "skip_networkd") }}
 networkd:
