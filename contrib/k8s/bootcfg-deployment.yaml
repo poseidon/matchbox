@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: bootcfg
-          image: quay.io/coreos/bootcfg:latest
+          image: quay.io/coreos/bootcfg:v0.4.0
           env:
             - {name: BOOTCFG_ADDRESS, value: "0.0.0.0:8080"}
             - {name: BOOTCFG_LOG_LEVEL, value: "debug"}
@@ -36,6 +36,8 @@ spec:
               mountPath: /var/lib/bootcfg/ignition
             - name: cloud
               mountPath: /var/lib/bootcfg/cloud
+            - name: generic
+              mountPath: /var/lib/bootcfg/generic
             - name: assets
               mountPath: /var/lib/bootcfg/assets
       dnsPolicy: ClusterFirst
@@ -49,6 +51,8 @@ spec:
         - name: ignition
           emptyDir: {}
         - name: cloud
+          emptyDir: {}
+        - name: generic
           emptyDir: {}
         - name: assets
           emptyDir: {}
