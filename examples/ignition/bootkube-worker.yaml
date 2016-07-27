@@ -39,7 +39,7 @@ systemd:
         Description=Kubelet via Hyperkube ACI
         Wants=flanneld.service
         [Service]
-        Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
+        Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf --volume var-log,kind=host,source=/var/log --mount volume=var-log,target=/var/log"
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
         Environment=KUBELET_VERSION=v1.3.0_coreos.1
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
