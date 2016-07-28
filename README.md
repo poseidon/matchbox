@@ -29,11 +29,11 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 * [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
 * Backends
     * [FileStore](Documentation/bootcfg.md#data)
-* Deployment via
+* Installation
+    * [Linux binary](Documentation/deployment.md#binary-release)
     * [rkt](Documentation/deployment.md#rkt)
     * [docker](Documentation/deployment.md#docker)
     * [Kubernetes](Documentation/deployment.md#kubernetes)
-    * [binary](Documentation/deployment.md#binary) / [systemd](Documentation/deployment.md#systemd)
 * [Troubleshooting](Documentation/troubleshooting.md)
 * Going Further
     * [gRPC API Usage](config.md#grpc-api)
