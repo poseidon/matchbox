@@ -30,15 +30,14 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 * Backends
     * [FileStore](Documentation/bootcfg.md#data)
 * Installation
-    * [Linux binary](Documentation/deployment.md#binary-release)
-    * [rkt](Documentation/deployment.md#rkt)
-    * [docker](Documentation/deployment.md#docker)
+    * [Binary](Documentation/deployment.md#binary-release)
+    * [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
     * [Kubernetes](Documentation/deployment.md#kubernetes)
 * [Troubleshooting](Documentation/troubleshooting.md)
 * Going Further
-    * [gRPC API Usage](config.md#grpc-api)
-    * [Metadata](api.md#metadata)
-    * OpenPGP [Signing](api.md#openpgp-signatures)
+    * [gRPC API Usage](Documentation/config.md#grpc-api)
+    * [Metadata](Documentation/api.md#metadata)
+    * OpenPGP [Signing](Documentation/api.md#openpgp-signatures)
 
 ### Examples
 
