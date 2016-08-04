@@ -51,7 +51,7 @@ systemd:
         After=k8s-assets.target
         [Service]
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf --volume var-log,kind=host,source=/var/log --mount volume=var-log,target=/var/log"
-        Environment=KUBELET_VERSION=v1.3.0_coreos.1
+        Environment=KUBELET_VERSION=v1.3.4_coreos.0
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers={{.k8s_controller_endpoint}} \
@@ -127,7 +127,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-proxy
-              image: quay.io/coreos/hyperkube:v1.3.0_coreos.1
+              image: quay.io/coreos/hyperkube:v1.3.4_coreos.0
               command:
               - /hyperkube
               - proxy
