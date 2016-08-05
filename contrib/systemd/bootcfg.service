@@ -3,7 +3,6 @@ Description=CoreOS bootcfg Server
 Documentation=https://github.com/coreos/coreos-baremetal
 
 [Service]
-Type=simple
 User=bootcfg
 Group=bootcfg
 ExecStart=/usr/local/bin/bootcfg -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
@@ -11,7 +10,8 @@ ExecStart=/usr/local/bin/bootcfg -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081
 # systemd.exec
 ProtectHome=yes
 ProtectSystem=full
-ReadWriteDirectories=/var/lib/bootcfg
+ReadOnlyPaths=/etc/bootcfg
+ReadWritePaths=/var/lib/bootcfg
 
 [Install]
 WantedBy=multi-user.target

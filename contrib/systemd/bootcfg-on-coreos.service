@@ -1,0 +1,22 @@
+[Unit]
+Description=CoreOS bootcfg Server
+Documentation=https://github.com/coreos/coreos-baremetal
+
+[Service]
+ExecStartPre=/usr/bin/mkdir -p /var/lib/bootcfg/assets
+ExecStart=/usr/bin/rkt run \
+  --net=host \
+  --mount volume=data,target=/var/lib/bootcfg \
+  --mount volume=config,target=/etc/bootcfg \
+  --volume data,kind=host,source=/var/lib/bootcfg \
+  --volume config,kind=host,source=/etc/bootcfg \
+  quay.io/coreos/bootcfg:v0.4.0 -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+
+# systemd.exec
+ProtectHome=yes
+ProtectSystem=full
+ReadOnlyPaths=/etc/bootcfg
+ReadWritePaths=/var/lib/bootcfg
+
+[Install]
+WantedBy=multi-user.target

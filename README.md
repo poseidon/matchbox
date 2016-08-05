@@ -30,7 +30,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 * Backends
     * [FileStore](Documentation/bootcfg.md#data)
 * Installation
-    * [Binary](Documentation/deployment.md#binary-release)
+    * [CoreOS / Linux distros](Documentation/deployment.md)
     * [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
     * [Kubernetes](Documentation/deployment.md#kubernetes)
 * [Troubleshooting](Documentation/troubleshooting.md)
