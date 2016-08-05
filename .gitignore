@@ -26,7 +26,8 @@ _testmain.go
 *.test
 *.prof
 
-_output/
-bin/
-assets/
 *.aci
+assets/
+bin/
+_output/
+tools/

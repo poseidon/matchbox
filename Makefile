@@ -6,6 +6,12 @@ LOCAL_BIN=/usr/local/bin
 all: build
 build: clean bin/bootcfg bin/bootcmd
 
+tools:
+	./scripts/gentools
+
+codegen: tools
+	./scripts/codegen
+
 bin/bootcfg:
 	go build -o bin/bootcfg -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
 
@@ -37,9 +43,10 @@ _output/coreos-baremetal-%-amd64.tar.gz: bin/%/bootcfg bin/%/bootcmd
 	tar zcvf $(DEST).tar.gz -C _output $(NAME)
 
 clean:
+	rm -rf tools
 	rm -rf bin
 	rm -rf _output
 
-.PHONY: all build test install release clean
+.PHONY: all build tools test install release clean
 .SECONDARY: _output/coreos-baremetal-linux-amd64 _output/coreos-baremetal-darwin-amd64
 
