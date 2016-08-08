@@ -24,7 +24,7 @@ cp examples/etc/bootcfg/openssl.conf $SCRIPTS/tls
 
 # systemd
 mkdir -p $CONTRIB/systemd
-cp contrib/systemd/bootcfg.service $CONTRIB/systemd
+cp -r contrib/systemd/* $CONTRIB/systemd
 
 # examples
 mkdir -p $DEST/examples
