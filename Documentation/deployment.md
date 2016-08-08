@@ -96,9 +96,11 @@ $ sudo systemctl start bootcfg.service
 
 ### General Linux
 
-Pre-build binaries are available for general Linux distributions. Copy the `bootcfg` static binary to an appropriate location on the host.
+Pre-built binaries are available for general Linux distributions.
 
 #### Binary
+
+Copy the `bootcfg` static binary to an appropriate location on the host.
 
 ```sh
 $ sudo cp bootcfg /usr/local/bin
@@ -123,7 +125,7 @@ $ sudo cp contrib/systemd/bootcfg.service /etc/systemd/system/
 $ sudo systemctl daemon-reload
 ```
 
-The example systemd unit exposes the `bootcfg` HTTP machine endpoints on port 8080 and the (optional) gRPC API on port 8081 (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences and be sure to allow your choices within the host's firewall so clients can access the services.
+The example unit exposes the `bootcfg` HTTP machine endpoints on port 8080 and the (optional) gRPC API on port 8081 (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences and be sure to allow your choices within the host's firewall so clients can access the services.
 
 #### Start bootcfg
 
@@ -136,7 +138,7 @@ $ sudo systemctl start bootcfg.service
 
 ## Verify
 
-Check the bootcfg service can be reached by client machines (those being provisioned).
+Verify the bootcfg service can be reached by client machines (those being provisioned).
 
 
 ```sh
