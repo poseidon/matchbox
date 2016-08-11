@@ -13,7 +13,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 
 ## bootcfg
 
-`bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, GRUB, and Pixiecore support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
+`bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, and GRUB. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
 
 * [bootcfg Service](Documentation/bootcfg.md)
 * [Profiles](Documentation/bootcfg.md#profiles)
@@ -36,8 +36,9 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 * [Troubleshooting](Documentation/troubleshooting.md)
 * Going Further
     * [gRPC API Usage](Documentation/config.md#grpc-api)
-    * [Metadata](Documentation/api.md#metadata)
+    * [Metadata Endpoint](Documentation/api.md#metadata)
     * OpenPGP [Signing](Documentation/api.md#openpgp-signatures)
+    * [Tectonic Installer](https://tectonic.com/blog/tectonic-1-3-release.html) (graphical)
 
 ### Examples
 
