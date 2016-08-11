@@ -38,6 +38,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
     * [gRPC API Usage](Documentation/config.md#grpc-api)
     * [Metadata](Documentation/api.md#metadata)
     * OpenPGP [Signing](Documentation/api.md#openpgp-signatures)
+    * [Graphical Tectonic Installer](https://tectonic.com/blog/tectonic-1-3-release.html) (contact us)
 
 ### Examples
 
