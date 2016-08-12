@@ -52,6 +52,8 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
     sudo firewall-cmd --add-interface=metal0 --zone=trusted
 
+After a recent update, you may see a warning that NetworkManager controls the interface. Work-around this using the firewall-config GUI to add `metal0` to the trusted zone.
+
 ## Containers
 
 Run the latest `bootcfg` ACI with rkt and the `etcd` example.
