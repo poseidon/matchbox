@@ -1,0 +1,246 @@
+---
+systemd:
+  units:
+    - name: etcd2.service
+      enable: true
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_PROXY=on"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+    - name: flanneld.service
+      dropins:
+        - name: 40-add-options.conf
+          contents: |
+            [Service]
+            EnvironmentFile=-/etc/flannel/options.env
+    - name: docker.service
+      dropins:
+        - name: 40-flannel.conf
+          contents: |
+            [Unit]
+            Requires=flanneld.service
+            After=flanneld.service
+            [Service]
+            ExecStart=
+            ExecStart=/usr/lib/coreos/dockerd daemon --host=fd:// $DOCKER_OPTS $DOCKER_CGROUPS $DOCKER_OPT_MTU
+    - name: k8s-certs@.service
+      contents: |
+        [Unit]
+        Description=Fetch Kubernetes certificate assets
+        Requires=network-online.target
+        After=network-online.target
+        [Service]
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
+        ExecStart=/usr/bin/bash -c "[ -f /etc/kubernetes/ssl/%i ] || curl {{.k8s_cert_endpoint}}/tls/%i -o /etc/kubernetes/ssl/%i"
+    - name: k8s-assets.target
+      contents: |
+        [Unit]
+        Description=Load Kubernetes Assets
+        Requires=k8s-certs@worker.pem.service
+        After=k8s-certs@worker.pem.service
+        Requires=k8s-certs@worker-key.pem.service
+        After=k8s-certs@worker-key.pem.service
+        Requires=k8s-certs@ca.pem.service
+        After=k8s-certs@ca.pem.service
+    - name: kubelet.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Kubelet via Hyperkube ACI
+        Requires=k8s-assets.target
+        After=k8s-assets.target
+        [Service]
+        Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
+            --mount volume=dns,target=/etc/resolv.conf \
+            --volume=rkt,kind=host,source=/opt/bin/host-rkt \
+            --mount volume=rkt,target=/usr/bin/rkt \
+            --volume var-lib-rkt,kind=host,source=/var/lib/rkt \
+            --mount volume=var-lib-rkt,target=/var/lib/rkt \
+            --volume=stage,kind=host,source=/tmp \
+            --mount volume=stage,target=/tmp"
+        Environment=KUBELET_VERSION=v1.3.4_coreos.0
+        ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+        ExecStart=/usr/lib/coreos/kubelet-wrapper \
+          --api-servers={{.k8s_controller_endpoint}} \
+          --network-plugin-dir=/etc/kubernetes/cni/net.d \
+          --network-plugin=cni \
+          --container-runtime=rkt \
+          --rkt-path=/usr/bin/rkt \
+          --rkt-stage1-image=coreos.com/rkt/stage1-coreos \
+          --register-node=true \
+          --allow-privileged=true \
+          --config=/etc/kubernetes/manifests \
+          --hostname-override={{.domain_name}} \
+          --cluster_dns={{.k8s_dns_service_ip}} \
+          --cluster_domain=cluster.local \
+          --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml \
+          --tls-cert-file=/etc/kubernetes/ssl/worker.pem \
+          --tls-private-key-file=/etc/kubernetes/ssl/worker-key.pem
+        Restart=always
+        RestartSec=10
+        [Install]
+        WantedBy=multi-user.target
+    - name: rkt-api.service
+      enable: true
+      contents: |
+        [Unit]
+        Before=kubelet.service
+        [Service]
+        ExecStart=/usr/bin/rkt api-service
+        Restart=always
+        RestartSec=10
+        [Install]
+        RequiredBy=kubelet.service
+    - name: load-rkt-stage1.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Load rkt stage1 images
+        Documentation=http://github.com/coreos/rkt
+        Requires=network-online.target
+        After=network-online.target
+        Before=rkt-api.service
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/bin/rkt fetch /usr/lib/rkt/stage1-images/stage1-coreos.aci /usr/lib/rkt/stage1-images/stage1-fly.aci  --insecure-options=image
+        [Install]
+        RequiredBy=rkt-api.service
+
+storage:
+  {{ if index . "pxe" }}
+  disks:
+    - device: /dev/sda
+      wipe_table: true
+      partitions:
+        - label: ROOT
+  filesystems:
+    - name: rootfs
+      mount:
+        device: "/dev/sda1"
+        format: "ext4"
+        create:
+          force: true
+          options:
+            - "-LROOT"
+  {{else}}
+  filesystems:
+    - name: rootfs
+      mount:
+        device: "/dev/disk/by-label/ROOT"
+        format: "ext4"
+  {{end}}
+  files:
+    - path: /etc/kubernetes/cni/net.d/10-flannel.conf
+      filesystem: rootfs
+      contents:
+        inline: |
+          {
+              "name": "podnet",
+              "type": "flannel",
+              "delegate": {
+                  "isDefaultGateway": true
+              }
+          }
+    - path: /etc/kubernetes/worker-kubeconfig.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Config
+          clusters:
+          - name: local
+            cluster:
+              certificate-authority: /etc/kubernetes/ssl/ca.pem
+          users:
+          - name: kubelet
+            user:
+              client-certificate: /etc/kubernetes/ssl/worker.pem
+              client-key: /etc/kubernetes/ssl/worker-key.pem
+          contexts:
+          - context:
+              cluster: local
+              user: kubelet
+            name: kubelet-context
+          current-context: kubelet-context
+    - path: /etc/kubernetes/manifests/kube-proxy.yaml
+      filesystem: rootfs
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kube-proxy
+            namespace: kube-system
+            annotations:
+              rkt.alpha.kubernetes.io/stage1-name-override: coreos.com/rkt/stage1-fly
+          spec:
+            hostNetwork: true
+            containers:
+            - name: kube-proxy
+              image: quay.io/coreos/hyperkube:v1.3.4_coreos.0
+              command:
+              - /hyperkube
+              - proxy
+              - --master={{.k8s_controller_endpoint}}
+              - --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - mountPath: /etc/ssl/certs
+                  name: "ssl-certs"
+                - mountPath: /etc/kubernetes/worker-kubeconfig.yaml
+                  name: "kubeconfig"
+                  readOnly: true
+                - mountPath: /etc/kubernetes/ssl
+                  name: "etc-kube-ssl"
+                  readOnly: true
+                - mountPath: /var/run/dbus
+                  name: dbus
+                  readOnly: false
+            volumes:
+              - name: "ssl-certs"
+                hostPath:
+                  path: "/usr/share/ca-certificates"
+              - name: "kubeconfig"
+                hostPath:
+                  path: "/etc/kubernetes/worker-kubeconfig.yaml"
+              - name: "etc-kube-ssl"
+                hostPath:
+                  path: "/etc/kubernetes/ssl"
+              - hostPath:
+                  path: /var/run/dbus
+                name: dbus
+    - path: /etc/flannel/options.env
+      filesystem: rootfs
+      contents:
+        inline: |
+          FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
+    - path: /opt/bin/host-rkt
+      filesystem: rootfs
+      mode: 0544
+      contents:
+        inline: |
+          #!/bin/sh
+          # This is bind mounted into the kubelet rootfs and all rkt shell-outs go
+          # through this rkt wrapper. It essentially enters the host mount namespace
+          # (which it is already in) only for the purpose of breaking out of the chroot
+          # before calling rkt. It makes things like rkt gc work and avoids bind mounting
+          # in certain rkt filesystem dependancies into the kubelet rootfs. This can
+          # eventually be obviated when the write-api stuff gets upstream and rkt gc is
+          # through the api-server. Related issue:
+          # https://github.com/coreos/rkt/issues/2878
+          exec nsenter -m -u -i -n -p -t 1 -- /usr/bin/rkt "$@"
+
+{{ if index . "ssh_authorized_keys" }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
+{{end}}

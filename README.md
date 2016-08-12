@@ -44,7 +44,8 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 
 The [examples](examples) network boot and provision CoreOS clusters. Network boot [libvirt](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
 
-* Multi-node [Kubernetes cluster](Documentation/kubernetes.md) with TLS
+* Multi-node [Kubernetes cluster](Documentation/kubernetes.md)
+* Multi-node Kubernetes cluster with rkt container runtime (i.e. rktnetes)
 * Multi-node [self-hosted Kubernetes cluster](Documentation/bootkube.md)
 * Multi-node etcd cluster
 * Multi-node [Torus](Documentation/torus.md) distributed storage cluster
