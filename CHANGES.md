@@ -4,6 +4,7 @@
 
 * Add ARM and AMR64 release architectures (#309)
 * Add guide for installing bootcfg on CoreOS (#306)
+* Improvements to the bootcfg cert-gen script (#310)
 
 #### Examples
 
