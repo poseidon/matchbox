@@ -47,7 +47,7 @@ The [examples](examples) network boot and provision CoreOS clusters. Network boo
 * Multi-node [Kubernetes cluster](Documentation/kubernetes.md)
 * Multi-node Kubernetes cluster with rkt container runtime (i.e. rktnetes)
 * Multi-node [self-hosted Kubernetes cluster](Documentation/bootkube.md)
-* Multi-node etcd cluster
+* Multi-node etcd2 or etcd3 cluster
 * Multi-node [Torus](Documentation/torus.md) distributed storage cluster
 * Network boot or Install to Disk
 * Multi-stage CoreOS installs
