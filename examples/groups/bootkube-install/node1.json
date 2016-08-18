@@ -1,7 +1,7 @@
 {
   "id": "node1",
-  "name": "Master Node",
-  "profile": "bootkube-master",
+  "name": "Controller Node",
+  "profile": "bootkube-controller",
   "selector": {
     "mac": "52:54:00:a1:9c:ae",
     "os": "installed"
