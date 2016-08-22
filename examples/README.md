@@ -28,7 +28,7 @@ Get started running `bootcfg` on your Linux machine to network boot and provisio
 	* [bootcfg with Docker](../Documentation/getting-started-docker.md)
 * [Kubernetes (static manifests)](../Documentation/kubernetes.md)
 * [Kubernetes (self-hosted)](../Documentation/bootkube.md)
-* [Torus Storage](..Documentation/torus.md)
+* [Torus Storage](../Documentation/torus.md)
 * [Lab Examples](https://github.com/dghubble/metal)
 
 ## SSH Keys
