@@ -7,7 +7,7 @@ storage:
         - label: ROOT
           number: 0
   filesystems:
-    - name: rootfs
+    - name: root
       mount:
         device: "/dev/sda1"
         format: "ext4"
@@ -16,7 +16,7 @@ storage:
           options:
             - "-LROOT"
   files:
-    - filesystem: rootfs
+    - filesystem: root
       path: /home/core/foo
       mode: 0644
       user:

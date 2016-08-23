@@ -91,7 +91,7 @@ storage:
       partitions:
         - label: ROOT
   filesystems:
-    - name: rootfs
+    - name: root
       mount:
         device: "/dev/sda1"
         format: "ext4"
@@ -99,16 +99,10 @@ storage:
           force: true
           options:
             - "-LROOT"
-  {{else}}
-  filesystems:
-    - name: rootfs
-      mount:
-        device: "/dev/disk/by-label/ROOT"
-        format: "ext4"
   {{end}}
   files:
     - path: /etc/kubernetes/manifests/kube-proxy.yaml
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           apiVersion: v1
@@ -136,7 +130,7 @@ storage:
                 path: /usr/share/ca-certificates
               name: ssl-certs-host
     - path: /etc/kubernetes/manifests/kube-apiserver.yaml
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           apiVersion: v1
@@ -192,12 +186,12 @@ storage:
                 path: /usr/share/ca-certificates
               name: ssl-certs-host
     - path: /etc/flannel/options.env
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
     - path: /etc/kubernetes/manifests/kube-controller-manager.yaml
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           apiVersion: v1
@@ -242,7 +236,7 @@ storage:
                 path: /usr/share/ca-certificates
               name: ssl-certs-host
     - path: /etc/kubernetes/manifests/kube-scheduler.yaml
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           apiVersion: v1
@@ -271,7 +265,7 @@ storage:
                 initialDelaySeconds: 15
                 timeoutSeconds: 15
     - path: /srv/kubernetes/manifests/kube-dns-rc.json
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           {
@@ -405,7 +399,7 @@ storage:
             }
           }
     - path: /srv/kubernetes/manifests/kube-dns-svc.json
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           {
@@ -440,7 +434,7 @@ storage:
             }
           }
     - path: /srv/kubernetes/manifests/heapster-deployment.json
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           {
@@ -540,7 +534,7 @@ storage:
             }
           }
     - path: /srv/kubernetes/manifests/heapster-svc.json
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           {
@@ -567,7 +561,7 @@ storage:
             }
           }
     - path: /srv/kubernetes/manifests/kube-dashboard-rc.json
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           {
@@ -630,7 +624,7 @@ storage:
             }
           }
     - path: /srv/kubernetes/manifests/kube-dashboard-svc.json
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           {
@@ -657,7 +651,7 @@ storage:
             }
           }
     - path: /opt/init-flannel
-      filesystem: rootfs
+      filesystem: root
       mode: 0544
       contents:
         inline: |
@@ -686,7 +680,7 @@ storage:
           }
           init_flannel
     - path: /opt/k8s-addons
-      filesystem: rootfs
+      filesystem: root
       mode: 0544
       contents:
         inline: |

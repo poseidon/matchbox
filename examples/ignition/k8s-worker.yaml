@@ -77,7 +77,7 @@ storage:
       partitions:
         - label: ROOT
   filesystems:
-    - name: rootfs
+    - name: root
       mount:
         device: "/dev/sda1"
         format: "ext4"
@@ -85,16 +85,10 @@ storage:
           force: true
           options:
             - "-LROOT"
-  {{else}}
-  filesystems:
-    - name: rootfs
-      mount:
-        device: "/dev/disk/by-label/ROOT"
-        format: "ext4"
   {{end}}
   files:
     - path: /etc/kubernetes/worker-kubeconfig.yaml
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           apiVersion: v1
@@ -115,7 +109,7 @@ storage:
             name: kubelet-context
           current-context: kubelet-context
     - path: /etc/kubernetes/manifests/kube-proxy.yaml
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           apiVersion: v1
@@ -155,7 +149,7 @@ storage:
                 hostPath:
                   path: "/etc/kubernetes/ssl"
     - path: /etc/flannel/options.env
-      filesystem: rootfs
+      filesystem: root
       contents:
         inline: |
           FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
