@@ -43,7 +43,7 @@ Maintain readable inline file contents in Fuze:
 ...
 files:
   - path: /etc/foo.conf
-    filesystem: rootfs
+    filesystem: root
     contents:
       inline: |
         foo bar
@@ -65,7 +65,7 @@ ignition/format-disk.yaml.tmpl:
           partitions:
             - label: ROOT
       filesystems:
-        - name: rootfs
+        - name: root
           mount:
             device: "/dev/sda1"
             format: "ext4"
@@ -74,7 +74,7 @@ ignition/format-disk.yaml.tmpl:
               options:
                 - "-LROOT"
       files:
-        - filesystem: rootfs
+        - filesystem: root
           path: /home/core/foo
           mode: 0644
           user:
@@ -118,7 +118,7 @@ The Ignition config response (formatted) to a query `/ignition?label=value` for 
         ],
         "filesystems": [
           {
-            "name": "rootfs",
+            "name": "root",
             "mount": {
               "device": "/dev/sda1",
               "format": "ext4",
@@ -133,7 +133,7 @@ The Ignition config response (formatted) to a query `/ignition?label=value` for 
         ],
         "files": [
           {
-            "filesystem": "rootfs",
+            "filesystem": "root",
             "path": "/home/core/foo",
             "contents": {
               "source": "data:,Example%20file%20contents%0A",

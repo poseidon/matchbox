@@ -60,7 +60,7 @@ storage:
       partitions:
         - label: ROOT
   filesystems:
-    - name: rootfs
+    - name: root
       mount:
         device: "/dev/sda1"
         format: "ext4"
@@ -68,12 +68,6 @@ storage:
           force: true
           options:
             - "-LROOT"
-  {{else}}
-  filesystems:
-    - name: rootfs
-      mount:
-        device: "/dev/disk/by-label/ROOT"
-        format: "ext4"
   {{end}}
 
 {{ if index . "ssh_authorized_keys" }}
