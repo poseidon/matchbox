@@ -5,6 +5,7 @@ systemd:
       enable: true
       contents: |
         [Unit]
+        Type=notify
         Description=etcd3
         Conflicts=etcd2.service
         [Service]
@@ -16,7 +17,7 @@ systemd:
           --volume data-dir,kind=host,source=/var/lib/etcd3 \
           --mount volume=data-dir,target=/var/lib/etcd3 \
           $RKT_OPTS \
-          coreos.com/etcd:v3.0.4 -- \
+          coreos.com/etcd:v3.0.6 -- \
           -name={{.etcd_name}} \
           -advertise-client-urls=http://{{.domain_name}}:2379 \
           -initial-advertise-peer-urls=http://{{.domain_name}}:2380 \
@@ -27,6 +28,7 @@ systemd:
         Restart=always
         RestartSec=10
         LimitNOFILE=40000
+        TimeoutStartSec=0
         [Install]
         WantedBy=multi-user.target
 

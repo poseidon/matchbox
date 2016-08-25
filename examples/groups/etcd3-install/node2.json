@@ -1,0 +1,14 @@
+{
+  "id": "node2",
+  "name": "etcd Node 2",
+  "profile": "etcd3",
+  "selector": {
+    "mac": "52:54:00:b2:2f:86",
+    "os": "installed"
+  },
+  "metadata": {
+    "domain_name": "node2.example.com",
+    "etcd_name": "node2",
+    "etcd_initial_cluster": "node1=http://node1.example.com:2380,node2=http://node2.example.com:2380,node3=http://node3.example.com:2380"
+  }
+}
