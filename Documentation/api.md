@@ -32,8 +32,8 @@ Finds the profile for the machine and renders the network boot config (kernel, o
 **Response**
 
     #!ipxe
-    kernel /assets/coreos/1109.1.0/coreos_production_pxe.vmlinuz coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.first_boot=1 coreos.autologin
-    initrd  /assets/coreos/1109.1.0/coreos_production_pxe_image.cpio.gz
+    kernel /assets/coreos/1153.0.0/coreos_production_pxe.vmlinuz coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.first_boot=1 coreos.autologin
+    initrd  /assets/coreos/1153.0.0/coreos_production_pxe_image.cpio.gz
     boot
 
 ## GRUB2
@@ -56,9 +56,9 @@ Finds the profile for the machine and renders the network boot config as a GRUB 
     timeout=1
     menuentry "CoreOS" {
     echo "Loading kernel"
-    linuxefi "(http;bootcfg.foo:8080)/assets/coreos/1109.1.0/coreos_production_pxe.vmlinuz" "coreos.autologin" "coreos.config.url=http://bootcfg.foo:8080/ignition" "coreos.first_boot"
+    linuxefi "(http;bootcfg.foo:8080)/assets/coreos/1153.0.0/coreos_production_pxe.vmlinuz" "coreos.autologin" "coreos.config.url=http://bootcfg.foo:8080/ignition" "coreos.first_boot"
     echo "Loading initrd"
-    initrdefi "(http;bootcfg.foo:8080)/assets/coreos/1109.1.0/coreos_production_pxe_image.cpio.gz"
+    initrdefi "(http;bootcfg.foo:8080)/assets/coreos/1153.0.0/coreos_production_pxe_image.cpio.gz"
     }
 
 ## Pixiecore
@@ -76,8 +76,8 @@ Finds the profile matching the machine and renders the network boot config as JS
 **Response**
 
     {
-      "kernel":"/assets/coreos/1109.1.0/coreos_production_pxe.vmlinuz",
-      "initrd":["/assets/coreos/1109.1.0/coreos_production_pxe_image.cpio.gz"],
+      "kernel":"/assets/coreos/1153.0.0/coreos_production_pxe.vmlinuz",
+      "initrd":["/assets/coreos/1153.0.0/coreos_production_pxe_image.cpio.gz"],
       "cmdline":{
         "cloud-config-url":"http://bootcfg.foo/cloud?mac=ADDRESS",
         "coreos.autologin":""
@@ -228,7 +228,7 @@ If you need to serve static assets (e.g. kernel, initrd), `bootcfg` can serve ar
         └── 1109.1.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
-        └── 1053.2.0
+        └── 1153.0.0
             ├── coreos_production_pxe.vmlinuz
             └── coreos_production_pxe_image.cpio.gz
 
