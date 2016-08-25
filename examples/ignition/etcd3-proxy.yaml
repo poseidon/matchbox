@@ -8,6 +8,7 @@ systemd:
         Description=etcd3
         Conflicts=etcd2.service
         [Service]
+        Type=notify
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
         ExecStartPre=/usr/bin/mkdir -p /var/lib/etcd3
         ExecStartPre=/usr/bin/rkt trust --prefix "coreos.com/etcd" --skip-fingerprint-review
@@ -16,13 +17,14 @@ systemd:
           --volume data-dir,kind=host,source=/var/lib/etcd3 \
           --mount volume=data-dir,target=/var/lib/etcd3 \
           $RKT_OPTS \
-          coreos.com/etcd:v3.0.4 -- \
+          coreos.com/etcd:v3.0.6 -- \
           -proxy=on \
           -listen-client-urls=http://0.0.0.0:2379 \
           -initial-cluster={{.etcd_initial_cluster}}
         Restart=always
         RestartSec=0
         LimitNOFILE=40000
+        TimeoutStartSec=0
         [Install]
         WantedBy=multi-user.target
 
