@@ -1,7 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node Kubernetes v1.3.4 cluster with etcd, flannel, and a special "runonce" host Kublet. The CoreOS [bootkube](https://github.com/coreos/bootkube) tool is used to bootstrap kubelet, apiserver, scheduler, and controller-manager as pods, which can be managed via kubectl. `bootkube start` is run on any controller (master) to create a temporary control-plane and start Kubernetes components initially. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node Kubernetes v1.3.4 cluster with etcd, flannel, and a special "runonce" host Kublet. The CoreOS [bootkube](https://github.com/coreos/bootkube) tool is used to bootstrap kubelet, apiserver, scheduler, and controller-manager as pods, which can be managed via kubectl. `bootkube start` is run on any controller (i.e. master) to create a temporary control-plane and start Kubernetes components initially. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Experimental
 
@@ -9,20 +9,20 @@ Self-hosted Kubernetes is under very active development by CoreOS.
 
 ## Requirements
 
-Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) guide and understand the basics. In particular, you should be able to:
+Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with docker](getting-started-docker.md) guide and understand the basics. In particular, you should be able to:
 
-* Use rkt to start `bootcfg`
+* Use rkt or Docker to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 
-Build and install [bootkube](https://github.com/coreos/bootkube/releases) v0.1.4.
+Build and install the [fork of bootkube](https://github.com/dghubble/bootkube), which supports DNS names (needed until Kubernetes 1.4).
 
 ## Examples
 
 The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
-* [bootkube](../examples/groups/bootkube) - iPXE boot a bootkube-ready cluster (use rkt)
-* [bootkube-install](../examples/groups/bootkube-install) - Install a bootkube-ready cluster (use rkt)
+* [bootkube](../examples/groups/bootkube) - iPXE boot a self-hosted Kubernetes cluster
+* [bootkube-install](../examples/groups/bootkube-install) - Install a self-hosted Kubernetes cluster
 
 ### Assets
 
@@ -41,15 +41,12 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 
-    bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --etcd-servers=http://172.15.0.21:2379 --api-server-alt-names=IP=172.15.0.21
+    # If running with docker, use 172.17.0.21 instead of 172.15.0.21
+    bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --etcd-servers=http://node1.example.com:2379 --api-server-alt-names=DNS=node1.example.com,IP=172.15.0.21
 
 ## Containers
 
-Run the latest `bootcfg` ACI with rkt and the `bootkube` example (or `bootkube-install`).
-
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/bootkube quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
-
-Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) for help.
+Use rkt or docker to start `bootcfg` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
 
 Client machines should boot and provision themselves. Local client VMs should network boot CoreOS and become available via SSH in about 1 minute. If you chose `bootkube-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 
@@ -57,17 +54,17 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
 
-Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (i.e. repeat for 172.15.0.22, 172.15.0.23).
+Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (i.e. 172.15.0.21-23 for metal0 or 172.17.0.21-23 for docker0).
 
     scp assets/auth/kubeconfig core@172.15.0.21:/home/core/kubeconfig
     ssh core@172.15.0.21
     sudo mv kubeconfig /etc/kubernetes/kubeconfig
 
-Secure copy the `bootkube` generated assets to any one of the master nodes.
+Secure copy the `bootkube` generated assets to any one of the controller nodes.
 
     scp -r assets core@172.15.0.21:/home/core/assets
 
-SSH to the chosen master node and bootstrap the cluster with `bootkube-start`.
+SSH to the chosen controller node and bootstrap the cluster with `bootkube-start`.
 
     ssh core@172.15.0.21 'sudo ./bootkube-start'
 
@@ -85,10 +82,10 @@ You may cleanup the `bootkube` assets on the node, but you should keep the copy 
 [Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster. Verify that the cluster is accessible and that the kubelet, apiserver, scheduler, and controller-manager are running as pods.
 
     $ kubectl --kubeconfig=assets/auth/kubeconfig get nodes
-    NAME          STATUS    AGE
-    172.15.0.21   Ready     3m
-    172.15.0.22   Ready     3m
-    172.15.0.23   Ready     3m
+    NAME                STATUS    AGE
+    node1.example.com   Ready     3m
+    node2.example.com   Ready     3m
+    node3.example.com   Ready     3m
 
     $ kubectl --kubeconfig=assets/auth/kubeconfig get pods --all-namespaces
     kube-system   kube-api-checkpoint-172.15.0.21            1/1       Running   0          2m

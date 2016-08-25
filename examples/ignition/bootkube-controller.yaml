@@ -8,10 +8,10 @@ systemd:
           contents: |
             [Service]
             Environment="ETCD_NAME={{.etcd_name}}"
-            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
-            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380"
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
-            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_LISTEN_PEER_URLS=http://{{.domain_name}}:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
             Environment="ETCD_STRICT_RECONFIG_CHECK=true"
     - name: flanneld.service
@@ -52,13 +52,13 @@ systemd:
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
-          --api-servers={{.k8s_master_endpoint}} \
+          --api-servers={{.k8s_controller_endpoint}} \
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --lock-file=/var/run/lock/kubelet.lock \
           --exit-on-lock-contention \
           --config=/etc/kubernetes/manifests \
           --allow-privileged \
-          --hostname-override={{.ipv4_address}} \
+          --hostname-override={{.domain_name}} \
           --node-labels=master=true \
           --minimum-container-ttl-duration=6m0s \
           --cluster_dns={{.k8s_dns_service_ip}} \
@@ -98,6 +98,12 @@ storage:
       contents:
         inline: |
           empty
+    - path: /etc/hostname
+      filesystem: rootfs
+      mode: 0644
+      contents:
+        inline:
+          {{.domain_name}}
     - path: /home/core/bootkube-start
       filesystem: rootfs
       mode: 0544
@@ -148,19 +154,6 @@ storage:
               fi
           }
           init_flannel
-
-{{ if not (index . "skip_networkd") }}
-networkd:
-  units:
-    - name: 10-static.network
-      contents: |
-        [Match]
-        MACAddress={{.mac}}
-        [Network]
-        Gateway={{.networkd_gateway}}
-        DNS={{.networkd_dns}}
-        Address={{.networkd_address}}
-{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

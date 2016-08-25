@@ -7,13 +7,9 @@ systemd:
         - name: 40-etcd-cluster.conf
           contents: |
             [Service]
-            Environment="ETCD_NAME={{.etcd_name}}"
-            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.ipv4_address}}:2379"
-            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.ipv4_address}}:2380"
+            Environment="ETCD_PROXY=on"
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
-            Environment="ETCD_LISTEN_PEER_URLS=http://{{.ipv4_address}}:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
-            Environment="ETCD_STRICT_RECONFIG_CHECK=true"
     - name: flanneld.service
       enable: true
     - name: docker.service
@@ -47,13 +43,13 @@ systemd:
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
-          --api-servers={{.k8s_master_endpoint}} \
+          --api-servers={{.k8s_controller_endpoint}} \
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --lock-file=/var/run/lock/kubelet.lock \
           --exit-on-lock-contention \
           --config=/etc/kubernetes/manifests \
           --allow-privileged \
-          --hostname-override={{.ipv4_address}} \
+          --hostname-override={{.domain_name}} \
           --minimum-container-ttl-duration=6m0s \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
@@ -92,19 +88,13 @@ storage:
       contents:
         inline: |
           empty
+    - path: /etc/hostname
+      filesystem: rootfs
+      mode: 0644
+      contents:
+        inline:
+          {{.domain_name}}
 
-{{ if not (index . "skip_networkd") }}
-networkd:
-  units:
-    - name: 10-static.network
-      contents: |
-        [Match]
-        MACAddress={{.mac}}
-        [Network]
-        Gateway={{.networkd_gateway}}
-        DNS={{.networkd_dns}}
-        Address={{.networkd_address}}
-{{end}}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
