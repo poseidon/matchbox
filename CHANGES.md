@@ -11,6 +11,7 @@
 * Add Kubernetes with rkt container runtime (i.e. rktnetes)
 * Upgrade Kubernetes v1.3.4 (static manifest) example clusters
 * Upgrade Kubernetes v1.3.4 (self-hosted) example cluster
+* Add etcd3 example cluster (PXE in-RAM or install to disk)
 * Use DNS names (instead of IPs) in example clusters (except bootkube)
 
 ## v0.4.0 (2016-07-21)
