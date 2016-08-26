@@ -24,8 +24,7 @@ systemd:
             Requires=flanneld.service
             After=flanneld.service
             [Service]
-            ExecStart=
-            ExecStart=/usr/lib/coreos/dockerd daemon --host=fd:// $DOCKER_OPTS $DOCKER_CGROUPS $DOCKER_OPT_MTU
+            EnvironmentFile=/etc/kubernetes/cni/docker_opts_cni.env
     - name: k8s-certs@.service
       contents: |
         [Unit]
@@ -139,6 +138,12 @@ storage:
                   "isDefaultGateway": true
               }
           }
+    - path: /etc/kubernetes/cni/docker_opts_cni.env
+      filesystem: root
+      contents:
+        inline: |
+          DOCKER_OPT_BIP=""
+          DOCKER_OPT_IPMASQ=""
     - path: /etc/kubernetes/worker-kubeconfig.yaml
       filesystem: root
       contents:
