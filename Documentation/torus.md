@@ -16,7 +16,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 
 The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
-* [torus](../examples/groups/torus) - iPXE boot a Torus cluster (use rkt)
+* [torus](../examples/groups/torus) - iPXE boot a Torus cluster
 
 ## Assets
 
@@ -30,7 +30,7 @@ Run the latest `bootcfg` ACI with rkt and the `torus` example.
 
     sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/torus quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
-Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) for help. Client machines should network boot and provision themselves.
+Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help. Client machines should network boot and provision themselves.
 
 ## Verify
 
@@ -57,7 +57,7 @@ Torus has already initialized its metadata within etcd3 to format the cluster an
 
 Create a new replicated, virtual block device or `volume` on Torus.
 
-    ./torusctl block create --etcd=172.15.0.21:2379 hello 500MiB
+    ./torusctl --etcd=172.15.0.21:2379 block create hello 500MiB
 
 List the current volumes,
 
@@ -90,6 +90,8 @@ Check that the mounted filesystem is present.
 
     $ mount | grep nbd
     /dev/nbd0 on /mnt/hello type ext4 (rw,noatime,seclabel,discard,data=ordered)
+
+### Simulate Failure
 
 By default, Torus uses a replication factor of 2. You may write some data and poweroff one of the three nodes if you wish.
 
