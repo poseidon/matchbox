@@ -28,7 +28,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 1109.1.0 ./examples/assets
+    ./scripts/get-coreos alpha 1153.0.0 ./examples/assets
 
 Add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
@@ -57,15 +57,11 @@ We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a te
 Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (i.e. 172.15.0.21-23 for metal0 or 172.17.0.21-23 for docker0).
 
     scp assets/auth/kubeconfig core@172.15.0.21:/home/core/kubeconfig
-    ssh core@172.15.0.21
-    sudo mv kubeconfig /etc/kubernetes/kubeconfig
+    ssh core@172.15.0.21 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
 
-Secure copy the `bootkube` generated assets to any one of the controller nodes.
+Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
 
     scp -r assets core@172.15.0.21:/home/core/assets
-
-SSH to the chosen controller node and bootstrap the cluster with `bootkube-start`.
-
     ssh core@172.15.0.21 'sudo ./bootkube-start'
 
 Watch the temporary control plane logs until the scheduled kubelet takes over in place of the runonce host kubelet.

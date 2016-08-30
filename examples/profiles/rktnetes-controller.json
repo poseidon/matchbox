@@ -2,8 +2,8 @@
   "id": "rktnetes-controller",
   "name": "Kubernetes Controller",
   "boot": {
-    "kernel": "/assets/coreos/1151.0.0/coreos_production_pxe.vmlinuz",
-    "initrd": ["/assets/coreos/1151.0.0/coreos_production_pxe_image.cpio.gz"],
+    "kernel": "/assets/coreos/1153.0.0/coreos_production_pxe.vmlinuz",
+    "initrd": ["/assets/coreos/1153.0.0/coreos_production_pxe_image.cpio.gz"],
     "cmdline": {
       "root": "/dev/sda1",
       "coreos.config.url": "http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
