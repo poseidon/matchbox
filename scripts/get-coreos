@@ -10,7 +10,10 @@ DEST=$DEST_DIR/coreos/$VERSION
 BASE_URL=https://$CHANNEL.release.core-os.net/amd64-usr/$VERSION
 
 # check channel/version exist based on the header response
-curl -s -I $BASE_URL/coreos_production_pxe.vmlinuz | awk '/2.0 200/ {found++} /1.1 200/ {found++} /1.1 301/ {found++} END { if (found<1) { print "Channel or Version not found"; exit 1 }}'
+if ! curl -s -I $BASE_URL/coreos_production_pxe.vmlinuz | grep -q -E '^HTTP/[0-9.]+ [23][0-9][0-9]' ; then
+  echo "Channel or Version not found"
+  exit 1
+fi
 
 if [ ! -d "$DEST" ]; then
   echo "Creating directory $DEST"
