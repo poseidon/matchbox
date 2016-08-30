@@ -10,7 +10,7 @@ DEST=$DEST_DIR/coreos/$VERSION
 BASE_URL=https://$CHANNEL.release.core-os.net/amd64-usr/$VERSION
 
 # check channel/version exist based on the header response
-if ! curl -s -I $BASE_URL/coreos_production_pxe.vmlinuz | egrep -q '^HTTP/[0-9.]+ [23][0-9][0-9]' ; then
+if ! curl -s -I $BASE_URL/coreos_production_pxe.vmlinuz | grep -q -E '^HTTP/[0-9.]+ [23][0-9][0-9]' ; then
   echo "Channel or Version not found"
   exit 1
 fi
