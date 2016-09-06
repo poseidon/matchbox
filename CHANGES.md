@@ -8,7 +8,7 @@
 
 #### Examples
 
-* Add Kubernetes with rkt container runtime (i.e. rktnetes)
+* Add Kubernetes example with rkt container runtime (i.e. rktnetes)
 * Upgrade Kubernetes v1.3.4 (static manifest) example clusters
 * Upgrade Kubernetes v1.3.4 (self-hosted) example cluster
 * Add etcd3 example cluster (PXE in-RAM or install to disk)

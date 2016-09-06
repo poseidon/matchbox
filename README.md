@@ -21,24 +21,26 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 * Config Templates
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
-* Tutorials (libvirt)
+* Tutorials (qemu/kvm/libvirt)
     * [bootcfg with rkt](Documentation/getting-started-rkt.md)
     * [bootcfg with Docker](Documentation/getting-started-docker.md)
 * [Configuration](Documentation/config.md)
 * [HTTP API](Documentation/api.md)
 * [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
-* Backends
-    * [FileStore](Documentation/bootcfg.md#data)
 * Installation
     * [CoreOS / Linux distros](Documentation/deployment.md)
     * [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
     * [Kubernetes](Documentation/deployment.md#kubernetes)
+* Clients
+    * bootcmd CLI (POC)
+    * Tectonic Installer ([guide](https://tectonic.com/enterprise/docs/latest/deployer/platform-baremetal.html), [blog](https://tectonic.com/blog/tectonic-1-3-release.html))
+* Backends
+    * [FileStore](Documentation/bootcfg.md#data)
 * [Troubleshooting](Documentation/troubleshooting.md)
 * Going Further
     * [gRPC API Usage](Documentation/config.md#grpc-api)
     * [Metadata Endpoint](Documentation/api.md#metadata)
     * OpenPGP [Signing](Documentation/api.md#openpgp-signatures)
-    * [Tectonic Installer](https://tectonic.com/blog/tectonic-1-3-release.html) (graphical)
 
 ### Examples
 
