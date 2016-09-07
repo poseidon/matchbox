@@ -51,15 +51,13 @@ Run `bootcmd` against the gRPC API of the service running via rkt.
 
 ## Dependencies
 
-Project dependencies are commited to the `vendor` directory, so Go 1.6+ users can clone to their `GOPATH` and build or test immediately. Go 1.5 users should set `GO15VENDOREXPERIMENT=1`.
+Dependencies are commited to the `vendor` directory so builds and tests can be isolated from the Go workspace environment.
 
-Project developers should use [glide](https://github.com/Masterminds/glide) to manage commited dependencies under `vendor`. Configure `glide.yaml` as desired. Use `glide update` to download and update dependencies listed in `glide.yaml` into `/vendor` (do **not** use glide `get`).
+[Glide](https://github.com/Masterminds/glide/releases) 0.12 is used to download, update, and manage dependencies listed in `glide.yaml` recursively.
 
-    glide update --update-vendored --strip-vendor --strip-vcs
+    glide update --strip-vendor --skip-test
 
-Recursive dependencies are also vendored. A `glide.lock` will be created to represent the exact versions of each dependency.
-
-With an empty `vendor` directory, you can install the `glide.lock` dependencies.
+You can regenerate or repair your `vendor` directory from scratch by installing the exact versions pinned in `glide.lock`.
 
     rm -rf vendor/
-    glide install --strip-vendor --strip-vcs
+    glide install --strip-vendor --skip-test
