@@ -47,7 +47,7 @@ The Fuze configuration is a YAML document conforming to the following specificat
       * **_inline_** (string): the contents of the file.
       * **_remote_** (object): options related to the fetching of remote file contents.
         * **_compression_** (string): the type of compression used on the contents (null or gzip)
-        * **_source_** (string): the URL of the file contents. Supported schemes are http and [data][rfc2397]. Note: When using http, it is advisable to use the verification option to ensure the contents haven't been modified.
+        * **_url_** (string): the URL of the file contents. Supported schemes are http and [data][rfc2397]. Note: When using http, it is advisable to use the verification option to ensure the contents haven't been modified.
         * **_verification_** (object): options related to the verification of the file contents.
           * **_hash_** (object): the hash of the config
             * **_function_** (string): the function used to hash the config. Supported functions are sha512.

@@ -1,3 +1,4 @@
+// Copyright 2015 RedHat, Inc.
 // Copyright 2015 CoreOS, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package config
+package sdjournal
 
-import (
-	"encoding/json"
-)
+import "testing"
 
-func IsIgnitionConfig(userdata string) bool {
-	var cfg struct {
-		Version  *int `json:"ignitionVersion"`
-		Ignition struct {
-			Version *string `json:"version"`
-		} `json:"ignition"`
+func TestGetFunction(t *testing.T) {
+	f, err := getFunction("sd_journal_open")
+
+	if err != nil {
+		t.Errorf("Error getting an existing function: %s", err)
 	}
-	return (json.Unmarshal([]byte(userdata), &cfg) == nil && (cfg.Version != nil || cfg.Ignition.Version != nil))
+
+	if f == nil {
+		t.Error("Got nil function pointer")
+	}
+
+	_, err = getFunction("non_existent_function")
+
+	if err == nil {
+		t.Error("Expected to get an error, got nil")
+	}
 }

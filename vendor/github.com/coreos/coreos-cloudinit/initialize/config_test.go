@@ -123,9 +123,9 @@ func TestCreateNetworkingUnits(t *testing.T) {
 				network.InterfaceGenerator(mockInterface{filename: "test3", network: "test network"}),
 			},
 			[]system.Unit{
-				system.Unit{Unit: config.Unit{Name: "test1.netdev", Runtime: true, Content: "test netdev"}},
-				system.Unit{Unit: config.Unit{Name: "test2.link", Runtime: true, Content: "test link"}},
-				system.Unit{Unit: config.Unit{Name: "test3.network", Runtime: true, Content: "test network"}},
+				{Unit: config.Unit{Name: "test1.netdev", Runtime: true, Content: "test netdev"}},
+				{Unit: config.Unit{Name: "test2.link", Runtime: true, Content: "test link"}},
+				{Unit: config.Unit{Name: "test3.network", Runtime: true, Content: "test network"}},
 			},
 		},
 		{
@@ -133,9 +133,9 @@ func TestCreateNetworkingUnits(t *testing.T) {
 				network.InterfaceGenerator(mockInterface{filename: "test", netdev: "test netdev", link: "test link", network: "test network"}),
 			},
 			[]system.Unit{
-				system.Unit{Unit: config.Unit{Name: "test.netdev", Runtime: true, Content: "test netdev"}},
-				system.Unit{Unit: config.Unit{Name: "test.link", Runtime: true, Content: "test link"}},
-				system.Unit{Unit: config.Unit{Name: "test.network", Runtime: true, Content: "test network"}},
+				{Unit: config.Unit{Name: "test.netdev", Runtime: true, Content: "test netdev"}},
+				{Unit: config.Unit{Name: "test.link", Runtime: true, Content: "test link"}},
+				{Unit: config.Unit{Name: "test.network", Runtime: true, Content: "test network"}},
 			},
 		},
 	} {
@@ -154,7 +154,7 @@ func TestProcessUnits(t *testing.T) {
 	}{
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name: "foo",
 					Mask: true,
 				}},
@@ -165,16 +165,16 @@ func TestProcessUnits(t *testing.T) {
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name:    "baz.service",
 					Content: "[Service]\nExecStart=/bin/baz",
 					Command: "start",
 				}},
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name:    "foo.network",
 					Content: "[Network]\nFoo=true",
 				}},
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name:    "bar.network",
 					Content: "[Network]\nBar=true",
 				}},
@@ -182,15 +182,15 @@ func TestProcessUnits(t *testing.T) {
 			result: TestUnitManager{
 				placed: []string{"baz.service", "foo.network", "bar.network"},
 				commands: []UnitAction{
-					UnitAction{"systemd-networkd.service", "restart"},
-					UnitAction{"baz.service", "start"},
+					{"systemd-networkd.service", "restart"},
+					{"baz.service", "start"},
 				},
 				reload: true,
 			},
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name:    "baz.service",
 					Content: "[Service]\nExecStart=/bin/true",
 				}},
@@ -202,7 +202,7 @@ func TestProcessUnits(t *testing.T) {
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name:    "locksmithd.service",
 					Runtime: true,
 				}},
@@ -213,7 +213,7 @@ func TestProcessUnits(t *testing.T) {
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name:   "woof",
 					Enable: true,
 				}},
@@ -224,7 +224,7 @@ func TestProcessUnits(t *testing.T) {
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name:    "hi.service",
 					Runtime: true,
 					Content: "[Service]\nExecStart=/bin/echo hi",
@@ -248,7 +248,7 @@ func TestProcessUnits(t *testing.T) {
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					DropIns: []config.UnitDropIn{
 						{
 							Name:    "lo.conf",
@@ -261,7 +261,7 @@ func TestProcessUnits(t *testing.T) {
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name: "hi.service",
 					DropIns: []config.UnitDropIn{
 						{
@@ -274,7 +274,7 @@ func TestProcessUnits(t *testing.T) {
 		},
 		{
 			units: []system.Unit{
-				system.Unit{Unit: config.Unit{
+				{Unit: config.Unit{
 					Name: "hi.service",
 					DropIns: []config.UnitDropIn{
 						{

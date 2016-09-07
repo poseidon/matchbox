@@ -147,62 +147,6 @@ func TestWriteFilePermissions(t *testing.T) {
 	}
 }
 
-func TestWriteFileEncodedContent(t *testing.T) {
-	dir, err := ioutil.TempDir(os.TempDir(), "coreos-cloudinit-")
-	if err != nil {
-		t.Fatalf("Unable to create tempdir: %v", err)
-	}
-	defer os.RemoveAll(dir)
-
-	//all of these decode to "bar"
-	content_tests := map[string]string{
-		"base64":      "YmFy",
-		"b64":         "YmFy",
-		"gz":          "\x1f\x8b\x08\x08w\x14\x87T\x02\xffok\x00KJ,\x02\x00\xaa\x8c\xffv\x03\x00\x00\x00",
-		"gzip":        "\x1f\x8b\x08\x08w\x14\x87T\x02\xffok\x00KJ,\x02\x00\xaa\x8c\xffv\x03\x00\x00\x00",
-		"gz+base64":   "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
-		"gzip+base64": "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
-		"gz+b64":      "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
-		"gzip+b64":    "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
-	}
-
-	for encoding, content := range content_tests {
-		fullPath := path.Join(dir, encoding)
-
-		wf := File{config.File{
-			Path:               encoding,
-			Encoding:           encoding,
-			Content:            content,
-			RawFilePermissions: "0644",
-		}}
-
-		path, err := WriteFile(&wf, dir)
-		if err != nil {
-			t.Fatalf("Processing of WriteFile failed: %v", err)
-		} else if path != fullPath {
-			t.Fatalf("WriteFile returned bad path: want %s, got %s", fullPath, path)
-		}
-
-		fi, err := os.Stat(fullPath)
-		if err != nil {
-			t.Fatalf("Unable to stat file: %v", err)
-		}
-
-		if fi.Mode() != os.FileMode(0644) {
-			t.Errorf("File has incorrect mode: %v", fi.Mode())
-		}
-
-		contents, err := ioutil.ReadFile(fullPath)
-		if err != nil {
-			t.Fatalf("Unable to read expected file: %v", err)
-		}
-
-		if string(contents) != "bar" {
-			t.Fatalf("File has incorrect contents: '%s'", contents)
-		}
-	}
-}
-
 func TestWriteFileInvalidEncodedContent(t *testing.T) {
 	dir, err := ioutil.TempDir(os.TempDir(), "coreos-cloudinit-")
 	if err != nil {

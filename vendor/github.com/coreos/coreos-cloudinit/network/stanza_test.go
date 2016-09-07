@@ -151,7 +151,7 @@ func TestParseBondStanzaNoSlaves(t *testing.T) {
 func TestParseBondStanza(t *testing.T) {
 	conf := configMethodManual{}
 	options := map[string][]string{
-		"bond-slaves": []string{"1", "2"},
+		"bond-slaves": {"1", "2"},
 	}
 	bond, err := parseBondStanza("test", conf, nil, options)
 	if err != nil {
@@ -171,8 +171,8 @@ func TestParseBondStanza(t *testing.T) {
 func TestParsePhysicalStanza(t *testing.T) {
 	conf := configMethodManual{}
 	options := map[string][]string{
-		"a": []string{"1", "2"},
-		"b": []string{"1"},
+		"a": {"1", "2"},
+		"b": {"1"},
 	}
 	physical, err := parsePhysicalStanza("test", conf, nil, options)
 	if err != nil {

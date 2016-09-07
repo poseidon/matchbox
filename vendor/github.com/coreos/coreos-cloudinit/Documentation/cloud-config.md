@@ -223,6 +223,9 @@ List of locksmith configuration parameters:
 - **etcd_cafile**: Path to CA file used for TLS communication with etcd
 - **etcd_certfile**: Path to certificate file used for TLS communication with etcd
 - **etcd_keyfile**: Path to private key file used for TLS communication with etcd
+- **group**: Name of the reboot group in which this instance belongs
+- **window_start**: Start time of the reboot window
+- **window_length**: Duration of the reboot window
 
 For the complete list of locksmith configuration parameters, see the [locksmith documentation][locksmith-readme].
 

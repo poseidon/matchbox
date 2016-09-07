@@ -70,26 +70,26 @@ func TestNewMockFilesystem(t *testing.T) {
 			filesystem: MockFilesystem{},
 		},
 		{
-			files: []File{File{Path: "file"}},
+			files: []File{{Path: "file"}},
 			filesystem: MockFilesystem{
 				"file": File{Path: "file"},
 			},
 		},
 		{
-			files: []File{File{Path: "/file"}},
+			files: []File{{Path: "/file"}},
 			filesystem: MockFilesystem{
 				"/file": File{Path: "/file"},
 			},
 		},
 		{
-			files: []File{File{Path: "/dir/file"}},
+			files: []File{{Path: "/dir/file"}},
 			filesystem: MockFilesystem{
 				"/dir":      File{Path: "/dir", Directory: true},
 				"/dir/file": File{Path: "/dir/file"},
 			},
 		},
 		{
-			files: []File{File{Path: "/dir/dir/file"}},
+			files: []File{{Path: "/dir/dir/file"}},
 			filesystem: MockFilesystem{
 				"/dir":          File{Path: "/dir", Directory: true},
 				"/dir/dir":      File{Path: "/dir/dir", Directory: true},
@@ -97,7 +97,7 @@ func TestNewMockFilesystem(t *testing.T) {
 			},
 		},
 		{
-			files: []File{File{Path: "/dir/dir/dir", Directory: true}},
+			files: []File{{Path: "/dir/dir/dir", Directory: true}},
 			filesystem: MockFilesystem{
 				"/dir":         File{Path: "/dir", Directory: true},
 				"/dir/dir":     File{Path: "/dir/dir", Directory: true},

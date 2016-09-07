@@ -96,7 +96,7 @@ func TestInterfaceGenerators(t *testing.T) {
 				config: configMethodStatic{
 					addresses:   []net.IPNet{{IP: []byte{192, 168, 1, 100}, Mask: []byte{255, 255, 255, 0}}},
 					nameservers: []net.IP{[]byte{8, 8, 8, 8}},
-					routes:      []route{route{destination: net.IPNet{IP: []byte{0, 0, 0, 0}, Mask: []byte{0, 0, 0, 0}}, gateway: []byte{1, 2, 3, 4}}},
+					routes:      []route{{destination: net.IPNet{IP: []byte{0, 0, 0, 0}, Mask: []byte{0, 0, 0, 0}}, gateway: []byte{1, 2, 3, 4}}},
 				},
 			}},
 		},
@@ -152,7 +152,7 @@ func TestModprobeParams(t *testing.T) {
 
 func TestBuildInterfacesLo(t *testing.T) {
 	stanzas := []*stanzaInterface{
-		&stanzaInterface{
+		{
 			name:         "lo",
 			kind:         interfacePhysical,
 			auto:         false,
@@ -174,7 +174,7 @@ func TestBuildInterfacesBlindBond(t *testing.T) {
 			auto:         false,
 			configMethod: configMethodManual{},
 			options: map[string][]string{
-				"bond-slaves": []string{"eth0"},
+				"bond-slaves": {"eth0"},
 			},
 		},
 	}
@@ -211,8 +211,8 @@ func TestBuildInterfacesBlindVLAN(t *testing.T) {
 			auto:         false,
 			configMethod: configMethodManual{},
 			options: map[string][]string{
-				"id":         []string{"0"},
-				"raw_device": []string{"eth0"},
+				"id":         {"0"},
+				"raw_device": {"eth0"},
 			},
 		},
 	}
@@ -243,51 +243,51 @@ func TestBuildInterfacesBlindVLAN(t *testing.T) {
 
 func TestBuildInterfaces(t *testing.T) {
 	stanzas := []*stanzaInterface{
-		&stanzaInterface{
+		{
 			name:         "eth0",
 			kind:         interfacePhysical,
 			auto:         false,
 			configMethod: configMethodManual{},
 			options:      map[string][]string{},
 		},
-		&stanzaInterface{
+		{
 			name:         "bond0",
 			kind:         interfaceBond,
 			auto:         false,
 			configMethod: configMethodManual{},
 			options: map[string][]string{
-				"bond-slaves": []string{"eth0"},
-				"bond-mode":   []string{"4"},
-				"bond-miimon": []string{"100"},
+				"bond-slaves": {"eth0"},
+				"bond-mode":   {"4"},
+				"bond-miimon": {"100"},
 			},
 		},
-		&stanzaInterface{
+		{
 			name:         "bond1",
 			kind:         interfaceBond,
 			auto:         false,
 			configMethod: configMethodManual{},
 			options: map[string][]string{
-				"bond-slaves": []string{"bond0"},
+				"bond-slaves": {"bond0"},
 			},
 		},
-		&stanzaInterface{
+		{
 			name:         "vlan0",
 			kind:         interfaceVLAN,
 			auto:         false,
 			configMethod: configMethodManual{},
 			options: map[string][]string{
-				"id":         []string{"0"},
-				"raw_device": []string{"eth0"},
+				"id":         {"0"},
+				"raw_device": {"eth0"},
 			},
 		},
-		&stanzaInterface{
+		{
 			name:         "vlan1",
 			kind:         interfaceVLAN,
 			auto:         false,
 			configMethod: configMethodManual{},
 			options: map[string][]string{
-				"id":         []string{"1"},
-				"raw_device": []string{"bond0"},
+				"id":         {"1"},
+				"raw_device": {"bond0"},
 			},
 		},
 	}

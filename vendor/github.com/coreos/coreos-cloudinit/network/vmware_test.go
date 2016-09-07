@@ -82,11 +82,11 @@ func TestProcessVMwareNetconf(t *testing.T) {
 					hwaddr: mustParseMac(net.ParseMAC("00:11:22:33:44:55")),
 					config: configMethodStatic{
 						hwaddress: mustParseMac(net.ParseMAC("00:11:22:33:44:55")),
-						addresses: []net.IPNet{net.IPNet{IP: net.ParseIP("10.0.0.100"), Mask: net.CIDRMask(24, net.IPv4len*8)}},
+						addresses: []net.IPNet{{IP: net.ParseIP("10.0.0.100"), Mask: net.CIDRMask(24, net.IPv4len*8)}},
 						// I realize how upset you must be that I am shoving an IPMask into an IP. This is because net.IPv4zero is
 						// actually a magic IPv6 address which ruins our equality check. What's that? Just use IP::Equal()? I'd rather
 						// DeepEqual just handle that for me, but until Go gets operator overloading, we are stuck with this.
-						routes: []route{route{
+						routes: []route{{
 							destination: net.IPNet{IP: net.IP(net.CIDRMask(0, net.IPv4len*8)), Mask: net.CIDRMask(0, net.IPv4len*8)},
 							gateway:     net.ParseIP("10.0.0.1")},
 						},
@@ -116,10 +116,10 @@ func TestProcessVMwareNetconf(t *testing.T) {
 					config: configMethodStatic{
 						hwaddress: mustParseMac(net.ParseMAC("00:11:22:33:44:55")),
 						addresses: []net.IPNet{
-							net.IPNet{IP: net.ParseIP("10.0.0.100"), Mask: net.CIDRMask(24, net.IPv4len*8)},
-							net.IPNet{IP: net.ParseIP("10.0.0.101"), Mask: net.CIDRMask(24, net.IPv4len*8)},
+							{IP: net.ParseIP("10.0.0.100"), Mask: net.CIDRMask(24, net.IPv4len*8)},
+							{IP: net.ParseIP("10.0.0.101"), Mask: net.CIDRMask(24, net.IPv4len*8)},
 						},
-						routes: []route{route{
+						routes: []route{{
 							destination: net.IPNet{IP: net.IP(net.CIDRMask(0, net.IPv4len*8)), Mask: net.CIDRMask(0, net.IPv4len*8)},
 							gateway:     net.ParseIP("10.0.0.1")},
 						},
@@ -129,8 +129,8 @@ func TestProcessVMwareNetconf(t *testing.T) {
 				&physicalInterface{logicalInterface{
 					name: "eth0",
 					config: configMethodStatic{
-						addresses: []net.IPNet{net.IPNet{IP: net.ParseIP("10.0.1.100"), Mask: net.CIDRMask(24, net.IPv4len*8)}},
-						routes: []route{route{
+						addresses: []net.IPNet{{IP: net.ParseIP("10.0.1.100"), Mask: net.CIDRMask(24, net.IPv4len*8)}},
+						routes: []route{{
 							destination: net.IPNet{IP: net.IP(net.CIDRMask(0, net.IPv4len*8)), Mask: net.CIDRMask(0, net.IPv4len*8)},
 							gateway:     net.ParseIP("10.0.1.1")},
 						},

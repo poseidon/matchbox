@@ -12,18 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package config
+// +build !amd64
 
-import (
-	"encoding/json"
-)
+package vmware
 
-func IsIgnitionConfig(userdata string) bool {
-	var cfg struct {
-		Version  *int `json:"ignitionVersion"`
-		Ignition struct {
-			Version *string `json:"version"`
-		} `json:"ignition"`
-	}
-	return (json.Unmarshal([]byte(userdata), &cfg) == nil && (cfg.Version != nil || cfg.Ignition.Version != nil))
+func NewDatasource(fileName string) *vmware {
+	return &vmware{}
+}
+
+func (v vmware) IsAvailable() bool {
+	return false
 }

@@ -138,7 +138,7 @@ func TestParseInterface(t *testing.T) {
 			iface: &logicalInterface{
 				hwaddr: net.HardwareAddr([]byte{0x01, 0x23, 0x45, 0x67, 0x89, 0xab}),
 				config: configMethodStatic{
-					addresses: []net.IPNet{net.IPNet{
+					addresses: []net.IPNet{{
 						IP:   net.ParseIP("1.2.3.4"),
 						Mask: net.IPMask(net.ParseIP("255.255.0.0")),
 					}},
@@ -174,12 +174,12 @@ func TestParseInterface(t *testing.T) {
 			iface: &logicalInterface{
 				hwaddr: net.HardwareAddr([]byte{0x01, 0x23, 0x45, 0x67, 0x89, 0xab}),
 				config: configMethodStatic{
-					addresses: []net.IPNet{net.IPNet{
+					addresses: []net.IPNet{{
 						IP:   net.ParseIP("1.2.3.4"),
 						Mask: net.IPMask(net.ParseIP("255.255.0.0")),
 					}},
 					nameservers: []net.IP{},
-					routes: []route{route{
+					routes: []route{{
 						net.IPNet{IP: net.IPv4zero, Mask: net.IPMask(net.IPv4zero)},
 						net.ParseIP("5.6.7.8"),
 					}},
@@ -210,7 +210,7 @@ func TestParseInterface(t *testing.T) {
 			iface: &logicalInterface{
 				hwaddr: net.HardwareAddr([]byte{0x01, 0x23, 0x45, 0x67, 0x89, 0xab}),
 				config: configMethodStatic{
-					addresses: []net.IPNet{net.IPNet{
+					addresses: []net.IPNet{{
 						IP:   net.ParseIP("fe00::"),
 						Mask: net.IPMask(net.ParseIP("ffff::")),
 					}},
@@ -246,12 +246,12 @@ func TestParseInterface(t *testing.T) {
 			iface: &logicalInterface{
 				hwaddr: net.HardwareAddr([]byte{0x01, 0x23, 0x45, 0x67, 0x89, 0xab}),
 				config: configMethodStatic{
-					addresses: []net.IPNet{net.IPNet{
+					addresses: []net.IPNet{{
 						IP:   net.ParseIP("fe00::"),
 						Mask: net.IPMask(net.ParseIP("ffff::")),
 					}},
 					nameservers: []net.IP{},
-					routes: []route{route{
+					routes: []route{{
 						net.IPNet{IP: net.IPv6zero, Mask: net.IPMask(net.IPv6zero)},
 						net.ParseIP("fe00:1234::"),
 					}},
@@ -446,7 +446,7 @@ func TestProcessDigitalOceanNetconf(t *testing.T) {
 			cfg: digitalocean.Metadata{
 				Interfaces: digitalocean.Interfaces{
 					Public: []digitalocean.Interface{
-						digitalocean.Interface{
+						{
 							IPv4: &digitalocean.Address{
 								IPAddress: "bad",
 							},

@@ -1,4 +1,4 @@
-// Copyright 2015 CoreOS, Inc.
+// Copyright 2016 CoreOS, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package config
+// +build !cgo
 
-import (
-	"encoding/json"
-)
+package util
 
-func IsIgnitionConfig(userdata string) bool {
-	var cfg struct {
-		Version  *int `json:"ignitionVersion"`
-		Ignition struct {
-			Version *string `json:"version"`
-		} `json:"ignition"`
-	}
-	return (json.Unmarshal([]byte(userdata), &cfg) == nil && (cfg.Version != nil || cfg.Ignition.Version != nil))
-}
+func getRunningSlice() (string, error) { return "", ErrNoCGO }
+
+func runningFromSystemService() (bool, error) { return false, ErrNoCGO }
+
+func currentUnitName() (string, error) { return "", ErrNoCGO }

@@ -33,18 +33,18 @@ func TestChild(t *testing.T) {
 		{
 			parent: node{
 				children: []node{
-					node{name: "c1"},
-					node{name: "c2"},
-					node{name: "c3"},
+					{name: "c1"},
+					{name: "c2"},
+					{name: "c3"},
 				},
 			},
 		},
 		{
 			parent: node{
 				children: []node{
-					node{name: "c1"},
-					node{name: "c2"},
-					node{name: "c3"},
+					{name: "c1"},
+					{name: "c2"},
+					{name: "c3"},
 				},
 			},
 			name:  "c2",
@@ -76,8 +76,8 @@ func TestHumanType(t *testing.T) {
 			node: node{
 				Value: reflect.ValueOf([]int{1, 2}),
 				children: []node{
-					node{Value: reflect.ValueOf(1)},
-					node{Value: reflect.ValueOf(2)},
+					{Value: reflect.ValueOf(1)},
+					{Value: reflect.ValueOf(2)},
 				}},
 			humanType: "[]int",
 		},
@@ -108,7 +108,7 @@ func TestToNode(t *testing.T) {
 			}{},
 			node: node{
 				children: []node{
-					node{
+					{
 						name: "a",
 						field: reflect.TypeOf(struct {
 							A int `yaml:"a"`
@@ -123,7 +123,7 @@ func TestToNode(t *testing.T) {
 			}{},
 			node: node{
 				children: []node{
-					node{
+					{
 						name: "a",
 						field: reflect.TypeOf(struct {
 							A []int `yaml:"a"`
@@ -141,11 +141,11 @@ func TestToNode(t *testing.T) {
 			context: NewContext([]byte("a:\n  b: 2")),
 			node: node{
 				children: []node{
-					node{
+					{
 						line: 1,
 						name: "a",
 						children: []node{
-							node{name: "b", line: 2},
+							{name: "b", line: 2},
 						},
 					},
 				},
@@ -159,10 +159,10 @@ func TestToNode(t *testing.T) {
 			}{},
 			node: node{
 				children: []node{
-					node{
+					{
 						name: "a",
 						children: []node{
-							node{
+							{
 								name: "b",
 								field: reflect.TypeOf(struct {
 									Jon bool `yaml:"b"`

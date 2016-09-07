@@ -15,6 +15,7 @@
 package config
 
 import (
+	"fmt"
 	"reflect"
 	"regexp"
 	"strings"
@@ -30,11 +31,11 @@ func TestNewCloudConfig(t *testing.T) {
 		{},
 		{
 			contents: "#cloud-config\nwrite_files:\n  - path: underscore",
-			config:   CloudConfig{WriteFiles: []File{File{Path: "underscore"}}},
+			config:   CloudConfig{WriteFiles: []File{{Path: "underscore"}}},
 		},
 		{
 			contents: "#cloud-config\nwrite-files:\n  - path: hyphen",
-			config:   CloudConfig{WriteFiles: []File{File{Path: "hyphen"}}},
+			config:   CloudConfig{WriteFiles: []File{{Path: "hyphen"}}},
 		},
 		{
 			contents: "#cloud-config\ncoreos:\n  update:\n    reboot-strategy: off",
@@ -46,19 +47,19 @@ func TestNewCloudConfig(t *testing.T) {
 		},
 		{
 			contents: "#cloud-config\nwrite_files:\n  - permissions: 0744",
-			config:   CloudConfig{WriteFiles: []File{File{RawFilePermissions: "0744"}}},
+			config:   CloudConfig{WriteFiles: []File{{RawFilePermissions: "0744"}}},
 		},
 		{
 			contents: "#cloud-config\nwrite_files:\n  - permissions: 744",
-			config:   CloudConfig{WriteFiles: []File{File{RawFilePermissions: "744"}}},
+			config:   CloudConfig{WriteFiles: []File{{RawFilePermissions: "744"}}},
 		},
 		{
 			contents: "#cloud-config\nwrite_files:\n  - permissions: '0744'",
-			config:   CloudConfig{WriteFiles: []File{File{RawFilePermissions: "0744"}}},
+			config:   CloudConfig{WriteFiles: []File{{RawFilePermissions: "0744"}}},
 		},
 		{
 			contents: "#cloud-config\nwrite_files:\n  - permissions: '744'",
-			config:   CloudConfig{WriteFiles: []File{File{RawFilePermissions: "744"}}},
+			config:   CloudConfig{WriteFiles: []File{{RawFilePermissions: "744"}}},
 		},
 	}
 
@@ -71,6 +72,50 @@ func TestNewCloudConfig(t *testing.T) {
 			t.Errorf("bad config (test case #%d): want %#v, got %#v", i, tt.config, config)
 		}
 	}
+}
+
+func TestNewCloudConfigDecode(t *testing.T) {
+	// //all of these decode to "bar"
+	contentTests := map[string]string{
+		"base64": "YmFy",
+		"b64":    "YmFy",
+		// theoretically gz+gzip are supported but they break yaml
+		// "gz":          "\x1f\x8b\x08\x08w\x14\x87T\x02\xffok\x00KJ,\x02\x00\xaa\x8c\xffv\x03\x00\x00\x00",
+		// "gzip":        "\x1f\x8b\x08\x08w\x14\x87T\x02\xffok\x00KJ,\x02\x00\xaa\x8c\xffv\x03\x00\x00\x00",
+		"gz+base64":   "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
+		"gzip+base64": "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
+		"gz+b64":      "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
+		"gzip+b64":    "H4sIABMVh1QAA0tKLAIAqoz/dgMAAAA=",
+	}
+
+	type testCase struct {
+		contents string
+		config   CloudConfig
+	}
+
+	var decodingTests []testCase
+	for name, content := range contentTests {
+		decodingTests = append(decodingTests, testCase{
+			contents: fmt.Sprintf("#cloud-config\nwrite_files:\n  - encoding: %q\n    content: |\n      %s", name, content),
+			config:   CloudConfig{WriteFiles: []File{{Content: "bar"}}},
+		})
+	}
+
+	for i, tt := range decodingTests {
+		config, err := NewCloudConfig(tt.contents)
+		if err != nil {
+			t.Errorf("bad error (test case #%d): want %v, got %s", i, nil, err)
+		}
+
+		if err := config.Decode(); err != nil {
+			t.Errorf("bad error (test case #%d): want %v, got %s", i, nil, err)
+		}
+
+		if !reflect.DeepEqual(&tt.config, config) {
+			t.Errorf("bad config (test case #%d): want %#v, got %#v", i, tt.config, config)
+		}
+	}
+
 }
 
 func TestIsZero(t *testing.T) {

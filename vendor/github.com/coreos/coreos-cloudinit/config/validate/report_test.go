@@ -77,9 +77,9 @@ func TestReport(t *testing.T) {
 				{(*Report).Info, 10, "test info 10"},
 			},
 			[]Entry{
-				Entry{entryWarning, "test warning 1", 1},
-				Entry{entryError, "test error 2", 2},
-				Entry{entryInfo, "test info 10", 10},
+				{entryWarning, "test warning 1", 1},
+				{entryError, "test error 2", 2},
+				{entryInfo, "test info 10", 10},
 			},
 		},
 	}

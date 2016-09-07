@@ -170,7 +170,7 @@ func TestNewDatasource(t *testing.T) {
 			expectRoot: "http://169.254.169.254/",
 		},
 	} {
-		service := NewDatasource(tt.root, "", "", "")
+		service := NewDatasource(tt.root, "", "", "", nil)
 		if service.Root != tt.expectRoot {
 			t.Fatalf("bad root (%q): want %q, got %q", tt.root, tt.expectRoot, service.Root)
 		}

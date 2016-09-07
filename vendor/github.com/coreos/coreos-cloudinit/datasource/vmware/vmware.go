@@ -16,18 +16,10 @@ package vmware
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net"
-	"os"
 
 	"github.com/coreos/coreos-cloudinit/config"
 	"github.com/coreos/coreos-cloudinit/datasource"
-	"github.com/coreos/coreos-cloudinit/pkg"
-
-	"github.com/sigma/vmw-guestinfo/rpcvmx"
-	"github.com/sigma/vmw-guestinfo/vmcheck"
-	"github.com/sigma/vmw-ovflib"
 )
 
 type readConfigFunction func(key string) (string, error)
@@ -37,65 +29,6 @@ type vmware struct {
 	ovfFileName string
 	readConfig  readConfigFunction
 	urlDownload urlDownloadFunction
-}
-
-type ovfWrapper struct {
-	env *ovf.OvfEnvironment
-}
-
-func (ovf ovfWrapper) readConfig(key string) (string, error) {
-	return ovf.env.Properties["guestinfo."+key], nil
-}
-
-func NewDatasource(fileName string) *vmware {
-	getOvfReadConfig := func(ovfEnv []byte) readConfigFunction {
-		env := &ovf.OvfEnvironment{}
-		if len(ovfEnv) != 0 {
-			env = ovf.ReadEnvironment(ovfEnv)
-		}
-
-		wrapper := ovfWrapper{env}
-		return wrapper.readConfig
-	}
-
-	// read from provided ovf environment document (typically /media/ovfenv/ovf-env.xml)
-	if fileName != "" {
-		log.Printf("Using OVF environment from %s\n", fileName)
-		ovfEnv, err := ioutil.ReadFile(fileName)
-		if err != nil {
-			ovfEnv = make([]byte, 0)
-		}
-		return &vmware{
-			ovfFileName: fileName,
-			readConfig:  getOvfReadConfig(ovfEnv),
-			urlDownload: urlDownload,
-		}
-	}
-
-	// try to read ovf environment from VMware tools
-	data, err := readConfig("ovfenv")
-	if err == nil && data != "" {
-		log.Printf("Using OVF environment from guestinfo\n")
-		return &vmware{
-			readConfig:  getOvfReadConfig([]byte(data)),
-			urlDownload: urlDownload,
-		}
-	}
-
-	// if everything fails, fallback to directly reading variables from the backdoor
-	log.Printf("Using guestinfo variables\n")
-	return &vmware{
-		readConfig:  readConfig,
-		urlDownload: urlDownload,
-	}
-}
-
-func (v vmware) IsAvailable() bool {
-	if v.ovfFileName != "" {
-		_, err := os.Stat(v.ovfFileName)
-		return !os.IsNotExist(err)
-	}
-	return vmcheck.IsVirtualWorld()
 }
 
 func (v vmware) AvailabilityChanges() bool {
@@ -217,19 +150,4 @@ func (v vmware) FetchUserdata() ([]byte, error) {
 
 func (v vmware) Type() string {
 	return "vmware"
-}
-
-func urlDownload(url string) ([]byte, error) {
-	client := pkg.NewHttpClient()
-	return client.GetRetry(url)
-}
-
-func readConfig(key string) (string, error) {
-	data, err := rpcvmx.NewConfig().String(key, "")
-	if err == nil {
-		log.Printf("Read from %q: %q\n", key, data)
-	} else {
-		log.Printf("Failed to read from %q: %v\n", key, err)
-	}
-	return data, err
 }

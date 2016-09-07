@@ -46,7 +46,7 @@ func Validate(userdataBytes []byte) (Report, error) {
 		return validateCloudConfig(userdataBytes, Rules)
 	default:
 		return Report{entries: []Entry{
-			Entry{kind: entryError, message: `must be "#cloud-config" or begin with "#!"`, line: 1},
+			{kind: entryError, message: `must be "#cloud-config" or begin with "#!"`, line: 1},
 		}}, nil
 	}
 }

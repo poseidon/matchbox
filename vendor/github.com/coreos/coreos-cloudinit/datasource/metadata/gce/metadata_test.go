@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package digitalocean
+package gce
 
 import (
 	"fmt"
@@ -27,7 +27,7 @@ import (
 )
 
 func TestType(t *testing.T) {
-	want := "digitalocean-metadata-service"
+	want := "gce-metadata-service"
 	if kind := (metadataService{}).Type(); kind != want {
 		t.Fatalf("bad type: want %q, got %q", want, kind)
 	}
@@ -44,73 +44,31 @@ func TestFetchMetadata(t *testing.T) {
 	}{
 		{
 			root:         "/",
-			metadataPath: "v1.json",
-			resources: map[string]string{
-				"/v1.json": "bad",
-			},
-			expectErr: fmt.Errorf("invalid character 'b' looking for beginning of value"),
+			metadataPath: "computeMetadata/v1/instance/",
+			resources:    map[string]string{},
 		},
 		{
 			root:         "/",
-			metadataPath: "v1.json",
+			metadataPath: "computeMetadata/v1/instance/",
 			resources: map[string]string{
-				"/v1.json": `{
-  "droplet_id": 1,
-  "user_data": "hello",
-  "vendor_data": "hello",
-  "public_keys": [
-    "publickey1",
-    "publickey2"
-  ],
-  "region": "nyc2",
-  "interfaces": {
-    "public": [
-      {
-        "ipv4": {
-          "ip_address": "192.168.1.2",
-          "netmask": "255.255.255.0",
-          "gateway": "192.168.1.1"
-        },
-        "ipv6": {
-          "ip_address": "fe00::",
-          "cidr": 126,
-          "gateway": "fe00::"
-        },
-        "mac": "ab:cd:ef:gh:ij",
-        "type": "public"
-      }
-    ]
-  }
-}`,
+				"/computeMetadata/v1/instance/hostname": "host",
 			},
 			expect: datasource.Metadata{
-				PublicIPv4: net.ParseIP("192.168.1.2"),
-				PublicIPv6: net.ParseIP("fe00::"),
-				SSHPublicKeys: map[string]string{
-					"0": "publickey1",
-					"1": "publickey2",
-				},
-				NetworkConfig: Metadata{
-					Interfaces: Interfaces{
-						Public: []Interface{
-							{
-								IPv4: &Address{
-									IPAddress: "192.168.1.2",
-									Netmask:   "255.255.255.0",
-									Gateway:   "192.168.1.1",
-								},
-								IPv6: &Address{
-									IPAddress: "fe00::",
-									Cidr:      126,
-									Gateway:   "fe00::",
-								},
-								MAC:  "ab:cd:ef:gh:ij",
-								Type: "public",
-							},
-						},
-					},
-					PublicKeys: []string{"publickey1", "publickey2"},
-				},
+				Hostname: "host",
+			},
+		},
+		{
+			root:         "/",
+			metadataPath: "computeMetadata/v1/instance/",
+			resources: map[string]string{
+				"/computeMetadata/v1/instance/hostname":                                          "host",
+				"/computeMetadata/v1/instance/network-interfaces/0/ip":                           "1.2.3.4",
+				"/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip": "5.6.7.8",
+			},
+			expect: datasource.Metadata{
+				Hostname:    "host",
+				PrivateIPv4: net.ParseIP("1.2.3.4"),
+				PublicIPv4:  net.ParseIP("5.6.7.8"),
 			},
 		},
 		{
@@ -118,19 +76,17 @@ func TestFetchMetadata(t *testing.T) {
 			expectErr: pkg.ErrTimeout{Err: fmt.Errorf("test error")},
 		},
 	} {
-		service := &metadataService{
-			MetadataService: metadata.MetadataService{
-				Root:         tt.root,
-				Client:       &test.HttpClient{Resources: tt.resources, Err: tt.clientErr},
-				MetadataPath: tt.metadataPath,
-			},
-		}
+		service := &metadataService{metadata.MetadataService{
+			Root:         tt.root,
+			Client:       &test.HttpClient{Resources: tt.resources, Err: tt.clientErr},
+			MetadataPath: tt.metadataPath,
+		}}
 		metadata, err := service.FetchMetadata()
 		if Error(err) != Error(tt.expectErr) {
 			t.Fatalf("bad error (%q): want %q, got %q", tt.resources, tt.expectErr, err)
 		}
 		if !reflect.DeepEqual(tt.expect, metadata) {
-			t.Fatalf("bad fetch (%q): want %#q, got %#q", tt.resources, tt.expect, metadata)
+			t.Fatalf("bad fetch (%q): want %#v, got %#v", tt.resources, tt.expect, metadata)
 		}
 	}
 }
