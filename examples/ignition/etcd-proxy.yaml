@@ -10,6 +10,12 @@ systemd:
             Environment="ETCD_PROXY=on"
             Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+    - name: locksmithd.service
+      dropins:
+        - name: 40-etcd-lock.conf
+          contents: |
+            [Service]
+            Environment="REBOOT_STRATEGY=etcd-lock"
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

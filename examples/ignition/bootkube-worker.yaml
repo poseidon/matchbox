@@ -20,6 +20,12 @@ systemd:
             [Unit]
             Requires=flanneld.service
             After=flanneld.service
+    - name: locksmithd.service
+      dropins:
+        - name: 40-etcd-lock.conf
+          contents: |
+            [Service]
+            Environment="REBOOT_STRATEGY=etcd-lock"
     - name: kubelet.path
       enable: true
       contents: |
