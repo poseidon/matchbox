@@ -56,8 +56,10 @@ We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a te
 
 Secure copy the `kubeconfig` to `/etc/kuberentes/kubeconfig` on **every** node (i.e. 172.15.0.21-23 for metal0 or 172.17.0.21-23 for docker0).
 
-    scp assets/auth/kubeconfig core@172.15.0.21:/home/core/kubeconfig
-    ssh core@172.15.0.21 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
+    for node in '172.15.0.21' '172.15.0.22' '172.15.0.23'; do
+        scp assets/auth/kubeconfig core@$node:/home/core/kubeconfig
+        ssh core@$node 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
+    done
 
 Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
 
