@@ -108,7 +108,7 @@ func TestGroupValidate(t *testing.T) {
 		group *Group
 		valid bool
 	}{
-		{&Group{Id: "node1", Profile: "k8s-master"}, true},
+		{&Group{Id: "node1", Profile: "k8s-controller"}, true},
 		{testGroupWithoutProfile, false},
 		{&Group{Id: "node1"}, false},
 		{&Group{}, false},
