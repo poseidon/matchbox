@@ -60,13 +60,15 @@ systemd:
         [Service]
         Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
           --mount volume=dns,target=/etc/resolv.conf \
-          --volume=rkt,kind=host,source=/opt/bin/host-rkt \
+          --volume rkt,kind=host,source=/opt/bin/host-rkt \
           --mount volume=rkt,target=/usr/bin/rkt \
           --volume var-lib-rkt,kind=host,source=/var/lib/rkt \
           --mount volume=var-lib-rkt,target=/var/lib/rkt \
-          --volume=stage,kind=host,source=/tmp \
-          --mount volume=stage,target=/tmp"
-        Environment=KUBELET_VERSION=v1.3.4_coreos.0
+          --volume stage,kind=host,source=/tmp \
+          --mount volume=stage,target=/tmp \
+          --volume var-log,kind=host,source=/var/log \
+          --mount volume=var-log,target=/var/log"
+        Environment=KUBELET_VERSION=v1.3.6_coreos.0
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
@@ -173,7 +175,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-proxy
-              image: quay.io/coreos/hyperkube:v1.3.4_coreos.0
+              image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
               command:
               - /hyperkube
               - proxy
@@ -207,7 +209,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-apiserver
-              image: quay.io/coreos/hyperkube:v1.3.4_coreos.0
+              image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
               command:
               - /hyperkube
               - apiserver
@@ -267,7 +269,7 @@ storage:
           spec:
             containers:
             - name: kube-controller-manager
-              image: quay.io/coreos/hyperkube:v1.3.4_coreos.0
+              image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
               command:
               - /hyperkube
               - controller-manager
@@ -313,7 +315,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-scheduler
-              image: quay.io/coreos/hyperkube:v1.3.4_coreos.0
+              image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
               command:
               - /hyperkube
               - scheduler
@@ -340,123 +342,123 @@ storage:
               "labels": {
                 "k8s-app": "kube-dns",
                 "kubernetes.io/cluster-service": "true",
-                "version": "v15"
+                "version": "v17.1"
               },
-              "name": "kube-dns-v15",
+              "name": "kube-dns-v17.1",
               "namespace": "kube-system"
             },
             "spec": {
               "replicas": 1,
               "selector": {
-                  "k8s-app": "kube-dns",
-                  "version": "v15"
+                "k8s-app": "kube-dns",
+                "version": "v17.1"
               },
               "template": {
                 "metadata": {
                   "labels": {
                     "k8s-app": "kube-dns",
                     "kubernetes.io/cluster-service": "true",
-                    "version": "v15"
+                    "version": "v17.1"
                   }
                 },
                 "spec": {
                   "containers": [
-                      {
-                        "args": [
-                          "--domain=cluster.local.",
-                          "--dns-port=10053"
-                        ],
-                        "image": "gcr.io/google_containers/kubedns-amd64:1.3",
-                        "livenessProbe": {
-                          "failureThreshold": 5,
-                          "httpGet": {
-                            "path": "/healthz",
-                            "port": 8080,
-                            "scheme": "HTTP"
-                          },
-                          "initialDelaySeconds": 60,
-                          "successThreshold": 1,
-                          "timeoutSeconds": 5
+                    {
+                      "args": [
+                        "--domain=cluster.local.",
+                        "--dns-port=10053"
+                      ],
+                      "image": "gcr.io/google_containers/kubedns-amd64:1.5",
+                      "livenessProbe": {
+                        "failureThreshold": 5,
+                        "httpGet": {
+                          "path": "/healthz",
+                          "port": 8080,
+                          "scheme": "HTTP"
                         },
-                        "name": "kubedns",
-                        "ports": [
-                          {
-                            "containerPort": 10053,
-                            "name": "dns-local",
-                            "protocol": "UDP"
-                          },
-                          {
-                            "containerPort": 10053,
-                            "name": "dns-tcp-local",
-                            "protocol": "TCP"
-                          }
-                        ],
-                        "readinessProbe": {
-                          "httpGet": {
-                            "path": "/readiness",
-                            "port": 8081,
-                            "scheme": "HTTP"
-                          },
-                          "initialDelaySeconds": 30,
-                          "timeoutSeconds": 5
+                        "initialDelaySeconds": 60,
+                        "successThreshold": 1,
+                        "timeoutSeconds": 5
+                      },
+                      "name": "kubedns",
+                      "ports": [
+                        {
+                          "containerPort": 10053,
+                          "name": "dns-local",
+                          "protocol": "UDP"
                         },
-                        "resources": {
-                          "limits": {
-                            "cpu": "100m",
-                            "memory": "200Mi"
-                          },
-                          "requests": {
-                            "cpu": "100m",
-                            "memory": "50Mi"
-                          }
+                        {
+                          "containerPort": 10053,
+                          "name": "dns-tcp-local",
+                          "protocol": "TCP"
                         }
+                      ],
+                      "readinessProbe": {
+                        "httpGet": {
+                          "path": "/readiness",
+                          "port": 8081,
+                          "scheme": "HTTP"
+                        },
+                        "initialDelaySeconds": 30,
+                        "timeoutSeconds": 5
                       },
-                      {
-                        "args": [
-                          "--cache-size=1000",
-                          "--no-resolv",
-                          "--server=127.0.0.1#10053"
-                        ],
-                        "image": "gcr.io/google_containers/kube-dnsmasq-amd64:1.3",
-                        "name": "dnsmasq",
-                        "ports": [
-                          {
-                            "containerPort": 53,
-                            "name": "dns",
-                            "protocol": "UDP"
-                          },
-                          {
-                            "containerPort": 53,
-                            "name": "dns-tcp",
-                            "protocol": "TCP"
-                          }
-                        ]
-                      },
-                      {
-                        "args": [
-                          "-cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null",
-                          "-port=8080",
-                          "-quiet"
-                        ],
-                        "image": "gcr.io/google_containers/exechealthz-amd64:1.0",
-                        "name": "healthz",
-                        "ports": [
-                          {
-                            "containerPort": 8080,
-                            "protocol": "TCP"
-                          }
-                        ],
-                        "resources": {
-                          "limits": {
-                            "cpu": "10m",
-                            "memory": "20Mi"
-                          },
-                          "requests": {
-                            "cpu": "10m",
-                            "memory": "20Mi"
-                          }
+                      "resources": {
+                        "limits": {
+                          "cpu": "100m",
+                          "memory": "170Mi"
+                        },
+                        "requests": {
+                          "cpu": "100m",
+                          "memory": "70Mi"
                         }
                       }
+                    },
+                    {
+                      "args": [
+                        "--cache-size=1000",
+                        "--no-resolv",
+                        "--server=127.0.0.1#10053"
+                      ],
+                      "image": "gcr.io/google_containers/kube-dnsmasq-amd64:1.3",
+                      "name": "dnsmasq",
+                      "ports": [
+                        {
+                          "containerPort": 53,
+                          "name": "dns",
+                          "protocol": "UDP"
+                        },
+                        {
+                          "containerPort": 53,
+                          "name": "dns-tcp",
+                          "protocol": "TCP"
+                        }
+                      ]
+                    },
+                    {
+                      "args": [
+                        "-cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null && nslookup kubernetes.default.svc.cluster.local 127.0.0.1:10053 >/dev/null",
+                        "-port=8080",
+                        "-quiet"
+                      ],
+                      "image": "gcr.io/google_containers/exechealthz-amd64:1.1",
+                      "name": "healthz",
+                      "ports": [
+                        {
+                          "containerPort": 8080,
+                          "protocol": "TCP"
+                        }
+                      ],
+                      "resources": {
+                        "limits": {
+                          "cpu": "10m",
+                          "memory": "50Mi"
+                        },
+                        "requests": {
+                          "cpu": "10m",
+                          "memory": "50Mi"
+                        }
+                      }
+                    }
                   ],
                   "dnsPolicy": "Default"
                 }
@@ -636,9 +638,9 @@ storage:
               "labels": {
                 "k8s-app": "kubernetes-dashboard",
                 "kubernetes.io/cluster-service": "true",
-                "version": "v1.1.0"
+                "version": "v1.1.1"
               },
-              "name": "kubernetes-dashboard-v1.1.0",
+              "name": "kubernetes-dashboard-v1.1.1",
               "namespace": "kube-system"
             },
             "spec": {
@@ -651,13 +653,13 @@ storage:
                   "labels": {
                     "k8s-app": "kubernetes-dashboard",
                     "kubernetes.io/cluster-service": "true",
-                    "version": "v1.1.0"
+                    "version": "v1.1.1"
                   }
                 },
                 "spec": {
                   "containers": [
                     {
-                      "image": "gcr.io/google_containers/kubernetes-dashboard-amd64:v1.1.0",
+                      "image": "gcr.io/google_containers/kubernetes-dashboard-amd64:v1.1.1",
                       "livenessProbe": {
                         "httpGet": {
                           "path": "/",
