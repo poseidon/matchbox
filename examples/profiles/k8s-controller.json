@@ -12,5 +12,5 @@
     }
   },
   "cloud_id": "",
-  "ignition_id": "k8s-master.yaml"
+  "ignition_id": "k8s-controller.yaml"
 }

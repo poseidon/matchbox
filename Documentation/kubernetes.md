@@ -1,7 +1,7 @@
 
 # Kubernetes
 
-The Kubernetes example provisions a 3 node Kubernetes v1.3.4 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The Kubernetes example provisions a 3 node Kubernetes v1.3.6 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -57,22 +57,22 @@ Client machines should boot and provision themselves. Local client VMs should ne
 Get all pods.
 
     $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get pods --all-namespaces
-    NAMESPACE     NAME                                  READY     STATUS    RESTARTS   AGE
-    kube-system   heapster-v1.1.0-3647315203-tes6g      2/2       Running   0          14m
-    kube-system   kube-apiserver-172.15.0.21            1/1       Running   0          14m
-    kube-system   kube-controller-manager-172.15.0.21   1/1       Running   0          14m
-    kube-system   kube-dns-v15-nfbz4                    3/3       Running   0          14m
-    kube-system   kube-proxy-172.15.0.21                1/1       Running   0          14m
-    kube-system   kube-proxy-172.15.0.22                1/1       Running   0          14m
-    kube-system   kube-proxy-172.15.0.23                1/1       Running   0          14m
-    kube-system   kube-scheduler-172.15.0.21            1/1       Running   0          13m
-    kube-system   kubernetes-dashboard-v1.1.0-m1gyy     1/1       Running   0          14m
+    NAMESPACE     NAME                                        READY     STATUS    RESTARTS   AGE
+    kube-system   heapster-v1.1.0-3647315203-oearg            2/2       Running   0          12m
+    kube-system   kube-apiserver-node1.example.com            1/1       Running   0          13m
+    kube-system   kube-controller-manager-node1.example.com   1/1       Running   0          13m
+    kube-system   kube-dns-v17.1-atlcx                        3/3       Running   0          13m
+    kube-system   kube-proxy-node1.example.com                1/1       Running   0          13m
+    kube-system   kube-proxy-node2.example.com                1/1       Running   0          12m
+    kube-system   kube-proxy-node3.example.com                1/1       Running   0          12m
+    kube-system   kube-scheduler-node1.example.com            1/1       Running   0          12m
+    kube-system   kubernetes-dashboard-v1.1.1-hf87z           1/1       Running   0          13m
 
 ## Kubernetes Dashboard
 
 Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding to the dashboard pod.
 
-    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig port-forward kubernetes-dashboard-v1.1.0-SOME-ID 9090 --namespace=kube-system
+    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig port-forward kubernetes-dashboard-v1.1.1-SOME-ID 9090 --namespace=kube-system
     Forwarding from 127.0.0.1:9090 -> 9090
 
 Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).

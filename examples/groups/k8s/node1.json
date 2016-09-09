@@ -1,7 +1,7 @@
 {
   "id": "node1",
   "name": "k8s controller",
-  "profile": "k8s-master",
+  "profile": "k8s-controller",
   "selector": {
     "mac": "52:54:00:a1:9c:ae"
   },

@@ -16,7 +16,7 @@ Fuze template files can be added in the `/var/lib/bootcfg/ignition` directory or
     /var/lib/bootcfg
      ├── cloud
      ├── ignition
-     │   └── k8s-master.yaml
+     │   └── k8s-controller.yaml
      │   └── etcd.yaml
      │   └── k8s-worker.yaml
      │   └── raw.ign

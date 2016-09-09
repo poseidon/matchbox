@@ -1,7 +1,7 @@
 {
   "id": "node1",
   "name": "k8s controller",
-  "profile": "k8s-master-install",
+  "profile": "k8s-controller-install",
   "selector": {
     "os": "installed",
     "mac": "52:54:00:a1:9c:ae"
