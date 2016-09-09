@@ -22,7 +22,7 @@ systemd:
           -advertise-client-urls=http://{{.domain_name}}:2379 \
           -initial-advertise-peer-urls=http://{{.domain_name}}:2380 \
           -listen-client-urls=http://0.0.0.0:2379 \
-          -listen-peer-urls=http://{{.domain_name}}:2380 \
+          -listen-peer-urls=http://0.0.0.0:2380 \
           -initial-cluster={{.etcd_initial_cluster}} \
           -data-dir=/var/lib/etcd3
         Restart=always
