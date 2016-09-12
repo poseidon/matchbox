@@ -1,0 +1,100 @@
+#!/bin/bash
+# Create a virtual bridge with PXE services and bootcfg
+# USAGE: ./scripts/devnet create [example]
+# USAGE: ./scripts/devnet destroy
+set -u
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+EXAMPLE=${2:-}
+BRIDGE=metal0
+COREOS_VERSION=1153.0.0
+BOOTCFG_ARGS=""
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+function main {
+  case "$1" in
+    "create") create;;
+    "destroy") destroy;;
+    *)
+      usage
+      exit 2
+      ;;
+  esac
+}
+
+function usage {
+  echo "USAGE: ${0##*/} <command>"
+  echo "Commands:"
+  echo -e "\tcreate\tcreate bootcfg and PXE services on the bridge"
+  echo -e "\tdestroy\tdestroy the services on the bridge"
+}
+
+function check {
+  # SELinux, if present, it cannot be in Enforcing mode
+  if [ $(getenforce) == 'Enforcing' ]; then
+    echo "SELinux must be in permissive mode: 'setenforce Permissive'"
+    exit 1
+  fi
+
+  if [ ! -d $DIR/../examples/assets/coreos/$COREOS_VERSION ]; then
+    echo "Most examples use CoreOS Alpha $COREOS_VERSION. You may wish to download it with './scripts/get-coreos alpha $COREOS_VERSION'."
+  fi
+}
+
+function create {
+  check
+
+  if [ -z "$EXAMPLE" ]; then
+    echo "Starting bootcfg"
+  else
+    echo "Starting bootcfg configured to boot $EXAMPLE"
+  fi
+
+  if [ -z "$EXAMPLE" ]; then
+    # Mount a data volume with assets and enable gRPC
+    BOOTCFG_ARGS="-rpc-address=0.0.0.0:8081"
+    DATA_MOUNT="--volume data,kind=host,source=$(mktemp -d) \
+    --mount volume=assets,target=/var/lib/bootcfg/assets \
+    --volume assets,kind=host,source=$PWD/examples/assets,readOnly=true"
+  else
+    # Mount the given EXAMPLE
+    DATA_MOUNT="--volume data,kind=host,source=$PWD/examples \
+    --mount volume=groups,target=/var/lib/bootcfg/groups \
+    --volume groups,kind=host,source=$DIR/../examples/groups/$EXAMPLE"
+  fi
+
+  systemd-run --unit=dev-bootcfg \
+    rkt run \
+    --uuid-file-save=/tmp/bootcfg \
+    --net=metal0:IP=172.15.0.2 \
+    --mount volume=config,target=/etc/bootcfg \
+    --volume config,kind=host,source=$PWD/examples/etc/bootcfg,readOnly=true \
+    --mount volume=data,target=/var/lib/bootcfg \
+    $DATA_MOUNT \
+    quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug $BOOTCFG_ARGS
+
+  echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
+  systemd-run --unit=dev-dnsmasq \
+    rkt run \
+    --uuid-file-save=/tmp/dnsmasq \
+    --net=metal0:IP=172.15.0.3 \
+    --mount volume=config,target=/etc/dnsmasq.conf \
+    --volume config,kind=host,source=$DIR/../contrib/dnsmasq/metal0.conf \
+    coreos.com/dnsmasq:v0.3.0
+}
+
+function destroy {
+  rkt stop --uuid-file=/tmp/bootcfg --force
+  rkt rm --uuid-file=/tmp/bootcfg
+  rkt stop --uuid-file=/tmp/dnsmasq --force
+  rkt rm --uuid-file=/tmp/dnsmasq
+  systemctl reset-failed dev-bootcfg
+  systemctl reset-failed dev-dnsmasq
+}
+
+main $@
