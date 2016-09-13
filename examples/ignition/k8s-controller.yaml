@@ -20,6 +20,8 @@ systemd:
           contents: |
             [Service]
             EnvironmentFile=-/etc/flannel/options.env
+            Environment=FLANNEL_IMG=http://bootcfg.foo:8080/assets/coreos-flannel
+            Environment=FLANNEL_VER=v0.5.5.aci
             ExecStartPre=/opt/init-flannel
     - name: docker.service
       dropins:
@@ -28,6 +30,17 @@ systemd:
             [Unit]
             Requires=flanneld.service
             After=flanneld.service
+    {{ if index . "insecure_registry" }}
+    - name: docker.service
+      enable: true
+      dropins:
+        - name: 40-insecure-registry.conf
+          contents: |
+            [Service]
+            Environment=INSECURE_REGISTRY='--insecure-registry={{.docker_registry}}'
+            ExecStart=
+            ExecStart=/usr/lib/coreos/dockerd --host=fd:// $DOCKER_OPTS $INSECURE_REGISTRY $DOCKER_CGROUPS $DOCKER_OPT_BIP $DOCKER_OPT_MTU $DOCKER_OPT_IPMASQ
+    {{ end }}
     - name: k8s-certs@.service
       contents: |
         [Unit]
@@ -57,10 +70,20 @@ systemd:
         After=k8s-assets.target
         [Service]
         Environment=KUBELET_VERSION=v1.3.6_coreos.0
+        {{ if index . "docker_registry" -}}
+        Environment=KUBELET_VERSION=v1.3.6_coreos.0.aci
+        Environment=KUBELET_ACI=http://bootcfg.foo:8080/assets/coreos-hyperkube
+        Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
+          --mount volume=dns,target=/etc/resolv.conf \
+          --volume var-log,kind=host,source=/var/log \
+          --mount volume=var-log,target=/var/log \
+          --insecure-options=image"
+        {{ else -}}
         Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
           --mount volume=dns,target=/etc/resolv.conf \
           --volume var-log,kind=host,source=/var/log \
           --mount volume=var-log,target=/var/log"
+        {{ end -}}
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/usr/bin/mkdir -p /var/log/containers
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
@@ -71,6 +94,9 @@ systemd:
           --config=/etc/kubernetes/manifests \
           --hostname-override={{.domain_name}} \
           --cluster_dns={{.k8s_dns_service_ip}} \
+          {{ if index . "docker_registry" -}}
+          --pod-infra-container-image={{.docker_registry}}/pause-amd64:3.0 \
+          {{ end -}}
           --cluster_domain=cluster.local
         Restart=always
         RestartSec=10
@@ -118,7 +144,11 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-proxy
+              {{ if index . "docker_registry" -}}
+              image: {{.docker_registry}}/hyperkube:v1.3.6_coreos.0
+              {{ else -}}
               image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
+              {{ end -}}
               command:
               - /hyperkube
               - proxy
@@ -146,7 +176,11 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-apiserver
+              {{ if index . "docker_registry" -}}
+              image: {{.docker_registry}}/hyperkube:v1.3.6_coreos.0
+              {{ else -}}
               image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
+              {{ end -}}
               command:
               - /hyperkube
               - apiserver
@@ -206,7 +240,11 @@ storage:
           spec:
             containers:
             - name: kube-controller-manager
+              {{ if index . "docker_registry" -}}
+              image: {{.docker_registry}}/hyperkube:v1.3.6_coreos.0
+              {{ else -}}
               image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
+              {{ end -}}
               command:
               - /hyperkube
               - controller-manager
@@ -252,7 +290,11 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-scheduler
+              {{ if index . "docker_registry" -}}
+              image: {{.docker_registry}}/hyperkube:v1.3.6_coreos.0
+              {{ else -}}
               image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
+              {{ end -}}
               command:
               - /hyperkube
               - scheduler
@@ -305,7 +347,11 @@ storage:
                         "--domain=cluster.local.",
                         "--dns-port=10053"
                       ],
+                      {{ if index . "docker_registry" -}}
+                      "image": "{{.docker_registry}}/kubedns-amd64:1.5",
+                      {{ else -}}
                       "image": "gcr.io/google_containers/kubedns-amd64:1.5",
+                      {{ end -}}
                       "livenessProbe": {
                         "failureThreshold": 5,
                         "httpGet": {
@@ -356,7 +402,11 @@ storage:
                         "--no-resolv",
                         "--server=127.0.0.1#10053"
                       ],
+                      {{ if index . "docker_registry" -}}
+                      "image": "{{.docker_registry}}/kube-dnsmasq-amd64:1.3",
+                      {{ else -}}
                       "image": "gcr.io/google_containers/kube-dnsmasq-amd64:1.3",
+                      {{ end -}}
                       "name": "dnsmasq",
                       "ports": [
                         {
@@ -377,7 +427,11 @@ storage:
                         "-port=8080",
                         "-quiet"
                       ],
+                      {{ if index . "docker_registry" -}}
+                      "image": "{{.docker_registry}}/exechealthz-amd64:1.1",
+                      {{ else -}}
                       "image": "gcr.io/google_containers/exechealthz-amd64:1.1",
+                      {{ end -}}
                       "name": "healthz",
                       "ports": [
                         {
@@ -475,7 +529,11 @@ storage:
                         "/heapster",
                         "--source=kubernetes.summary_api:''"
                       ],
+                      {{ if index . "docker_registry" -}}
+                      "image": "{{.docker_registry}}/heapster:v1.1.0",
+                      {{ else -}}
                       "image": "gcr.io/google_containers/heapster:v1.1.0",
+                      {{ end -}}
                       "name": "heapster",
                       "resources": {
                         "limits": {
@@ -519,7 +577,11 @@ storage:
                           }
                         }
                       ],
+                      {{ if index . "docker_registry" -}}
+                      "image": "{{.docker_registry}}/addon-resizer:1.3",
+                      {{ else -}}
                       "image": "gcr.io/google_containers/addon-resizer:1.3",
+                      {{ end -}}
                       "name": "heapster-nanny",
                       "resources": {
                         "limits": {
@@ -596,7 +658,11 @@ storage:
                 "spec": {
                   "containers": [
                     {
+                      {{ if index . "docker_registry" -}}
+                      "image": "{{.docker_registry}}/kubernetes-dashboard-amd64:v1.1.1",
+                      {{ else -}}
                       "image": "gcr.io/google_containers/kubernetes-dashboard-amd64:v1.1.1",
+                      {{ end -}}
                       "livenessProbe": {
                         "httpGet": {
                           "path": "/",

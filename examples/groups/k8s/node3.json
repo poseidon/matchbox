@@ -12,6 +12,8 @@
     "k8s_controller_endpoint": "https://node1.example.com",
     "k8s_dns_service_ip": "10.3.0.10",
     "k8s_etcd_endpoints": "http://node1.example.com:2379",
-    "pxe": "true"
+    "pxe": "true",
+    "docker_registry": "registry.example.com:5000",
+    "insecure_registry": "true"
   }
 }

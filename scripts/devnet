@@ -86,6 +86,17 @@ function create {
     --mount volume=config,target=/etc/dnsmasq.conf \
     --volume config,kind=host,source=$DIR/../contrib/dnsmasq/metal0.conf \
     coreos.com/dnsmasq:v0.3.0
+
+  echo "Starting insecure Docker registry"
+  systemd-run --unit=dev-registry \
+    rkt run \
+    --uuid-file-save=/tmp/registry \
+    --port=5000-tcp:21504 \
+    --net=metal0:IP=172.15.0.4 \
+    --insecure-options=image \
+    --mount volume=data,target=/var/lib/registry \
+    --volume data,kind=host,source=$DIR/../contrib/registry/data \
+    docker://registry
 }
 
 function destroy {
@@ -93,8 +104,11 @@ function destroy {
   rkt rm --uuid-file=/tmp/bootcfg
   rkt stop --uuid-file=/tmp/dnsmasq --force
   rkt rm --uuid-file=/tmp/dnsmasq
+  rkt stop --uuid-file=/tmp/registry --force
+  rkt rm --uuid-file=/tmp/registry
   systemctl reset-failed dev-bootcfg
   systemctl reset-failed dev-dnsmasq
+  systemctl reset-failed dev-registry
 }
 
 main $@
