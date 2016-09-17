@@ -1,17 +1,18 @@
 #!/bin/bash
 # Manage VM nodes which have a specific set of hardware attributes.
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+source "${DIR}/common.sh"
+
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-source "${DIR}/common.sh"
-
 function main {
   case "$1" in
+    "create") create_rkt;;
     "create-docker") create_docker;;
     "create-rkt") create_rkt;;
     "create-uefi") create_uefi;;
@@ -30,16 +31,18 @@ function main {
 function usage {
   echo "USAGE: ${0##*/} <command>"
   echo "Commands:"
-  echo -e "\tcreate-docker\tcreate libvirt nodes on the docker0 bridge"
-  echo -e "\tcreate-rkt\tcreate libvirt nodes on a rkt CNI metal0 bridge"
-  echo -e "\tcreate-uefi\tcreate UEFI libvirt nodes on the rkt CNI metal0 bridge"
-  echo -e "\tstart\t\tstart the libvirt nodes"
-  echo -e "\treboot\t\treboot the libvirt nodes"
-  echo -e "\tshutdown\tshutdown the libvirt nodes"
-  echo -e "\tpoweroff\tpoweroff the libvirt nodes"
-  echo -e "\tdestroy\t\tdestroy the libvirt nodes"
+  echo -e "\tcreate\t\tcreate QEMU/KVM nodes on a rkt CNI metal0 bridge"
+  echo -e "\tcreate-rkt\tcreate QEMU/KVM nodes on a rkt CNI metal0 bridge"
+  echo -e "\tcreate-docker\tcreate QEMU/KVM nodes on the docker0 bridge"
+  echo -e "\tcreate-uefi\tcreate UEFI QEMU/KVM nodes on the rkt CNI metal0 bridge"
+  echo -e "\tstart\t\tstart the QEMU/KVM nodes"
+  echo -e "\treboot\t\treboot the QEMU/KVM nodes"
+  echo -e "\tshutdown\tshutdown the QEMU/KVM nodes"
+  echo -e "\tpoweroff\tpoweroff the QEMU/KVM nodes"
+  echo -e "\tdestroy\t\tdestroy the QEMU/KVM nodes"
 }
-COMMON_VIRT_OPTS="--memory=1024 --vcpus=1 --os-type=linux --noautoconsole --pxe --disk pool=default,size=6 "
+
+COMMON_VIRT_OPTS="--memory=1024 --vcpus=1 --pxe --disk pool=default,size=6 --os-type=linux --os-variant=generic --noautoconsole"
 
 function create_docker {
   virt-install --name $NODE1_NAME --network=bridge:docker0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network

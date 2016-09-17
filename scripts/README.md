@@ -23,19 +23,20 @@ This will create:
 
 ## libvirt
 
-Create libvirt VM nodes which are configured to boot from the network. The `scripts/libvirt` script will create virtual machines on the `metal0` or `docker0` bridge with known hardware attributes (e.g. UUID, MAC address).
+Create QEMU/KVM VMs which are configured to boot from the network. The `scripts/libvirt` script will create virtual machines on the `metal0` or `docker0` bridge with known hardware attributes (e.g. UUID, MAC address).
 
     $ sudo ./scripts/libvirt
     USAGE: libvirt <command>
     Commands:
-        create-docker   create libvirt nodes on the docker0 bridge
-        create-rkt  create libvirt nodes on a rkt CNI metal0 bridge
-        create-uefi create UEFI libvirt nodes on the rkt CNI metal0 bridge
-        start       start the libvirt nodes
-        reboot      reboot the libvirt nodes
-        shutdown    shutdown the libvirt nodes
-        poweroff    poweroff the libvirt nodes
-        destroy     destroy the libvirt nodes
+        create      create QEMU/KVM nodes on a rkt CNI metal0 bridge
+        create-rkt  create QEMU/KVM nodes on a rkt CNI metal0 bridge
+        create-docker   create QEMU/KVM nodes on the docker0 bridge
+        create-uefi create UEFI QEMU/KVM nodes on the rkt CNI metal0 bridge
+        start       start the QEMU/KVM nodes
+        reboot      reboot the QEMU/KVM nodes
+        shutdown    shutdown the QEMU/KVM nodes
+        poweroff    poweroff the QEMU/KVM nodes
+        destroy     destroy the QEMU/KVM nodes
 
 ## k8s-certgen
 

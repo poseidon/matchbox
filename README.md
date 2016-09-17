@@ -21,7 +21,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 * Config Templates
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
-* Tutorials (qemu/kvm/libvirt)
+* Tutorials (QEMU/KVM/libvirt)
     * [bootcfg with rkt](Documentation/getting-started-rkt.md)
     * [bootcfg with Docker](Documentation/getting-started-docker.md)
 * [Configuration](Documentation/config.md)
@@ -44,7 +44,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 
 ### Examples
 
-The [examples](examples) network boot and provision CoreOS clusters. Network boot [libvirt](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
+The [examples](examples) network boot and provision CoreOS clusters. Network boot [QEMU/KVM](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
 
 * Multi-node [Kubernetes cluster](Documentation/kubernetes.md)
 * Multi-node Kubernetes cluster with rkt container runtime (i.e. rktnetes)

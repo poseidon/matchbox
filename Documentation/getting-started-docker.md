@@ -1,7 +1,7 @@
 
 # Getting Started with Docker
 
-In this tutorial, we'll run `bootcfg` on your Linux machine with Docker to network boot and provision a cluster of CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
+In this tutorial, we'll run `bootcfg` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
 
 *Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
@@ -53,7 +53,7 @@ In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.17.0.
 
 ## Client VMs
 
-Create VM nodes which have known hardware attributes. The nodes will be attached to the `docker0` bridge where Docker's containers run.
+Create QEMU/KVM VMs which have known hardware attributes. The nodes will be attached to the `docker0` bridge, where Docker's containers run.
 
     sudo ./scripts/libvirt create-docker
     sudo virt-manager

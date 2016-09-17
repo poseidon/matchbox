@@ -1,7 +1,7 @@
 
 # Getting Started with rkt
 
-In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
+In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
 
 *Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
@@ -91,9 +91,9 @@ In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.15.0.
 
 ## Client VMs
 
-Create VM nodes which have known hardware attributes. The nodes will be attached to the `metal0` bridge where your pods run.
+Create QEMU/KVM VMs which have known hardware attributes. The nodes will be attached to the `metal0` bridge, where your pods run.
 
-    sudo ./scripts/libvirt create-rkt
+    sudo ./scripts/libvirt create
     sudo virt-manager
 
 You can use `virt-manager` to watch the console and reboot VM machines with
