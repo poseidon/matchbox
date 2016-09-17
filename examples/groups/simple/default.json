@@ -1,0 +1,5 @@
+{
+  "id": "default",
+  "name": "Simple CoreOS Alpha with RAM disk",
+  "profile": "simple"
+}

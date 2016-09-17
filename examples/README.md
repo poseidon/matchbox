@@ -5,13 +5,13 @@ These examples network boot and provision machines into CoreOS clusters using `b
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
-| pxe | CoreOS via iPXE | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| simple | CoreOS with autologin, using iPXE | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| simple-install | CoreOS Install, using iPXE | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | grub | CoreOS via GRUB2 Netboot | alpha/1153.0.0 | RAM | NA |
-| pxe-disk | CoreOS via iPXE, with a root filesystem | alpha/1153.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| etcd | iPXE boot a 3 node etcd cluster and proxy | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| etcd-install | Install a 3-node etcd cluster to disk | alpha/1153.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
-| etcd3 | Install a 3-node etcd3 cluster | alpha/1153.0.0 | RAM | None |
-| etcd3-install | Install a 3-node etcd3 cluster to disk | alpha/1153.0.0 | Disk | None |
+| etcd | A 3 node etcd cluster with proxies | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd-install | Install a 3 node etcd cluster to disk | alpha/1153.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
+| etcd3 | A 3 node etcd3 cluster with proxies | alpha/1153.0.0 | RAM | None |
+| etcd3-install | Install a 3 node etcd3 cluster to disk | alpha/1153.0.0 | Disk | None |
 | k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | alpha/1153.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | k8s-install | Kubernetes cluster, installed to disk | alpha/1153.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | alpha/1153.0.0 | Disk | None |

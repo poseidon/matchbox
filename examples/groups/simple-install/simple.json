@@ -1,0 +1,9 @@
+{
+  "id": "simple",
+  "name": "Simple CoreOS Alpha",
+  "profile": "simple",
+  "selector": {
+    "os": "installed"
+  },
+  "metadata": {}
+}
