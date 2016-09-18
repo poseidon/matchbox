@@ -1,7 +1,7 @@
 {
   "id": "node3",
   "name": "k8s worker",
-  "profile": "k8s-worker-install",
+  "profile": "k8s-worker",
   "selector": {
     "os": "installed",
     "mac": "52:54:00:c3:61:77"
