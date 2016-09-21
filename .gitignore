@@ -31,3 +31,4 @@ assets/
 bin/
 _output/
 tools/
+contrib/registry/data
