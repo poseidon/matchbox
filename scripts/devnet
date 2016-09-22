@@ -17,6 +17,10 @@ if [ "$EUID" -ne 0 ]
 fi
 
 function main {
+  if [ "$#" -ne 1 ]; then
+    usage
+    exit 2
+  fi
   case "$1" in
     "create") create;;
     "destroy") destroy;;
