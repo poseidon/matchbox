@@ -20,7 +20,7 @@ Press ^] three times to kill the container.
 Alternately, Docker can be used.
 
     docker pull quay.io/coreos/dnsmasq
-    docker run quay.io/coreos/dnsmasq --cap-add=NET_ADMIN
+    docker run --cap-add NET_ADMIN quay.io/coreos/dnsmasq
 
 ## Configuration Flags
 
@@ -28,7 +28,7 @@ Configuration arguments can be provided at the command line. Check the dnsmasq [
 
 | flag     | description | example |
 |----------|-------------|---------|
-| -dhcp-range | Enable DHCP, lease given range | `172.15,0.50,172.15.0.99`, `192.168.1.1,proxy,255.255.255.0` |
+| --dhcp-range | Enable DHCP, lease given range | `172.15,0.50,172.15.0.99`, `192.168.1.1,proxy,255.255.255.0` |
 | --dhcp-boot | DHCP next server option | `http://bootcfg.foo:8080/boot.ipxe` |
 | --enable-tftp | Enable serving from tftp-root over TFTP | NA |
 | --address | IP address for a domain name | /bootcfg.foo/172.15.0.2 |
