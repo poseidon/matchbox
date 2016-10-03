@@ -44,12 +44,11 @@ $ cd coreos-baremetal-v0.4.0-linux-amd64
 
 *Skip this unless you need to enable the gRPC API*
 
-The `bootcfg` gRPC API allows external client tools (`bootcmd` CLI, graphical apps) to manage how machines are provisioned so TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
+The `bootcfg` gRPC API allows client apps (`bootcmd` CLI, Tectonic Installer, etc.) to manage how machines are provisioned. TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
 
 If your organization manages public key infrastructure and a certificate authority, create a server certificate and key for the `bootcfg` service and a client certificate and key for each client tool.
 
-Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with `scripts/tls/cert-gen`. Export the DNS name or IP (discouraged) of the provisioner host where `bootcfg` will be accessed.
-
+Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `scripts/tls/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
 
 ```sh
 $ cd scripts/tls
@@ -125,23 +124,32 @@ $ sudo cp contrib/systemd/bootcfg.service /etc/systemd/system/
 $ sudo systemctl daemon-reload
 ```
 
-The example unit exposes the `bootcfg` HTTP machine endpoints on port 8080 and the (optional) gRPC API on port 8081 (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences and be sure to allow your choices within the host's firewall so clients can access the services.
+The example unit exposes the `bootcfg` HTTP machine endpoints on port 8080 and exposes the (optional) gRPC API on port 8081 (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences.
+
+#### Firewall
+
+Be sure to allow your port choices on the provisioner's firewall so the clients can access the service. Here are the commands for those using `firewalld`:
+
+```sh
+$ sudo firewall-cmd --zone=MYZONE --add-port=8080/tcp --permanent
+$ sudo firewall-cmd --zone=MYZONE --add-port=8081/tcp --permanent
+```
 
 #### Start bootcfg
 
 Start the `bootcfg` service and enable it if you'd like it to start on every boot.
 
 ```sh
-$ sudo systemctl enable bootcfg.service
 $ sudo systemctl start bootcfg.service
+$ sudo systemctl enable bootcfg.service
 ```
 
 ## Verify
 
 Verify the bootcfg service can be reached by client machines (those being provisioned).
 
-
 ```sh
+$ systemctl status bootcfg
 $ dig bootcfg.example.com
 ```
 
@@ -155,6 +163,7 @@ bootcfg
 If you enabled the gRPC API,
 
 ```sh
+$ cd scripts/tls
 $ openssl s_client -connect bootcfg.example.com:8081 -CAfile /etc/bootcfg/ca.crt -cert client.crt -key client.key
 CONNECTED(00000003)
 depth=1 CN = fake-ca
@@ -171,7 +180,9 @@ Certificate chain
 
 ## Download CoreOS (optional)
 
-`bootcfg` can serve CoreOS image assets in development or lab environments to reduce bandwidth usage and increase the speed of CoreOS PXE boots and installs to disk.
+`bootcfg` can serve CoreOS images in development or lab environments to reduce bandwidth usage and increase the speed of CoreOS PXE boots and installs to disk.
+
+Download a recent CoreOS [release](https://coreos.com/releases/) with signatures.
 
 ```sh
 $ cd scripts
@@ -208,7 +219,7 @@ For large production environments, use a cache proxy or mirror suitable for your
 
 ## Network
 
-Review [network setup](https://github.com/coreos/coreos-baremetal/blob/master/Documentation/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network, if it has not already been done. At a high level, your goals are to:
+Review [network setup](https://github.com/coreos/coreos-baremetal/blob/master/Documentation/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network. At a high level, your goals are to:
 
 * Chainload PXE firmwares to iPXE
 * Point iPXE client machines to the `bootcfg` iPXE HTTP endpoint `http://bootcfg.example.com:8080/boot.ipxe`

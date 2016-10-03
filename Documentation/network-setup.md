@@ -60,22 +60,30 @@ Configure your DHCP server to supply options to older PXE client firmware to spe
 
 Here is an example `/etc/dnsmasq.conf`:
 
-    dhcp-range=192.168.1.1,192.168.1.254,30m
-    enable-tftp
-    tftp-root=/var/lib/tftpboot
-    # if request comes from older PXE ROM, chainload to iPXE (via TFTP)
-    dhcp-boot=tag:!ipxe,undionly.kpxe
-    # if request comes from iPXE user class, set tag "ipxe"
-    dhcp-userclass=set:ipxe,iPXE
-    # point ipxe tagged requests to the bootcfg iPXE boot script (via HTTP)
-    dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe
-    # verbose
-    log-queries
-    log-dhcp
-    # (optional) disable DNS
-    port=0
-    # (optional) static DNS assignements
-    # address=/bootcfg.foo/192.168.1.100
+```ini
+dhcp-range=192.168.1.1,192.168.1.254,30m
+
+enable-tftp
+tftp-root=/var/lib/tftpboot
+
+# if request comes from older PXE ROM, chainload to iPXE (via TFTP)
+dhcp-boot=tag:!ipxe,undionly.kpxe
+# if request comes from iPXE user class, set tag "ipxe"
+dhcp-userclass=set:ipxe,iPXE
+# point ipxe tagged requests to the bootcfg iPXE boot script (via HTTP)
+dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe
+
+# verbose
+log-queries
+log-dhcp
+
+# static DNS assignements
+address=/bootcfg.foo/192.168.1.100
+
+# (optional) disable DNS and specify alternate
+# port=0
+# dhcp-option=6,192.168.1.100
+```
 
 Add [unidonly.kpxe](http://boot.ipxe.org/undionly.kpxe) (and undionly.kpxe.0 if using dnsmasq) to your tftp-root (e.g. `/var/lib/tftpboot`).
 
@@ -89,32 +97,43 @@ Alternately, a DHCP proxy server can be run alongside an existing non-PXE DHCP s
 
 Example `/etc/dnsmasq.conf`:
 
-    dhcp-range=192.168.1.1,proxy,255.255.255.0
-    enable-tftp
-    tftp-root=/var/lib/tftpboot
-    # if request comes from older PXE ROM, chainload to iPXE (via TFTP)
-    pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe
-    # if request comes from iPXE user class, set tag "ipxe"
-    dhcp-userclass=set:ipxe,iPXE
-    # point ipxe tagged requests to the bootcfg iPXE boot script (via HTTP)
-    pxe-service=tag:ipxe,x86PC,"iPXE",http://bootcfg.foo:8080/boot.ipxe
-    # verbose
-    log-queries
-    log-dhcp
+```ini
+dhcp-range=192.168.1.1,proxy,255.255.255.0
+
+enable-tftp
+tftp-root=/var/lib/tftpboot
+
+# if request comes from older PXE ROM, chainload to iPXE (via TFTP)
+pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe
+# if request comes from iPXE user class, set tag "ipxe"
+dhcp-userclass=set:ipxe,iPXE
+# point ipxe tagged requests to the bootcfg iPXE boot script (via HTTP)
+pxe-service=tag:ipxe,x86PC,"iPXE",http://bootcfg.foo:8080/boot.ipxe
+
+# verbose
+log-queries
+log-dhcp
+```
 
 Add [unidonly.kpxe](http://boot.ipxe.org/undionly.kpxe) (and undionly.kpxe.0 if using dnsmasq) to your tftp-root (e.g. `/var/lib/tftpboot`).
 
-    sudo systemctl start dnsmasq
-    sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
-    sudo firewall-cmd --list-services
+```sh
+sudo systemctl start dnsmasq
+sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
+sudo firewall-cmd --list-services
+```
 
 With rkt:
 
-    sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp
+```sh
+sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp
+```
 
 With Docker:
 
-    sudo docker run --net=host --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp
+```sh
+sudo docker run --net=host --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp
+```
 
 ### Configurable TFTP
 
@@ -136,24 +155,26 @@ On networks without network services, the `coreos.com/dnsmasq:v0.3.0` rkt ACI or
 
 With rkt:
 
-```
+```sh
 sudo rkt trust --prefix coreos.com/dnsmasq
 # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
 ```
 
-```
+```sh
 sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --address=/bootcfg.foo/192.168.1.2 --log-queries --log-dhcp
 ```
 
 With Docker:
 
-```
+```sh
 sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --address=/bootcfg.foo/192.168.1.2 --log-queries --log-dhcp
 ```
 
 Ensure that `bootcfg.foo` resolves to a `bootcfg` deployment and that you've allowed the services to run in your firewall configuration.
 
-    sudo firewall-cmd --add-service=dhcp --add-service=tftp --add-service=dns
+```sh
+sudo firewall-cmd --add-service=dhcp --add-service=tftp --add-service=dns
+```
 
 ## Troubleshooting
 
