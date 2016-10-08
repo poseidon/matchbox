@@ -17,7 +17,7 @@ if [ "$EUID" -ne 0 ]
 fi
 
 function main {
-  if [ "$#" -ne 1 ]; then
+  if [ "$#" -eq 0 ]; then
     usage
     exit 2
   fi
