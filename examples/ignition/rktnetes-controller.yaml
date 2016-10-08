@@ -70,6 +70,7 @@ systemd:
           --mount volume=var-log,target=/var/log"
         Environment=KUBELET_VERSION=v1.3.6_coreos.0
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+        ExecStartPre=/usr/bin/mkdir -p /var/log/containers
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers=http://127.0.0.1:8080 \

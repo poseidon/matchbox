@@ -23,6 +23,8 @@ systemd:
             [Unit]
             Requires=flanneld.service
             After=flanneld.service
+            [Service]
+            EnvironmentFile=/etc/kubernetes/cni/docker_opts_cni.env
     - name: k8s-certs@.service
       contents: |
         [Unit]
@@ -60,6 +62,8 @@ systemd:
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers={{.k8s_controller_endpoint}} \
           --register-node=true \
+          --network-plugin-dir=/etc/kubernetes/cni/net.d \
+          --network-plugin=cni \
           --allow-privileged=true \
           --config=/etc/kubernetes/manifests \
           --hostname-override={{.domain_name}} \
@@ -91,6 +95,23 @@ storage:
             - "-LROOT"
   {{end}}
   files:
+    - path: /etc/kubernetes/cni/net.d/10-flannel.conf
+      filesystem: root
+      contents:
+        inline: |
+          {
+              "name": "podnet",
+              "type": "flannel",
+              "delegate": {
+                  "isDefaultGateway": true
+              }
+          }
+    - path: /etc/kubernetes/cni/docker_opts_cni.env
+      filesystem: root
+      contents:
+        inline: |
+          DOCKER_OPT_BIP=""
+          DOCKER_OPT_IPMASQ=""
     - path: /etc/kubernetes/worker-kubeconfig.yaml
       filesystem: root
       contents:
