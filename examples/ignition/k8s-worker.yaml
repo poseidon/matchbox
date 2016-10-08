@@ -16,6 +16,8 @@ systemd:
           contents: |
             [Service]
             EnvironmentFile=-/etc/flannel/options.env
+            Environment=FLANNEL_IMG=http://bootcfg.foo:8080/assets/coreos-flannel
+            Environment=FLANNEL_VER=v0.5.5.aci
     - name: docker.service
       dropins:
         - name: 40-flannel.conf
@@ -23,6 +25,17 @@ systemd:
             [Unit]
             Requires=flanneld.service
             After=flanneld.service
+    {{ if index . "insecure_registry" }}
+    - name: docker.service
+      enable: true
+      dropins:
+        - name: 40-insecure-registry.conf
+          contents: |
+            [Service]
+            Environment=INSECURE_REGISTRY='--insecure-registry={{.docker_registry}}'
+            ExecStart=
+            ExecStart=/usr/lib/coreos/dockerd --host=fd:// $DOCKER_OPTS $INSECURE_REGISTRY $DOCKER_CGROUPS $DOCKER_OPT_BIP $DOCKER_OPT_MTU $DOCKER_OPT_IPMASQ
+    {{ end }}
     - name: k8s-certs@.service
       contents: |
         [Unit]
@@ -51,10 +64,20 @@ systemd:
         After=k8s-assets.target
         [Service]
         Environment=KUBELET_VERSION=v1.3.6_coreos.0
+        {{ if index . "docker_registry" -}}
+        Environment=KUBELET_VERSION=v1.3.6_coreos.0.aci
+        Environment=KUBELET_ACI=http://bootcfg.foo:8080/assets/coreos-hyperkube
+        Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
+          --mount volume=dns,target=/etc/resolv.conf \
+          --volume var-log,kind=host,source=/var/log \
+          --mount volume=var-log,target=/var/log \
+          --insecure-options=image"
+        {{ else -}}
         Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
           --mount volume=dns,target=/etc/resolv.conf \
           --volume var-log,kind=host,source=/var/log \
           --mount volume=var-log,target=/var/log"
+        {{ end -}}
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/usr/bin/mkdir -p /var/log/containers
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
@@ -67,6 +90,9 @@ systemd:
           --cluster_domain=cluster.local \
           --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml \
           --tls-cert-file=/etc/kubernetes/ssl/worker.pem \
+          {{ if index . "docker_registry" -}}
+          --pod-infra-container-image={{.docker_registry}}/pause-amd64:3.0 \
+          {{ end -}}
           --tls-private-key-file=/etc/kubernetes/ssl/worker-key.pem
         Restart=always
         RestartSec=10
@@ -125,7 +151,11 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-proxy
+              {{ if index . "docker_registry" -}}
+              image: {{.docker_registry}}/hyperkube:v1.3.6_coreos.0
+              {{ else -}}
               image: quay.io/coreos/hyperkube:v1.3.6_coreos.0
+              {{ end -}}
               command:
               - /hyperkube
               - proxy
