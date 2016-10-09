@@ -19,7 +19,7 @@ Build and install the [fork of bootkube](https://github.com/dghubble/bootkube), 
 
 ## Examples
 
-The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
+The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [bootkube](../examples/groups/bootkube) - iPXE boot a self-hosted Kubernetes cluster
 * [bootkube-install](../examples/groups/bootkube-install) - Install a self-hosted Kubernetes cluster

@@ -14,7 +14,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 
 ## Examples
 
-The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC/IP addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
+The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. The examples can be used for physical machines if you update the MAC addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
 * [torus](../examples/groups/torus) - iPXE boot a Torus cluster
 
