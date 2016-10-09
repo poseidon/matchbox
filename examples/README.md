@@ -14,8 +14,8 @@ These examples network boot and provision machines into CoreOS clusters using `b
 | etcd3-install | Install a 3 node etcd3 cluster to disk | alpha/1153.0.0 | Disk | None |
 | k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | alpha/1153.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | k8s-install | Kubernetes cluster, installed to disk | alpha/1153.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | alpha/1153.0.0 | Disk | None |
-| rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | alpha/1153.0.0 | Disk | None |
+| rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | alpha/1153.0.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
+| rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | alpha/1153.0.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
 | bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1153.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1153.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | torus | Torus distributed storage | alpha/1153.0.0 | Disk | [tutorial](../Documentation/torus.md) |
@@ -28,6 +28,7 @@ Get started running `bootcfg` on your Linux machine to network boot and provisio
 	* [bootcfg with rkt](../Documentation/getting-started-rkt.md)
 	* [bootcfg with Docker](../Documentation/getting-started-docker.md)
 * [Kubernetes (static manifests)](../Documentation/kubernetes.md)
+* [Kubernetes (rktnetes)](../Documentation/rktnetes.md)
 * [Kubernetes (self-hosted)](../Documentation/bootkube.md)
 * [Torus Storage](../Documentation/torus.md)
 * [Lab Examples](https://github.com/dghubble/metal)

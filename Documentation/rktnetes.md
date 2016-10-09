@@ -1,7 +1,6 @@
+# Kubernetes (with rkt)
 
-# Kubernetes
-
-The Kubernetes example provisions a 3 node Kubernetes v1.4.0 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The `rktnetes` example provisions a 3 node Kubernetes v1.4.0 cluster with [rkt](https://github.com/coreos/rkt) as the container runtime. The cluster has one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -15,8 +14,8 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) o
 
 The [examples](../examples) statically assign IP addresses to libvirt client VMs created by `scripts/libvirt`. VMs are setup on the `metal0` CNI bridge for rkt or the `docker0` bridge for Docker. The examples can be used for physical machines if you update the MAC addresses. See [network setup](network-setup.md) and [deployment](deployment.md).
 
-* [k8s](../examples/groups/k8s) - iPXE boot a Kubernetes cluster
-* [k8s-install](../examples/groups/k8s-install) - Install a Kubernetes cluster to disk
+* [rktnetes](../examples/groups/rktnetes) - iPXE boot a Kubernetes cluster
+* [rktnetes-install](../examples/groups/rktnetes-install) - Install a Kubernetes cluster to disk
 * [Lab examples](https://github.com/dghubble/metal) - Lab hardware examples
 
 ### Assets
@@ -41,7 +40,7 @@ Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver
 
 Use rkt or docker to start `bootcfg` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
 
-Client machines should boot and provision themselves. Local client VMs should network boot CoreOS in about a 1 minute and the Kubernetes API should be available after 3-4 minutes (each node downloads a ~160MB Hyperkube). If you chose `k8s-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision Kubernetes clusters on physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
+Client machines should boot and provision themselves. Local client VMs should network boot CoreOS in about a 1 minute and the Kubernetes API should be available after 3-4 minutes (each node downloads a ~160MB Hyperkube). If you chose `rktnetes-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision Kubernetes clusters on physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 
 ## Verify
 
@@ -78,10 +77,3 @@ Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding
 Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).
 
 <img src='img/kubernetes-dashboard.png' class="img-center" alt="Kubernetes Dashboard"/>
-
-## Tectonic
-
-Sign up for [Tectonic Starter](https://tectonic.com/starter/) for free and deploy the [Tectonic Console](https://tectonic.com/enterprise/docs/latest/deployer/tectonic_console.html) with a few `kubectl` commands!
-
-<img src='img/tectonic-console.png' class="img-center" alt="Tectonic Console"/>
-
