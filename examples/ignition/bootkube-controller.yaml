@@ -46,7 +46,7 @@ systemd:
         [Service]
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf --volume var-log,kind=host,source=/var/log --mount volume=var-log,target=/var/log"
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
-        Environment=KUBELET_VERSION=v1.3.4_coreos.0
+        Environment=KUBELET_VERSION=v1.4.0_coreos.0
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
@@ -111,7 +111,7 @@ storage:
           # Wrapper for bootkube start
           set -e
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.1.4}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.2.0}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/home/core/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \

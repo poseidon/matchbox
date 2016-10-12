@@ -1,11 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node Kubernetes v1.3.4 cluster with etcd, flannel, and a special "runonce" host Kublet. The CoreOS [bootkube](https://github.com/coreos/bootkube) tool is used to bootstrap kubelet, apiserver, scheduler, and controller-manager as pods, which can be managed via kubectl. `bootkube start` is run on any controller (i.e. master) to create a temporary control-plane and start Kubernetes components initially. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
-
-## Experimental
-
-Self-hosted Kubernetes is under very active development by CoreOS.
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.4.0 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -15,7 +11,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) o
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 
-Build and install the [fork of bootkube](https://github.com/dghubble/bootkube), which supports DNS names (needed until Kubernetes 1.4).
+Build and install the [fork of bootkube](https://github.com/dghubble/bootkube), which supports DNS names.
 
 ## Examples
 
@@ -28,7 +24,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos alpha 1153.0.0 ./examples/assets
+    ./scripts/get-coreos beta 1185.1.0 ./examples/assets
 
 Add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
@@ -52,7 +48,7 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 ## bootkube
 
-We're ready to use [bootkube](https://github.com/coreos/bootkube) to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
+We're ready to use [bootkube](https://github.com/kubernetes-incubator/bootkube) to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
 
 Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node (i.e. 172.15.0.21-23 for metal0 or 172.17.0.21-23 for docker0).
 
@@ -68,34 +64,38 @@ Secure copy the `bootkube` generated assets to any controller node and run `boot
 
 Watch the temporary control plane logs until the scheduled kubelet takes over in place of the runonce host kubelet.
 
-    I0425 12:38:23.746330   29538 status.go:87] Pod status kubelet: Running
-    I0425 12:38:23.746361   29538 status.go:87] Pod status kube-apiserver: Running
-    I0425 12:38:23.746370   29538 status.go:87] Pod status kube-scheduler: Running
-    I0425 12:38:23.746378   29538 status.go:87] Pod status kube-controller-manager: Running
+    [  299.241291] bootkube[5]:     Pod Status:     kube-api-checkpoint     Running
+    [  299.241618] bootkube[5]:     Pod Status:          kube-apiserver     Running
+    [  299.241804] bootkube[5]:     Pod Status:          kube-scheduler     Running
+    [  299.241993] bootkube[5]:     Pod Status: kube-controller-manager     Running
+    [  299.311743] bootkube[5]: All self-hosted control plane components successfully started
 
-You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. They contain a `kubeconfig` and may need to be re-used if the last apiserver were to fail and bootstrapping were needed.
+You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. It contains a `kubeconfig` and may need to be re-used if the last apiserver were to fail and bootstrapping were needed.
 
 ## Verify
 
 [Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster. Verify that the cluster is accessible and that the kubelet, apiserver, scheduler, and controller-manager are running as pods.
 
-    $ kubectl --kubeconfig=assets/auth/kubeconfig get nodes
+    $ KUBECONFIG=assets/auth/kubeconfig
+    $ kubectl get nodes
     NAME                STATUS    AGE
     node1.example.com   Ready     3m
     node2.example.com   Ready     3m
     node3.example.com   Ready     3m
 
-    $ kubectl --kubeconfig=assets/auth/kubeconfig get pods --all-namespaces
-    kube-system   kube-api-checkpoint-172.15.0.21            1/1       Running   0          2m
-    kube-system   kube-apiserver-wq4mh                       2/2       Running   0          2m
-    kube-system   kube-controller-manager-2834499578-y9cnl   1/1       Running   0          2m
-    kube-system   kube-dns-v11-2259792283-5tpld              4/4       Running   0          2m
-    kube-system   kube-proxy-8zr1b                           1/1       Running   0          2m
-    kube-system   kube-proxy-i9cgw                           1/1       Running   0          2m
-    kube-system   kube-proxy-n6qg3                           1/1       Running   0          2m
-    kube-system   kube-scheduler-4136156790-v9892            1/1       Running   0          2m
-    kube-system   kubelet-9wilx                              1/1       Running   0          2m
-    kube-system   kubelet-a6mmj                              1/1       Running   0          2m
-    kube-system   kubelet-eomnb                              1/1       Running   0          2m
+    $ kubectl get pods --all-namespaces
+    NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
+    kube-system   kube-api-checkpoint-node1.example.com      1/1       Running   0          4m
+    kube-system   kube-apiserver-iffsz                       2/2       Running   0          5m
+    kube-system   kube-controller-manager-1148212084-1zx9g   1/1       Running   0          6m
+    kube-system   kube-dns-v19-1003772375-evndl              3/3       Running   0          6m
+    kube-system   kube-proxy-36jj8                           1/1       Running   0          5m
+    kube-system   kube-proxy-fdt2t                           1/1       Running   0          6m
+    kube-system   kube-proxy-sttgn                           1/1       Running   0          5m
+    kube-system   kube-scheduler-1921762579-z6jn6            1/1       Running   0          6m
+    kube-system   kubelet-1ibsf                              1/1       Running   0          6m
+    kube-system   kubelet-65h6j                              1/1       Running   0          5m
+    kube-system   kubelet-d1qql                              1/1       Running   0          5m
 
 Try deleting pods to see that the cluster is resilient to failures and machine restarts (CoreOS auto-updates).
+
