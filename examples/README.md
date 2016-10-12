@@ -16,8 +16,8 @@ These examples network boot and provision machines into CoreOS clusters using `b
 | k8s-install | Kubernetes cluster, installed to disk | alpha/1153.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | beta/1185.0.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
 | rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | beta/1185.0.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
-| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | alpha/1153.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | alpha/1153.0.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | beta/1185.1.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | beta/1185.1.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | torus | Torus distributed storage | alpha/1153.0.0 | Disk | [tutorial](../Documentation/torus.md) |
 
 ## Tutorials

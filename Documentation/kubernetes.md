@@ -47,8 +47,8 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 [Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
 
-    $ cd /path/to/coreos-baremetal
-    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
+    $ KUBECONFIG=examples/assets/tls/kubeconfig
+    $ kubectl get nodes
     NAME                STATUS    AGE
     node1.example.com   Ready     3m
     node2.example.com   Ready     3m
@@ -56,7 +56,7 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 Get all pods.
 
-    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get pods --all-namespaces
+    $ kubectl get pods --all-namespaces
     NAMESPACE     NAME                                        READY     STATUS    RESTARTS   AGE
     kube-system   heapster-v1.2.0-4088228293-k3yn8            2/2       Running   0          3m
     kube-system   kube-apiserver-node1.example.com            1/1       Running   0          4m
