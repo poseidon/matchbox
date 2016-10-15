@@ -48,6 +48,9 @@ type Server interface {
 
 	// Get a generic template by name.
 	GenericGet(ctc context.Context, name string) (string, error)
+
+	// Get a metadata bundle
+	MetadataGet(context.Context, *pb.MetadataGetRequest) (*storagepb.Metadata, error)
 }
 
 // Config configures a server implementation.
@@ -176,4 +179,13 @@ func (s *server) CloudGet(ctx context.Context, name string) (string, error) {
 // GenericGet gets a generic template by name.
 func (s *server) GenericGet(ctx context.Context, name string) (string, error) {
 	return s.store.GenericGet(name)
+}
+
+// MetadataGet gets a metadata bundle by name.
+func (s *server) MetadataGet(ctx context.Context, req *pb.MetadataGetRequest) (*storagepb.Metadata, error) {
+	metadata, err := s.store.MetadataGet(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return metadata, nil
 }

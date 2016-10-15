@@ -37,6 +37,13 @@ var (
 		GenericId:  "generic.tmpl",
 	}
 
+	// Metadata is a metadata bundle for testing
+	Metadata = &storagepb.Metadata{
+		Id:       "test-meta",
+		Name:     "test meta",
+		Metadata: []byte(`{"test_version":"v1.2.3"}`),
+	}
+
 	// IgnitionYAMLName is an Ignition template name for testing.
 	IgnitionYAMLName = "ignition.tmpl"
 

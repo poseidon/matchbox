@@ -32,7 +32,7 @@ func (s *Server) metadataHandler() ContextHandler {
 		}).Debug("Matched group metadata")
 
 		// collect data for rendering
-		data, err := collectVariables(req, group)
+		data, err := collectVariables(req, group, extraMetaFromContext(ctx))
 		if err != nil {
 			s.logger.Errorf("error collecting variables: %v", err)
 			http.NotFound(w, req)

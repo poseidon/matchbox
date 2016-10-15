@@ -62,3 +62,8 @@ func (s *BrokenStore) CloudGet(name string) (string, error) {
 func (s *BrokenStore) GenericGet(name string) (string, error) {
 	return "", errIntentional
 }
+
+// MetadataGet returns an error.
+func (s *BrokenStore) MetadataGet(id string) (*storagepb.Metadata, error) {
+	return nil, errIntentional
+}

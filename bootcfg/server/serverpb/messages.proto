@@ -65,3 +65,11 @@ message IgnitionPutRequest {
 }
 
 message IgnitionPutResponse {}
+
+message MetadataGetRequest {
+  string id = 1;
+}
+
+message MetadataGetResponse {
+  storagepb.Metadata metadata = 1;
+}

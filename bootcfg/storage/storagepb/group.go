@@ -34,12 +34,17 @@ func (g *Group) Copy() *Group {
 	for k, v := range g.Selector {
 		selectors[k] = v
 	}
+	metadataInclude := []string{}
+	for _, v := range g.MetadataInclude {
+		metadataInclude = append(metadataInclude, v)
+	}
 	return &Group{
-		Id:       g.Id,
-		Name:     g.Name,
-		Profile:  g.Profile,
-		Selector: selectors,
-		Metadata: g.Metadata,
+		Id:              g.Id,
+		Name:            g.Name,
+		Profile:         g.Profile,
+		Selector:        selectors,
+		Metadata:        g.Metadata,
+		MetadataInclude: metadataInclude,
 	}
 }
 
@@ -106,11 +111,12 @@ func (g *Group) ToRichGroup() (*RichGroup, error) {
 		}
 	}
 	return &RichGroup{
-		Id:       g.Id,
-		Name:     g.Name,
-		Profile:  g.Profile,
-		Selector: g.Selector,
-		Metadata: metadata,
+		Id:              g.Id,
+		Name:            g.Name,
+		Profile:         g.Profile,
+		Selector:        g.Selector,
+		Metadata:        metadata,
+		MetadataInclude: g.MetadataInclude,
 	}, nil
 }
 
@@ -147,6 +153,8 @@ type RichGroup struct {
 	Selector map[string]string `json:"selector,omitempty"`
 	// Metadata
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
+	// MetadataInclude
+	MetadataInclude []string `json:"metadata_include,omitempty"`
 }
 
 // ToGroup converts a user provided RichGroup into a Group which can be
@@ -161,10 +169,11 @@ func (rg *RichGroup) ToGroup() (*Group, error) {
 		}
 	}
 	return &Group{
-		Id:       rg.Id,
-		Name:     rg.Name,
-		Profile:  rg.Profile,
-		Selector: rg.Selector,
-		Metadata: metadata,
+		Id:              rg.Id,
+		Name:            rg.Name,
+		Profile:         rg.Profile,
+		Selector:        rg.Selector,
+		Metadata:        metadata,
+		MetadataInclude: rg.MetadataInclude,
 	}, nil
 }

@@ -58,3 +58,8 @@ func (s *EmptyStore) CloudGet(name string) (string, error) {
 func (s *EmptyStore) GenericGet(name string) (string, error) {
 	return "", fmt.Errorf("no generic template %s", name)
 }
+
+// MetadataGet returns an empty metadata bundle.
+func (s *EmptyStore) MetadataGet(name string) (*storagepb.Metadata, error) {
+	return nil, fmt.Errorf("Metadata not found")
+}

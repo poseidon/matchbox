@@ -134,3 +134,16 @@ func (s *fileStore) GenericGet(name string) (string, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("generic", name))
 	return string(data), err
 }
+
+// MetadataGet returns a machine Metadata by id.
+func (s *fileStore) MetadataGet(id string) (*storagepb.Metadata, error) {
+	data, err := Dir(s.root).readFile(filepath.Join("metadata", id+".json"))
+	if err != nil {
+		return nil, err
+	}
+	meta, err := storagepb.ParseMetadata(data)
+	if err != nil {
+		return nil, err
+	}
+	return meta, err
+}
