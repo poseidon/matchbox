@@ -1,7 +1,7 @@
 {
   "id": "default",
   "name": "default",
-  "profile": "etcd-proxy",
+  "profile": "etcd3-proxy",
   "selector": {
     "os": "installed"
   },
