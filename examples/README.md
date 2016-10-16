@@ -5,20 +5,20 @@ These examples network boot and provision machines into CoreOS clusters using `b
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
-| simple | CoreOS with autologin, using iPXE | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| simple-install | CoreOS Install, using iPXE | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS via GRUB2 Netboot | alpha/1153.0.0 | RAM | NA |
-| etcd | A 3 node etcd cluster with proxies | alpha/1153.0.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| etcd-install | Install a 3 node etcd cluster to disk | alpha/1153.0.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
-| etcd3 | A 3 node etcd3 cluster with proxies | alpha/1153.0.0 | RAM | None |
-| etcd3-install | Install a 3 node etcd3 cluster to disk | alpha/1153.0.0 | Disk | None |
-| k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | alpha/1153.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| k8s-install | Kubernetes cluster, installed to disk | alpha/1153.0.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| simple | CoreOS with autologin, using iPXE | beta/1185.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| simple-install | CoreOS Install, using iPXE | beta/1185.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS via GRUB2 Netboot | beta/1185.1.0 | RAM | NA |
+| etcd | A 3 node etcd cluster with proxies | beta/1185.1.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
+| etcd-install | Install a 3 node etcd cluster to disk | beta/1185.1.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
+| etcd3 | A 3 node etcd3 cluster with proxies | beta/1185.1.0 | RAM | None |
+| etcd3-install | Install a 3 node etcd3 cluster to disk | beta/1185.1.0 | Disk | None |
+| k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | beta/1185.1.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| k8s-install | Kubernetes cluster, installed to disk | beta/1185.1.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
 | rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | beta/1185.1.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
 | rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | beta/1185.1.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
 | bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | beta/1185.1.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | beta/1185.1.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| torus | Torus distributed storage | alpha/1153.0.0 | Disk | [tutorial](../Documentation/torus.md) |
+| torus | Torus distributed storage | beta/1185.1.0 | Disk | [tutorial](../Documentation/torus.md) |
 
 ## Tutorials
 

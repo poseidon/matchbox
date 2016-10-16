@@ -186,7 +186,7 @@ Download a recent CoreOS [release](https://coreos.com/releases/) with signatures
 
 ```sh
 $ cd scripts
-$ ./get-coreos alpha 1153.0.0 .     # note the "." 3rd argument
+$ ./get-coreos beta 1185.1.0 .     # note the "." 3rd argument
 ```
 
 Move the images to `/var/lib/bootcfg/assets`,
@@ -198,7 +198,7 @@ $ sudo cp -r coreos /var/lib/bootcfg/assets
 ```
 /var/lib/bootcfg/assets/
 ├── coreos
-│   └── 1153.0.0
+│   └── 1185.1.0
 │       ├── CoreOS_Image_Signing_Key.asc
 │       ├── coreos_production_image.bin.bz2
 │       ├── coreos_production_image.bin.bz2.sig
@@ -211,7 +211,7 @@ $ sudo cp -r coreos /var/lib/bootcfg/assets
 and verify the images are acessible.
 
 ```
-$ curl http://bootcfg.example.com:8080/assets/coreos/1153.0.0/
+$ curl http://bootcfg.example.com:8080/assets/coreos/1185.1.0/
 <pre>...
 ```
 
