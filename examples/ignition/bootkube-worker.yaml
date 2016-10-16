@@ -37,7 +37,7 @@ systemd:
         [Service]
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf --volume var-log,kind=host,source=/var/log --mount volume=var-log,target=/var/log"
         Environment=KUBELET_ACI=quay.io/coreos/hyperkube
-        Environment=KUBELET_VERSION=v1.4.0_coreos.0
+        Environment=KUBELET_VERSION=v1.4.1_coreos.0
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests

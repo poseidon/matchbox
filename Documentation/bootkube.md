@@ -1,7 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.4.0 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.4.1 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -62,7 +62,7 @@ Secure copy the `bootkube` generated assets to any controller node and run `boot
     scp -r assets core@172.15.0.21:/home/core/assets
     ssh core@172.15.0.21 'sudo ./bootkube-start'
 
-Watch the temporary control plane logs until the scheduled kubelet takes over in place of the runonce host kubelet.
+Watch the temporary control plane logs until the scheduled kubelet takes over in place of the on-host kubelet.
 
     [  299.241291] bootkube[5]:     Pod Status:     kube-api-checkpoint     Running
     [  299.241618] bootkube[5]:     Pod Status:          kube-apiserver     Running
@@ -88,7 +88,7 @@ You may cleanup the `bootkube` assets on the node, but you should keep the copy 
     kube-system   kube-api-checkpoint-node1.example.com      1/1       Running   0          4m
     kube-system   kube-apiserver-iffsz                       2/2       Running   0          5m
     kube-system   kube-controller-manager-1148212084-1zx9g   1/1       Running   0          6m
-    kube-system   kube-dns-v19-1003772375-evndl              3/3       Running   0          6m
+    kube-system   kube-dns-v20-3531996453-r18ht              3/3       Running   0          5m
     kube-system   kube-proxy-36jj8                           1/1       Running   0          5m
     kube-system   kube-proxy-fdt2t                           1/1       Running   0          6m
     kube-system   kube-proxy-sttgn                           1/1       Running   0          5m
