@@ -58,7 +58,7 @@ systemd:
         Requires=k8s-assets.target
         After=k8s-assets.target
         [Service]
-        Environment=KUBELET_VERSION=v1.4.0_coreos.2
+        Environment=KUBELET_VERSION=v1.4.1_coreos.0
         Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
           --mount volume=dns,target=/etc/resolv.conf \
           --volume rkt,kind=host,source=/opt/bin/host-rkt \
@@ -176,7 +176,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-proxy
-              image: quay.io/coreos/hyperkube:v1.4.0_coreos.2
+              image: quay.io/coreos/hyperkube:v1.4.1_coreos.0
               command:
               - /hyperkube
               - proxy
@@ -210,7 +210,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-apiserver
-              image: quay.io/coreos/hyperkube:v1.4.0_coreos.2
+              image: quay.io/coreos/hyperkube:v1.4.1_coreos.0
               command:
               - /hyperkube
               - apiserver
@@ -270,7 +270,7 @@ storage:
           spec:
             containers:
             - name: kube-controller-manager
-              image: quay.io/coreos/hyperkube:v1.4.0_coreos.2
+              image: quay.io/coreos/hyperkube:v1.4.1_coreos.0
               command:
               - /hyperkube
               - controller-manager
@@ -316,7 +316,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-scheduler
-              image: quay.io/coreos/hyperkube:v1.4.0_coreos.2
+              image: quay.io/coreos/hyperkube:v1.4.1_coreos.0
               command:
               - /hyperkube
               - scheduler
@@ -339,30 +339,29 @@ storage:
           apiVersion: v1
           kind: ReplicationController
           metadata:
-            name: kube-dns-v19
+            name: kube-dns-v20
             namespace: kube-system
             labels:
               k8s-app: kube-dns
-              version: v19
+              version: v20
               kubernetes.io/cluster-service: "true"
           spec:
             replicas: 1
             selector:
               k8s-app: kube-dns
-              version: v19
+              version: v20
             template:
               metadata:
                 labels:
                   k8s-app: kube-dns
-                  version: v19
-                  kubernetes.io/cluster-service: "true"
+                  version: v20
                 annotations:
                   scheduler.alpha.kubernetes.io/critical-pod: ''
                   scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
               spec:
                 containers:
                 - name: kubedns
-                  image: gcr.io/google_containers/kubedns-amd64:1.7
+                  image: gcr.io/google_containers/kubedns-amd64:1.8
                   resources:
                     limits:
                       memory: 170Mi
@@ -371,7 +370,7 @@ storage:
                       memory: 70Mi
                   livenessProbe:
                     httpGet:
-                      path: /healthz
+                      path: /healthz-kubedns
                       port: 8080
                       scheme: HTTP
                     initialDelaySeconds: 60
@@ -383,7 +382,7 @@ storage:
                       path: /readiness
                       port: 8081
                       scheme: HTTP
-                    initialDelaySeconds: 30
+                    initialDelaySeconds: 3
                     timeoutSeconds: 5
                   args:
                   - --domain=cluster.local.
@@ -396,7 +395,16 @@ storage:
                     name: dns-tcp-local
                     protocol: TCP
                 - name: dnsmasq
-                  image: gcr.io/google_containers/kube-dnsmasq-amd64:1.3
+                  image: gcr.io/google_containers/kube-dnsmasq-amd64:1.4
+                  livenessProbe:
+                    httpGet:
+                      path: /healthz-dnsmasq
+                      port: 8080
+                      scheme: HTTP
+                    initialDelaySeconds: 60
+                    timeoutSeconds: 5
+                    successThreshold: 1
+                    failureThreshold: 5
                   args:
                   - --cache-size=1000
                   - --no-resolv
@@ -410,7 +418,7 @@ storage:
                     name: dns-tcp
                     protocol: TCP
                 - name: healthz
-                  image: gcr.io/google_containers/exechealthz-amd64:1.1
+                  image: gcr.io/google_containers/exechealthz-amd64:1.2
                   resources:
                     limits:
                       memory: 50Mi
@@ -418,9 +426,12 @@ storage:
                       cpu: 10m
                       memory: 50Mi
                   args:
-                  - -cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null && nslookup kubernetes.default.svc.cluster.local 127.0.0.1:10053 >/dev/null
-                  - -port=8080
-                  - -quiet
+                  - --cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null
+                  - --url=/healthz-dnsmasq
+                  - --cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1:10053 >/dev/null
+                  - --url=/healthz-kubedns
+                  - --port=8080
+                  - --quiet
                   ports:
                   - containerPort: 8080
                     protocol: TCP
@@ -552,11 +563,11 @@ storage:
           apiVersion: v1
           kind: ReplicationController
           metadata:
-            name: kubernetes-dashboard-v1.4.0
+            name: kubernetes-dashboard-v1.4.1
             namespace: kube-system
             labels:
               k8s-app: kubernetes-dashboard
-              version: v1.4.0
+              version: v1.4.1
               kubernetes.io/cluster-service: "true"
           spec:
             replicas: 1
@@ -566,7 +577,7 @@ storage:
               metadata:
                 labels:
                   k8s-app: kubernetes-dashboard
-                  version: v1.4.0
+                  version: v1.4.1
                   kubernetes.io/cluster-service: "true"
                 annotations:
                   scheduler.alpha.kubernetes.io/critical-pod: ''
@@ -574,7 +585,7 @@ storage:
               spec:
                 containers:
                 - name: kubernetes-dashboard
-                  image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.4.0
+                  image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.4.1
                   resources:
                     limits:
                       cpu: 100m
