@@ -53,6 +53,11 @@ func (s *BrokenStore) IgnitionGet(name string) (string, error) {
 	return "", errIntentional
 }
 
+// CloudPut returns an error.
+func (s *BrokenStore) CloudPut(name string, config []byte) error {
+	return errIntentional
+}
+
 // CloudGet returns an error.
 func (s *BrokenStore) CloudGet(name string) (string, error) {
 	return "", errIntentional

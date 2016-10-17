@@ -65,3 +65,10 @@ message IgnitionPutRequest {
 }
 
 message IgnitionPutResponse {}
+
+message CloudPutRequest {
+  string name = 1;
+  bytes config = 2;
+}
+
+message CloudPutResponse {}

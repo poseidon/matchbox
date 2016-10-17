@@ -201,3 +201,29 @@ func TestIgnition_BrokenStore(t *testing.T) {
 	_, err := srv.IgnitionPut(context.Background(), req)
 	assert.Error(t, err)
 }
+
+func TestCloudPut(t *testing.T) {
+	srv := NewServer(&Config{Store: fake.NewFixedStore()})
+	req := &pb.CloudPutRequest{
+		Name:   fake.CloudYAMLName,
+		Config: []byte(fake.CloudYAML),
+	}
+	_, err := srv.CloudPut(context.Background(), req)
+	// assert that:
+	// - CloudConfig template creation is successful
+	// - CloudConfig template can be retrieved by name
+	assert.Nil(t, err)
+	template, err := srv.CloudGet(context.Background(), fake.CloudYAMLName)
+	assert.Equal(t, fake.CloudYAML, template)
+	assert.Nil(t, err)
+}
+
+func TestCloud_BrokenStore(t *testing.T) {
+	srv := NewServer(&Config{&fake.BrokenStore{}})
+	req := &pb.CloudPutRequest{
+		Name:   fake.CloudYAMLName,
+		Config: []byte(fake.CloudYAML),
+	}
+	_, err := srv.CloudPut(context.Background(), req)
+	assert.Error(t, err)
+}

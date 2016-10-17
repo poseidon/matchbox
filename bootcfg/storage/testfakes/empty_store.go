@@ -49,6 +49,11 @@ func (s *EmptyStore) IgnitionGet(name string) (string, error) {
 	return "", fmt.Errorf("no Ignition template %s", name)
 }
 
+// CloudPut returns an error writing any CloudConfig template.
+func (s *EmptyStore) CloudPut(name string, config []byte) error {
+	return fmt.Errorf("emptyStore does not accept CloudConfig templates")
+}
+
 // CloudGet returns a Cloud-config template not found error.
 func (s *EmptyStore) CloudGet(name string) (string, error) {
 	return "", fmt.Errorf("no Cloud-Config template %s", name)

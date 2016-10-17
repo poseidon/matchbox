@@ -43,6 +43,8 @@ type Server interface {
 	// Get an Ignition template by name.
 	IgnitionGet(ctx context.Context, name string) (string, error)
 
+	// Create or update a Cloud-Config template.
+	CloudPut(context.Context, *pb.CloudPutRequest) (string, error)
 	// Get a Cloud-Config template by name.
 	CloudGet(ctx context.Context, name string) (string, error)
 
@@ -166,6 +168,15 @@ func (s *server) IgnitionPut(ctx context.Context, req *pb.IgnitionPutRequest) (s
 // IgnitionGet gets an Ignition template by name.
 func (s *server) IgnitionGet(ctx context.Context, name string) (string, error) {
 	return s.store.IgnitionGet(name)
+}
+
+// CloudPut creates or updates an Cloud-Config template by name.
+func (s *server) CloudPut(ctx context.Context, req *pb.CloudPutRequest) (string, error) {
+	err := s.store.CloudPut(req.Name, req.Config)
+	if err != nil {
+		return "", err
+	}
+	return string(req.Config), err
 }
 
 // CloudGet gets a Cloud-Config template by name.

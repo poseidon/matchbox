@@ -90,6 +90,12 @@ func (s *FixedStore) IgnitionGet(name string) (string, error) {
 	return "", fmt.Errorf("no Ignition template %s", name)
 }
 
+// CloudGet create or updates a CloudConfig template.
+func (s *FixedStore) CloudPut(name string, config []byte) error {
+	s.CloudConfigs[name] = string(config)
+	return nil
+}
+
 // CloudGet returns a Cloud-config template by name.
 func (s *FixedStore) CloudGet(name string) (string, error) {
 	if config, present := s.CloudConfigs[name]; present {
