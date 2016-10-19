@@ -1,5 +1,11 @@
 # coreos-baremetal bootcfg
 
+#### Examples
+
+* Upgrade Kubernetes v1.4.3 (static manifest) example clusters
+* Upgrade Kubernetes v1.4.3 (rktnetes) example clusters
+* Upgrade Kubernetes v1.4.3 (self-hosted) example cluster
+
 ## Latest
 
 * Add ARM and AMR64 release architectures (#309)

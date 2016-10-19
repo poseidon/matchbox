@@ -52,7 +52,7 @@ systemd:
         Requires=k8s-assets.target
         After=k8s-assets.target
         [Service]
-        Environment=KUBELET_VERSION=v1.4.1_coreos.0
+        Environment=KUBELET_VERSION=v1.4.3_coreos.0
         Environment="RKT_OPTS=--volume dns,kind=host,source=/etc/resolv.conf \
           --mount volume=dns,target=/etc/resolv.conf \
           --volume rkt,kind=host,source=/opt/bin/host-rkt \
@@ -182,7 +182,7 @@ storage:
             hostNetwork: true
             containers:
             - name: kube-proxy
-              image: quay.io/coreos/hyperkube:v1.4.1_coreos.0
+              image: quay.io/coreos/hyperkube:v1.4.3_coreos.0
               command:
               - /hyperkube
               - proxy
