@@ -99,3 +99,6 @@ You may cleanup the `bootkube` assets on the node, but you should keep the copy 
 
 Try deleting pods to see that the cluster is resilient to failures and machine restarts (CoreOS auto-updates).
 
+## Going Further
+
+[Learn](bootkube-upgrades.md) to upgrade a self-hosted Kubernetes cluster.
