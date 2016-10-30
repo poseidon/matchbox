@@ -7,7 +7,7 @@ In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI`
 
 ## Requirements
 
-Install [rkt](https://coreos.com/rkt/docs/latest/distributions.html) 1.8 or higher ([example script](https://github.com/dghubble/phoenix/blob/master/scripts/fedora/sources.sh)) and setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
+Install [rkt](https://coreos.com/rkt/docs/latest/distributions.html) 1.8 or higher ([example script](https://github.com/dghubble/phoenix/blob/master/fedora/sources.sh)) and setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
 
 Next, install the package dependencies.
 
@@ -110,7 +110,6 @@ The example profile added autologin so you can verify that etcd works between no
     systemctl status etcd2
     etcdctl set /message hello
     etcdctl get /message
-    fleetctl list-machines
 
 Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
@@ -119,5 +118,5 @@ Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
 ## Going Further
 
-Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl` ([docs](../examples/README.md#kubernetes)).
+Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 

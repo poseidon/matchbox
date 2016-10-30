@@ -26,7 +26,7 @@ On simpler networks, such as what a developer might have at home, a relatively i
 
 This diagram can point you to the **right section(s)** of this document.
 
-<img src='img/network-setup-flow.png' class="img-center" alt="Network Setup Flow"/>
+![Network Setup](img/network-setup-flow.png)
 
 The setup of DHCP, TFTP, and DNS services on a network varies greatly. If you wish to use rkt or Docker to quickly run DHCP, proxyDHCP TFTP, or DNS services, use [coreos/dnsmasq](#coreos/dnsmasq).
 

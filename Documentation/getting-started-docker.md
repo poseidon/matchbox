@@ -72,7 +72,6 @@ The example profile added autologin so you can verify that etcd works between no
     systemctl status etcd2
     etcdctl set /message hello
     etcdctl get /message
-    fleetctl list-machines
 
 Clean up the VM machines.
 
@@ -82,5 +81,5 @@ Clean up the VM machines.
 
 ## Going Further
 
-Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s-docker example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl` ([docs](../examples/README.md#kubernetes)).
+Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s-docker example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 

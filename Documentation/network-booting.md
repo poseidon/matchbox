@@ -7,7 +7,7 @@ This guide reviews network boot protocols and the different ways client machines
 
 The Preboot eXecution Environment (PXE) defines requirements for consistent, hardware-independent network-based machine booting and configuration. Formally, PXE specifies pre-boot protocol services that client NIC firmware must provide (DHCP, TFTP, UDP/IP), specifies boot firmware requirements, and defines a client-server protocol for obtaining a network boot program (NBP) which automates OS installation and configuration.
 
-<img src='img/pxelinux.png' class="img-center" alt="Basic PXE client server protocol flow"/>
+![PXE protocol](img/pxelinux.png)
 
 At power-on, if a client machine's BIOS or UEFI boot firmware is set to perform network booting, the network interface card's PXE firmware broadcasts a DHCPDISCOVER packet identifying itself as a PXEClient to the network environment.
 
@@ -47,7 +47,7 @@ This approach has a number of drawbacks. TFTP can be slow, managing config files
 
 [iPXE](http://ipxe.org/) is an enhanced implementation of the PXE client firmware and a network boot program which uses iPXE scripts rather than config files and can download scripts and images with HTTP.
 
-<img src='img/ipxe.png' class="img-center" alt="iPXE client server protocol flow"/>
+![iPXE flow](img/ipxe.png)
 
 A DHCPOFFER to iPXE client firmware specifies an HTTP boot script such as `http://bootcfg.foo/boot.ipxe`.
 
@@ -76,4 +76,4 @@ Many networks have DHCP services which are impractical to modify or disable. Com
 
 To address this, PXE client firmware listens for DHCPOFFERs from a non-PXE DHCP server *and* a PXE-enabled **proxyDHCP server** configured to respond with the next server and boot filename only. Client firmware combines the two responses as if they had come from a single PXE-enabled DHCP server.
 
-<img src='img/proxydhcp.png' class="img-center" alt="DHCP and proxyDHCP responses are merged to get PXE Options"/>
+![Proxy DHCP flow](img/proxydhcp.png)

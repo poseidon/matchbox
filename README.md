@@ -17,7 +17,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 
 * [bootcfg Service](Documentation/bootcfg.md)
 * [Profiles](Documentation/bootcfg.md#profiles)
-* [Groups](Documentation/bootcfg.md#groups-and-metadata)
+* [Groups](Documentation/bootcfg.md#groups)
 * Config Templates
     * [Ignition](Documentation/ignition.md)
     * [Cloud-Config](Documentation/cloud-config.md)
@@ -47,9 +47,9 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 The [examples](examples) network boot and provision CoreOS clusters. Network boot [QEMU/KVM](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
 
 * Multi-node [Kubernetes cluster](Documentation/kubernetes.md)
-* Multi-node Kubernetes cluster with rkt container runtime (i.e. rktnetes)
-* Multi-node [self-hosted Kubernetes cluster](Documentation/bootkube.md)
-* [Upgrading](Documentation/bootkube-upgrades.md) a self-hosted Kubernetes cluster
+* Multi-node [rktnetes](Documentation/rktnetes.md) cluster (i.e. Kubernetes with rkt as the container runtime)
+* Multi-node [self-hosted](Documentation/bootkube.md) Kubernetes cluster
+* [Upgrading](Documentation/bootkube-upgrades.md) self-hosted Kubernetes clusters
 * Multi-node etcd2 or etcd3 cluster
 * Multi-node [Torus](Documentation/torus.md) distributed storage cluster
 * Network boot or Install to Disk

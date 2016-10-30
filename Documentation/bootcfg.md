@@ -5,7 +5,7 @@
 
 Network boot endpoints provide iPXE, GRUB, and [Pixiecore](https://github.com/danderson/pixiecore/blob/master/README.api.md) support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with rkt, or as a Docker container.
 
-<img src='img/overview.png' class="img-center" alt="Bootcfg Overview"/>
+![Bootcfg Overview](img/overview.png)
 
 ## Getting Started
 
