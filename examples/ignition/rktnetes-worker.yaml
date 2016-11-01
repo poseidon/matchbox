@@ -73,7 +73,7 @@ systemd:
           --rkt-stage1-image=coreos.com/rkt/stage1-coreos \
           --register-node=true \
           --allow-privileged=true \
-          --config=/etc/kubernetes/manifests \
+          --pod-manifest-path=/etc/kubernetes/manifests \
           --hostname-override={{.domain_name}} \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local \

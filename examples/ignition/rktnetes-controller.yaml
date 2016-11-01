@@ -81,7 +81,7 @@ systemd:
           --rkt-path=/usr/bin/rkt \
           --rkt-stage1-image=coreos.com/rkt/stage1-coreos \
           --allow-privileged=true \
-          --config=/etc/kubernetes/manifests \
+          --pod-manifest-path=/etc/kubernetes/manifests \
           --hostname-override={{.domain_name}} \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
