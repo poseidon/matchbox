@@ -45,8 +45,7 @@ systemd:
         Wants=flanneld.service
         [Service]
         Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf --volume var-log,kind=host,source=/var/log --mount volume=var-log,target=/var/log"
-        Environment=KUBELET_ACI=quay.io/coreos/hyperkube
-        Environment=KUBELET_VERSION=v1.4.3_coreos.0
+        EnvironmentFile=/etc/kubernetes/kubelet.env
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
@@ -56,7 +55,7 @@ systemd:
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --lock-file=/var/run/lock/kubelet.lock \
           --exit-on-lock-contention \
-          --config=/etc/kubernetes/manifests \
+          --pod-manifest-path=/etc/kubernetes/manifests \
           --allow-privileged \
           --hostname-override={{.domain_name}} \
           --node-labels=master=true \
@@ -86,12 +85,13 @@ storage:
             - "-LROOT"
   {{end}}
   files:
-    - path: /etc/kubernetes/empty
+    - path: /etc/kubernetes/kubelet.env
       filesystem: root
       mode: 0644
       contents:
         inline: |
-          empty
+          KUBELET_ACI=quay.io/coreos/hyperkube
+          KUBELET_VERSION=v1.4.3_coreos.0
     - path: /etc/hostname
       filesystem: root
       mode: 0644

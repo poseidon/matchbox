@@ -72,7 +72,7 @@ systemd:
           --cni-conf-dir=/etc/kubernetes/cni/net.d \
           --network-plugin=cni \
           --allow-privileged=true \
-          --config=/etc/kubernetes/manifests \
+          --pod-manifest-path=/etc/kubernetes/manifests \
           --hostname-override={{.domain_name}} \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
