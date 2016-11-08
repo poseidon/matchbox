@@ -161,6 +161,11 @@ storage:
         inline: |
           DOCKER_OPT_BIP=""
           DOCKER_OPT_IPMASQ=""
+    - path: /etc/sysctl.d/max-user-watches.conf
+      filesystem: root
+      contents:
+        inline: |
+          fs.inotify.max_user_watches=16184
     - path: /etc/kubernetes/manifests/kube-proxy.yaml
       filesystem: root
       contents:
