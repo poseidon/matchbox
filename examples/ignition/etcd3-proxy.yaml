@@ -27,6 +27,12 @@ systemd:
         TimeoutStartSec=0
         [Install]
         WantedBy=multi-user.target
+    - name: locksmithd.service
+      dropins:
+        - name: 40-etcd-lock.conf
+          contents: |
+            [Service]
+            Environment="REBOOT_STRATEGY=etcd-lock"
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
