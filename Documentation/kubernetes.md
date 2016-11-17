@@ -78,10 +78,3 @@ Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding
 Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).
 
 <img src='img/kubernetes-dashboard.png' class="img-center" alt="Kubernetes Dashboard"/>
-
-## Tectonic
-
-Sign up for [Tectonic Starter](https://tectonic.com/starter/) for free and deploy the [Tectonic Console](https://tectonic.com/enterprise/docs/latest/deployer/tectonic_console.html) with a few `kubectl` commands!
-
-<img src='img/tectonic-console.png' class="img-center" alt="Tectonic Console"/>
-
