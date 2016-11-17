@@ -6,7 +6,7 @@
 
 * Upgrade Kubernetes v1.4.6 (static manifest) example clusters
 * Upgrade Kubernetes v1.4.6 (rktnetes) example clusters
-* Upgrade Kubernetes v1.4.3 (self-hosted) example cluster
+* Upgrade Kubernetes v1.4.6 (self-hosted) example cluster
 
 ## v0.4.1 (2016-10-17)
 
