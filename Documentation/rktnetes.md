@@ -1,6 +1,6 @@
 # Kubernetes (with rkt)
 
-The `rktnetes` example provisions a 3 node Kubernetes v1.4.3 cluster with [rkt](https://github.com/coreos/rkt) as the container runtime. The cluster has one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The `rktnetes` example provisions a 3 node Kubernetes v1.4.6 cluster with [rkt](https://github.com/coreos/rkt) as the container runtime. The cluster has one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -46,8 +46,8 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 [Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster created on rkt `metal0` or `docker0`.
 
-    $ cd /path/to/coreos-baremetal
-    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get nodes
+    $ KUBECONFIG=examples/assets/tls/kubeconfig
+    $ kubectl get nodes
     NAME                STATUS    AGE
     node1.example.com   Ready     3m
     node2.example.com   Ready     3m
@@ -55,7 +55,7 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 Get all pods.
 
-    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig get pods --all-namespaces
+    $ kubectl get pods --all-namespaces
     NAMESPACE     NAME                                        READY     STATUS    RESTARTS   AGE
     kube-system   heapster-v1.2.0-4088228293-k3yn8            2/2       Running   0          3m
     kube-system   kube-apiserver-node1.example.com            1/1       Running   0          4m
@@ -71,7 +71,7 @@ Get all pods.
 
 Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding to the dashboard pod.
 
-    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig port-forward kubernetes-dashboard-v1.4.0-SOME-ID 9090 --namespace=kube-system
+    $ kubectl port-forward kubernetes-dashboard-v1.4.1-SOME-ID 9090 -n=kube-system
     Forwarding from 127.0.0.1:9090 -> 9090
 
 Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).

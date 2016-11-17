@@ -1,7 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.4.3 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.4.6 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -12,6 +12,9 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) o
 * Create the example libvirt client VMs
 
 Build and install the [fork of bootkube](https://github.com/dghubble/bootkube), which supports DNS names.
+
+    $ bootkube version
+    Version: bd5a87af28f84898272519894b09d16c5e5df441
 
 ## Examples
 
@@ -38,7 +41,7 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 
     # If running with docker, use 172.17.0.21 instead of 172.15.0.21
-    bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --etcd-servers=http://node1.example.com:2379 --api-server-alt-names=DNS=node1.example.com,IP=172.15.0.21
+    bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --api-server-alt-names=DNS=node1.example.com,IP=172.15.0.21
 
 ## Containers
 
@@ -48,7 +51,7 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 ## bootkube
 
-We're ready to use [bootkube](https://github.com/kubernetes-incubator/bootkube) to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
+We're ready to use bootkube to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
 
 Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node (i.e. 172.15.0.21-23 for metal0 or 172.17.0.21-23 for docker0).
 
@@ -70,7 +73,7 @@ Watch the temporary control plane logs until the scheduled kubelet takes over in
     [  299.241993] bootkube[5]:     Pod Status: kube-controller-manager     Running
     [  299.311743] bootkube[5]: All self-hosted control plane components successfully started
 
-You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. It contains a `kubeconfig` and may need to be re-used if the last apiserver were to fail and bootstrapping were needed.
+You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. It contains a `kubeconfig` used to access the cluster.
 
 ## Verify
 

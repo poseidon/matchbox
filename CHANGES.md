@@ -1,12 +1,16 @@
 # coreos-baremetal bootcfg
 
+## Latest
+
 #### Examples
 
-* Upgrade Kubernetes v1.4.3 (static manifest) example clusters
-* Upgrade Kubernetes v1.4.3 (rktnetes) example clusters
-* Upgrade Kubernetes v1.4.3 (self-hosted) example cluster
+* Upgrade Kubernetes v1.4.6 (static manifest) example clusters
+* Upgrade Kubernetes v1.4.6 (rktnetes) example clusters
+* Upgrade Kubernetes v1.4.6 (self-hosted) example cluster
 
-## Latest
+## v0.4.1 (2016-10-17)
+
+#### Improvements
 
 * Add ARM and AMR64 release architectures (#309)
 * Add guide for installing bootcfg on CoreOS (#306)
