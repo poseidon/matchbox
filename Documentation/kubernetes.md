@@ -1,7 +1,7 @@
 
 # Kubernetes
 
-The Kubernetes example provisions a 3 node Kubernetes v1.4.3 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The Kubernetes example provisions a 3 node Kubernetes v1.4.6 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -72,7 +72,7 @@ Get all pods.
 
 Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding to the dashboard pod.
 
-    $ kubectl --kubeconfig=examples/assets/tls/kubeconfig port-forward kubernetes-dashboard-v1.4.0-SOME-ID 9090 --namespace=kube-system
+    $ kubectl port-forward kubernetes-dashboard-v1.4.1-SOME-ID 9090 -n=kube-system
     Forwarding from 127.0.0.1:9090 -> 9090
 
 Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).
