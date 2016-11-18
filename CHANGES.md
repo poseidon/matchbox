@@ -2,6 +2,8 @@
 
 ## Latest
 
+* Update Fuze and Ignition to v0.11.2
+
 ## v0.4.2 (2016-12-7)
 
 #### Improvements

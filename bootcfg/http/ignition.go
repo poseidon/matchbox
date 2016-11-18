@@ -62,9 +62,9 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 
 		// Skip rendering if raw Ignition JSON is provided
 		if isIgnition(profile.IgnitionId) {
-			_, err := ignition.Parse([]byte(contents))
+			_, report, err := ignition.Parse([]byte(contents))
 			if err != nil {
-				s.logger.Warningf("warning parsing Ignition JSON: %v", err)
+				s.logger.Warningf("warning parsing Ignition JSON: %s", report.String())
 			}
 			s.writeJSON(w, []byte(contents))
 			return
@@ -88,15 +88,23 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 			return
 		}
 
-		// Parse fuze config into an Ignition config
-		config, err := fuze.ParseAsV2_0_0(buf.Bytes())
-		if err == nil {
-			s.renderJSON(w, config)
+		// Parse bytes into a Fuze Config
+		config, report := fuze.Parse(buf.Bytes())
+		if report.IsFatal() {
+			s.logger.Errorf("error parsing Fuze config: %s", report.String())
+			http.NotFound(w, req)
 			return
 		}
 
-		s.logger.Errorf("error parsing Ignition config: %v", err)
-		http.NotFound(w, req)
+		// Convert Fuze Config into an Ignition Config
+		ign, report := fuze.ConvertAs2_0_0(config)
+		if report.IsFatal() {
+			s.logger.Errorf("error converting Fuze config: %s", report.String())
+			http.NotFound(w, req)
+			return
+		}
+
+		s.renderJSON(w, ign)
 		return
 	}
 	return ContextHandlerFunc(fn)
