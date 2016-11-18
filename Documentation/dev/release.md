@@ -20,7 +20,7 @@ Publish the release on Github with release notes.
 
 Build the release tarballs.
 
-    export VERSION=v0.4.0
+    export VERSION=v0.4.1
     make release
 
 ## ACI

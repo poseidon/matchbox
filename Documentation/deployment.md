@@ -10,7 +10,7 @@ This guide walks through deploying the `bootcfg` service on a Linux host (via bi
 Choose one of the supported installation options:
 
 * [CoreOS (systemd & rkt)](#coreos)
-* [General Linux (systemd & binary)](#binary-release)
+* [General Linux (systemd & binary)](#general-linux)
 * [With rkt](#rkt)
 * [With docker](#docker)
 * [Kubernetes Service](#kubernetes)
@@ -21,26 +21,26 @@ Choose one of the supported installation options:
 Download the latest coreos-baremetal [release](https://github.com/coreos/coreos-baremetal/releases) to the provisioner host.
 
 ```sh
-$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.0/coreos-baremetal-v0.4.0-linux-amd64.tar.gz
-$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.0/coreos-baremetal-v0.4.0-linux-amd64.tar.gz.asc
+$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.1/coreos-baremetal-v0.4.1-linux-amd64.tar.gz
+$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.1/coreos-baremetal-v0.4.1-linux-amd64.tar.gz.asc
 ```
 
 Verify the release has been signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
 ```
 $ gpg --keyserver pgp.mit.edu --recv-key 18AD5014C99EF7E3BA5F6CE950BDD3E0FC8A365E
-$ gpg --verify coreos-baremetal-v0.4.0-linux-amd64.tar.gz.asc coreos-baremetal-v0.4.0-linux-amd64.tar.gz
+$ gpg --verify coreos-baremetal-v0.4.1-linux-amd64.tar.gz.asc coreos-baremetal-v0.4.1-linux-amd64.tar.gz
 # gpg: Good signature from "CoreOS Application Signing Key <security@coreos.com>"
 ```
 
 Untar the release.
 
 ```sh
-$ tar xzvf coreos-baremetal-v0.4.0-linux-amd64.tar.gz
-$ cd coreos-baremetal-v0.4.0-linux-amd64
+$ tar xzvf coreos-baremetal-v0.4.1-linux-amd64.tar.gz
+$ cd coreos-baremetal-v0.4.1-linux-amd64
 ```
 
-## TLS Credentials
+## Generate TLS Credentials
 
 *Skip this unless you need to enable the gRPC API*
 
@@ -70,36 +70,24 @@ Save `client.crt`, `client.key`, and `ca.crt` to use with a client tool later.
 
 ### CoreOS
 
-On CoreOS, it is easiest to run `bootcfg` with the provided systemd unit file.
+On a CoreOS provisioner, run `bootcfg` with the provided systemd unit.
 
 ```sh
 $ sudo cp contrib/systemd/bootcfg-on-coreos.service /etc/systemd/system/bootcfg.service
-$ sudo systemctl daemon-reload
 ```
 
-The example systemd unit exposes the `bootcfg` HTTP machine endpoints on port 8080 and the (optional) gRPC API on port 8081 (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences and be sure to allow your choices within the host's firewall so clients can access the services.
+The example unit exposes the `bootcfg` HTTP endpoints on port **8080** and exposes the (optional) gRPC API on port **8081** (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences.
 
-The unit will rkt run the latest tagged `bootcfg` release, signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/). Trust the public key.
+The unit will rkt run a `bootcfg` image, signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/). Trust the public key.
 
 ```sh
 $ sudo rkt trust --prefix quay.io/coreos/bootcfg
 # gpg key fingerprint is: BFF3 13CD AA56 0B16 A898  7B8F 72AB F5F6 799D 33BC
 ```
 
-Start the `bootcfg` service and enable it if you'd like it to start on every boot.
-
-```sh
-$ sudo systemctl enable bootcfg.service
-$ sudo systemctl start bootcfg.service
-```
-
 ### General Linux
 
-Pre-built binaries are available for general Linux distributions.
-
-#### Binary
-
-Copy the `bootcfg` static binary to an appropriate location on the host.
+Pre-built binaries are available for general Linux distributions. Copy the `bootcfg` static binary to an appropriate location on the host.
 
 ```sh
 $ sudo cp bootcfg /usr/local/bin
@@ -121,10 +109,9 @@ Copy the provided `bootcfg` systemd unit file.
 
 ```sh
 $ sudo cp contrib/systemd/bootcfg.service /etc/systemd/system/
-$ sudo systemctl daemon-reload
 ```
 
-The example unit exposes the `bootcfg` HTTP machine endpoints on port 8080 and exposes the (optional) gRPC API on port 8081 (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences.
+The example unit exposes the `bootcfg` HTTP endpoints on port **8080** and exposes the (optional) gRPC API on port **8081** (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences.
 
 #### Firewall
 
@@ -135,25 +122,25 @@ $ sudo firewall-cmd --zone=MYZONE --add-port=8080/tcp --permanent
 $ sudo firewall-cmd --zone=MYZONE --add-port=8081/tcp --permanent
 ```
 
-#### Start bootcfg
+## Start bootcfg
 
 Start the `bootcfg` service and enable it if you'd like it to start on every boot.
 
 ```sh
-$ sudo systemctl start bootcfg.service
-$ sudo systemctl enable bootcfg.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable bootcfg.service --now
 ```
 
 ## Verify
 
-Verify the bootcfg service can be reached by client machines (those being provisioned).
+Verify the bootcfg service is running and can be reached by client machines (those being provisioned).
 
 ```sh
 $ systemctl status bootcfg
 $ dig bootcfg.example.com
 ```
 
-Verify you receive a response from the HTTP and API endpoints. All of the following responses are expected:
+Verify you receive a response from the HTTP and API endpoints.
 
 ```sh
 $ curl http://bootcfg.example.com:8080
@@ -163,8 +150,7 @@ bootcfg
 If you enabled the gRPC API,
 
 ```sh
-$ cd scripts/tls
-$ openssl s_client -connect bootcfg.example.com:8081 -CAfile /etc/bootcfg/ca.crt -cert client.crt -key client.key
+$ openssl s_client -connect bootcfg.example.com:8081 -CAfile /etc/bootcfg/ca.crt -cert scripts/tls/client.crt -key scripts/tls/client.key
 CONNECTED(00000003)
 depth=1 CN = fake-ca
 verify return:1
@@ -185,8 +171,7 @@ Certificate chain
 Download a recent CoreOS [release](https://coreos.com/releases/) with signatures.
 
 ```sh
-$ cd scripts
-$ ./get-coreos beta 1185.1.0 .     # note the "." 3rd argument
+$ ./scripts/get-coreos beta 1192.2.0 .     # note the "." 3rd argument
 ```
 
 Move the images to `/var/lib/bootcfg/assets`,
@@ -198,7 +183,7 @@ $ sudo cp -r coreos /var/lib/bootcfg/assets
 ```
 /var/lib/bootcfg/assets/
 ├── coreos
-│   └── 1185.1.0
+│   └── 1192.2.0
 │       ├── CoreOS_Image_Signing_Key.asc
 │       ├── coreos_production_image.bin.bz2
 │       ├── coreos_production_image.bin.bz2.sig
@@ -234,7 +219,7 @@ Run the most recent tagged and signed `bootcfg` [release](https://github.com/cor
 ```sh
 $ sudo rkt trust --prefix coreos.com/bootcfg
 # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-$ sudo rkt run --net=host --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=/var/lib/bootcfg quay.io/coreos/bootcfg:v0.4.0 --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=/etc/bootcfg,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+$ sudo rkt run --net=host --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=/var/lib/bootcfg quay.io/coreos/bootcfg:v0.4.1 --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=/etc/bootcfg,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
@@ -244,14 +229,12 @@ Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` o
 Run the latest or the most recently tagged `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases) Docker image.
 
 ```sh
-sudo docker run --net=host --rm -v /var/lib/bootcfg:/var/lib/bootcfg:Z -v /etc/bootcfg:/etc/bootcfg:Z,ro quay.io/coreos/bootcfg:v0.4.0 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+sudo docker run --net=host --rm -v /var/lib/bootcfg:/var/lib/bootcfg:Z -v /etc/bootcfg:/etc/bootcfg:Z,ro quay.io/coreos/bootcfg:v0.4.1 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
 
 ## Kubernetes
-
-*Note: Enhancements to the CLI and `EtcdStore` backend will improve this deployment strategy in the future.*
 
 Create a `bootcfg` Kubernetes `Deployment` and `Service` based on the example manifests provided in [contrib/k8s](../contrib/k8s).
 
@@ -260,7 +243,7 @@ $ kubectl apply -f contrib/k8s/bootcfg-deployment.yaml
 $ kubectl apply -f contrib/k8s/bootcfg-service.yaml
 ```
 
-The `bootcfg` HTTP server should be exposed on NodePort `tcp:31488` on each node in the cluster. `BOOTCFG_LOG_LEVEL` is set to debug.
+This runs the `bootcfg` service exposed on NodePort `tcp:31488` on each node in the cluster. `BOOTCFG_LOG_LEVEL` is set to debug.
 
 ```sh
 $ kubectl get deployments
