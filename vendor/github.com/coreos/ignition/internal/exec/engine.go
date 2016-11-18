@@ -22,11 +22,14 @@ import (
 
 	"github.com/coreos/ignition/config"
 	"github.com/coreos/ignition/config/types"
+	"github.com/coreos/ignition/config/validate/report"
 	"github.com/coreos/ignition/internal/exec/stages"
+	"github.com/coreos/ignition/internal/exec/util"
 	"github.com/coreos/ignition/internal/log"
 	"github.com/coreos/ignition/internal/providers"
-	putil "github.com/coreos/ignition/internal/providers/util"
-	"github.com/coreos/ignition/internal/util"
+	"github.com/coreos/ignition/internal/resource"
+
+	"golang.org/x/net/context"
 )
 
 const (
@@ -48,17 +51,20 @@ var (
 // Engine represents the entity that fetches and executes a configuration.
 type Engine struct {
 	ConfigCache       string
-	OnlineTimeout     time.Duration
 	Logger            *log.Logger
 	Root              string
-	Provider          providers.Provider
+	FetchFunc         providers.FuncFetchConfig
 	OemBaseConfig     types.Config
 	DefaultUserConfig types.Config
+
+	client resource.HttpClient
 }
 
 // Run executes the stage of the given name. It returns true if the stage
 // successfully ran and false if there were any errors.
 func (e Engine) Run(stageName string) bool {
+	e.client = resource.NewHttpClient(e.Logger)
+
 	cfg, err := e.acquireConfig()
 	switch err {
 	case nil:
@@ -72,7 +78,7 @@ func (e Engine) Run(stageName string) bool {
 
 	e.Logger.PushPrefix(stageName)
 	defer e.Logger.PopPrefix()
-	return stages.Get(stageName).Create(e.Logger, e.Root).Run(config.Append(baseConfig, config.Append(e.OemBaseConfig, cfg)))
+	return stages.Get(stageName).Create(e.Logger, &e.client, e.Root).Run(config.Append(baseConfig, config.Append(e.OemBaseConfig, cfg)))
 }
 
 // acquireConfig returns the configuration, first checking a local cache
@@ -93,7 +99,6 @@ func (e Engine) acquireConfig() (cfg types.Config, err error) {
 		e.Logger.Crit("failed to fetch config: %s", err)
 		return
 	}
-	e.Logger.Debug("fetched config: %+v", cfg)
 
 	// Populate the config cache.
 	b, err = json.Marshal(cfg)
@@ -113,20 +118,13 @@ func (e Engine) acquireConfig() (cfg types.Config, err error) {
 // returning an error if the provider is unavailable. This will also render the
 // config (see renderConfig) before returning.
 func (e Engine) fetchProviderConfig() (types.Config, error) {
-	if err := putil.WaitUntilOnline(e.Provider, e.OnlineTimeout); err != nil {
+	cfg, r, err := e.FetchFunc(e.Logger, &e.client)
+	e.logReport(r)
+	if err != nil {
 		return types.Config{}, err
 	}
 
-	cfg, err := e.Provider.FetchConfig()
-	switch err {
-	case config.ErrDeprecated:
-		e.Logger.Warning("%v: the provided config format is deprecated and will not be supported in the future", err)
-		fallthrough
-	case nil:
-		return e.renderConfig(cfg)
-	default:
-		return types.Config{}, err
-	}
+	return e.renderConfig(cfg)
 }
 
 // renderConfig evaluates "ignition.config.replace" and "ignition.config.append"
@@ -155,7 +153,7 @@ func (e Engine) renderConfig(cfg types.Config) (types.Config, error) {
 // fetchReferencedConfig fetches, renders, and attempts to verify the requested
 // config.
 func (e Engine) fetchReferencedConfig(cfgRef types.ConfigReference) (types.Config, error) {
-	rawCfg, err := util.FetchResource(e.Logger, url.URL(cfgRef.Source))
+	rawCfg, err := resource.Fetch(e.Logger, &e.client, context.Background(), url.URL(cfgRef.Source))
 	if err != nil {
 		return types.Config{}, err
 	}
@@ -164,10 +162,26 @@ func (e Engine) fetchReferencedConfig(cfgRef types.ConfigReference) (types.Confi
 		return types.Config{}, err
 	}
 
-	cfg, err := config.Parse(rawCfg)
+	cfg, r, err := config.Parse(rawCfg)
+	e.logReport(r)
 	if err != nil {
 		return types.Config{}, err
 	}
 
 	return e.renderConfig(cfg)
+}
+
+func (e Engine) logReport(r report.Report) {
+	for _, entry := range r.Entries {
+		switch entry.Kind {
+		case report.EntryError:
+			e.Logger.Crit("%v", entry)
+		case report.EntryWarning:
+			e.Logger.Warning("%v", entry)
+		case report.EntryDeprecated:
+			e.Logger.Warning("%v: the provided config format is deprecated and will not be supported in the future.", entry)
+		case report.EntryInfo:
+			e.Logger.Info("%v", entry)
+		}
+	}
 }

@@ -23,12 +23,11 @@ import (
 	"errors"
 
 	"github.com/coreos/ignition/config/types"
+	"github.com/coreos/ignition/config/validate/report"
+	"github.com/coreos/ignition/internal/log"
+	"github.com/coreos/ignition/internal/resource"
 )
 
-func (p provider) FetchConfig() (types.Config, error) {
-	return types.Config{}, errors.New("vmware provider is not supported on this architecture")
-}
-
-func (p *provider) IsOnline() bool {
-	return false
+func FetchConfig(_ *log.Logger, _ *resource.HttpClient) (types.Config, report.Report, error) {
+	return types.Config{}, report.Report{}, errors.New("vmware provider is not supported on this architecture")
 }

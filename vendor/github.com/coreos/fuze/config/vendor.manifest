@@ -1,5 +1,6 @@
 # If you manipulate the contents of vendor/, amend this accordingly.
 # pkg                                  version
+github.com/ajeddeloh/yaml              1072abfea31191db507785e2e0c1b8d1440d35a5
 github.com/alecthomas/units            6b4e7dc5e3143b85ea77909c72caf89416fc2915
-github.com/coreos/ignition/config      b6850837b3b9bd17b673e58b5c406b5e4192ddca
+github.com/coreos/ignition/config      3ffd793b1292c6b0b3519bce214bdb41f336faa7
 github.com/vincent-petithory/dataurl   9a301d65acbb728fcc3ace14f45f511a4cfeea9c

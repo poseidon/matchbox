@@ -21,20 +21,24 @@ import (
 	"github.com/coreos/ignition/internal/providers"
 	"github.com/coreos/ignition/internal/providers/azure"
 	"github.com/coreos/ignition/internal/providers/cmdline"
+	"github.com/coreos/ignition/internal/providers/digitalocean"
 	"github.com/coreos/ignition/internal/providers/ec2"
+	"github.com/coreos/ignition/internal/providers/file"
 	"github.com/coreos/ignition/internal/providers/gce"
 	"github.com/coreos/ignition/internal/providers/noop"
+	"github.com/coreos/ignition/internal/providers/openstack"
+	"github.com/coreos/ignition/internal/providers/packet"
+	"github.com/coreos/ignition/internal/providers/qemu"
 	"github.com/coreos/ignition/internal/providers/vmware"
 	"github.com/coreos/ignition/internal/registry"
 
 	"github.com/vincent-petithory/dataurl"
 )
 
-// Config represents a set of command line flags that map to a particular OEM.
+// Config represents a set of options that map to a particular OEM.
 type Config struct {
 	name              string
-	flags             map[string]string
-	provider          providers.ProviderCreator
+	fetch             providers.FuncFetchConfig
 	baseConfig        types.Config
 	defaultUserConfig types.Config
 }
@@ -43,12 +47,8 @@ func (c Config) Name() string {
 	return c.name
 }
 
-func (c Config) Flags() map[string]string {
-	return c.flags
-}
-
-func (c Config) Provider() providers.ProviderCreator {
-	return c.provider
+func (c Config) FetchFunc() providers.FuncFetchConfig {
+	return c.fetch
 }
 
 func (c Config) BaseConfig() types.Config {
@@ -63,69 +63,61 @@ var configs = registry.Create("oem configs")
 
 func init() {
 	configs.Register(Config{
-		name:     "azure",
-		provider: azure.Creator{},
+		name:  "azure",
+		fetch: azure.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "cloudsigma",
-		provider: noop.Creator{},
+		name:  "cloudsigma",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "cloudstack",
-		provider: noop.Creator{},
+		name:  "cloudstack",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "digitalocean",
-		provider: noop.Creator{},
-	})
-	configs.Register(Config{
-		name:     "brightbox",
-		provider: noop.Creator{},
-	})
-	configs.Register(Config{
-		name:     "openstack",
-		provider: noop.Creator{},
-	})
-	configs.Register(Config{
-		name:     "ec2",
-		provider: ec2.Creator{},
-		flags: map[string]string{
-			"online-timeout": "0",
-		},
+		name:  "digitalocean",
+		fetch: digitalocean.FetchConfig,
 		baseConfig: types.Config{
 			Systemd: types.Systemd{
-				Units: []types.SystemdUnit{{
-					Name:   "coreos-metadata-sshkeys@.service",
-					Enable: true,
-				}},
+				Units: []types.SystemdUnit{{Enable: true, Name: "coreos-metadata-sshkeys@.service"}},
+			},
+		},
+		defaultUserConfig: types.Config{Systemd: types.Systemd{Units: []types.SystemdUnit{userCloudInit("DigitalOcean", "digitalocean")}}},
+	})
+	configs.Register(Config{
+		name:  "brightbox",
+		fetch: noop.FetchConfig,
+	})
+	configs.Register(Config{
+		name:  "openstack",
+		fetch: openstack.FetchConfig,
+	})
+	configs.Register(Config{
+		name:  "ec2",
+		fetch: ec2.FetchConfig,
+		baseConfig: types.Config{
+			Systemd: types.Systemd{
+				Units: []types.SystemdUnit{{Enable: true, Name: "coreos-metadata-sshkeys@.service"}},
 			},
 		},
 	})
 	configs.Register(Config{
-		name:     "exoscale",
-		provider: noop.Creator{},
+		name:  "exoscale",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "gce",
-		provider: gce.Creator{},
+		name:  "gce",
+		fetch: gce.FetchConfig,
 		baseConfig: types.Config{
 			Systemd: types.Systemd{
 				Units: []types.SystemdUnit{
 					{Enable: true, Name: "coreos-metadata-sshkeys@.service"},
-					{Enable: true, Name: "google-accounts-manager.service"},
-					{Enable: true, Name: "google-address-manager.service"},
-					{Enable: true, Name: "google-clock-sync-manager.service"},
-					{Enable: true, Name: "google-startup-scripts-onboot.service"},
-					{Enable: true, Name: "google-startup-scripts.service"},
+					{Enable: true, Name: "oem-gce.service"},
 				},
 			},
 			Storage: types.Storage{
 				Files: []types.File{
-					serviceFromOem("google-accounts-manager.service"),
-					serviceFromOem("google-address-manager.service"),
-					serviceFromOem("google-clock-sync-manager.service"),
-					serviceFromOem("google-startup-scripts-onboot.service"),
-					serviceFromOem("google-startup-scripts.service"),
+					serviceFromOem("oem-gce.service"),
 					{
 						Filesystem: "root",
 						Path:       "/etc/hosts",
@@ -148,44 +140,52 @@ alias gsutil="(docker images google/cloud-sdk || docker pull google/cloud-sdk) >
 		defaultUserConfig: types.Config{Systemd: types.Systemd{Units: []types.SystemdUnit{userCloudInit("GCE", "gce")}}},
 	})
 	configs.Register(Config{
-		name:     "hyperv",
-		provider: noop.Creator{},
+		name:  "hyperv",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "niftycloud",
-		provider: noop.Creator{},
+		name:  "niftycloud",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "packet",
-		provider: noop.Creator{},
+		name:  "packet",
+		fetch: packet.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "pxe",
-		provider: cmdline.Creator{},
+		name:  "pxe",
+		fetch: cmdline.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "rackspace",
-		provider: noop.Creator{},
+		name:  "rackspace",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "rackspace-onmetal",
-		provider: noop.Creator{},
+		name:  "rackspace-onmetal",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "vagrant",
-		provider: noop.Creator{},
+		name:  "vagrant",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "vmware",
-		provider: vmware.Creator{},
+		name:  "vmware",
+		fetch: vmware.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "xendom0",
-		provider: noop.Creator{},
+		name:  "xendom0",
+		fetch: noop.FetchConfig,
 	})
 	configs.Register(Config{
-		name:     "interoute",
-		provider: noop.Creator{},
+		name:  "interoute",
+		fetch: noop.FetchConfig,
+	})
+	configs.Register(Config{
+		name:  "qemu",
+		fetch: qemu.FetchConfig,
+	})
+	configs.Register(Config{
+		name:  "file",
+		fetch: file.FetchConfig,
 	})
 }
 

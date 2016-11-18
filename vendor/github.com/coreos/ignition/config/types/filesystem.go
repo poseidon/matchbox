@@ -15,8 +15,9 @@
 package types
 
 import (
-	"encoding/json"
 	"errors"
+
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 var (
@@ -30,7 +31,6 @@ type Filesystem struct {
 	Mount *FilesystemMount `json:"mount,omitempty"`
 	Path  *Path            `json:"path,omitempty"`
 }
-type filesystem Filesystem
 
 type FilesystemMount struct {
 	Device Path              `json:"device,omitempty"`
@@ -43,96 +43,25 @@ type FilesystemCreate struct {
 	Options MkfsOptions `json:"options,omitempty"`
 }
 
-func (f *Filesystem) UnmarshalJSON(data []byte) error {
-	tf := filesystem(*f)
-	if err := json.Unmarshal(data, &tf); err != nil {
-		return err
+func (f Filesystem) Validate() report.Report {
+	if f.Mount == nil && f.Path == nil {
+		return report.ReportFromError(ErrFilesystemNoMountPath, report.EntryError)
 	}
-	*f = Filesystem(tf)
-	return f.AssertValid()
-}
-
-func (f Filesystem) AssertValid() error {
-	hasMount := false
-	hasPath := false
-
-	if f.Mount != nil {
-		hasMount = true
-		if err := f.Mount.AssertValid(); err != nil {
-			return err
-		}
+	if f.Mount != nil && f.Path != nil {
+		return report.ReportFromError(ErrFilesystemMountAndPath, report.EntryError)
 	}
-
-	if f.Path != nil {
-		hasPath = true
-		if err := f.Path.AssertValid(); err != nil {
-			return err
-		}
-	}
-
-	if !hasMount && !hasPath {
-		return ErrFilesystemNoMountPath
-	} else if hasMount && hasPath {
-		return ErrFilesystemMountAndPath
-	}
-
-	return nil
-}
-
-type filesystemMount FilesystemMount
-
-func (f *FilesystemMount) UnmarshalJSON(data []byte) error {
-	tf := filesystemMount(*f)
-	if err := json.Unmarshal(data, &tf); err != nil {
-		return err
-	}
-	*f = FilesystemMount(tf)
-	return f.AssertValid()
-}
-
-func (f FilesystemMount) AssertValid() error {
-	if err := f.Device.AssertValid(); err != nil {
-		return err
-	}
-	if err := f.Format.AssertValid(); err != nil {
-		return err
-	}
-	return nil
+	return report.Report{}
 }
 
 type FilesystemFormat string
-type filesystemFormat FilesystemFormat
 
-func (f *FilesystemFormat) UnmarshalJSON(data []byte) error {
-	tf := filesystemFormat(*f)
-	if err := json.Unmarshal(data, &tf); err != nil {
-		return err
-	}
-	*f = FilesystemFormat(tf)
-	return f.AssertValid()
-}
-
-func (f FilesystemFormat) AssertValid() error {
+func (f FilesystemFormat) Validate() report.Report {
 	switch f {
 	case "ext4", "btrfs", "xfs":
-		return nil
+		return report.Report{}
 	default:
-		return ErrFilesystemInvalidFormat
+		return report.ReportFromError(ErrFilesystemInvalidFormat, report.EntryError)
 	}
 }
 
 type MkfsOptions []string
-type mkfsOptions MkfsOptions
-
-func (o *MkfsOptions) UnmarshalJSON(data []byte) error {
-	to := mkfsOptions(*o)
-	if err := json.Unmarshal(data, &to); err != nil {
-		return err
-	}
-	*o = MkfsOptions(to)
-	return o.AssertValid()
-}
-
-func (o MkfsOptions) AssertValid() error {
-	return nil
-}

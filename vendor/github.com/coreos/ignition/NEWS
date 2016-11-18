@@ -1,3 +1,82 @@
+07-Oct-2016 IGNITION v0.11.2
+
+  Bug Fixes
+
+    - Correctly set the partition typecode
+
+  Changes
+
+    - Update the services for the GCE OEM
+
+20-Sep-2016 IGNITION v0.11.1
+
+  Bug Fixes
+
+    - Fix potential deadlock when waiting for multiple disks
+
+07-Sep-2016 IGNITION v0.11.0
+
+  Features
+
+    - Add support for DigitalOcean
+    - Add experimental support for OpenStack
+
+26-Aug-2016 IGNITION v0.10.1
+
+  Bug Fixes
+
+    - Fix handling of oem:// URLs
+    - Use stable symlinks when operating on devices
+    - Retry failed requests when fetching Packet userdata
+    - Log the raw configurations instead of the parsed result
+
+23-Aug-2016 IGNITION v0.10.0
+
+  Features
+
+    - Add support for QEMU Firmware Configuration Device
+
+15-Aug-2016 IGNITION v0.9.2
+
+  Bug Fixes
+
+    - Do not retry HTTP requests that result in non-5xx status codes
+
+11-Aug-2016 IGNITION v0.9.1
+
+  Bug Fixes
+
+    - Properly validate data URLs
+
+11-Aug-2016 IGNITION v0.9.0
+
+  Features
+
+    - Add detailed configuration validation
+
+  Bug Fixes
+
+    - Add retry to all HTTP requests
+    - Fix potential panic when parsing certain URLs
+
+26-Jul-2016 IGNITION v0.8.0
+
+  Features
+
+    - Add support for Packet
+
+13-Jul-2016 IGNITION v0.7.1
+
+  Bug Fixes
+
+    - Interpret files without a URL to be empty instead of invalid
+    - HTTP fetches time out while waiting for response header instead of body
+    - Stream remote assets to disk instead of loading them into memory
+
+  Changes
+
+    - Improve configuration validation
+
 15-Jun-2016 IGNITION v0.7.0
 
   Features

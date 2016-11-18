@@ -18,53 +18,31 @@
 package ec2
 
 import (
-	"net/http"
-	"time"
+	"net/url"
 
-	"github.com/coreos/ignition/config"
 	"github.com/coreos/ignition/config/types"
+	"github.com/coreos/ignition/config/validate/report"
 	"github.com/coreos/ignition/internal/log"
 	"github.com/coreos/ignition/internal/providers"
-	putil "github.com/coreos/ignition/internal/providers/util"
-	"github.com/coreos/ignition/internal/util"
+	"github.com/coreos/ignition/internal/providers/util"
+	"github.com/coreos/ignition/internal/resource"
+
+	"golang.org/x/net/context"
 )
 
-const (
-	initialBackoff = 100 * time.Millisecond
-	maxBackoff     = 30 * time.Second
-	userdataUrl    = "http://169.254.169.254/2009-04-04/user-data"
-)
-
-type Creator struct{}
-
-func (Creator) Create(logger *log.Logger) providers.Provider {
-	return &provider{
-		logger:  logger,
-		backoff: initialBackoff,
-		client:  util.NewHttpClient(logger),
+var (
+	userdataUrl = url.URL{
+		Scheme: "http",
+		Host:   "169.254.169.254",
+		Path:   "2009-04-04/user-data",
 	}
-}
+)
 
-type provider struct {
-	logger    *log.Logger
-	backoff   time.Duration
-	client    util.HttpClient
-	rawConfig []byte
-}
+func FetchConfig(logger *log.Logger, client *resource.HttpClient) (types.Config, report.Report, error) {
+	data := resource.FetchConfig(logger, client, context.Background(), userdataUrl)
+	if data == nil {
+		return types.Config{}, report.Report{}, providers.ErrNoProvider
+	}
 
-func (p provider) FetchConfig() (types.Config, error) {
-	return config.Parse(p.rawConfig)
-}
-
-func (p *provider) IsOnline() bool {
-	p.rawConfig = p.client.FetchConfig(userdataUrl, http.StatusOK, http.StatusNotFound)
-	return (p.rawConfig != nil)
-}
-
-func (p provider) ShouldRetry() bool {
-	return true
-}
-
-func (p *provider) BackoffDuration() time.Duration {
-	return putil.ExpBackoff(&p.backoff, maxBackoff)
+	return util.ParseConfig(logger, data)
 }

@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
+
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 func TestHashUnmarshalJSON(t *testing.T) {
@@ -55,7 +57,7 @@ func TestHashUnmarshalJSON(t *testing.T) {
 	}
 }
 
-func TestHashAssertValid(t *testing.T) {
+func TestHashValidate(t *testing.T) {
 	type in struct {
 		hash Hash
 	}
@@ -86,8 +88,8 @@ func TestHashAssertValid(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := test.in.hash.AssertValid()
-		if !reflect.DeepEqual(test.out.err, err) {
+		err := test.in.hash.Validate()
+		if !reflect.DeepEqual(report.ReportFromError(test.out.err, report.EntryError), err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}
 	}

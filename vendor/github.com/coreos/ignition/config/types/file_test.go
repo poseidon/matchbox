@@ -15,47 +15,13 @@
 package types
 
 import (
-	"encoding/json"
 	"reflect"
 	"testing"
+
+	"github.com/coreos/ignition/config/validate/report"
 )
 
-func TestFileModeUnmarshalJSON(t *testing.T) {
-	type in struct {
-		data string
-	}
-	type out struct {
-		mode FileMode
-		err  error
-	}
-
-	tests := []struct {
-		in  in
-		out out
-	}{
-		{
-			in:  in{data: `420`},
-			out: out{mode: FileMode(420)},
-		},
-		{
-			in:  in{data: `9999`},
-			out: out{mode: FileMode(9999), err: ErrFileIllegalMode},
-		},
-	}
-
-	for i, test := range tests {
-		var mode FileMode
-		err := json.Unmarshal([]byte(test.in.data), &mode)
-		if !reflect.DeepEqual(test.out.err, err) {
-			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
-		}
-		if !reflect.DeepEqual(test.out.mode, mode) {
-			t.Errorf("#%d: bad mode: want %#o, got %#o", i, test.out.mode, mode)
-		}
-	}
-}
-
-func TestFileAssertValid(t *testing.T) {
+func TestFileValidate(t *testing.T) {
 	type in struct {
 		mode FileMode
 	}
@@ -90,8 +56,8 @@ func TestFileAssertValid(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		err := test.in.mode.AssertValid()
-		if !reflect.DeepEqual(test.out.err, err) {
+		err := test.in.mode.Validate()
+		if !reflect.DeepEqual(report.ReportFromError(test.out.err, report.EntryError), err) {
 			t.Errorf("#%d: bad error: want %v, got %v", i, test.out.err, err)
 		}
 	}

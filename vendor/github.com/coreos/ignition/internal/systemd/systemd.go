@@ -31,7 +31,7 @@ func WaitOnDevices(devs []string, stage string) error {
 	results := map[string]chan string{}
 	for _, dev := range devs {
 		unitName := unit.UnitNamePathEscape(dev + ".device")
-		results[unitName] = make(chan string)
+		results[unitName] = make(chan string, 1)
 
 		if _, err = conn.StartUnit(unitName, "replace", results[unitName]); err != nil {
 			return fmt.Errorf("failed starting device unit %s: %v", unitName, err)

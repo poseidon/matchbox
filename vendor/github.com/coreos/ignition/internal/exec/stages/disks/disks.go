@@ -26,6 +26,7 @@ import (
 	"github.com/coreos/ignition/internal/exec/stages"
 	"github.com/coreos/ignition/internal/exec/util"
 	"github.com/coreos/ignition/internal/log"
+	"github.com/coreos/ignition/internal/resource"
 	"github.com/coreos/ignition/internal/sgdisk"
 	"github.com/coreos/ignition/internal/systemd"
 )
@@ -40,11 +41,14 @@ func init() {
 
 type creator struct{}
 
-func (creator) Create(logger *log.Logger, root string) stages.Stage {
-	return &stage{util.Util{
-		DestDir: root,
-		Logger:  logger,
-	}}
+func (creator) Create(logger *log.Logger, client *resource.HttpClient, root string) stages.Stage {
+	return &stage{
+		Util: util.Util{
+			DestDir: root,
+			Logger:  logger,
+		},
+		client: client,
+	}
 }
 
 func (creator) Name() string {
@@ -53,6 +57,8 @@ func (creator) Name() string {
 
 type stage struct {
 	util.Util
+
+	client *resource.HttpClient
 }
 
 func (stage) Name() string {
@@ -87,6 +93,33 @@ func (s stage) waitOnDevices(devs []string, ctxt string) error {
 	); err != nil {
 		return fmt.Errorf("failed to wait on %s devs: %v", ctxt, err)
 	}
+
+	return nil
+}
+
+// createDeviceAliases creates device aliases for every device in devs.
+func (s stage) createDeviceAliases(devs []string) error {
+	for _, dev := range devs {
+		target, err := util.CreateDeviceAlias(dev)
+		if err != nil {
+			return fmt.Errorf("failed to create device alias for %q: %v", dev, err)
+		}
+		s.Logger.Info("created device alias for %q: %q -> %q", dev, util.DeviceAlias(dev), target)
+	}
+
+	return nil
+}
+
+// waitOnDevicesAndCreateAliases simply wraps waitOnDevices and createDeviceAliases.
+func (s stage) waitOnDevicesAndCreateAliases(devs []string, ctxt string) error {
+	if err := s.waitOnDevices(devs, ctxt); err != nil {
+		return err
+	}
+
+	if err := s.createDeviceAliases(devs); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -103,15 +136,17 @@ func (s stage) createPartitions(config types.Config) error {
 		devs = append(devs, string(disk.Device))
 	}
 
-	if err := s.waitOnDevices(devs, "disks"); err != nil {
+	if err := s.waitOnDevicesAndCreateAliases(devs, "disks"); err != nil {
 		return err
 	}
 
 	for _, dev := range config.Storage.Disks {
+		devAlias := util.DeviceAlias(string(dev.Device))
+
 		err := s.Logger.LogOp(func() error {
-			op := sgdisk.Begin(s.Logger, string(dev.Device))
+			op := sgdisk.Begin(s.Logger, devAlias)
 			if dev.WipeTable {
-				s.Logger.Info("wiping partition table requested on %q", dev.Device)
+				s.Logger.Info("wiping partition table requested on %q", devAlias)
 				op.WipeTable(true)
 			}
 
@@ -129,7 +164,7 @@ func (s stage) createPartitions(config types.Config) error {
 				return fmt.Errorf("commit failure: %v", err)
 			}
 			return nil
-		}, "partitioning %q", dev.Device)
+		}, "partitioning %q", devAlias)
 		if err != nil {
 			return err
 		}
@@ -153,7 +188,7 @@ func (s stage) createRaids(config types.Config) error {
 		}
 	}
 
-	if err := s.waitOnDevices(devs, "raids"); err != nil {
+	if err := s.waitOnDevicesAndCreateAliases(devs, "raids"); err != nil {
 		return err
 	}
 
@@ -173,7 +208,7 @@ func (s stage) createRaids(config types.Config) error {
 		}
 
 		for _, dev := range md.Devices {
-			args = append(args, string(dev))
+			args = append(args, util.DeviceAlias(string(dev)))
 		}
 
 		if err := s.Logger.LogCmd(
@@ -207,7 +242,7 @@ func (s stage) createFilesystems(config types.Config) error {
 		devs = append(devs, string(fs.Device))
 	}
 
-	if err := s.waitOnDevices(devs, "filesystems"); err != nil {
+	if err := s.waitOnDevicesAndCreateAliases(devs, "filesystems"); err != nil {
 		return err
 	}
 
@@ -248,13 +283,14 @@ func (s stage) createFilesystem(fs types.FilesystemMount) error {
 		return fmt.Errorf("unsupported filesystem format: %q", fs.Format)
 	}
 
-	args = append(args, string(fs.Device))
+	devAlias := util.DeviceAlias(string(fs.Device))
+	args = append(args, devAlias)
 	if err := s.Logger.LogCmd(
 		exec.Command(mkfs, args...),
 		"creating %q filesystem on %q",
-		fs.Format, string(fs.Device),
+		fs.Format, devAlias,
 	); err != nil {
-		return fmt.Errorf("failed to run %q: %v %v", mkfs, err, args)
+		return fmt.Errorf("mkfs failed: %v", err)
 	}
 
 	return nil

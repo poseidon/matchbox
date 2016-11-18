@@ -17,24 +17,38 @@ package config
 import (
 	"reflect"
 
-	"github.com/coreos/ignition/config/types"
-	"github.com/go-yaml/yaml"
+	yaml "github.com/ajeddeloh/yaml"
+	"github.com/coreos/fuze/config/types"
+	"github.com/coreos/ignition/config/validate"
+	"github.com/coreos/ignition/config/validate/report"
 )
 
-func ParseAsV2_0_0(data []byte) (types.Config, error) {
-	var cfg Config
+func Parse(data []byte) (types.Config, report.Report) {
+	var cfg types.Config
+	var r report.Report
+
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return types.Config{}, err
+		return types.Config{}, report.ReportFromError(err, report.EntryError)
 	}
 
-	var keyMap map[interface{}]interface{}
-	if err := yaml.Unmarshal(data, &keyMap); err != nil {
-		return types.Config{}, err
+	nodes := yaml.UnmarshalToNode(data)
+	if nodes == nil {
+		r.Add(report.Entry{
+			Kind:    report.EntryWarning,
+			Message: "Configuration is empty",
+		})
+		r.Merge(validate.ValidateWithoutSource(reflect.ValueOf(cfg)))
+	} else {
+		root, err := FromYamlDocumentNode(*nodes)
+		if err != nil {
+			return types.Config{}, report.ReportFromError(err, report.EntryError)
+		}
+
+		r.Merge(validate.Validate(reflect.ValueOf(cfg), root, nil))
 	}
 
-	if err := assertKeysValid(keyMap, reflect.TypeOf(Config{})); err != nil {
-		return types.Config{}, err
+	if r.IsFatal() {
+		return types.Config{}, r
 	}
-
-	return ConvertAs2_0_0(cfg)
+	return cfg, r
 }

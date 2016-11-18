@@ -5,15 +5,16 @@ language: go
 go_import_path: github.com/coreos/ignition
 
 go:
-  - 1.5
-  - 1.6
+  - 1.5.4
+  - 1.6.3
+  - 1.7
 
 env:
   global:
    - GO15VENDOREXPERIMENT=1
   matrix:
    - TARGET=amd64
-   - TARGET=arm64
+   - TARGET=arm64 GIMME_ARCH=arm64 GIMME_CGO_ENABLED=1
 
 addons:
   apt:
@@ -27,9 +28,8 @@ install:
 
 script:
   -     if [ "${TARGET}" == "amd64" ]; then
-                 GOARCH="${TARGET}" ./test;
+                GOARCH="${TARGET}" ./test;
         elif [ "${TARGET}" == "arm64" ]; then
-                eval "$(GIMME_ARCH=${TARGET} GIMME_CGO_ENABLED=1 ./gimme.local ${TRAVIS_GO_VERSION})";
                 GOARCH="${TARGET}" ./build;
-               file "bin/${TARGET}/ignition" | egrep 'aarch64';
+                file "bin/${TARGET}/ignition" | egrep 'aarch64';
         fi

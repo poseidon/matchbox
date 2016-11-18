@@ -8,6 +8,9 @@ Ignition is currently only supported for the following platforms:
 * [Microsoft Azure] - Ignition will read its configuration from the custom data provided to the instance. SSH keys are handled by the Azure Linux Agent.
 * [VMware] - Use the VMware Guestinfo variables `coreos.config.data` and `coreos.config.data.encoding` to provide the config and its encoding to the virtual machine. Valid encodings are "", "base64", and "gzip+base64".
 * [Google Compute Engine] - Ignition will read its configuration from the instance metadata entry named "user-data". SSH keys are handled by coreos-metadata.
+* [Packet] - Ignition will read its configuration from the instance userdata. SSH keys are handled by coreos-metadata.
+* [QEMU] - Ignition will read its configuration from the 'opt/com.coreos/config' key on the QEMU Firmware Configuration Device.
+* [DigitalOcean] - Ignition will read its configuration from the droplet userdata. SSH keys and network configuration are handled by coreos-metadata.
 
 Ignition is under active development so expect this list to expand in the coming months.
 
@@ -17,3 +20,6 @@ Ignition is under active development so expect this list to expand in the coming
 [Microsoft Azure]: https://github.com/coreos/docs/blob/master/os/booting-on-azure.md
 [VMware]: https://github.com/coreos/docs/blob/master/os/booting-on-vmware.md
 [Google Compute Engine]: https://github.com/coreos/docs/blob/master/os/booting-on-google-compute-engine.md
+[Packet]: https://github.com/coreos/docs/blob/master/os/booting-on-packet.md
+[QEMU]: https://github.com/qemu/qemu/blob/d75aa4372f0414c9960534026a562b0302fcff29/docs/specs/fw_cfg.txt
+[DigitalOcean]: https://github.com/coreos/docs/blob/master/os/booting-on-digitalocean.md

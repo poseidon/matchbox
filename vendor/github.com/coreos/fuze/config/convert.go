@@ -17,9 +17,13 @@ package config
 import (
 	"fmt"
 	"net/url"
+	"reflect"
 
 	"github.com/alecthomas/units"
+	fuzeTypes "github.com/coreos/fuze/config/types"
 	"github.com/coreos/ignition/config/types"
+	"github.com/coreos/ignition/config/validate"
+	"github.com/coreos/ignition/config/validate/report"
 	"github.com/vincent-petithory/dataurl"
 )
 
@@ -27,7 +31,7 @@ const (
 	BYTES_PER_SECTOR = 512
 )
 
-func ConvertAs2_0_0(in Config) (types.Config, error) {
+func ConvertAs2_0_0(in fuzeTypes.Config) (types.Config, report.Report) {
 	out := types.Config{
 		Ignition: types.Ignition{
 			Version: types.IgnitionVersion{Major: 2, Minor: 0},
@@ -37,7 +41,7 @@ func ConvertAs2_0_0(in Config) (types.Config, error) {
 	for _, ref := range in.Ignition.Config.Append {
 		newRef, err := convertConfigReference(ref)
 		if err != nil {
-			return types.Config{}, err
+			return types.Config{}, report.ReportFromError(err, report.EntryError)
 		}
 		out.Ignition.Config.Append = append(out.Ignition.Config.Append, newRef)
 	}
@@ -45,7 +49,7 @@ func ConvertAs2_0_0(in Config) (types.Config, error) {
 	if in.Ignition.Config.Replace != nil {
 		newRef, err := convertConfigReference(*in.Ignition.Config.Replace)
 		if err != nil {
-			return types.Config{}, err
+			return types.Config{}, report.ReportFromError(err, report.EntryError)
 		}
 		out.Ignition.Config.Replace = &newRef
 	}
@@ -59,11 +63,11 @@ func ConvertAs2_0_0(in Config) (types.Config, error) {
 		for _, partition := range disk.Partitions {
 			size, err := convertPartitionDimension(partition.Size)
 			if err != nil {
-				return types.Config{}, err
+				return types.Config{}, report.ReportFromError(err, report.EntryError)
 			}
 			start, err := convertPartitionDimension(partition.Start)
 			if err != nil {
-				return types.Config{}, err
+				return types.Config{}, report.ReportFromError(err, report.EntryError)
 			}
 
 			newDisk.Partitions = append(newDisk.Partitions, types.Partition{
@@ -142,7 +146,7 @@ func ConvertAs2_0_0(in Config) (types.Config, error) {
 		if file.Contents.Remote.Url != "" {
 			source, err := url.Parse(file.Contents.Remote.Url)
 			if err != nil {
-				return types.Config{}, err
+				return types.Config{}, report.ReportFromError(err, report.EntryError)
 			}
 
 			newFile.Contents = types.FileContents{Source: types.Url(*source)}
@@ -222,14 +226,15 @@ func ConvertAs2_0_0(in Config) (types.Config, error) {
 		})
 	}
 
-	if err := out.AssertValid(); err != nil {
-		return types.Config{}, err
+	r := validate.ValidateWithoutSource(reflect.ValueOf(out))
+	if r.IsFatal() {
+		return types.Config{}, r
 	}
 
-	return out, nil
+	return out, r
 }
 
-func convertConfigReference(in ConfigReference) (types.ConfigReference, error) {
+func convertConfigReference(in fuzeTypes.ConfigReference) (types.ConfigReference, error) {
 	source, err := url.Parse(in.Source)
 	if err != nil {
 		return types.ConfigReference{}, err
@@ -241,7 +246,7 @@ func convertConfigReference(in ConfigReference) (types.ConfigReference, error) {
 	}, nil
 }
 
-func convertVerification(in Verification) types.Verification {
+func convertVerification(in fuzeTypes.Verification) types.Verification {
 	if in.Hash.Function == "" || in.Hash.Sum == "" {
 		return types.Verification{}
 	}

@@ -21,78 +21,57 @@ import (
 	"io/ioutil"
 	"net/url"
 	"strings"
-	"time"
 
-	"github.com/coreos/ignition/config"
 	"github.com/coreos/ignition/config/types"
+	"github.com/coreos/ignition/config/validate/report"
 	"github.com/coreos/ignition/internal/log"
 	"github.com/coreos/ignition/internal/providers"
-	putil "github.com/coreos/ignition/internal/providers/util"
-	"github.com/coreos/ignition/internal/util"
+	"github.com/coreos/ignition/internal/providers/util"
+	"github.com/coreos/ignition/internal/resource"
+
+	"golang.org/x/net/context"
 )
 
 const (
-	initialBackoff = 100 * time.Millisecond
-	maxBackoff     = 30 * time.Second
 	cmdlinePath    = "/proc/cmdline"
 	cmdlineUrlFlag = "coreos.config.url"
 )
 
-type Creator struct{}
-
-func (Creator) Create(logger *log.Logger) providers.Provider {
-	return &provider{
-		logger:  logger,
-		backoff: initialBackoff,
-		path:    cmdlinePath,
-		client:  util.NewHttpClient(logger),
-	}
-}
-
-type provider struct {
-	logger    *log.Logger
-	backoff   time.Duration
-	path      string
-	client    util.HttpClient
-	configUrl string
-	rawConfig []byte
-}
-
-func (p provider) FetchConfig() (types.Config, error) {
-	if p.rawConfig == nil {
-		return types.Config{}, nil
-	} else {
-		return config.Parse(p.rawConfig)
-	}
-}
-
-func (p *provider) IsOnline() bool {
-	if p.configUrl == "" {
-		args, err := ioutil.ReadFile(p.path)
-		if err != nil {
-			p.logger.Err("couldn't read cmdline")
-			return false
-		}
-
-		p.configUrl = parseCmdline(args)
-		p.logger.Debug("parsed url from cmdline: %q", p.configUrl)
-		if p.configUrl == "" {
-			// If the cmdline flag wasn't provided, just no-op.
-			p.logger.Info("no config URL provided")
-			return true
-		}
+func FetchConfig(logger *log.Logger, client *resource.HttpClient) (types.Config, report.Report, error) {
+	url, err := readCmdline(logger)
+	if err != nil || url == nil {
+		return types.Config{}, report.Report{}, err
 	}
 
-	return p.getRawConfig()
+	data := resource.FetchConfig(logger, client, context.Background(), *url)
+	if data == nil {
+		return types.Config{}, report.Report{}, providers.ErrNoProvider
+	}
 
+	return util.ParseConfig(logger, data)
 }
 
-func (p provider) ShouldRetry() bool {
-	return true
-}
+func readCmdline(logger *log.Logger) (*url.URL, error) {
+	args, err := ioutil.ReadFile(cmdlinePath)
+	if err != nil {
+		logger.Err("couldn't read cmdline: %v", err)
+		return nil, err
+	}
 
-func (p *provider) BackoffDuration() time.Duration {
-	return putil.ExpBackoff(&p.backoff, maxBackoff)
+	rawUrl := parseCmdline(args)
+	logger.Debug("parsed url from cmdline: %q", rawUrl)
+	if rawUrl == "" {
+		logger.Info("no config URL provided")
+		return nil, nil
+	}
+
+	url, err := url.Parse(rawUrl)
+	if err != nil {
+		logger.Err("failed to parse url: %v", err)
+		return nil, err
+	}
+
+	return url, err
 }
 
 func parseCmdline(cmdline []byte) (url string) {
@@ -110,25 +89,4 @@ func parseCmdline(cmdline []byte) (url string) {
 	}
 
 	return
-}
-
-// getRawConfig gets the raw configuration data from p.configUrl.
-// Supported URL schemes are:
-// http://	remote resource accessed via http
-// oem://	local file in /usr/share/oem or /mnt/oem
-func (p *provider) getRawConfig() bool {
-	url, err := url.Parse(p.configUrl)
-	if err != nil {
-		p.logger.Err("failed to parse url: %v", err)
-		return false
-	}
-
-	data, err := util.FetchResource(p.logger, *url)
-	if err != nil {
-		p.logger.Err("failed to fetch %v: %v", url, err)
-		return false
-	}
-
-	p.rawConfig = data
-	return true
 }

@@ -19,6 +19,8 @@ import (
 	"errors"
 
 	"github.com/coreos/go-semver/semver"
+
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 var (
@@ -56,12 +58,12 @@ func (v IgnitionVersion) MarshalJSON() ([]byte, error) {
 	return semver.Version(v).MarshalJSON()
 }
 
-func (v IgnitionVersion) AssertValid() error {
+func (v IgnitionVersion) Validate() report.Report {
 	if MaxVersion.Major > v.Major {
-		return ErrOldVersion
+		return report.ReportFromError(ErrOldVersion, report.EntryError)
 	}
 	if MaxVersion.LessThan(semver.Version(v)) {
-		return ErrNewVersion
+		return report.ReportFromError(ErrNewVersion, report.EntryError)
 	}
-	return nil
+	return report.Report{}
 }

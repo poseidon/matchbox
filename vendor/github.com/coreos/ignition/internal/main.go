@@ -18,7 +18,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/coreos/ignition/internal/exec"
 	"github.com/coreos/ignition/internal/exec/stages"
@@ -31,18 +30,16 @@ import (
 
 func main() {
 	flags := struct {
-		clearCache    bool
-		configCache   string
-		onlineTimeout time.Duration
-		oem           oem.Name
-		root          string
-		stage         stages.Name
-		version       bool
+		clearCache  bool
+		configCache string
+		oem         oem.Name
+		root        string
+		stage       stages.Name
+		version     bool
 	}{}
 
 	flag.BoolVar(&flags.clearCache, "clear-cache", false, "clear any cached config")
 	flag.StringVar(&flags.configCache, "config-cache", "/run/ignition.json", "where to cache the config")
-	flag.DurationVar(&flags.onlineTimeout, "online-timeout", exec.DefaultOnlineTimeout, "how long to wait for a provider to come online")
 	flag.Var(&flags.oem, "oem", fmt.Sprintf("current oem. %v", oem.Names()))
 	flag.StringVar(&flags.root, "root", "/", "root of the filesystem")
 	flag.Var(&flags.stage, "stage", fmt.Sprintf("execution stage. %v", stages.Names()))
@@ -65,12 +62,6 @@ func main() {
 		os.Exit(2)
 	}
 
-	for k, v := range oem.MustGet(flags.oem.String()).Flags() {
-		if err := flag.Set(k, v); err != nil {
-			panic(err)
-		}
-	}
-
 	logger := log.New()
 	defer logger.Close()
 
@@ -85,10 +76,9 @@ func main() {
 	oemConfig := oem.MustGet(flags.oem.String())
 	engine := exec.Engine{
 		Root:              flags.root,
-		OnlineTimeout:     flags.onlineTimeout,
 		Logger:            &logger,
 		ConfigCache:       flags.configCache,
-		Provider:          oemConfig.Provider().Create(&logger),
+		FetchFunc:         oemConfig.FetchFunc(),
 		OemBaseConfig:     oemConfig.BaseConfig(),
 		DefaultUserConfig: oemConfig.DefaultUserConfig(),
 	}

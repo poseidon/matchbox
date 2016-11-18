@@ -23,31 +23,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-	"time"
-
-	"github.com/coreos/ignition/internal/log"
-	"github.com/coreos/ignition/internal/providers"
 )
-
-type Creator struct{}
-
-func (Creator) Create(logger *log.Logger) providers.Provider {
-	return &provider{
-		logger: logger,
-	}
-}
-
-type provider struct {
-	logger *log.Logger
-}
-
-func (p provider) ShouldRetry() bool {
-	return false
-}
-
-func (p *provider) BackoffDuration() time.Duration {
-	return 0
-}
 
 func decodeData(data string, encoding string) ([]byte, error) {
 	switch encoding {

@@ -9,13 +9,24 @@ import:
   subpackages:
   - codes
 - package: github.com/coreos/ignition
-  version: b6850837b3b9bd17b673e58b5c406b5e4192ddca
+  version: 3ffd793b1292c6b0b3519bce214bdb41f336faa7
   subpackages:
   - config
+  - config/types
+  - config/v1
+  - config/v1/types
+  - config/validate
+  - config/validate/astjson
+  - config/validate/report
 - package: github.com/coreos/fuze
-  version: 7df4f06041d9daba45e4c68221b9b04203dff1d8
+  version: 63c72bc1c8875f7f4ca11800a1a8de0478a69a12
   subpackages:
   - config
+  - config/types
+- package: github.com/ajeddeloh/yaml
+  version: 1072abfea31191db507785e2e0c1b8d1440d35a5
+- package: github.com/vincent-petithory/dataurl
+  version: 9a301d65acbb728fcc3ace14f45f511a4cfeea9c
 - package: github.com/coreos/coreos-cloudinit
   version: v1.11.0
   subpackages:
@@ -72,8 +83,6 @@ import:
   - difflib
 - package: github.com/spf13/pflag
   version: 7f60f83a2c81bc3c3c0d5297f61ddfa68da9d3b7
-- package: github.com/vincent-petithory/dataurl
-  version: 9a301d65acbb728fcc3ace14f45f511a4cfeea9c
 - package: go4.org
   version: 03efcb870d84809319ea509714dd6d19a1498483
   subpackages:

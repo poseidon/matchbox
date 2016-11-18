@@ -15,8 +15,9 @@
 package types
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 type Disk struct {
@@ -24,32 +25,35 @@ type Disk struct {
 	WipeTable  bool        `json:"wipeTable,omitempty"`
 	Partitions []Partition `json:"partitions,omitempty"`
 }
-type disk Disk
 
-func (n *Disk) UnmarshalJSON(data []byte) error {
-	tn := disk(*n)
-	if err := json.Unmarshal(data, &tn); err != nil {
-		return err
-	}
-	*n = Disk(tn)
-	return n.AssertValid()
-}
-
-func (n Disk) AssertValid() error {
+func (n Disk) Validate() report.Report {
+	r := report.Report{}
 	if len(n.Device) == 0 {
-		return fmt.Errorf("disk device is required")
+		r.Add(report.Entry{
+			Message: "disk device is required",
+			Kind:    report.EntryError,
+		})
 	}
 	if n.partitionNumbersCollide() {
-		return fmt.Errorf("disk %q: partition numbers collide", n.Device)
+		r.Add(report.Entry{
+			Message: fmt.Sprintf("disk %q: partition numbers collide", n.Device),
+			Kind:    report.EntryError,
+		})
 	}
 	if n.partitionsOverlap() {
-		return fmt.Errorf("disk %q: partitions overlap", n.Device)
+		r.Add(report.Entry{
+			Message: fmt.Sprintf("disk %q: partitions overlap", n.Device),
+			Kind:    report.EntryError,
+		})
 	}
 	if n.partitionsMisaligned() {
-		return fmt.Errorf("disk %q: partitions misaligned", n.Device)
+		r.Add(report.Entry{
+			Message: fmt.Sprintf("disk %q: partitions misaligned", n.Device),
+			Kind:    report.EntryError,
+		})
 	}
-	// Disks which get to this point will likely succeed in sgdisk
-	return nil
+	// Disks which have no errors at this point will likely succeed in sgdisk
+	return r
 }
 
 // partitionNumbersCollide returns true if partition numbers in n.Partitions are not unique.

@@ -115,21 +115,33 @@ func (l *Logger) PopPrefix() {
 	l.prefixStack = l.prefixStack[:len(l.prefixStack)-1]
 }
 
+// quotedCmd returns a concatenated, quoted form of cmd's cmdline
+func quotedCmd(cmd *exec.Cmd) string {
+	if len(cmd.Args) == 0 {
+		return fmt.Sprintf("%q", cmd.Path)
+	}
+
+	var q []string
+	for _, s := range cmd.Args {
+		q = append(q, fmt.Sprintf("%q", s))
+	}
+
+	return strings.Join(q, ` `)
+}
+
 // LogCmd runs and logs the supplied cmd as an operation with distinct start/finish/fail log messages uniformly combined with the supplied format string.
 // The exact command path and arguments being executed are also logged for debugging assistance.
 func (l *Logger) LogCmd(cmd *exec.Cmd, format string, a ...interface{}) error {
 	f := func() error {
-		if len(cmd.Args) <= 1 {
-			l.Debug("executing: %v", cmd.Path)
-		} else {
-			l.Debug("executing: %v %v", cmd.Path, cmd.Args[1:])
-		}
+		cmdLine := quotedCmd(cmd)
+		l.Debug("executing: %s", cmdLine)
+
 		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
 		cmd.Stdout = stdout
 		cmd.Stderr = stderr
 		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("%v: Stdout: %q Stderr: %q", err, stdout.Bytes(), stderr.Bytes())
+			return fmt.Errorf("%v: Cmd: %s Stdout: %q Stderr: %q", err, cmdLine, stdout.Bytes(), stderr.Bytes())
 		}
 		return nil
 	}

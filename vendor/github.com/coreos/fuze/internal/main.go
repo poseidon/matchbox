@@ -56,9 +56,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	cfg, err := config.ParseAsV2_0_0(dataIn)
-	if err != nil {
-		stderr("Failed to parse: %v", err)
+	fuzeCfg, report := config.Parse(dataIn)
+	stderr(report.String())
+	if report.IsFatal() {
+		stderr("Failed to parse fuze config")
+		os.Exit(1)
+	}
+
+	cfg, report := config.ConvertAs2_0_0(fuzeCfg)
+	stderr(report.String())
+	if report.IsFatal() {
+		stderr("Generated Ignition config was invalid.")
 		os.Exit(1)
 	}
 

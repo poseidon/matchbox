@@ -15,8 +15,9 @@
 package types
 
 import (
-	"encoding/json"
 	"errors"
+
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 var (
@@ -25,26 +26,11 @@ var (
 
 type Compression string
 
-func (c *Compression) UnmarshalJSON(data []byte) error {
-	return c.unmarshal(func(tc interface{}) error {
-		return json.Unmarshal(data, tc)
-	})
-}
-
-func (c *Compression) unmarshal(unmarshal func(interface{}) error) error {
-	var tc string
-	if err := unmarshal(&tc); err != nil {
-		return err
-	}
-	*c = Compression(tc)
-	return c.AssertValid()
-}
-
-func (c Compression) AssertValid() error {
+func (c Compression) Validate() report.Report {
 	switch c {
 	case "", "gzip":
 	default:
-		return ErrCompressionInvalid
+		return report.ReportFromError(ErrCompressionInvalid, report.EntryError)
 	}
-	return nil
+	return report.Report{}
 }
