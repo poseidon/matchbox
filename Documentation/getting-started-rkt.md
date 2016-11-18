@@ -62,17 +62,17 @@ Run the latest `bootcfg` ACI with rkt and the `etcd` example.
 
 or run the latest tagged release signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.4.0 -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.4.1 -- -address=0.0.0.0:8080 -log-level=debug
 
 If you get an error about the IP assignment, stop old pods and run garbage collection.
 
     sudo rkt gc --grace-period=0
 
-Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service.
+Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
-* [node1's ipxe](http://172.15.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae)
-* [node1's Ignition](http://172.15.0.2:8080/ignition?mac=52:54:00:a1:9c:ae)
-* [node1's Metadata](http://172.15.0.2:8080/metadata?mac=52:54:00:a1:9c:ae)
+* iPXE [http://172.15.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae](http://172.15.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae)
+* Ignition [http://172.15.0.2:8080/ignition?mac=52:54:00:a1:9c:ae](http://172.15.0.2:8080/ignition?mac=52:54:00:a1:9c:ae)
+* Metadata [http://172.15.0.2:8080/metadata?mac=52:54:00:a1:9c:ae](http://172.15.0.2:8080/metadata?mac=52:54:00:a1:9c:ae)
 
 ## Network
 

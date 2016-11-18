@@ -35,13 +35,13 @@ Run the latest `bootcfg` Docker image from `quay.io/coreos/bootcfg` with the `et
 
 or run the latest tagged release.
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:v0.4.0 -address=0.0.0.0:8080 -log-level=debug
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:v0.4.1 -address=0.0.0.0:8080 -log-level=debug
 
-Take a look at the [etcd groups](../examples/groups/etcd-docker) to get an idea of how machines are mapped to Profiles. Explore some endpoints port mapped to localhost:8080.
+Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
-* [node1's ipxe](http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae)
-* [node1's Ignition](http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae)
-* [node1's Metadata](http://127.0.0.1:8080/metadata?mac=52:54:00:a1:9c:ae)
+* iPXE [http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae)
+* Ignition [http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae)
+* Metadata [http://127.0.0.1:8080/metadata?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/metadata?mac=52:54:00:a1:9c:ae)
 
 ## Network
 
