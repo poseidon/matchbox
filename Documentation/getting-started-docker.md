@@ -24,7 +24,7 @@ Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source 
 
 Download CoreOS image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
 
-    ./scripts/get-coreos beta 1185.1.0 ./examples/assets
+    ./scripts/get-coreos stable 1185.3.0 ./examples/assets
 
 ## Containers
 

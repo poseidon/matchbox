@@ -22,7 +22,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos beta 1185.1.0 ./examples/assets
+    ./scripts/get-coreos stable 1185.3.0 ./examples/assets
 
 ## Containers
 
