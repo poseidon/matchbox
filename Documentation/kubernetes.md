@@ -10,6 +10,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) o
 * Use rkt or Docker to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
+* `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
 ## Examples
 
@@ -27,15 +28,12 @@ Download the CoreOS image assets referenced in the target [profile](../examples/
 
 Optionally, add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
-Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`).
+Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver`, `worker`) with SANs for `node1.example.com`, etc.
 
     rm -rf examples/assets/tls
-    # for Kubernetes on CNI metal0 (for rkt)
-    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.15.0.21 -m IP.1=10.3.0.1,IP.2=172.15.0.21,DNS.1=node1.example.com -w DNS.1=node2.example.com,DNS.2=node3.example.com
-    # for Kubernetes on docker0 (for docker)
-    ./scripts/tls/k8s-certgen -d examples/assets/tls -s 172.17.0.21 -m IP.1=10.3.0.1,IP.2=172.17.0.21,DNS.1=node1.example.com -w DNS.1=node2.example.com,DNS.2=node3.example.com
+    ./scripts/tls/k8s-certgen
 
-**Note**: TLS assets are served to any machines which request them, which requires a trusted network. Alternately, provisioning may be tweaked to require TLS assets be securely copied to each host. Read about our longer term security plans at [Distributed Trusted Computing](https://coreos.com/blog/coreos-trusted-computing.html).
+**Note**: TLS assets are served to any machines which request them, which requires a trusted network. Alternately, provisioning may be tweaked to require TLS assets be securely copied to each host.
 
 ## Containers
 
@@ -66,7 +64,7 @@ Get all pods.
     kube-system   kube-proxy-node2.example.com                1/1       Running   0          3m
     kube-system   kube-proxy-node3.example.com                1/1       Running   0          3m
     kube-system   kube-scheduler-node1.example.com            1/1       Running   0          3m
-    kube-system   kubernetes-dashboard-v1.4.0-0iy07           1/1       Running   0          4m
+    kube-system   kubernetes-dashboard-v1.4.1-0iy07           1/1       Running   0          4m
 
 ## Kubernetes Dashboard
 

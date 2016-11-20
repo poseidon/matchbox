@@ -26,6 +26,14 @@ Download CoreOS image assets referenced by the `etcd-docker` [example](../exampl
 
     ./scripts/get-coreos stable 1185.3.0 ./examples/assets
 
+For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name as you would in production.
+
+    # /etc/hosts
+    ...
+    172.17.0.21 node1.example.com
+    172.17.0.22 node2.example.com
+    172.17.0.23 node3.example.com
+
 ## Containers
 
 Run the latest `bootcfg` Docker image from `quay.io/coreos/bootcfg` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
@@ -73,7 +81,9 @@ The example profile added autologin so you can verify that etcd works between no
     etcdctl set /message hello
     etcdctl get /message
 
-Clean up the VM machines.
+## Cleanup
+
+Clean up the containers and VM machines.
 
     sudo docker rm -f dnsmasq
     sudo ./scripts/libvirt poweroff
@@ -81,5 +91,5 @@ Clean up the VM machines.
 
 ## Going Further
 
-Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s-docker example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 

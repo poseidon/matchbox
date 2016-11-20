@@ -54,6 +54,14 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 After a recent update, you may see a warning that NetworkManager controls the interface. Work-around this using the firewall-config GUI to add `metal0` to the trusted zone.
 
+For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name as you would in production.
+
+    # /etc/hosts
+    ...
+    172.15.0.21 node1.example.com
+    172.15.0.22 node2.example.com
+    172.15.0.23 node3.example.com
+
 ## Containers
 
 Run the latest `bootcfg` ACI with rkt and the `etcd` example.
@@ -110,6 +118,8 @@ The example profile added autologin so you can verify that etcd works between no
     systemctl status etcd2
     etcdctl set /message hello
     etcdctl get /message
+
+## Cleanup
 
 Press ^] three times to stop a rkt pod. Clean up the VM machines.
 

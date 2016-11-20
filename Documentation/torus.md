@@ -10,6 +10,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) g
 * Use rkt or Docker to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
+* `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 * Install the Torus [binaries](https://github.com/coreos/torus/releases)
 
 ## Examples
@@ -36,7 +37,7 @@ Create a network boot environment and power-on your machines. Revisit [bootcfg w
 
 Install the Torus [binaries](https://github.com/coreos/torus/releases) on your laptop. Torus uses etcd3 for coordination and metadata storage, so any etcd node in the cluster can be queried with `torusctl`.
 
-    ./torusctl --etcd 172.15.0.21:2379 list-peers
+    ./torusctl --etcd node1.example.com:2379 list-peers
 
 Run `list-peers` to report the status of data nodes in the Torus cluster.
 
@@ -57,11 +58,11 @@ Torus has already initialized its metadata within etcd3 to format the cluster an
 
 Create a new replicated, virtual block device or `volume` on Torus.
 
-    ./torusctl --etcd=172.15.0.21:2379 block create hello 500MiB
+    ./torusctl --etcd=node1.example.com:2379 block create hello 500MiB
 
 List the current volumes,
 
-    ./torusctl --etcd=172.15.0.21:2379 volume list
+    ./torusctl --etcd=node1.example.com:2379 volume list
 
 and verify that `hello` was created.
 
@@ -78,7 +79,7 @@ and verify that `hello` was created.
 Let's attach the Torus volume, create a filesystem, and add some files. Add the `nbd` kernel module.
 
     sudo modprobe nbd
-    sudo ./torusblk --etcd=172.15.0.21:2379 nbd hello
+    sudo ./torusblk --etcd=node1.example.com:2379 nbd hello
 
 In a new shell, create a new filesystem on the volume and mount it on your system.
 
@@ -100,14 +101,14 @@ By default, Torus uses a replication factor of 2. You may write some data and po
 
 Check the Torus data nodes.
 
-    $ ./torusctl --etcd 172.15.0.21:2379 list-peers
+    $ ./torusctl --etcd node1.example.com:2379 list-peers
 
 ```
 +--------------------------+--------------------------------------+---------+--------+--------+---------------+--------------+
 |         ADDRESS          |                 UUID                 |  SIZE   |  USED  | MEMBER |    UPDATED    | REB/REP DATA |
 +--------------------------+--------------------------------------+---------+--------+--------+---------------+--------------+
-| http://172.15.0.21:40000 | 016fad6a-2e23-11e6-8ced-525400a19cae | 1.0 GiB | 22 MiB | OK     | 3 seconds ago | 0 B/sec      |
-| http://172.15.0.22:40000 | 0c67d31c-2e23-11e6-91f5-525400b22f86 | 1.0 GiB | 22 MiB | OK     | 3 seconds ago | 0 B/sec      |
+| http://node1.example.com:40000 | 016fad6a-2e23-11e6-8ced-525400a19cae | 1.0 GiB | 22 MiB | OK     | 3 seconds ago | 0 B/sec      |
+| http://node2.example.com:40000 | 0c67d31c-2e23-11e6-91f5-525400b22f86 | 1.0 GiB | 22 MiB | OK     | 3 seconds ago | 0 B/sec      |
 |                          | 0408cbba-2e23-11e6-9871-525400c36177 | ???     | ???    | DOWN   | Missing       |              |
 +--------------------------+--------------------------------------+---------+--------+--------+---------------+--------------+
 Balanced: true Usage:  2.15%
