@@ -10,6 +10,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) o
 * Use rkt or Docker to start `bootcfg`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
+* `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
 Build and install the [fork of bootkube](https://github.com/dghubble/bootkube), which supports DNS names.
 
@@ -27,7 +28,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
-    ./scripts/get-coreos beta 1185.1.0 ./examples/assets
+    ./scripts/get-coreos stable 1185.3.0 ./examples/assets
 
 Add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
 
@@ -40,8 +41,7 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 
-    # If running with docker, use 172.17.0.21 instead of 172.15.0.21
-    bootkube render --asset-dir=assets --api-servers=https://172.15.0.21:443 --api-server-alt-names=DNS=node1.example.com,IP=172.15.0.21
+    bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com
 
 ## Containers
 
@@ -53,17 +53,17 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 We're ready to use bootkube to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
 
-Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node (i.e. 172.15.0.21-23 for metal0 or 172.17.0.21-23 for docker0).
+Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node which will path activate the `kubelet.service`.
 
-    for node in '172.15.0.21' '172.15.0.22' '172.15.0.23'; do
-        scp assets/auth/kubeconfig core@$node:/home/core/kubeconfig
-        ssh core@$node 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
+    for node in 'node1' 'node2' 'node3'; do
+        scp assets/auth/kubeconfig core@$node.example.com:/home/core/kubeconfig
+        ssh core@$node.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
     done
 
 Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
 
-    scp -r assets core@172.15.0.21:/home/core/assets
-    ssh core@172.15.0.21 'sudo ./bootkube-start'
+    scp -r assets core@node1.example.com:/home/core/assets
+    ssh core@node1.example.com 'sudo ./bootkube-start'
 
 Watch the temporary control plane logs until the scheduled kubelet takes over in place of the on-host kubelet.
 
