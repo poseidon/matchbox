@@ -33,9 +33,13 @@ Get started running `bootcfg` on your Linux machine to network boot and provisio
 * [Torus Storage](../Documentation/torus.md)
 * [Lab Examples](https://github.com/dghubble/metal)
 
+## Autologin
+
+Example profiles pass the `coreos.autologin` kernel argument. This skips the password prompt for development and troubleshooting and should be removed **before production**.
+
 ## SSH Keys
 
-Most examples allow `ssh_authorized_keys` to be added for the `core` user as machine group metadata.
+Example groups allow `ssh_authorized_keys` to be added for the `core` user as metadata. You might also include this directly in your Ignition.
 
     # /var/lib/bootcfg/groups/default.json
     {
