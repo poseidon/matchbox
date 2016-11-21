@@ -94,7 +94,7 @@ Create a group definition with a `Profile` to be applied, selectors for matching
       "metadata": {
         "fleet_metadata": "role=etcd,name=node1",
         "etcd_name": "node1",
-        "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
+        "etcd_initial_cluster": "node1=http://node1.example.com:2380,node2=http://node2.example.com:2380,node3=http://node3.example.com:2380"
       }
     }
 
@@ -105,7 +105,7 @@ Meanwhile, `/var/lib/bootcfg/groups/proxy.json` acts as the default machine grou
       "profile": "etcd-proxy",
       "metadata": {
         "fleet_metadata": "role=etcd-proxy",
-        "etcd_initial_cluster": "node1=http://172.15.0.21:2380,node2=http://172.15.0.22:2380,node3=http://172.15.0.23:2380"
+        "etcd_initial_cluster": "node1=http://node1.example.com:2380,node2=http://node2.example.com:2380,node3=http://node3.example.com:2380"
       }
     }
 

@@ -75,7 +75,7 @@ function create {
   systemd-run --unit=dev-bootcfg \
     rkt run \
     --uuid-file-save=/tmp/bootcfg \
-    --net=metal0:IP=172.15.0.2 \
+    --net=metal0:IP=172.18.0.2 \
     --mount volume=config,target=/etc/bootcfg \
     --volume config,kind=host,source=$PWD/examples/etc/bootcfg,readOnly=true \
     --mount volume=data,target=/var/lib/bootcfg \
@@ -86,7 +86,7 @@ function create {
   systemd-run --unit=dev-dnsmasq \
     rkt run \
     --uuid-file-save=/tmp/dnsmasq \
-    --net=metal0:IP=172.15.0.3 \
+    --net=metal0:IP=172.18.0.3 \
     --mount volume=config,target=/etc/dnsmasq.conf \
     --volume config,kind=host,source=$DIR/../contrib/dnsmasq/metal0.conf \
     coreos.com/dnsmasq:v0.3.0

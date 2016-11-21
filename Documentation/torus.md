@@ -27,11 +27,9 @@ Download the CoreOS image assets referenced in the target [profile](../examples/
 
 ## Containers
 
-Run the latest `bootcfg` ACI with rkt and the `torus` example.
+Use rkt or docker to start `bootcfg` and mount `torus` example. Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/torus quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
-
-Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help. Client machines should network boot and provision themselves.
+Client machines should network boot and provision themselves.
 
 ## Verify
 

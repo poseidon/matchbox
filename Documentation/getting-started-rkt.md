@@ -41,7 +41,7 @@ sudo bash -c 'cat > /etc/rkt/net.d/20-metal.conf << EOF
   "ipMasq": true,
   "ipam": {
     "type": "host-local",
-    "subnet": "172.15.0.0/16",
+    "subnet": "172.18.0.0/24",
     "routes" : [ { "dst" : "0.0.0.0/0" } ]
    }
 }
@@ -58,19 +58,19 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
 
     # /etc/hosts
     ...
-    172.15.0.21 node1.example.com
-    172.15.0.22 node2.example.com
-    172.15.0.23 node3.example.com
+    172.18.0.21 node1.example.com
+    172.18.0.22 node2.example.com
+    172.18.0.23 node3.example.com
 
 ## Containers
 
 Run the latest `bootcfg` ACI with rkt and the `etcd` example.
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 or run the latest tagged release signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.4.1 -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.4.1 -- -address=0.0.0.0:8080 -log-level=debug
 
 If you get an error about the IP assignment, stop old pods and run garbage collection.
 
@@ -78,9 +78,9 @@ If you get an error about the IP assignment, stop old pods and run garbage colle
 
 Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
-* iPXE [http://172.15.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae](http://172.15.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae)
-* Ignition [http://172.15.0.2:8080/ignition?mac=52:54:00:a1:9c:ae](http://172.15.0.2:8080/ignition?mac=52:54:00:a1:9c:ae)
-* Metadata [http://172.15.0.2:8080/metadata?mac=52:54:00:a1:9c:ae](http://172.15.0.2:8080/metadata?mac=52:54:00:a1:9c:ae)
+* iPXE [http://172.18.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae](http://172.18.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae)
+* Ignition [http://172.18.0.2:8080/ignition?mac=52:54:00:a1:9c:ae](http://172.18.0.2:8080/ignition?mac=52:54:00:a1:9c:ae)
+* Metadata [http://172.18.0.2:8080/metadata?mac=52:54:00:a1:9c:ae](http://172.18.0.2:8080/metadata?mac=52:54:00:a1:9c:ae)
 
 ## Network
 
@@ -93,9 +93,9 @@ Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/)
 
 Run the `coreos.com/dnsmasq` ACI with rkt.
 
-    sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=metal0:IP=172.15.0.3 --mount volume=config,target=/etc/dnsmasq.conf --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf
+    sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=metal0:IP=172.18.0.3 --mount volume=config,target=/etc/dnsmasq.conf --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf
 
-In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.15.0.50 and 172.15.0.99, resolves `bootcfg.foo` to 172.15.0.2 (the IP where `bootcfg` runs), and points iPXE clients to `http://bootcfg.foo:8080/boot.ipxe`.
+In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.18.0.50 and 172.18.0.99, resolves `bootcfg.foo` to 172.18.0.2 (the IP where `bootcfg` runs), and points iPXE clients to `http://bootcfg.foo:8080/boot.ipxe`.
 
 ## Client VMs
 

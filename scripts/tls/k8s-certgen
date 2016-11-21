@@ -4,9 +4,9 @@ USAGE="Usage: $(basename $0)
 Options:
   -d DEST     Destination for generated files (default: .examples/assets/tls)
   -s SERVER   Reachable Server IP for kubeconfig (e.g. node1.example.com)
-  -m MASTERS  Controller Node Names/Addresses in SAN format (e.g. IP.1=10.3.0.1,DNS.1=node1.example.com).
+  -m MASTERS  Controller Node Names/Addresses in SAN format (e.g. IP.1=10.3.0.1,DNS.1=node1.example.com)
   -w WORKERS  Worker Node Names/Addresses in SAN format (e.g. DNS.1=node2.example.com,DNS.2=node3.example.com)
-  -h          Show help.
+  -h          Show help
 "
 
 DEST="./examples/assets/tls"
