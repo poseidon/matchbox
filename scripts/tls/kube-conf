@@ -6,7 +6,7 @@ function usage {
 }
 
 function base64_encode {
-  if [[ "$OSTYPE" == "darwin" ]]; then
+  if [[ "$OSTYPE" == darwin* ]]; then
     base64 $1
   else
     base64 -w 0 $1
