@@ -45,7 +45,7 @@ Run the binary.
 
 Run the latest ACI with rkt.
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --mount volume=assets,target=/var/lib/bootcfg/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 Run the latest Docker image.
 
@@ -55,7 +55,7 @@ Run the latest Docker image.
 
 Mount `examples` to pre-load the [example](../examples/README.md) machine groups and profiles. Run the container with rkt,
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 or with Docker.
 
@@ -77,11 +77,11 @@ Clients, such as `bootcmd`, verify the server's certificate with a CA bundle pas
 
 Run the ACI with rkt and TLS credentials from `examples/etc/bootcfg`.
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples,readOnly=true --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=$PWD/examples/etc/bootcfg --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples,readOnly=true --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=$PWD/examples/etc/bootcfg --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 
 A `bootcmd` client can call the gRPC API running at the IP used in the rkt example.
 
-    ./bin/bootcmd profile list --endpoints 172.15.0.2:8081 --ca-file examples/etc/bootcfg/ca.crt --cert-file examples/etc/bootcfg/client.crt --key-file examples/etc/bootcfg/client.key
+    ./bin/bootcmd profile list --endpoints 172.18.0.2:8081 --ca-file examples/etc/bootcfg/ca.crt --cert-file examples/etc/bootcfg/client.crt --key-file examples/etc/bootcfg/client.key
 
 #### With docker
 
@@ -102,7 +102,7 @@ Run with the binary with a test key.
 
 Run the ACI with a test key.
 
-    sudo rkt run --net=metal0:IP=172.15.0.2 --set-env=BOOTCFG_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/bootcfg/sign/fixtures --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
+    sudo rkt run --net=metal0:IP=172.18.0.2 --set-env=BOOTCFG_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/bootcfg/sign/fixtures --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
 
 Run the Docker image with a test key.
 

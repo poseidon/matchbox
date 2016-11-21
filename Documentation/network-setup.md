@@ -39,7 +39,7 @@ Add a DNS entry (e.g. `bootcfg.foo`, `provisoner.mycompany-internal`) that resol
 If you deployed `bootcfg` to a known IP address (e.g. dedicated host, load balanced endpoint, Kubernetes NodePort) and use `dnsmasq`, a domain name to IPv4/IPv6 address mapping could be added to the `/etc/dnsmasq.conf`.
 
     # dnsmasq.conf
-    address=/bootcfg.foo/172.15.0.2
+    address=/bootcfg.foo/172.18.0.2
 
 ## iPXE
 
