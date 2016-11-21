@@ -44,7 +44,7 @@ systemd:
         After=network-online.target
         [Service]
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
-        ExecStart=/usr/bin/bash -c "[ -f /etc/kubernetes/ssl/%i ] || curl {{.k8s_cert_endpoint}}/tls/%i -o /etc/kubernetes/ssl/%i"
+        ExecStart=/usr/bin/bash -c "[ -f /etc/kubernetes/ssl/%i ] || curl --fail {{.k8s_cert_endpoint}}/tls/%i -o /etc/kubernetes/ssl/%i"
     - name: k8s-assets.target
       contents: |
         [Unit]
@@ -600,7 +600,7 @@ storage:
                 IFS=',' read -ra ES <<< "{{.k8s_etcd_endpoints}}"
                 for ETCD in "${ES[@]}"; do
                     echo "Trying: $ETCD"
-                    if [ -n "$(curl --silent "$ETCD/v2/machines")" ]; then
+                    if [ -n "$(curl --fail --silent "$ETCD/v2/machines")" ]; then
                         local ACTIVE_ETCD=$ETCD
                         break
                     fi
@@ -610,7 +610,7 @@ storage:
                     break
                 fi
             done
-            RES=$(curl --silent -X PUT -d "value={\"Network\":\"{{.k8s_pod_network}}\",\"Backend\":{\"Type\":\"vxlan\"}}" "$ACTIVE_ETCD/v2/keys/coreos.com/network/config?prevExist=false")
+            RES=$(curl --fail --silent -X PUT -d "value={\"Network\":\"{{.k8s_pod_network}}\",\"Backend\":{\"Type\":\"vxlan\"}}" "$ACTIVE_ETCD/v2/keys/coreos.com/network/config?prevExist=false")
             if [ -z "$(echo $RES | grep '"action":"create"')" ] && [ -z "$(echo $RES | grep 'Key already exists')" ]; then
                 echo "Unexpected error configuring flannel pod network: $RES"
             fi
@@ -623,19 +623,19 @@ storage:
         inline: |
           #!/bin/bash -ex
           echo "Waiting for Kubernetes API..."
-          until curl --silent "http://127.0.0.1:8080/version"
+          until curl --fail --silent "http://127.0.0.1:8080/version"
           do
             sleep 5
           done
           echo "K8S: DNS addon"
-          curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-rc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
-          curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
+          curl --fail --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-rc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
+          curl --fail --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dns-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
           echo "K8S: Heapster addon"
-          curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-deployment.yaml)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments"
-          curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services"
+          curl --fail --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-deployment.yaml)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments"
+          curl --fail --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/heapster-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services"
           echo "K8S: Dashboard addon"
-          curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-rc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
-          curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
+          curl --fail --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-rc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers" > /dev/null
+          curl --fail --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /srv/kubernetes/manifests/kube-dashboard-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
