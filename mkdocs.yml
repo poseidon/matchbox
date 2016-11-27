@@ -1,0 +1,38 @@
+site_name: metal
+theme: alabaster
+docs_dir: Documentation
+markdown_extensions:
+    - smarty
+    - toc:
+        permalink: "¶"
+    - sane_lists
+    - tables
+extra:
+  include_toc: yes
+  show_powered_by: false
+  extra_nav_links:
+    Github: https://github.com/coreos/coreos-baremetal
+pages:
+  - Home: 'index.md'
+  - Tutorials:
+    - 'bootcfg with rkt': 'getting-started-rkt.md'
+    - 'bootcfg with docker': 'getting-started-docker.md'
+  - Guides:
+    - 'Network Setup': 'network-setup.md'
+    - 'Machine Lifecycle': 'machine-lifecycle.md'
+    - 'Background: PXE Booting': 'network-booting.md'
+  - Installation: 'deployment.md'
+  - bootcfg Service: 'bootcfg.md'
+  - Machine Configs:
+    - 'Ignition': 'ignition.md'
+    - 'Cloud-Config': 'cloud-config.md'
+  - Configuration: 'config.md'
+  - HTTP API: 'api.md'
+  - Signing: 'openpgp.md'
+  - Troubleshooting: 'troubleshooting.md'
+  - Example Clusters:
+    - Kubernetes (static): 'kubernetes.md'
+    - rktnetes (static): 'rktnetes.md'
+    - Self-hosted Kubernetes: 'bootkube.md'
+    - Upgrading Kubernetes: 'bootkube-upgrades.md'
+    - Torus: 'torus.md'
