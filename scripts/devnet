@@ -8,6 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 EXAMPLE=${2:-}
 BRIDGE=metal0
+COREOS_CHANNEL=stable
 COREOS_VERSION=1185.3.0
 BOOTCFG_ARGS=""
 
@@ -46,7 +47,7 @@ function check {
   fi
 
   if [ ! -d $DIR/../examples/assets/coreos/$COREOS_VERSION ]; then
-    echo "Most examples use CoreOS Alpha $COREOS_VERSION. You may wish to download it with './scripts/get-coreos alpha $COREOS_VERSION'."
+    echo "Most examples use CoreOS $COREOS_CHANNEL $COREOS_VERSION. You may wish to download it with './scripts/get-coreos $COREOS_CHANNEL $COREOS_VERSION'."
   fi
 }
 
