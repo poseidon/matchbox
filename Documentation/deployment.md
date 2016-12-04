@@ -48,10 +48,10 @@ The `bootcfg` gRPC API allows client apps (`bootcmd` CLI, Tectonic Installer, et
 
 If your organization manages public key infrastructure and a certificate authority, create a server certificate and key for the `bootcfg` service and a client certificate and key for each client tool.
 
-Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `scripts/tls/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
+Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `examples/etc/bootcfg/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
 
 ```sh
-$ cd scripts/tls
+$ cd examples/etc/bootcfg
 # DNS or IP Subject Alt Names where bootcfg can be reached
 $ export SAN=DNS.1:bootcfg.example.com,IP.1:192.168.1.42
 $ ./cert-gen
@@ -150,7 +150,7 @@ bootcfg
 If you enabled the gRPC API,
 
 ```sh
-$ openssl s_client -connect bootcfg.example.com:8081 -CAfile /etc/bootcfg/ca.crt -cert scripts/tls/client.crt -key scripts/tls/client.key
+$ openssl s_client -connect bootcfg.example.com:8081 -CAfile /etc/bootcfg/ca.crt -cert examples/etc/bootcfg/client.crt -key examples/etc/bootcfg/client.key
 CONNECTED(00000003)
 depth=1 CN = fake-ca
 verify return:1
