@@ -20,7 +20,5 @@ deploy:
   on:
     branch: master
     go: '1.7.4'
-    condition: "$TRAVIS_PULL_REQUEST = false"
 notifications:
   email: change
-
