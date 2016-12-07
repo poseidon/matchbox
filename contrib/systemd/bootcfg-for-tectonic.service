@@ -6,6 +6,8 @@ Documentation=https://github.com/coreos/coreos-baremetal
 Environment="IMAGE=quay.io/coreos/bootcfg"
 Environment="VERSION=v0.4.1"
 Environment="BOOTCFG_ADDRESS=0.0.0.0:8080"
+Environment="BOOTCFG_RPC_ADDRESS=0.0.0.0:8081"
+Environment="BOOTCFG_LOG_LEVEL=debug"
 ExecStartPre=/usr/bin/mkdir -p /etc/bootcfg
 ExecStartPre=/usr/bin/mkdir -p /var/lib/bootcfg/assets
 ExecStart=/usr/bin/rkt run \
