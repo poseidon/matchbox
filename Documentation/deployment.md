@@ -1,7 +1,7 @@
 
 # Installation
 
-This guide walks through deploying the `bootcfg` service on a Linux host (via binary, rkt, or docker) or on a Kubernetes cluster.
+This guide walks through deploying the `bootcfg` service on a Linux host (via RPM, rkt, docker, or binary) or on a Kubernetes cluster.
 
 ## Provisoner
 
@@ -9,12 +9,12 @@ This guide walks through deploying the `bootcfg` service on a Linux host (via bi
 
 Choose one of the supported installation options:
 
-* [CoreOS (systemd & rkt)](#coreos)
-* [General Linux (systemd & binary)](#general-linux)
+* [CoreOS (rkt)](#coreos)
+* [RPM-based](#rpm-based-distro)
+* [General Linux (binary)](#general-linux)
 * [With rkt](#rkt)
 * [With docker](#docker)
 * [Kubernetes Service](#kubernetes)
-* RPM package ([coming soon](https://github.com/coreos/coreos-baremetal/issues/266))
 
 ## Download
 
@@ -40,43 +40,30 @@ $ tar xzvf coreos-baremetal-v0.4.1-linux-amd64.tar.gz
 $ cd coreos-baremetal-v0.4.1-linux-amd64
 ```
 
-## Generate TLS Credentials
-
-*Skip this unless you need to enable the gRPC API*
-
-The `bootcfg` gRPC API allows client apps (`bootcmd` CLI, Tectonic Installer, etc.) to manage how machines are provisioned. TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
-
-If your organization manages public key infrastructure and a certificate authority, create a server certificate and key for the `bootcfg` service and a client certificate and key for each client tool.
-
-Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `examples/etc/bootcfg/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
-
-```sh
-$ cd examples/etc/bootcfg
-# DNS or IP Subject Alt Names where bootcfg can be reached
-$ export SAN=DNS.1:bootcfg.example.com,IP.1:192.168.1.42
-$ ./cert-gen
-```
-
-Place the TLS credentials in the default location:
-
-```sh
-$ sudo mkdir -p /etc/bootcfg
-$ sudo cp ca.crt server.crt server.key /etc/bootcfg/
-```
-
-Save `client.crt`, `client.key`, and `ca.crt` to use with a client tool later.
-
 ## Install
+
+### RPM-based Distro
+
+On an RPM-based provisioner, install the `bootcfg` RPM from the Copr [repository](https://copr.fedorainfracloud.org/coprs/dghubble/bootcfg/) using `dnf` or `yum`.
+
+```sh
+dnf copr enable dghubble/bootcfg
+dnf install bootcfg
+
+# requires yum-plugin-copr
+yum copr enable dghubble/bootcfg
+yum install bootcfg
+```
+
+Alternately, download the repo file and place it in `/etc/yum.repos.d/`.
 
 ### CoreOS
 
-On a CoreOS provisioner, rkt run `bootcfg` with the provided systemd unit.
+On a CoreOS provisioner, rkt run `bootcfg` image with the provided systemd unit.
 
 ```sh
 $ sudo cp contrib/systemd/bootcfg-on-coreos.service /etc/systemd/system/bootcfg.service
 ```
-
-The example unit exposes the `bootcfg` HTTP endpoints on port **8080** and exposes the (optional) gRPC API on port **8081** (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences.
 
 ### General Linux
 
@@ -101,19 +88,75 @@ $ sudo chown -R bootcfg:bootcfg /var/lib/bootcfg
 Copy the provided `bootcfg` systemd unit file.
 
 ```sh
-$ sudo cp contrib/systemd/bootcfg.service /etc/systemd/system/
+$ sudo cp contrib/systemd/bootcfg-local.service /etc/systemd/system/
 ```
 
-The example unit exposes the `bootcfg` HTTP endpoints on port **8080** and exposes the (optional) gRPC API on port **8081** (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences.
+## Customization
 
-#### Firewall
+Customize bootcfg by editing the systemd unit or adding a systemd dropin. Find the complete set of `bootcfg` flags and environment variables at [config](config.md).
 
-Be sure to allow your port choices on the provisioner's firewall so the clients can access the service. Here are the commands for those using `firewalld`:
+    sudo systemctl edit bootcfg
+
+By default, the read-only HTTP machine endpoint will be exposed on port **8080**.
+
+```ini
+# /etc/systemd/system/bootcfg.service.d/override.conf
+[Service]
+Environment="BOOTCFG_ADDRESS=0.0.0.0:8080"
+Environment="BOOTCFG_LOG_LEVEL=debug"
+```
+
+A common customization is enabling the gRPC API to allow clients with a TLS client certificate to change machine configs.
+
+```ini
+# /etc/systemd/system/bootcfg.service.d/override.conf
+[Service]
+Environment="BOOTCFG_ADDRESS=0.0.0.0:8080"
+Environment="BOOTCFG_RPC_ADDRESS=0.0.0.0:8081"
+```
+
+The Tectonic [Installer](https://tectonic.com/enterprise/docs/latest/install/bare-metal/index.html) uses this API. Tectonic users with a CoreOS provisioner can start with an example that enables it.
+
+```sh
+$ sudo cp contrib/systemd/bootcfg-for-tectonic.service /etc/systemd/system/bootcfg.service
+```
+
+Customize `bootcfg` to suit your preferences.
+
+## Firewall
+
+Allow your port choices on the provisioner's firewall so the clients can access the service. Here are the commands for those using `firewalld`:
 
 ```sh
 $ sudo firewall-cmd --zone=MYZONE --add-port=8080/tcp --permanent
 $ sudo firewall-cmd --zone=MYZONE --add-port=8081/tcp --permanent
 ```
+
+## Generate TLS Credentials
+
+*Skip this unless you need to enable the gRPC API*
+
+The `bootcfg` gRPC API allows client apps (`bootcmd` CLI, Tectonic Installer, etc.) to update how machines are provisioned. TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
+
+If your organization manages public key infrastructure and a certificate authority, create a server certificate and key for the `bootcfg` service and a client certificate and key for each client tool.
+
+Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `examples/etc/bootcfg/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
+
+```sh
+$ cd examples/etc/bootcfg
+# DNS or IP Subject Alt Names where bootcfg can be reached
+$ export SAN=DNS.1:bootcfg.example.com,IP.1:192.168.1.42
+$ ./cert-gen
+```
+
+Place the TLS credentials in the default location:
+
+```sh
+$ sudo mkdir -p /etc/bootcfg
+$ sudo cp ca.crt server.crt server.key /etc/bootcfg/
+```
+
+Save `client.crt`, `client.key`, and `ca.crt` to use with a client tool later.
 
 ## Start bootcfg
 
@@ -121,7 +164,8 @@ Start the `bootcfg` service and enable it if you'd like it to start on every boo
 
 ```sh
 $ sudo systemctl daemon-reload
-$ sudo systemctl enable bootcfg.service --now
+$ sudo systemctl start bootcfg
+$ sudo systemctl enable bootcfg
 ```
 
 ## Verify
