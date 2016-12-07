@@ -70,20 +70,13 @@ Save `client.crt`, `client.key`, and `ca.crt` to use with a client tool later.
 
 ### CoreOS
 
-On a CoreOS provisioner, run `bootcfg` with the provided systemd unit.
+On a CoreOS provisioner, rkt run `bootcfg` with the provided systemd unit.
 
 ```sh
 $ sudo cp contrib/systemd/bootcfg-on-coreos.service /etc/systemd/system/bootcfg.service
 ```
 
 The example unit exposes the `bootcfg` HTTP endpoints on port **8080** and exposes the (optional) gRPC API on port **8081** (remove the `-rpc-address` flag if you don't need the gRPC API). Customize the port settings to suit your preferences.
-
-The unit will rkt run a `bootcfg` image, signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/). Trust the public key.
-
-```sh
-$ sudo rkt trust --prefix quay.io/coreos/bootcfg
-# gpg key fingerprint is: BFF3 13CD AA56 0B16 A898  7B8F 72AB F5F6 799D 33BC
-```
 
 ### General Linux
 
