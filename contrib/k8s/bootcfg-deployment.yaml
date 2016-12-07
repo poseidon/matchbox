@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: bootcfg
-          image: quay.io/coreos/bootcfg:v0.4.1
+          image: quay.io/coreos/bootcfg:v0.4.2
           env:
             - {name: BOOTCFG_ADDRESS, value: "0.0.0.0:8080"}
             - {name: BOOTCFG_LOG_LEVEL, value: "debug"}

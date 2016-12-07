@@ -3,6 +3,12 @@
 
 This guide covers releasing new versions of coreos-baremetal.
 
+## Version
+
+Create a release commit which updates old version references.
+
+    export VERSION=v0.4.2
+
 ## Tag
 
 Tag, sign the release version, and push it to Github.
@@ -20,7 +26,6 @@ Publish the release on Github with release notes.
 
 Build the release tarballs.
 
-    export VERSION=v0.4.1
     make release
 
 ## ACI

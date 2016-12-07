@@ -21,23 +21,23 @@ Choose one of the supported installation options:
 Download the latest coreos-baremetal [release](https://github.com/coreos/coreos-baremetal/releases) to the provisioner host.
 
 ```sh
-$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.1/coreos-baremetal-v0.4.1-linux-amd64.tar.gz
-$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.1/coreos-baremetal-v0.4.1-linux-amd64.tar.gz.asc
+$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.2/coreos-baremetal-v0.4.2-linux-amd64.tar.gz
+$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.2/coreos-baremetal-v0.4.2-linux-amd64.tar.gz.asc
 ```
 
 Verify the release has been signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
 ```
 $ gpg --keyserver pgp.mit.edu --recv-key 18AD5014C99EF7E3BA5F6CE950BDD3E0FC8A365E
-$ gpg --verify coreos-baremetal-v0.4.1-linux-amd64.tar.gz.asc coreos-baremetal-v0.4.1-linux-amd64.tar.gz
+$ gpg --verify coreos-baremetal-v0.4.2-linux-amd64.tar.gz.asc coreos-baremetal-v0.4.2-linux-amd64.tar.gz
 # gpg: Good signature from "CoreOS Application Signing Key <security@coreos.com>"
 ```
 
 Untar the release.
 
 ```sh
-$ tar xzvf coreos-baremetal-v0.4.1-linux-amd64.tar.gz
-$ cd coreos-baremetal-v0.4.1-linux-amd64
+$ tar xzvf coreos-baremetal-v0.4.2-linux-amd64.tar.gz
+$ cd coreos-baremetal-v0.4.2-linux-amd64
 ```
 
 ## Install
@@ -256,7 +256,7 @@ Run the most recent tagged and signed `bootcfg` [release](https://github.com/cor
 ```sh
 $ sudo rkt trust --prefix coreos.com/bootcfg
 # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-$ sudo rkt run --net=host --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=/var/lib/bootcfg quay.io/coreos/bootcfg:v0.4.1 --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=/etc/bootcfg,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+$ sudo rkt run --net=host --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=/var/lib/bootcfg quay.io/coreos/bootcfg:v0.4.2 --mount volume=config,target=/etc/bootcfg --volume config,kind=host,source=/etc/bootcfg,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.
@@ -266,7 +266,7 @@ Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` o
 Run the latest or the most recently tagged `bootcfg` [release](https://github.com/coreos/coreos-baremetal/releases) Docker image.
 
 ```sh
-sudo docker run --net=host --rm -v /var/lib/bootcfg:/var/lib/bootcfg:Z -v /etc/bootcfg:/etc/bootcfg:Z,ro quay.io/coreos/bootcfg:v0.4.1 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+sudo docker run --net=host --rm -v /var/lib/bootcfg:/var/lib/bootcfg:Z -v /etc/bootcfg:/etc/bootcfg:Z,ro quay.io/coreos/bootcfg:v0.4.2 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/bootcfg` volume mounts.

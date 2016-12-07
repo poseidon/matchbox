@@ -4,7 +4,7 @@ Documentation=https://github.com/coreos/coreos-baremetal
 
 [Service]
 Environment="IMAGE=quay.io/coreos/bootcfg"
-Environment="VERSION=v0.4.1"
+Environment="VERSION=v0.4.2"
 Environment="BOOTCFG_ADDRESS=0.0.0.0:8080"
 ExecStartPre=/usr/bin/mkdir -p /etc/bootcfg
 ExecStartPre=/usr/bin/mkdir -p /var/lib/bootcfg/assets

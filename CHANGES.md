@@ -2,6 +2,14 @@
 
 ## Latest
 
+## v0.4.2 (2016-12-7)
+
+#### Improvements
+
+* Add RPM packages to Copr
+* Fix packaged `contrib/systemd` units
+* Update Go version to 1.7.4
+
 #### Examples
 
 * Upgrade Kubernetes v1.4.6 (static manifest) example clusters

@@ -43,7 +43,7 @@ Run the latest `bootcfg` Docker image from `quay.io/coreos/bootcfg` with the `et
 
 or run the latest tagged release.
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:v0.4.1 -address=0.0.0.0:8080 -log-level=debug
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:v0.4.2 -address=0.0.0.0:8080 -log-level=debug
 
 Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
