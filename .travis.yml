@@ -3,15 +3,12 @@ sudo: required
 services:
   - docker
 go:
-  - 1.6.3
-  - 1.7
+  - 1.6.4
+  - 1.7.4
   - tip
 matrix:
   allow_failures:
     - go: tip
-env:
-  global:
-    - GO15VENDOREXPERIMENT="1"
 install:
   - go get github.com/golang/lint/golint
 script:
@@ -22,8 +19,6 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    go: '1.6.3'
-    condition: "$TRAVIS_PULL_REQUEST = false"
+    go: '1.7.4'
 notifications:
   email: change
-
