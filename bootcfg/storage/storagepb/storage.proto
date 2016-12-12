@@ -37,6 +37,8 @@ message NetBoot {
   string kernel = 1;
   // the init RAM filesystem URLs
   repeated string initrd = 2;
-  // kernel parameters (command line)
+  // (deprecated) kernel parameteres
   map<string, string> cmdline = 3;
+  // kernel args
+  repeated string args = 4;
 }

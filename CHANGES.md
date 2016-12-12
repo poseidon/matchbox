@@ -2,6 +2,8 @@
 
 ## Latest
 
+* Add Profile `args` field to list kernel args
+* Deprecate Profile `cmd` field map of kernel args
 * Deprecate Pixiecore support
 * Update Fuze and Ignition to v0.11.2
 

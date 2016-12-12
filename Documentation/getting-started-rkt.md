@@ -102,12 +102,18 @@ In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.18.0.
 Create QEMU/KVM VMs which have known hardware attributes. The nodes will be attached to the `metal0` bridge, where your pods run.
 
     sudo ./scripts/libvirt create
+
+You can connect to the serial console of any node. If you provisioned nodes with an SSH key, you can SSH after bring-up.
+
+    sudo virsh console node1
+
+You can also use `virt-manager` to watch the console.
+
     sudo virt-manager
 
-You can use `virt-manager` to watch the console and reboot VM machines with
+Use the wrapper script to act on all nodes.
 
-    sudo ./scripts/libvirt poweroff
-    sudo ./scripts/libvirt start
+    sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 
 ## Verify
 

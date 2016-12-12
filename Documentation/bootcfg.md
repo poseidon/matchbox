@@ -64,11 +64,11 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
       "boot": {
         "kernel": "/assets/coreos/1185.3.0/coreos_production_pxe.vmlinuz",
         "initrd": ["/assets/coreos/1185.3.0/coreos_production_pxe_image.cpio.gz"],
-        "cmdline": {
-          "coreos.config.url": "http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
-          "coreos.autologin": "",
-          "coreos.first_boot": "1"
-        }
+        "args": [
+          "coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+          "coreos.first_boot=yes",
+          "coreos.autologin"
+        ]
       },
     }
 
