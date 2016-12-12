@@ -19,7 +19,7 @@ acbuild --debug label add version $GIT_SHA
 acbuild --debug dep add quay.io/coreos/alpine-sh
 
 # Copy the static binary
-acbuild --debug copy bin/linux-amd64/bootcfg /bootcfg
+acbuild --debug copy bin/bootcfg /bootcfg
 
 # Add a port for HTTP traffic
 acbuild --debug port add www tcp 8080

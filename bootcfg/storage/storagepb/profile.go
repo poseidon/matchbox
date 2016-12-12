@@ -40,13 +40,17 @@ func (p *Profile) Copy() *Profile {
 func (b *NetBoot) Copy() *NetBoot {
 	initrd := make([]string, len(b.Initrd))
 	copy(initrd, b.Initrd)
+	args := make([]string, len(b.Args))
+	copy(args, b.Args)
 	cmdline := make(map[string]string)
 	for k, v := range b.Cmdline {
 		cmdline[k] = v
 	}
 	return &NetBoot{
-		Kernel:  b.Kernel,
-		Initrd:  initrd,
+		Kernel: b.Kernel,
+		Initrd: initrd,
+		Args:   args,
+		// deprecated
 		Cmdline: cmdline,
 	}
 }

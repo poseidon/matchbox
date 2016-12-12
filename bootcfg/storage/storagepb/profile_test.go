@@ -51,22 +51,49 @@ func TestProfileCopy(t *testing.T) {
 			Kernel:  "/image/kernel",
 			Initrd:  []string{"/image/initrd_a"},
 			Cmdline: map[string]string{"a": "b"},
+			Args:    []string{"a=b"},
 		},
 	}
-	copy := profile.Copy()
+	clone := profile.Copy()
 	// assert that:
-	// - Profile fields are copied
-	// - mutation of the copy does not affect the original
-	assert.Equal(t, profile.Id, copy.Id)
-	assert.Equal(t, profile.Name, copy.Name)
-	assert.Equal(t, profile.IgnitionId, copy.IgnitionId)
-	assert.Equal(t, profile.CloudId, copy.CloudId)
-	assert.Equal(t, profile.Boot, copy.Boot)
+	// - Profile fields are copied to the clone
+	// - Mutation of the clone does not affect the original
+	assert.Equal(t, profile.Id, clone.Id)
+	assert.Equal(t, profile.Name, clone.Name)
+	assert.Equal(t, profile.IgnitionId, clone.IgnitionId)
+	assert.Equal(t, profile.CloudId, clone.CloudId)
+	assert.Equal(t, profile.Boot, clone.Boot)
 
-	copy.Id = "a-copy"
-	copy.Boot.Initrd = []string{"/image/initrd_b"}
-	copy.Boot.Cmdline["c"] = "d"
-	assert.NotEqual(t, profile.Id, copy.Id)
-	assert.NotEqual(t, profile.Boot.Initrd, copy.Boot.Initrd)
-	assert.NotEqual(t, profile.Boot.Cmdline, copy.Boot.Cmdline)
+	// mutate the NetBoot struct
+	clone.Boot.Initrd = []string{"/image/initrd_b"}
+	clone.Boot.Cmdline["c"] = "d"
+	clone.Boot.Args = []string{"console=ttyS0"}
+	assert.NotEqual(t, profile.Boot.Initrd, clone.Boot.Initrd)
+	assert.NotEqual(t, profile.Boot.Cmdline, clone.Boot.Cmdline)
+	assert.NotEqual(t, profile.Boot.Args, clone.Boot.Args)
+}
+
+func TestNetBootCopy(t *testing.T) {
+	boot := &NetBoot{
+		Kernel:  "/image/kernel",
+		Initrd:  []string{"/image/initrd_a"},
+		Cmdline: map[string]string{"a": "b"},
+		Args:    []string{"a=b"},
+	}
+
+	clone := boot.Copy()
+	// assert that:
+	// - NetBoot fields are copied to the clone
+	// - Mutation of the clone does not affect the original
+	assert.Equal(t, boot.Kernel, clone.Kernel)
+	assert.Equal(t, boot.Initrd, clone.Initrd)
+	assert.Equal(t, boot.Cmdline, clone.Cmdline)
+	assert.Equal(t, boot.Args, clone.Args)
+
+	// mutate the clone's slice field contents
+	extra := []string{"extra"}
+	copy(clone.Initrd, extra)
+	copy(clone.Args, extra)
+	assert.NotEqual(t, boot.Initrd, clone.Initrd)
+	assert.NotEqual(t, boot.Args, clone.Args)
 }

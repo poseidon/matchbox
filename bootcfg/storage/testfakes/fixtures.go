@@ -27,9 +27,9 @@ var (
 		Boot: &storagepb.NetBoot{
 			Kernel: "/image/kernel",
 			Initrd: []string{"/image/initrd_a", "/image/initrd_b"},
-			Cmdline: map[string]string{
-				"a": "b",
-				"c": "",
+			Args: []string{
+				"a=b",
+				"c",
 			},
 		},
 		CloudId:    "cloud-config.tmpl",

@@ -15,9 +15,23 @@ import (
 )
 
 func TestPixiecoreHandler(t *testing.T) {
+	fakeProfile := &storagepb.Profile{
+		Id: "g1h2i3j4",
+		Boot: &storagepb.NetBoot{
+			Kernel: "/image/kernel",
+			Initrd: []string{"/image/initrd_a", "/image/initrd_b"},
+			Cmdline: map[string]string{
+				"a": "b",
+				"c": "",
+			},
+		},
+		CloudId:    "cloud-config.tmpl",
+		IgnitionId: "ignition.tmpl",
+		GenericId:  "generic.tmpl",
+	}
 	store := &fake.FixedStore{
 		Groups:   map[string]*storagepb.Group{testGroupWithMAC.Id: testGroupWithMAC},
-		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: fake.Profile},
+		Profiles: map[string]*storagepb.Profile{testGroupWithMAC.Profile: fakeProfile},
 	}
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
