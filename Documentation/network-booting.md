@@ -66,10 +66,6 @@ A TFTP server is used only to provide the `undionly.kpxe` boot program to older 
 
 CoreOS `bootcfg` can render signed iPXE scripts to machines based on their hardware attributes. Setup involves configuring your DHCP server to point iPXE clients to the `bootcfg` [iPXE endpoint](api.md#ipxe).
 
-#### Pixiecore
-
-[Pixiecore](https://github.com/danderson/pixiecore) is a newer service which implements a proxyDHCP server, TFTP server, and HTTP server all-in-one and calls through to an HTTP API. CoreOS `bootcfg` can serve Pixiecore JSON (optionally signed) based on the supplied MAC address, to implement the Pixiecore HTTP API.
-
 ## DHCP
 
 Many networks have DHCP services which are impractical to modify or disable. Company DHCP servers are governed by network admin policies and home/office networks often have routers running a DHCP service which cannot supply PXE options to PXE clients.

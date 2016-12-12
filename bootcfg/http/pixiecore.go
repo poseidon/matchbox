@@ -13,7 +13,7 @@ import (
 
 // pixiecoreHandler returns a handler that renders the boot config JSON for
 // the requester, to implement the Pixiecore API specification.
-// https://github.com/danderson/pixiecore/blob/master/README.api.md
+// DEPRECATED
 func (s *Server) pixiecoreHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		// pixiecore only provides a MAC address label
