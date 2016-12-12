@@ -14,6 +14,7 @@ type key int
 const (
 	profileKey key = iota
 	groupKey
+	extraMetaKey
 )
 
 var (
@@ -47,4 +48,18 @@ func groupFromContext(ctx context.Context) (*storagepb.Group, error) {
 		return nil, errNoGroupFromContext
 	}
 	return group, nil
+}
+
+// withExtraMeta returns a copy of ctx that stores the given Group.
+func withExtraMeta(ctx context.Context, meta map[string]interface{}) context.Context {
+	return context.WithValue(ctx, extraMetaKey, meta)
+}
+
+// groupFromContext returns the Group from the ctx.
+func extraMetaFromContext(ctx context.Context) map[string]interface{} {
+	meta, ok := ctx.Value(extraMetaKey).(map[string]interface{})
+	if !ok {
+		return make(map[string]interface{})
+	}
+	return meta
 }

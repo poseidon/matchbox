@@ -63,7 +63,7 @@ func (s *Server) cloudHandler(core server.Server) ContextHandler {
 		}).Debug("Matched a cloud-config template")
 
 		// collect data for rendering
-		data, err := collectVariables(req, group)
+		data, err := collectVariables(req, group, extraMetaFromContext(ctx))
 		if err != nil {
 			s.logger.Errorf("error collecting variables: %v", err)
 			http.NotFound(w, req)

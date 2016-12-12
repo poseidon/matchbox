@@ -174,6 +174,23 @@ func TestCloudGet(t *testing.T) {
 	assert.Equal(t, contents, cfg)
 }
 
+func TestMetadataGet(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{
+		Metadatas: map[string]*storagepb.Metadata{
+			fake.Metadata.Id: fake.Metadata,
+		},
+	})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// - Metadatas written to the store can be retrieved
+	meta, err := store.MetadataGet(fake.Metadata.Id)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.Metadata, meta)
+}
+
 // setup creates a temp fileStore directory to mirror a given fixedStore
 // for testing. Returns the directory tree root. The caller must remove the
 // temp directory when finished.
@@ -187,7 +204,8 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 	groupDir := filepath.Join(root, "groups")
 	ignitionDir := filepath.Join(root, "ignition")
 	cloudDir := filepath.Join(root, "cloud")
-	if err := mkdirs(profileDir, groupDir, ignitionDir, cloudDir); err != nil {
+	metadataDir := filepath.Join(root, "metadata")
+	if err := mkdirs(profileDir, groupDir, ignitionDir, cloudDir, metadataDir); err != nil {
 		return root, err
 	}
 	// files
@@ -227,6 +245,21 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 	for name, content := range fixedStore.CloudConfigs {
 		cloudConfigFile := filepath.Join(cloudDir, name)
 		err = ioutil.WriteFile(cloudConfigFile, []byte(content), defaultFileMode)
+		if err != nil {
+			return root, err
+		}
+	}
+	for _, metadata := range fixedStore.Metadatas {
+		metadataFile := filepath.Join(metadataDir, metadata.Id+".json")
+		richMetadata, err := metadata.ToRichMetadata()
+		if err != nil {
+			return root, err
+		}
+		data, err := json.MarshalIndent(richMetadata, "", "\t")
+		if err != nil {
+			return root, err
+		}
+		err = ioutil.WriteFile(metadataFile, []byte(data), defaultFileMode)
 		if err != nil {
 			return root, err
 		}

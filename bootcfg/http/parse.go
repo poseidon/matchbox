@@ -14,8 +14,12 @@ import (
 // collectVariables collects group selectors, metadata, and request-scoped
 // query parameters into a single structured map suitable for rendering
 // templates.
-func collectVariables(req *http.Request, group *storagepb.Group) (map[string]interface{}, error) {
+func collectVariables(req *http.Request, group *storagepb.Group, additionalMeta map[string]interface{}) (map[string]interface{}, error) {
 	data := make(map[string]interface{})
+	for k, v := range additionalMeta {
+		data[k] = v
+	}
+
 	data["request"] = make(map[string]interface{})
 	if group.Metadata != nil {
 		err := json.Unmarshal(group.Metadata, &data)

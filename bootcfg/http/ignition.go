@@ -55,9 +55,10 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 
 		// match was successful
 		s.logger.WithFields(logrus.Fields{
-			"labels":  labelsFromRequest(nil, req),
-			"group":   group.Id,
-			"profile": profile.Id,
+			"labels":           labelsFromRequest(nil, req),
+			"group":            group.Id,
+			"profile":          profile.Id,
+			"metadata_include": group.MetadataInclude,
 		}).Debug("Matched an Ignition or Fuze template")
 
 		// Skip rendering if raw Ignition JSON is provided
@@ -73,7 +74,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 		// Fuze Config template
 
 		// collect data for rendering
-		data, err := collectVariables(req, group)
+		data, err := collectVariables(req, group, extraMetaFromContext(ctx))
 		if err != nil {
 			s.logger.Errorf("error collecting variables: %v", err)
 			http.NotFound(w, req)

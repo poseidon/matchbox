@@ -13,6 +13,8 @@ message Group {
   map<string, string> selector = 4;
   // JSON encoded metadata
   bytes metadata = 5;
+  // extra metadata bundles to include
+  repeated string metadata_include = 6;
 }
 
 // Profile defines the boot and provisioning behavior of a group of machines.
@@ -39,4 +41,14 @@ message NetBoot {
   repeated string initrd = 2;
   // kernel parameters (command line)
   map<string, string> cmdline = 3;
+}
+
+// Metadata defines extra metadata which can be included in one or more groups.
+message Metadata {
+  // machine readable Id
+  string id = 1;
+  // human readable name
+  string name = 2;
+  // JSON encoded metadata
+  bytes metadata = 3;
 }

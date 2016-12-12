@@ -45,6 +45,8 @@ Prepare `/var/lib/bootcfg` with `groups`, `profile`, `ignition`, `cloud`, and `g
      │   └── default.json
      │   └── node1.json
      │   └── us-central1-a.json
+     ├── metadata
+     │   └── k8s.json
      └── profiles
          └── etcd.json
          └── worker.json
@@ -111,6 +113,41 @@ Meanwhile, `/var/lib/bootcfg/groups/proxy.json` acts as the default machine grou
 
 For example, a request to `/ignition?mac=52:54:00:89:d8:10` would render the Ignition template in the "etcd" `Profile`, with the machine group's metadata. A request to `/ignition` would match the default group (which has no selectors) and render the Ignition in the "etcd-proxy" Profile. Avoid defining multiple default groups as resolution will not be deterministic.
 
+#### Metadata
+
+Metadata can also be defined separately and then included among multiple groups. This is often useful to reduce duplication of metadata across groups.
+
+    # /var/lib/bootcfg/metadata/k8s.json
+    {
+      "name": "Kubernetes Meta",
+      "metadata": {
+        "k8s_cert_endpoint": "http://bootcfg.foo:8080/assets",
+        "k8s_dns_service_ip": "10.3.0.10",
+        "k8s_etcd_endpoints": "http://node1.example.com:2379",
+        "k8s_pod_network": "10.2.0.0/16",
+        "k8s_service_ip_range": "10.3.0.0/24"
+      }
+    }
+
+    # /var/lib/bootcfg/groups/node1.json
+    {
+      "id": "node1",
+      "name": "k8s controller",
+      "profile": "k8s-controller",
+      "selector": {
+        "os": "installed",
+        "mac": "52:54:00:a1:9c:ae"
+      },
+      "metadata": {
+        "domain_name": "node1.example.com",
+        "etcd_initial_cluster": "node1=http://node1.example.com:2380",
+        "etcd_name": "node1",
+      }
+      "metadata_include": ["k8s"]
+    }
+
+The `metadata_include` attribute in the group definition allows the metadata from `../metadata/k8s.json` to be pulled in and used in subsequent templates.
+
 #### Reserved Selectors
 
 Group selectors can use any key/value pairs you find useful. However, several labels have a defined purpose and will be normalized or parsed specially.
@@ -171,6 +208,3 @@ See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download
 * [gRPC API Usage](config.md#grpc-api)
 * [Metadata](api.md#metadata)
 * OpenPGP [Signing](api.md#openpgp-signatures)
-
-
-

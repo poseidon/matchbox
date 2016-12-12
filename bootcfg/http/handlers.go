@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -44,6 +45,19 @@ func (s *Server) selectGroup(core server.Server, next ContextHandler) ContextHan
 			// add the Group to the ctx for next handler
 			ctx = withGroup(ctx, group)
 		}
+
+		extraMeta := make(map[string]interface{})
+		for _, id := range group.MetadataInclude {
+			meta, err := core.MetadataGet(ctx, &pb.MetadataGetRequest{Id: id})
+			if err != nil {
+				s.logger.Debug("Metadata fetch failed: %s", err)
+				continue
+			}
+			json.Unmarshal(meta.Metadata, &extraMeta)
+
+		}
+		ctx = withExtraMeta(ctx, extraMeta)
+
 		next.ServeHTTP(ctx, w, req)
 	}
 	return ContextHandlerFunc(fn)

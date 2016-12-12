@@ -10,6 +10,7 @@ import (
 type FixedStore struct {
 	Groups          map[string]*storagepb.Group
 	Profiles        map[string]*storagepb.Profile
+	Metadatas       map[string]*storagepb.Metadata
 	IgnitionConfigs map[string]string
 	CloudConfigs    map[string]string
 	GenericConfigs  map[string]string
@@ -20,6 +21,7 @@ func NewFixedStore() *FixedStore {
 	return &FixedStore{
 		Groups:          make(map[string]*storagepb.Group),
 		Profiles:        make(map[string]*storagepb.Profile),
+		Metadatas:       make(map[string]*storagepb.Metadata),
 		IgnitionConfigs: make(map[string]string),
 		CloudConfigs:    make(map[string]string),
 		GenericConfigs:  make(map[string]string),
@@ -104,4 +106,12 @@ func (s *FixedStore) GenericGet(name string) (string, error) {
 		return config, nil
 	}
 	return "", fmt.Errorf("no generic template %s", name)
+}
+
+// MetadataGet returns the Metadata from the Metadatas map with the given id.
+func (s *FixedStore) MetadataGet(id string) (*storagepb.Metadata, error) {
+	if metadata, ok := s.Metadatas[id]; ok {
+		return metadata, nil
+	}
+	return nil, fmt.Errorf("Metadata not found")
 }

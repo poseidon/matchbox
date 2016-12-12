@@ -38,4 +38,7 @@ type Store interface {
 
 	// GenericGet gets a generic template by name.
 	GenericGet(name string) (string, error)
+
+	// MetadataGet gets a bundle of metadata by name
+	MetadataGet(name string) (*storagepb.Metadata, error)
 }
