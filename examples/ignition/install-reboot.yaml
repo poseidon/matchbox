@@ -20,7 +20,7 @@ storage:
       contents:
         inline: |
           #!/bin/bash -ex
-          curl "{{.ignition_endpoint}}?{{.request.raw_query}}&os=installed" -o ignition.json
+          curl --fail "{{.ignition_endpoint}}?{{.request.raw_query}}&os=installed" -o ignition.json
           coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json {{if index . "baseurl"}}-b {{.baseurl}}{{end}}
           udevadm settle
           systemctl reboot
