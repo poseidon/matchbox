@@ -79,7 +79,7 @@ systemd:
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/usr/bin/mkdir -p /var/log/containers
         ExecStartPre=/usr/bin/systemctl is-active flanneld.service
-        ExecStartPre=-/usr/bin/rkt rm --uuid=/var/run/kubelet-pod.uuid
+        ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers=http://127.0.0.1:8080 \
           --register-schedulable=true \
@@ -93,7 +93,7 @@ systemd:
           --hostname-override={{.domain_name}} \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
-        ExecStop=-/usr/bin/rkt stop --uuid=/var/run/kubelet-pod.uuid
+        ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
         Restart=always
         RestartSec=10
         [Install]

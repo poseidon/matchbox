@@ -66,7 +66,7 @@ systemd:
           --mount volume=var-log,target=/var/log"
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/usr/bin/mkdir -p /var/log/containers
-        ExecStartPre=-/usr/bin/rkt rm --uuid=/var/run/kubelet-pod.uuid
+        ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers={{.k8s_controller_endpoint}} \
           --register-node=true \
@@ -80,7 +80,7 @@ systemd:
           --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml \
           --tls-cert-file=/etc/kubernetes/ssl/worker.pem \
           --tls-private-key-file=/etc/kubernetes/ssl/worker-key.pem
-        ExecStop=-/usr/bin/rkt stop --uuid=/var/run/kubelet-pod.uuid
+        ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
         Restart=always
         RestartSec=10
         [Install]

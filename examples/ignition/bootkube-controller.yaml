@@ -60,7 +60,7 @@ systemd:
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
-        ExecStartPre=-/usr/bin/rkt rm --uuid=/var/run/kubelet-pod.uuid
+        ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers={{.k8s_controller_endpoint}} \
           --kubeconfig=/etc/kubernetes/kubeconfig \
@@ -73,7 +73,7 @@ systemd:
           --minimum-container-ttl-duration=6m0s \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
-        ExecStop=-/usr/bin/rkt stop --uuid=/var/run/kubelet-pod.uuid
+        ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
         Restart=always
         RestartSec=10
         [Install]
