@@ -63,10 +63,11 @@ Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node w
 Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
 
     scp -r assets core@node1.example.com:/home/core/assets
-    ssh core@node1.example.com 'sudo ./bootkube-start'
+    ssh core@node1.example.com 'sudo systemctl start bootkube'
 
-Watch the temporary control plane logs until the scheduled kubelet takes over in place of the on-host kubelet.
+Optionally watch the Kubernetes control plane bootstrapping with the bootkube temporary api-server. You will see quite a bit of output.
 
+    $ ssh core@node1.example.com 'journalctl -f -u bootkube'
     [  299.241291] bootkube[5]:     Pod Status:     kube-api-checkpoint     Running
     [  299.241618] bootkube[5]:     Pod Status:          kube-apiserver     Running
     [  299.241804] bootkube[5]:     Pod Status:          kube-scheduler     Running

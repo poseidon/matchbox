@@ -77,7 +77,13 @@ systemd:
         RestartSec=10
         [Install]
         WantedBy=multi-user.target
-
+    - name: bootkube.service
+      contents: |
+        [Unit]
+        Description=Bootstrap a Kubernetes control plane with a temp api-server
+        [Service]
+        Type=simple
+        ExecStart=/home/core/bootkube-start
 storage:
   {{ if index . "pxe" }}
   disks:
