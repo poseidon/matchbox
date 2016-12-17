@@ -7,6 +7,10 @@
 * Deprecate Pixiecore support
 * Update Fuze and Ignition to v0.11.2
 
+#### Examples
+
+* Upgrade Kubernetes v1.4.7 (self-hosted) example cluster
+
 ## v0.4.2 (2016-12-7)
 
 #### Improvements
