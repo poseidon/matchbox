@@ -58,10 +58,18 @@ systemd:
         Requires=k8s-assets.target
         After=k8s-assets.target
         [Service]
-        Environment=KUBELET_VERSION=v1.4.6_coreos.0
+        Environment=KUBELET_VERSION=v1.4.7_coreos.0
         Environment="RKT_OPTS=--uuid-file-save=/var/run/kubelet-pod.uuid \
           --volume dns,kind=host,source=/etc/resolv.conf \
           --mount volume=dns,target=/etc/resolv.conf \
+          {{ if eq .container_runtime "rkt" -}}
+          --volume rkt,kind=host,source=/opt/bin/host-rkt \
+          --mount volume=rkt,target=/usr/bin/rkt \
+          --volume var-lib-rkt,kind=host,source=/var/lib/rkt \
+          --mount volume=var-lib-rkt,target=/var/lib/rkt \
+          --volume stage,kind=host,source=/tmp \
+          --mount volume=stage,target=/tmp \
+          {{ end -}}
           --volume var-log,kind=host,source=/var/log \
           --mount volume=var-log,target=/var/log"
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
@@ -69,9 +77,12 @@ systemd:
         ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --api-servers={{.k8s_controller_endpoint}} \
-          --register-node=true \
           --cni-conf-dir=/etc/kubernetes/cni/net.d \
           --network-plugin=cni \
+          --container-runtime={{.container_runtime}} \
+          --rkt-path=/usr/bin/rkt \
+          --rkt-stage1-image=coreos.com/rkt/stage1-coreos \
+          --register-node=true \
           --allow-privileged=true \
           --pod-manifest-path=/etc/kubernetes/manifests \
           --hostname-override={{.domain_name}} \
@@ -85,6 +96,34 @@ systemd:
         RestartSec=10
         [Install]
         WantedBy=multi-user.target
+    {{ if eq .container_runtime "rkt" }}
+    - name: rkt-api.service
+      enable: true
+      contents: |
+        [Unit]
+        Before=kubelet.service
+        [Service]
+        ExecStart=/usr/bin/rkt api-service
+        Restart=always
+        RestartSec=10
+        [Install]
+        RequiredBy=kubelet.service
+    - name: load-rkt-stage1.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Load rkt stage1 images
+        Documentation=http://github.com/coreos/rkt
+        Requires=network-online.target
+        After=network-online.target
+        Before=rkt-api.service
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/bin/rkt fetch /usr/lib/rkt/stage1-images/stage1-coreos.aci /usr/lib/rkt/stage1-images/stage1-fly.aci  --insecure-options=image
+        [Install]
+        RequiredBy=rkt-api.service
+    {{ end }}
 
 storage:
   {{ if index . "pxe" }}
@@ -156,11 +195,13 @@ storage:
           metadata:
             name: kube-proxy
             namespace: kube-system
+            annotations:
+              rkt.alpha.kubernetes.io/stage1-name-override: coreos.com/rkt/stage1-fly
           spec:
             hostNetwork: true
             containers:
             - name: kube-proxy
-              image: quay.io/coreos/hyperkube:v1.4.6_coreos.0
+              image: quay.io/coreos/hyperkube:v1.4.7_coreos.0
               command:
               - /hyperkube
               - proxy
@@ -177,6 +218,9 @@ storage:
                 - mountPath: /etc/kubernetes/ssl
                   name: "etc-kube-ssl"
                   readOnly: true
+                - mountPath: /var/run/dbus
+                  name: dbus
+                  readOnly: false
             volumes:
               - name: "ssl-certs"
                 hostPath:
@@ -187,11 +231,31 @@ storage:
               - name: "etc-kube-ssl"
                 hostPath:
                   path: "/etc/kubernetes/ssl"
+              - hostPath:
+                  path: /var/run/dbus
+                name: dbus
     - path: /etc/flannel/options.env
       filesystem: root
       contents:
         inline: |
           FLANNELD_ETCD_ENDPOINTS={{.k8s_etcd_endpoints}}
+    {{ if eq .container_runtime "rkt" }}
+    - path: /opt/bin/host-rkt
+      filesystem: root
+      mode: 0544
+      contents:
+        inline: |
+          #!/bin/sh
+          # This is bind mounted into the kubelet rootfs and all rkt shell-outs go
+          # through this rkt wrapper. It essentially enters the host mount namespace
+          # (which it is already in) only for the purpose of breaking out of the chroot
+          # before calling rkt. It makes things like rkt gc work and avoids bind mounting
+          # in certain rkt filesystem dependancies into the kubelet rootfs. This can
+          # eventually be obviated when the write-api stuff gets upstream and rkt gc is
+          # through the api-server. Related issue:
+          # https://github.com/coreos/rkt/issues/2878
+          exec nsenter -m -u -i -n -p -t 1 -- /usr/bin/rkt "$@"
+    {{ end }}
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

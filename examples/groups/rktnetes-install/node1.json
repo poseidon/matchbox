@@ -1,12 +1,13 @@
 {
   "id": "node1",
   "name": "k8s controller",
-  "profile": "rktnetes-controller",
+  "profile": "k8s-controller",
   "selector": {
     "mac": "52:54:00:a1:9c:ae",
     "os": "installed"
   },
   "metadata": {
+    "container_runtime": "rkt",
     "domain_name": "node1.example.com",
     "etcd_initial_cluster": "node1=http://node1.example.com:2380",
     "etcd_name": "node1",
