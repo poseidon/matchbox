@@ -1,7 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.4.6 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.4.7 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -15,7 +15,7 @@ Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) o
 Build and install the [fork of bootkube](https://github.com/dghubble/bootkube), which supports DNS names.
 
     $ bootkube version
-    Version: bd5a87af28f84898272519894b09d16c5e5df441
+    Version: 4a4ae6e78a59258b528f7de57db8d5cf5786a8a5
 
 ## Examples
 
@@ -63,10 +63,11 @@ Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node w
 Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
 
     scp -r assets core@node1.example.com:/home/core/assets
-    ssh core@node1.example.com 'sudo ./bootkube-start'
+    ssh core@node1.example.com 'sudo systemctl start bootkube'
 
-Watch the temporary control plane logs until the scheduled kubelet takes over in place of the on-host kubelet.
+Optionally watch the Kubernetes control plane bootstrapping with the bootkube temporary api-server. You will see quite a bit of output.
 
+    $ ssh core@node1.example.com 'journalctl -f -u bootkube'
     [  299.241291] bootkube[5]:     Pod Status:     kube-api-checkpoint     Running
     [  299.241618] bootkube[5]:     Pod Status:          kube-apiserver     Running
     [  299.241804] bootkube[5]:     Pod Status:          kube-scheduler     Running
@@ -88,17 +89,17 @@ You may cleanup the `bootkube` assets on the node, but you should keep the copy 
 
     $ kubectl get pods --all-namespaces
     NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
-    kube-system   kube-api-checkpoint-node1.example.com      1/1       Running   0          4m
-    kube-system   kube-apiserver-iffsz                       2/2       Running   0          5m
-    kube-system   kube-controller-manager-1148212084-1zx9g   1/1       Running   0          6m
-    kube-system   kube-dns-v20-3531996453-r18ht              3/3       Running   0          5m
-    kube-system   kube-proxy-36jj8                           1/1       Running   0          5m
-    kube-system   kube-proxy-fdt2t                           1/1       Running   0          6m
-    kube-system   kube-proxy-sttgn                           1/1       Running   0          5m
-    kube-system   kube-scheduler-1921762579-z6jn6            1/1       Running   0          6m
-    kube-system   kubelet-1ibsf                              1/1       Running   0          6m
-    kube-system   kubelet-65h6j                              1/1       Running   0          5m
-    kube-system   kubelet-d1qql                              1/1       Running   0          5m
+    kube-system   checkpoint-installer-cpjrm                 1/1       Running   0          2m
+    kube-system   kube-apiserver-rvjes                       1/1       Running   0          2m
+    kube-system   kube-controller-manager-3900529476-5n9xb   1/1       Running   0          4m
+    kube-system   kube-controller-manager-3900529476-rq6p8   1/1       Running   0          4m
+    kube-system   kube-dns-4101612645-oeu5g                  4/4       Running   0          4m
+    kube-system   kube-proxy-f5kb8                           1/1       Running   0          2m
+    kube-system   kube-proxy-jkg4z                           1/1       Running   0          2m
+    kube-system   kube-proxy-rrmuv                           1/1       Running   0          2m
+    kube-system   kube-scheduler-1084603659-qaqbk            1/1       Running   0          3m
+    kube-system   kube-scheduler-1084603659-rztvw            1/1       Running   0          4m
+    kube-system   pod-checkpointer-node1.example.com         1/1       Running   0          1m
 
 Try deleting pods to see that the cluster is resilient to failures and machine restarts (CoreOS auto-updates).
 
