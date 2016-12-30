@@ -9,7 +9,6 @@
   "metadata": {
     "domain_name": "node3.example.com",
     "etcd_initial_cluster": "node1=http://node1.example.com:2380",
-    "k8s_controller_endpoint": "https://node1.example.com:443",
     "k8s_dns_service_ip": "10.3.0.10",
     "k8s_pod_network": "10.2.0.0/16",
     "k8s_service_ip_range": "10.3.0.0/24",
