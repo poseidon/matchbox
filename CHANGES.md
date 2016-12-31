@@ -10,7 +10,7 @@
 #### Examples
 
 * Upgrade Kubernetes v1.4.7 (static) example clusters
-* Upgrade Kubernetes v1.4.7 (self-hosted) example cluster
+* Upgrade Kubernetes v1.5.1 (self-hosted) example cluster
 * Combine rktnetes Ignition into Kubernetes static cluster
 
 ## v0.4.2 (2016-12-7)
