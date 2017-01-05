@@ -187,7 +187,7 @@ bootcfg
 If you enabled the gRPC API,
 
 ```sh
-$ openssl s_client -connect bootcfg.example.com:8081 -CAfile /etc/bootcfg/ca.crt -cert examples/etc/bootcfg/client.crt -key examples/etc/bootcfg/client.key
+$ echo | openssl s_client -connect bootcfg.example.com:8081 -CAfile /etc/bootcfg/ca.crt -cert examples/etc/bootcfg/client.crt -key examples/etc/bootcfg/client.key
 CONNECTED(00000003)
 depth=1 CN = fake-ca
 verify return:1
