@@ -56,21 +56,22 @@ Get all pods.
 
     $ kubectl get pods --all-namespaces
     NAMESPACE     NAME                                        READY     STATUS    RESTARTS   AGE
-    kube-system   heapster-v1.2.0-4088228293-k3yn8            2/2       Running   0          3m
-    kube-system   kube-apiserver-node1.example.com            1/1       Running   0          4m
-    kube-system   kube-controller-manager-node1.example.com   1/1       Running   0          3m
-    kube-system   kube-dns-v19-l2u8r                          3/3       Running   0          4m
-    kube-system   kube-proxy-node1.example.com                1/1       Running   0          3m
-    kube-system   kube-proxy-node2.example.com                1/1       Running   0          3m
-    kube-system   kube-proxy-node3.example.com                1/1       Running   0          3m
-    kube-system   kube-scheduler-node1.example.com            1/1       Running   0          3m
-    kube-system   kubernetes-dashboard-v1.4.1-0iy07           1/1       Running   0          4m
+    kube-system   heapster-v1.2.0-4088228293-5xbgg            2/2       Running   0          41m
+    kube-system   kube-apiserver-node1.example.com            1/1       Running   0          40m
+    kube-system   kube-controller-manager-node1.example.com   1/1       Running   0          40m
+    kube-system   kube-dns-782804071-326dd                    4/4       Running   0          41m
+    kube-system   kube-dns-autoscaler-2715466192-8bm78        1/1       Running   0          41m
+    kube-system   kube-proxy-node1.example.com                1/1       Running   0          41m
+    kube-system   kube-proxy-node2.example.com                1/1       Running   0          41m
+    kube-system   kube-proxy-node3.example.com                1/1       Running   0          40m
+    kube-system   kube-scheduler-node1.example.com            1/1       Running   0          40m
+    kube-system   kubernetes-dashboard-3543765157-2nqgh       1/1       Running   0          41m
 
 ## Kubernetes Dashboard
 
 Access the Kubernetes Dashboard with `kubeconfig` credentials by port forwarding to the dashboard pod.
 
-    $ kubectl port-forward kubernetes-dashboard-v1.4.1-SOME-ID 9090 -n=kube-system
+    $ kubectl port-forward kubernetes-dashboard-SOME-ID 9090 -n=kube-system
     Forwarding from 127.0.0.1:9090 -> 9090
 
 Then visit [http://127.0.0.1:9090](http://127.0.0.1:9090/).
