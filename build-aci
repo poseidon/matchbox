@@ -10,7 +10,7 @@ acbuild --debug begin
 trap "{ export EXT=$?; acbuild --debug end && exit $EXT; }" EXIT
 
 # Name the ACI
-acbuild --debug set-name coreos.com/bootcfg
+acbuild --debug set-name coreos.com/matchbox
 
 # Add a version label
 acbuild --debug label add version $GIT_SHA
@@ -19,13 +19,13 @@ acbuild --debug label add version $GIT_SHA
 acbuild --debug dep add quay.io/coreos/alpine-sh
 
 # Copy the static binary
-acbuild --debug copy bin/bootcfg /bootcfg
+acbuild --debug copy bin/matchbox /matchbox
 
 # Add a port for HTTP traffic
 acbuild --debug port add www tcp 8080
 
 # Set the exec command
-acbuild --debug set-exec -- /bootcfg
+acbuild --debug set-exec -- /matchbox
 
-# Save and overwrite any older bootcfg ACI
-acbuild --debug write --overwrite bootcfg.aci
+# Save and overwrite any older matchbox ACI
+acbuild --debug write --overwrite matchbox.aci
