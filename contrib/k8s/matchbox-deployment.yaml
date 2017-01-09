@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: bootcfg
+  name: matchbox
   namespace: default
 spec:
   replicas: 1
@@ -11,15 +11,15 @@ spec:
   template:
     metadata:
       labels:
-        name: bootcfg
+        name: matchbox
         phase: prod
     spec:
       containers:
-        - name: bootcfg
-          image: quay.io/coreos/bootcfg:v0.4.2
+        - name: matchbox
+          image: quay.io/coreos/matchbox:v0.5.0
           env:
-            - {name: BOOTCFG_ADDRESS, value: "0.0.0.0:8080"}
-            - {name: BOOTCFG_LOG_LEVEL, value: "debug"}
+            - {name: MATCHBOX_ADDRESS, value: "0.0.0.0:8080"}
+            - {name: MATCHBOX_LOG_LEVEL, value: "debug"}
           ports:
             # port exposed on pod IP
             - containerPort: 8080
@@ -29,17 +29,17 @@ spec:
               memory: "50Mi"
           volumeMounts:
             - name: groups
-              mountPath: /var/lib/bootcfg/groups
+              mountPath: /var/lib/matchbox/groups
             - name: profiles
-              mountPath: /var/lib/bootcfg/profiles
+              mountPath: /var/lib/matchbox/profiles
             - name: ignition
-              mountPath: /var/lib/bootcfg/ignition
+              mountPath: /var/lib/matchbox/ignition
             - name: cloud
-              mountPath: /var/lib/bootcfg/cloud
+              mountPath: /var/lib/matchbox/cloud
             - name: generic
-              mountPath: /var/lib/bootcfg/generic
+              mountPath: /var/lib/matchbox/generic
             - name: assets
-              mountPath: /var/lib/bootcfg/assets
+              mountPath: /var/lib/matchbox/assets
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 30

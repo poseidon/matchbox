@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: bootcfg
+  name: matchbox
 spec:
   type: NodePort
   selector:
-    name: bootcfg
+    name: matchbox
     phase: prod
   ports:
     - protocol: TCP

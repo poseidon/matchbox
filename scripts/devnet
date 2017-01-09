@@ -10,7 +10,7 @@ EXAMPLE=${2:-}
 BRIDGE=metal0
 COREOS_CHANNEL=stable
 COREOS_VERSION=1185.3.0
-BOOTCFG_ARGS=""
+MATCHBOX_ARGS=""
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -62,7 +62,7 @@ function create {
 
   if [ -z "$EXAMPLE" ]; then
     # Mount a data volume with assets and enable gRPC
-    BOOTCFG_ARGS="-rpc-address=0.0.0.0:8081"
+    MATCHBOX_ARGS="-rpc-address=0.0.0.0:8081"
     DATA_MOUNT="--volume data,kind=host,source=$(mktemp -d) \
     --mount volume=assets,target=/var/lib/matchbox/assets \
     --volume assets,kind=host,source=$PWD/examples/assets,readOnly=true"
@@ -81,7 +81,7 @@ function create {
     --volume config,kind=host,source=$PWD/examples/etc/matchbox,readOnly=true \
     --mount volume=data,target=/var/lib/matchbox \
     $DATA_MOUNT \
-    quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug $BOOTCFG_ARGS
+    quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   systemd-run --unit=dev-dnsmasq \
