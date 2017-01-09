@@ -26,7 +26,7 @@ type Config struct {
 	TLS *tls.Config
 }
 
-// Client provides a bootcfg client RPC session.
+// Client provides a matchbox client RPC session.
 type Client struct {
 	Groups   rpcpb.GroupsClient
 	Profiles rpcpb.ProfilesClient

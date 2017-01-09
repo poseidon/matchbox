@@ -8,7 +8,7 @@ import (
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 )
 
-// ignitionServer takes a bootcfg Server and implements a gRPC IgnitionServer.
+// ignitionServer takes a matchbox Server and implements a gRPC IgnitionServer.
 type ignitionServer struct {
 	srv server.Server
 }

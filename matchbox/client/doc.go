@@ -1,6 +1,6 @@
-// Package client provides the bootcfg gRPC client.
+// Package client provides the matchbox gRPC client.
 //
-// Create a bootcfg gRPC client using `client.New`:
+// Create a matchbox gRPC client using `client.New`:
 //
 //     cfg := &client.Config{
 //       Endpoints: []string{"127.0.0.1:8081"},

@@ -13,11 +13,11 @@ import (
 
 // Possible service errors
 var (
-	ErrNoMatchingGroup   = errors.New("bootcfg: No matching Group")
-	ErrNoMatchingProfile = errors.New("bootcfg: No matching Profile")
+	ErrNoMatchingGroup   = errors.New("matchbox: No matching Group")
+	ErrNoMatchingProfile = errors.New("matchbox: No matching Profile")
 )
 
-// Server defines a bootcfg server lib.
+// Server defines the matchbox server interface.
 type Server interface {
 	// SelectGroup returns the Group matching the given labels.
 	SelectGroup(context.Context, *pb.SelectGroupRequest) (*storagepb.Group, error)

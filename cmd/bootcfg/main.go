@@ -41,17 +41,17 @@ func main() {
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
 	flag.StringVar(&flags.rpcAddress, "rpc-address", "", "RPC listen address")
-	flag.StringVar(&flags.dataPath, "data-path", "/var/lib/bootcfg", "Path to data directory")
-	flag.StringVar(&flags.assetsPath, "assets-path", "/var/lib/bootcfg/assets", "Path to static assets")
+	flag.StringVar(&flags.dataPath, "data-path", "/var/lib/matchbox", "Path to data directory")
+	flag.StringVar(&flags.assetsPath, "assets-path", "/var/lib/matchbox/assets", "Path to static assets")
 
 	// Log levels https://github.com/Sirupsen/logrus/blob/master/logrus.go#L36
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
 
 	// gRPC Server TLS
-	flag.StringVar(&flags.certFile, "cert-file", "/etc/bootcfg/server.crt", "Path to the server TLS certificate file")
-	flag.StringVar(&flags.keyFile, "key-file", "/etc/bootcfg/server.key", "Path to the server TLS key file")
+	flag.StringVar(&flags.certFile, "cert-file", "/etc/matchbox/server.crt", "Path to the server TLS certificate file")
+	flag.StringVar(&flags.keyFile, "key-file", "/etc/matchbox/server.key", "Path to the server TLS key file")
 	// TLS Client Authentication
-	flag.StringVar(&flags.caFile, "ca-file", "/etc/bootcfg/ca.crt", "Path to the CA verify and authenticate client certificates")
+	flag.StringVar(&flags.caFile, "ca-file", "/etc/matchbox/ca.crt", "Path to the CA verify and authenticate client certificates")
 
 	// Signing
 	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
@@ -62,11 +62,11 @@ func main() {
 
 	// parse command-line and environment variable arguments
 	flag.Parse()
-	if err := flagutil.SetFlagsFromEnv(flag.CommandLine, "BOOTCFG"); err != nil {
+	if err := flagutil.SetFlagsFromEnv(flag.CommandLine, "MATCHBOX"); err != nil {
 		log.Fatal(err.Error())
 	}
 	// restrict OpenPGP passphrase to pass via environment variable only
-	passphrase := os.Getenv("BOOTCFG_PASSPHRASE")
+	passphrase := os.Getenv("MATCHBOX_PASSPHRASE")
 
 	if flags.version {
 		fmt.Println(version.Version)
@@ -132,7 +132,7 @@ func main() {
 
 	// gRPC Server (feature disabled by default)
 	if flags.rpcAddress != "" {
-		log.Infof("Starting bootcfg gRPC server on %s", flags.rpcAddress)
+		log.Infof("Starting matchbox gRPC server on %s", flags.rpcAddress)
 		log.Infof("Using TLS server certificate: %s", flags.certFile)
 		log.Infof("Using TLS server key: %s", flags.keyFile)
 		log.Infof("Using CA certificate: %s to authenticate client certificates", flags.caFile)
@@ -163,7 +163,7 @@ func main() {
 		ArmoredSigner: armoredSigner,
 	}
 	httpServer := web.NewServer(config)
-	log.Infof("Starting bootcfg HTTP server on %s", flags.address)
+	log.Infof("Starting matchbox HTTP server on %s", flags.address)
 	err = http.ListenAndServe(flags.address, httpServer.HTTPHandler())
 	if err != nil {
 		log.Fatalf("failed to start listening: %v", err)

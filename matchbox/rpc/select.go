@@ -8,7 +8,7 @@ import (
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 )
 
-// selectServer wraps a bootcfg Server to be suitable for gRPC registration.
+// selectServer wraps a matchbox Server to be suitable for gRPC registration.
 type selectServer struct {
 	srv server.Server
 }

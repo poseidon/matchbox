@@ -1,2 +1,2 @@
-// Package http provides the bootcfg HTTP server
+// Package http provides the matchbox HTTP server
 package http

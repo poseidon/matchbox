@@ -18,7 +18,7 @@ func homeHandler() http.Handler {
 			http.NotFound(w, req)
 			return
 		}
-		fmt.Fprintf(w, "bootcfg\n")
+		fmt.Fprintf(w, "matchbox\n")
 	}
 	return http.HandlerFunc(fn)
 }

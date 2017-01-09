@@ -1,2 +1,2 @@
-// Package sign adds signatures to bootcfg responses.
+// Package sign adds signatures to matchbox responses.
 package sign

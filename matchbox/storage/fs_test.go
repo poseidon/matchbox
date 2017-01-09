@@ -21,7 +21,7 @@ func TestDir(t *testing.T) {
 		{"d/e/ff", "d/e/ff"},
 		{"d/e/ff/../gg", "d/e/gg"},
 	}
-	tdir, err := ioutil.TempDir("", "bootcfg")
+	tdir, err := ioutil.TempDir("", "matchbox")
 	assert.Nil(t, err)
 	defer os.RemoveAll(tdir)
 

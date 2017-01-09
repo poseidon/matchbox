@@ -10,7 +10,7 @@ import (
 	"github.com/coreos/coreos-baremetal/matchbox/server"
 )
 
-// NewServer wraps the bootcfg Server to return a new gRPC Server.
+// NewServer wraps the matchbox Server to return a new gRPC Server.
 func NewServer(s server.Server, tls *tls.Config) *grpc.Server {
 	var opts []grpc.ServerOption
 	if tls != nil {

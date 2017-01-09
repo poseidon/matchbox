@@ -1,2 +1,2 @@
-// Package rpc provides the bootcfg gRPC server
+// Package rpc provides the matchbox gRPC server
 package rpc

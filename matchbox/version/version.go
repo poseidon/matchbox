@@ -1,4 +1,4 @@
-// Package version provides the bootcfg version.
+// Package version provides the matchbox version.
 package version
 
 // Version provided by compile time -ldflags.

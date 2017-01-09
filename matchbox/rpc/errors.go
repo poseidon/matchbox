@@ -10,8 +10,8 @@ import (
 var (
 	// work around go vet false positive https://github.com/grpc/grpc-go/issues/90
 	grpcErrorf           = grpc.Errorf
-	errNoMatchingGroup   = grpcErrorf(codes.NotFound, "bootcfg: No matching Group")
-	errNoMatchingProfile = grpcErrorf(codes.NotFound, "bootcfg: No matching Profile")
+	errNoMatchingGroup   = grpcErrorf(codes.NotFound, "matchbox: No matching Group")
+	errNoMatchingProfile = grpcErrorf(codes.NotFound, "matchbox: No matching Profile")
 )
 
 // grpcError transforms an error into a gRPC errors with canonical error codes.

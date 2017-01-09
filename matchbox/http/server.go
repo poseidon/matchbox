@@ -47,7 +47,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	chain := func(next ContextHandler) http.Handler {
 		return s.logRequest(NewHandler(next))
 	}
-	// bootcfg version
+	// matchbox version
 	mux.Handle("/", s.logRequest(homeHandler()))
 	// Boot via GRUB
 	mux.Handle("/grub", chain(s.selectProfile(s.core, s.grubHandler())))

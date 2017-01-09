@@ -8,7 +8,7 @@ import (
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 )
 
-// profileServer takes a bootcfg Server and implements a gRPC ProfilesServer.
+// profileServer takes a matchbox Server and implements a gRPC ProfilesServer.
 type profileServer struct {
 	srv server.Server
 }

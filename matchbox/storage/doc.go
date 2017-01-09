@@ -1,2 +1,2 @@
-// Package storage defines bootcfg's storage and object types.
+// Package storage defines matchbox's storage and object types.
 package storage

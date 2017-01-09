@@ -1,2 +1,2 @@
-// Package serverpb provides bootcfg message types.
+// Package serverpb provides matchbox message types.
 package serverpb

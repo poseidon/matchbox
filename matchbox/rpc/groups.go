@@ -8,7 +8,7 @@ import (
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 )
 
-// groupServer takes a bootcfg Server and implements a gRPC GroupsServer.
+// groupServer takes a matchbox Server and implements a gRPC GroupsServer.
 type groupServer struct {
 	srv server.Server
 }

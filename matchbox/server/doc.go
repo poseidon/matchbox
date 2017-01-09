@@ -1,2 +1,2 @@
-// Package server is a bootcfg library package for implementing servers.
+// Package server is a matchbox library package for implementing servers.
 package server
