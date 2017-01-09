@@ -41,10 +41,6 @@ Run the latest `matchbox` Docker image from `quay.io/coreos/matchbox` with the `
     sudo docker pull quay.io/coreos/matchbox:latest
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 
-or run the latest tagged release.
-
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:v0.4.2 -address=0.0.0.0:8080 -log-level=debug
-
 Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
 * iPXE [http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae)

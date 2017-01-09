@@ -68,10 +68,6 @@ Run the latest `matchbox` ACI with rkt and the `etcd` example.
 
     sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
 
-or run the latest tagged release signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
-
-    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/matchbox:v0.4.2 -- -address=0.0.0.0:8080 -log-level=debug
-
 If you get an error about the IP assignment, stop old pods and run garbage collection.
 
     sudo rkt gc --grace-period=0

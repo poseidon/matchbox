@@ -251,22 +251,22 @@ CoreOS provides [dnsmasq](https://github.com/coreos/coreos-baremetal/tree/master
 
 ## rkt
 
-Run the most recent tagged and signed `matchbox` [release](https://github.com/coreos/coreos-baremetal/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
+Run the container image with rkt.
+
+latest or most recent tagged `matchbox` [release](https://github.com/coreos/coreos-baremetal/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
 
 ```sh
-$ sudo rkt trust --prefix coreos.com/matchbox
-# gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-$ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/coreos/matchbox:v0.4.2 --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+$ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/coreos/matchbox:latest --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/matchbox` volume mounts.
 
 ## Docker
 
-Run the latest or the most recently tagged `matchbox` [release](https://github.com/coreos/coreos-baremetal/releases) Docker image.
+Run the container image with docker.
 
 ```sh
-sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/coreos/matchbox:v0.4.2 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/matchbox` volume mounts.
