@@ -1,6 +1,6 @@
 
 export CGO_ENABLED:=0
-LD_FLAGS="-w -X github.com/coreos/coreos-baremetal/bootcfg/version.Version=$(shell ./git-version)"
+LD_FLAGS="-w -X github.com/coreos/coreos-baremetal/matchbox/version.Version=$(shell ./git-version)"
 LOCAL_BIN=/usr/local/bin
 
 all: build
@@ -13,7 +13,7 @@ codegen: tools
 	./scripts/codegen
 
 bin/matchbox:
-	go build -o bin/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
+	go build -o bin/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/matchbox
 
 bin/bootcmd:
 	go build -o bin/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcmd
@@ -35,16 +35,16 @@ release: \
 # matchbox
 
 bin/linux-amd64/matchbox:
-	GOOS=linux GOARCH=amd64 go build -o bin/linux-amd64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
+	GOOS=linux GOARCH=amd64 go build -o bin/linux-amd64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/matchbox
 
 bin/linux-arm/matchbox:
-	GOOS=linux GOARCH=arm go build -o bin/linux-arm/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
+	GOOS=linux GOARCH=arm go build -o bin/linux-arm/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/matchbox
 
 bin/linux-arm64/matchbox:
-	GOOS=linux GOARCH=arm64 go build -o bin/linux-arm64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
+	GOOS=linux GOARCH=arm64 go build -o bin/linux-arm64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/matchbox
 
 bin/darwin-amd64/matchbox:
-	GOOS=darwin GOARCH=amd64 go build -o bin/darwin-amd64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/bootcfg
+	GOOS=darwin GOARCH=amd64 go build -o bin/darwin-amd64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/coreos-baremetal/cmd/matchbox
 
 # bootcmd
 

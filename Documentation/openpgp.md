@@ -1,19 +1,19 @@
 
 # OpenPGP Signing
 
-The `bootcfg` OpenPGP signature endpoints serve detached binary and ASCII armored signatures of rendered configs, if enabled. Each config endpoint has corresponding signature endpoints, typically suffixed with `.sig` or `.asc`.
+The `matchbox` OpenPGP signature endpoints serve detached binary and ASCII armored signatures of rendered configs, if enabled. Each config endpoint has corresponding signature endpoints, typically suffixed with `.sig` or `.asc`.
 
-To enable OpenPGP signing, provide the path to a secret keyring containing a single signing key with `-key-ring-path` or by setting `BOOTCFG_KEY_RING_PATH`. If a passphrase is required, set it via the `BOOTCFG_PASSPHRASE` environment variable.
+To enable OpenPGP signing, provide the path to a secret keyring containing a single signing key with `-key-ring-path` or by setting `MATCHBOX_KEY_RING_PATH`. If a passphrase is required, set it via the `MATCHBOX_PASSPHRASE` environment variable.
 
 Here are example signature endpoints without their query parameters.
 
 | Endpoint   | Signature Endpoint | ASCII Signature Endpoint |
 |------------|--------------------|-------------------------|
-| iPXE       | `http://bootcfg.foo/ipxe.sig` | `http://bootcfg.foo/ipxe.asc` |
-| GRUB2      | `http://bootcf.foo/grub.sig` | `http://bootcfg.foo/grub.asc` |
-| Ignition   | `http://bootcfg.foo/ignition.sig` | `http://bootcfg.foo/ignition.asc` |
-| Cloud-Config | `http://bootcfg.foo/cloud.sig` | `http://bootcfg.foo/cloud.asc` |
-| Metadata   | `http://bootcfg.foo/metadata.sig` | `http://bootcfg.foo/metadata.asc` |
+| iPXE       | `http://matchbox.foo/ipxe.sig` | `http://matchbox.foo/ipxe.asc` |
+| GRUB2      | `http://bootcf.foo/grub.sig` | `http://matchbox.foo/grub.asc` |
+| Ignition   | `http://matchbox.foo/ignition.sig` | `http://matchbox.foo/ignition.asc` |
+| Cloud-Config | `http://matchbox.foo/cloud.sig` | `http://matchbox.foo/cloud.asc` |
+| Metadata   | `http://matchbox.foo/metadata.sig` | `http://matchbox.foo/metadata.asc` |
 
 In production, mount your signing keyring and source the passphrase from a [Kubernetes secret](http://kubernetes.io/v1.1/docs/user-guide/secrets.html). Use a signing subkey exported to a keyring by itself, which can be revoked by a primary key, if needed.
 

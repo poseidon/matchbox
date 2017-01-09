@@ -4,9 +4,9 @@ The `rktnetes` example provisions a 3 node Kubernetes v1.4.7 cluster with [rkt](
 
 ## Requirements
 
-Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with docker](getting-started-docker.md) guide and understand the basics. In particular, you should be able to:
+Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) or [matchbox with docker](getting-started-docker.md) guide and understand the basics. In particular, you should be able to:
 
-* Use rkt or Docker to start `bootcfg`
+* Use rkt or Docker to start `matchbox`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
@@ -36,7 +36,7 @@ Generate a root CA and Kubernetes TLS assets for components (`admin`, `apiserver
 
 ## Containers
 
-Use rkt or docker to start `bootcfg` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
+Use rkt or docker to start `matchbox` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [matchbox with rkt](getting-started-rkt.md) or [matchbox with Docker](getting-started-docker.md) for help.
 
 Client machines should boot and provision themselves. Local client VMs should network boot CoreOS in about a 1 minute and the Kubernetes API should be available after 3-4 minutes (each node downloads a ~160MB Hyperkube). If you chose `rktnetes-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision Kubernetes clusters on physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 

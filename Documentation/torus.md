@@ -5,9 +5,9 @@ The Torus example provisions a 3 node CoreOS cluster, with `etcd3` and Torus, to
 
 ## Requirements
 
-Ensure that you've gone through the [bootcfg with rkt](getting-started-rkt.md) guide and understand the basics. In particular, you should be able to:
+Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) guide and understand the basics. In particular, you should be able to:
 
-* Use rkt or Docker to start `bootcfg`
+* Use rkt or Docker to start `matchbox`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
@@ -27,7 +27,7 @@ Download the CoreOS image assets referenced in the target [profile](../examples/
 
 ## Containers
 
-Use rkt or docker to start `bootcfg` and mount `torus` example. Create a network boot environment and power-on your machines. Revisit [bootcfg with rkt](getting-started-rkt.md) or [bootcfg with Docker](getting-started-docker.md) for help.
+Use rkt or docker to start `matchbox` and mount `torus` example. Create a network boot environment and power-on your machines. Revisit [matchbox with rkt](getting-started-rkt.md) or [matchbox with Docker](getting-started-docker.md) for help.
 
 Client machines should network boot and provision themselves.
 

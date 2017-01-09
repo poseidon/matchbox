@@ -5,15 +5,15 @@ Ignition is a system for declaratively provisioning disks during the initramfs, 
 
 ## Fuze Configs
 
-Ignition 2.0.0+ configs are versioned, *machine-friendly* JSON documents (which contain encoded file contents). Operators should write and maintain configs in a *human-friendly* format, such as CoreOS [fuze](https://github.com/coreos/fuze) configs. As of `bootcfg` v0.4.0, Fuze configs are the primary way to use CoreOS Ignition.
+Ignition 2.0.0+ configs are versioned, *machine-friendly* JSON documents (which contain encoded file contents). Operators should write and maintain configs in a *human-friendly* format, such as CoreOS [fuze](https://github.com/coreos/fuze) configs. As of `matchbox` v0.4.0, Fuze configs are the primary way to use CoreOS Ignition.
 
-The [Fuze schema](https://github.com/coreos/fuze/blob/master/doc/configuration.md) formalizes and improves upon the YAML to Ignition JSON transform. Fuze provides better support for Ignition 2.0.0+, handles file content encoding, patches Ignition bugs, performs better validations, and lets services (like `bootcfg`) negotiate the Ignition version required by a CoreOS client.
+The [Fuze schema](https://github.com/coreos/fuze/blob/master/doc/configuration.md) formalizes and improves upon the YAML to Ignition JSON transform. Fuze provides better support for Ignition 2.0.0+, handles file content encoding, patches Ignition bugs, performs better validations, and lets services (like `matchbox`) negotiate the Ignition version required by a CoreOS client.
 
 ## Adding Fuze Configs
 
-Fuze template files can be added in the `/var/lib/bootcfg/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
+Fuze template files can be added in the `/var/lib/matchbox/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
 
-    /var/lib/bootcfg
+    /var/lib/matchbox
      ├── cloud
      ├── ignition
      │   └── k8s-controller.yaml
@@ -24,11 +24,11 @@ Fuze template files can be added in the `/var/lib/bootcfg/ignition` directory or
 
 ### Reference
 
-Reference an Fuze config in a [Profile](bootcfg.md#profiles) with `ignition_id`. When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `bootcfg` [Ignition endpoint](api.md#ignition-config).
+Reference an Fuze config in a [Profile](matchbox.md#profiles) with `ignition_id`. When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `matchbox` [Ignition endpoint](api.md#ignition-config).
 
 ### Migration from v0.3.0
 
-In v0.4.0, `bootcfg` switched to using the CoreOS [fuze](https://github.com/coreos/fuze) library, which formalizes and improves upon the YAML to Ignition JSON transform. Fuze provides better support for Ignition 2.0.0+, handles file content encoding, patches Ignition bugs, and performs better validations.
+In v0.4.0, `matchbox` switched to using the CoreOS [fuze](https://github.com/coreos/fuze) library, which formalizes and improves upon the YAML to Ignition JSON transform. Fuze provides better support for Ignition 2.0.0+, handles file content encoding, patches Ignition bugs, and performs better validations.
 
 Upgrade your Ignition YAML templates to match the [Fuze config schema](https://github.com/coreos/fuze/blob/master/doc/configuration.md). Typically, you'll need to do the following:
 

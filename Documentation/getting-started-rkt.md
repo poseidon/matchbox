@@ -1,7 +1,7 @@
 
 # Getting Started with rkt
 
-In this tutorial, we'll run `bootcfg` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
+In this tutorial, we'll run `matchbox` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
 
 *Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
@@ -64,13 +64,13 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
 
 ## Containers
 
-Run the latest `bootcfg` ACI with rkt and the `etcd` example.
+Run the latest `matchbox` ACI with rkt and the `etcd` example.
 
-    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
 
 or run the latest tagged release signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
-    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/bootcfg --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/bootcfg/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/bootcfg:v0.4.2 -- -address=0.0.0.0:8080 -log-level=debug
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd coreos.com/matchbox:v0.4.2 -- -address=0.0.0.0:8080 -log-level=debug
 
 If you get an error about the IP assignment, stop old pods and run garbage collection.
 
@@ -95,7 +95,7 @@ Run the `coreos.com/dnsmasq` ACI with rkt.
 
     sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=metal0:IP=172.18.0.3 --mount volume=config,target=/etc/dnsmasq.conf --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf
 
-In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.18.0.50 and 172.18.0.99, resolves `bootcfg.foo` to 172.18.0.2 (the IP where `bootcfg` runs), and points iPXE clients to `http://bootcfg.foo:8080/boot.ipxe`.
+In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.18.0.50 and 172.18.0.99, resolves `matchbox.foo` to 172.18.0.2 (the IP where `matchbox` runs), and points iPXE clients to `http://matchbox.foo:8080/boot.ipxe`.
 
 ## Client VMs
 
@@ -134,5 +134,5 @@ Press ^] three times to stop a rkt pod. Clean up the VM machines.
 
 ## Going Further
 
-Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 

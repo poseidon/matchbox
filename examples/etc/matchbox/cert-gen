@@ -5,7 +5,7 @@ rm -f ca.key ca.crt server.key server.csr server.crt client.key client.csr clien
 rm -rf certs crl newcerts
 
 if [ -z $SAN ]
-  then echo "Set SAN with a DNS or IP for bootcfg (e.g. export SAN=DNS.1:bootcfg.example.com,IP.1:192.168.1.42)."
+  then echo "Set SAN with a DNS or IP for matchbox (e.g. export SAN=DNS.1:matchbox.example.com,IP.1:192.168.1.42)."
   exit 1
 fi
 

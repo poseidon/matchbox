@@ -29,9 +29,9 @@ Configuration arguments can be provided at the command line. Check the dnsmasq [
 | flag     | description | example |
 |----------|-------------|---------|
 | --dhcp-range | Enable DHCP, lease given range | `172.18,0.50,172.18.0.99`, `192.168.1.1,proxy,255.255.255.0` |
-| --dhcp-boot | DHCP next server option | `http://bootcfg.foo:8080/boot.ipxe` |
+| --dhcp-boot | DHCP next server option | `http://matchbox.foo:8080/boot.ipxe` |
 | --enable-tftp | Enable serving from tftp-root over TFTP | NA |
-| --address | IP address for a domain name | /bootcfg.foo/172.18.0.2 |
+| --address | IP address for a domain name | /matchbox.foo/172.18.0.2 |
 
 ## ACI
 
@@ -45,7 +45,7 @@ Run `dnsmasq.aci` with rkt to run DHCP/proxyDHCP/TFTP/DNS services.
 
 DHCP+TFTP+DNS on the `metal0` bridge:
 
-    sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0 -- -d -q --dhcp-range=172.18.0.50,172.18.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.18.0.1 --address=/bootcfg.foo/172.18.0.2
+    sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0 -- -d -q --dhcp-range=172.18.0.50,172.18.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.18.0.1 --address=/matchbox.foo/172.18.0.2
 
 ## Docker
 
@@ -59,4 +59,4 @@ Run the Docker image to run DHCP/proxyDHCP/TFTP/DNS services.
 
 DHCP+TFTP+DNS on the `docker0` bridge:
 
-    sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://bootcfg.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --address=/bootcfg.foo/172.17.0.2
+    sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --address=/matchbox.foo/172.17.0.2

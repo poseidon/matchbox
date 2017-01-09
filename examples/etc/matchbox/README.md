@@ -1,21 +1,21 @@
 
 ## gRPC API Credentials
 
-Create FAKE TLS credentials for running the `bootcfg` gRPC API examples.
+Create FAKE TLS credentials for running the `matchbox` gRPC API examples.
 
-**DO NOT** use these certificates for anything other than running `bootcfg` examples. Use your organization's production PKI for production deployments.
+**DO NOT** use these certificates for anything other than running `matchbox` examples. Use your organization's production PKI for production deployments.
 
-Navigate to the example directory which will be mounted as `/etc/bootcfg` in examples:
+Navigate to the example directory which will be mounted as `/etc/matchbox` in examples:
 
-    cd coreos-baremetal/examples/etc/bootcfg
+    cd coreos-baremetal/examples/etc/matchbox
 
-Set certificate subject alt names which should be used by exporting `SAN`. Use the DNS name or IP at which `bootcfg` is hosted.
+Set certificate subject alt names which should be used by exporting `SAN`. Use the DNS name or IP at which `matchbox` is hosted.
 
     # for examples on metal0 or docker0 bridges
     export SAN=IP.1:127.0.0.1,IP.2:172.18.0.2
 
     # production example
-    export SAN=DNS.1:bootcfg.example.com
+    export SAN=DNS.1:matchbox.example.com
 
 Create a fake `ca.crt`, `server.crt`, `server.key`, `client.crt`, and `client.key`. Type 'Y' when prompted.
 

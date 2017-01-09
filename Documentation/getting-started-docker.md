@@ -1,7 +1,7 @@
 
 # Getting Started with Docker
 
-In this tutorial, we'll run `bootcfg` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clusters, etcd clusters, and test network setups.
+In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clusters, etcd clusters, and test network setups.
 
 *Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
@@ -36,14 +36,14 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
 
 ## Containers
 
-Run the latest `bootcfg` Docker image from `quay.io/coreos/bootcfg` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
+Run the latest `matchbox` Docker image from `quay.io/coreos/matchbox` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
 
-    sudo docker pull quay.io/coreos/bootcfg:latest
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:8080 -log-level=debug
+    sudo docker pull quay.io/coreos/matchbox:latest
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 
 or run the latest tagged release.
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/bootcfg:Z -v $PWD/examples/groups/etcd:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:v0.4.2 -address=0.0.0.0:8080 -log-level=debug
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:v0.4.2 -address=0.0.0.0:8080 -log-level=debug
 
 Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
@@ -57,7 +57,7 @@ Since the virtual network has no network boot services, use the `dnsmasq` image 
 
     sudo docker run --name dnsmasq --cap-add=NET_ADMIN -v $PWD/contrib/dnsmasq/docker0.conf:/etc/dnsmasq.conf:Z quay.io/coreos/dnsmasq -d
 
-In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.17.0.43 and 172.17.0.99, resolves `bootcfg.foo` to 172.17.0.2 (the IP where `bootcfg` runs), and points iPXE clients to `http://bootcfg.foo:8080/boot.ipxe`.
+In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.17.0.43 and 172.17.0.99, resolves `matchbox.foo` to 172.17.0.2 (the IP where `matchbox` runs), and points iPXE clients to `http://matchbox.foo:8080/boot.ipxe`.
 
 ## Client VMs
 
@@ -97,5 +97,5 @@ Clean up the containers and VM machines.
 
 ## Going Further
 
-Learn more about [bootcfg](bootcfg.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
 

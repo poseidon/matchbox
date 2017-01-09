@@ -1,18 +1,18 @@
 
-# bootcfg
+# matchbox
 
-`bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. `bootcfg` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. MAC address, UUID, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config, generic configs). The aim is to use CoreOS Linux's early-boot capabilities to provision CoreOS machines.
+`matchbox` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. `matchbox` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. MAC address, UUID, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config, generic configs). The aim is to use CoreOS Linux's early-boot capabilities to provision CoreOS machines.
 
-Network boot endpoints provide PXE, iPXE, GRUB support. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with rkt, or as a Docker container.
+Network boot endpoints provide PXE, iPXE, GRUB support. `matchbox` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with rkt, or as a Docker container.
 
 ![Bootcfg Overview](img/overview.png)
 
 ## Getting Started
 
-Get started running `bootcfg` on your Linux machine, with rkt or Docker.
+Get started running `matchbox` on your Linux machine, with rkt or Docker.
 
-* [bootcfg with rkt](getting-started-rkt.md)
-* [bootcfg with Docker](getting-started-docker.md)
+* [matchbox with rkt](getting-started-rkt.md)
+* [matchbox with Docker](getting-started-docker.md)
 
 ## Flags
 
@@ -21,15 +21,15 @@ See [configuration](config.md) flags and variables.
 ## API
 
 * [HTTP API](api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
+* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/matchbox/client)
 
 ## Data
 
-A `Store` stores machine Groups, Profiles, and associated Ignition configs, cloud-configs, and generic configs. By default, `bootcfg` uses a `FileStore` to search a `-data-path` for these resources.
+A `Store` stores machine Groups, Profiles, and associated Ignition configs, cloud-configs, and generic configs. By default, `matchbox` uses a `FileStore` to search a `-data-path` for these resources.
 
-Prepare `/var/lib/bootcfg` with `groups`, `profile`, `ignition`, `cloud`, and `generic` subdirectories. You may wish to keep these files under version control.
+Prepare `/var/lib/matchbox` with `groups`, `profile`, `ignition`, `cloud`, and `generic` subdirectories. You may wish to keep these files under version control.
 
-     /var/lib/bootcfg
+     /var/lib/matchbox
      ├── cloud
      │   ├── cloud.yaml.tmpl
      │   └── worker.sh.tmpl
@@ -65,7 +65,7 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
         "kernel": "/assets/coreos/1185.3.0/coreos_production_pxe.vmlinuz",
         "initrd": ["/assets/coreos/1185.3.0/coreos_production_pxe_image.cpio.gz"],
         "args": [
-          "coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
+          "coreos.config.url=http://matchbox.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp}",
           "coreos.first_boot=yes",
           "coreos.autologin"
         ]
@@ -74,17 +74,17 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
 
 The `"boot"` settings will be used to render configs to network boot programs such as iPXE, GRUB, or Pixiecore. You may reference remote kernel and initrd assets or [local assets](#assets).
 
-To use Ignition, set the `coreos.config.url` kernel option to reference the `bootcfg` [Ignition endpoint](api.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
+To use Ignition, set the `coreos.config.url` kernel option to reference the `matchbox` [Ignition endpoint](api.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
 
-To use cloud-config, set the `cloud-config-url` kernel option to reference the `bootcfg` [Cloud-Config endpoint](api.md#cloud-config), which will render the `cloud_id` file.
+To use cloud-config, set the `cloud-config-url` kernel option to reference the `matchbox` [Cloud-Config endpoint](api.md#cloud-config), which will render the `cloud_id` file.
 
 ### Groups
 
 Groups define selectors which match zero or more machines. Machine(s) matching a group will boot and provision according to the group's `Profile`.
 
-Create a group definition with a `Profile` to be applied, selectors for matching machines, and any `metadata` needed to render templated configs. For example `/var/lib/bootcfg/groups/node1.json` matches a single machine with MAC address `52:54:00:89:d8:10`.
+Create a group definition with a `Profile` to be applied, selectors for matching machines, and any `metadata` needed to render templated configs. For example `/var/lib/matchbox/groups/node1.json` matches a single machine with MAC address `52:54:00:89:d8:10`.
 
-    # /var/lib/bootcfg/groups/node1.json
+    # /var/lib/matchbox/groups/node1.json
     {
       "name": "node1",
       "profile": "etcd",
@@ -98,7 +98,7 @@ Create a group definition with a `Profile` to be applied, selectors for matching
       }
     }
 
-Meanwhile, `/var/lib/bootcfg/groups/proxy.json` acts as the default machine group since it has no selectors.
+Meanwhile, `/var/lib/matchbox/groups/proxy.json` acts as the default machine group since it has no selectors.
 
     {
       "name": "etcd-proxy",
@@ -150,9 +150,9 @@ Note that `.request` is reserved for these purposes so group metadata with data 
 
 ## Assets
 
-`bootcfg` can serve `-assets-path` static assets at `/assets`. This is helpful for reducing bandwidth usage when serving the kernel and initrd to network booted machines. The default assets-path is `/var/lib/bootcfg/assets` or you can pass `-assets-path=""` to disable asset serving.
+`matchbox` can serve `-assets-path` static assets at `/assets`. This is helpful for reducing bandwidth usage when serving the kernel and initrd to network booted machines. The default assets-path is `/var/lib/matchbox/assets` or you can pass `-assets-path=""` to disable asset serving.
 
-    bootcfg.foo/assets/
+    matchbox.foo/assets/
     └── coreos
         └── VERSION
             ├── coreos_production_pxe.vmlinuz
@@ -164,7 +164,7 @@ See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download
 
 ## Network
 
-`bootcfg` does not implement or exec a DHCP/TFTP server. Read [network setup](network-setup.md) or use the [coreos/dnsmasq](../contrib/dnsmasq) image if you need a quick DHCP, proxyDHCP, TFTP, or DNS setup.
+`matchbox` does not implement or exec a DHCP/TFTP server. Read [network setup](network-setup.md) or use the [coreos/dnsmasq](../contrib/dnsmasq) image if you need a quick DHCP, proxyDHCP, TFTP, or DNS setup.
 
 ## Going Further
 
