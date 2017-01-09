@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
-	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
+	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	fake "github.com/coreos/coreos-baremetal/matchbox/storage/testfakes"
 )
 
 func TestIPXEInspect(t *testing.T) {

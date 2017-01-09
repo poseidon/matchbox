@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/rpc/rpcpb"
+	"github.com/coreos/coreos-baremetal/matchbox/rpc/rpcpb"
 )
 
 var (

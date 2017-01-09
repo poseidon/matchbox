@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
 )
 
 // unexported key prevents collisions

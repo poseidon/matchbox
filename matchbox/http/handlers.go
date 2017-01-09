@@ -6,8 +6,8 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/coreos/coreos-baremetal/matchbox/server"
+	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 )
 
 // homeHandler shows the server name for rooted requests. Otherwise, a 404 is

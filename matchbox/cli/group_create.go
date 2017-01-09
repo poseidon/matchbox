@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
+	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
+	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
 )
 
 // groupPutCmd creates and updates Groups.

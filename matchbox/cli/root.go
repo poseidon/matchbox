@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/client"
-	"github.com/coreos/coreos-baremetal/bootcfg/tlsutil"
+	"github.com/coreos/coreos-baremetal/matchbox/client"
+	"github.com/coreos/coreos-baremetal/matchbox/tlsutil"
 )
 
 var (

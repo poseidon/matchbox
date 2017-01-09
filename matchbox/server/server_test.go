@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
-	"github.com/coreos/coreos-baremetal/bootcfg/storage"
-	"github.com/coreos/coreos-baremetal/bootcfg/storage/storagepb"
-	fake "github.com/coreos/coreos-baremetal/bootcfg/storage/testfakes"
+	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
+	"github.com/coreos/coreos-baremetal/matchbox/storage"
+	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	fake "github.com/coreos/coreos-baremetal/matchbox/storage/testfakes"
 )
 
 func TestSelectGroup(t *testing.T) {

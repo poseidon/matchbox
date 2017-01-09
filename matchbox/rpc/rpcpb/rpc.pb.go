@@ -15,7 +15,7 @@ package rpcpb
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import serverpb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+import serverpb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 
 import (
 	context "golang.org/x/net/context"

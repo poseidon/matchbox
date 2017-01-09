@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 )
 
 // profileDescribeCmd describes a Profile.

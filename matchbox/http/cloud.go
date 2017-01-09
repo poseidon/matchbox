@@ -10,8 +10,8 @@ import (
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
 	"golang.org/x/net/context"
 
-	"github.com/coreos/coreos-baremetal/bootcfg/server"
-	pb "github.com/coreos/coreos-baremetal/bootcfg/server/serverpb"
+	"github.com/coreos/coreos-baremetal/matchbox/server"
+	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 )
 
 // CloudConfig defines a cloud-init config.
