@@ -18,9 +18,9 @@ cp README.md $DEST
 # scripts
 mkdir -p $SCRIPTS/tls
 cp scripts/get-coreos $SCRIPTS
-cp examples/etc/bootcfg/README.md $SCRIPTS/tls
-cp examples/etc/bootcfg/cert-gen $SCRIPTS/tls
-cp examples/etc/bootcfg/openssl.conf $SCRIPTS/tls
+cp examples/etc/matchbox/README.md $SCRIPTS/tls
+cp examples/etc/matchbox/cert-gen $SCRIPTS/tls
+cp examples/etc/matchbox/openssl.conf $SCRIPTS/tls
 
 # systemd
 mkdir -p $CONTRIB/systemd

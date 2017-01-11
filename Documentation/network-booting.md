@@ -49,7 +49,7 @@ This approach has a number of drawbacks. TFTP can be slow, managing config files
 
 ![iPXE flow](img/ipxe.png)
 
-A DHCPOFFER to iPXE client firmware specifies an HTTP boot script such as `http://bootcfg.foo/boot.ipxe`.
+A DHCPOFFER to iPXE client firmware specifies an HTTP boot script such as `http://matchbox.foo/boot.ipxe`.
 
 Here is an example iPXE script for booting the remote CoreOS stable image.
 
@@ -64,7 +64,7 @@ boot
 
 A TFTP server is used only to provide the `undionly.kpxe` boot program to older PXE firmware in order to bootstrap into iPXE.
 
-CoreOS `bootcfg` can render signed iPXE scripts to machines based on their hardware attributes. Setup involves configuring your DHCP server to point iPXE clients to the `bootcfg` [iPXE endpoint](api.md#ipxe).
+CoreOS `matchbox` can render signed iPXE scripts to machines based on their hardware attributes. Setup involves configuring your DHCP server to point iPXE clients to the `matchbox` [iPXE endpoint](api.md#ipxe).
 
 ## DHCP
 

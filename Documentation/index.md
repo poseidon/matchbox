@@ -9,22 +9,22 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 * [Machine Lifecycle](machine-lifecycle.md)
 * [Background: PXE Booting](network-booting.md)
 
-## bootcfg
+## matchbox
 
-`bootcfg` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, and GRUB. `bootcfg` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
+`matchbox` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, and GRUB. `matchbox` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
 
-* [bootcfg Service](bootcfg.md)
-* [Profiles](bootcfg.md#profiles)
-* [Groups](bootcfg.md#groups)
+* [matchbox Service](matchbox.md)
+* [Profiles](matchbox.md#profiles)
+* [Groups](matchbox.md#groups)
 * Machine Configs
     * [Ignition](ignition.md)
     * [Cloud-Config](cloud-config.md)
 * Tutorials (QEMU/KVM)
-    * [bootcfg with rkt](getting-started-rkt.md)
-    * [bootcfg with Docker](getting-started-docker.md)
+    * [matchbox with rkt](getting-started-rkt.md)
+    * [matchbox with Docker](getting-started-docker.md)
 * [Configuration](config.md)
 * [HTTP API](api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/bootcfg/client)
+* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/matchbox/client)
 * Installation
     * [CoreOS / Linux distros](deployment.md)
     * [rkt](deployment.md#rkt) / [docker](deployment.md#docker)
@@ -33,7 +33,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
     * bootcmd CLI (POC)
     * Tectonic Installer ([guide](https://tectonic.com/enterprise/docs/latest/deployer/platform-baremetal.html), [blog](https://tectonic.com/blog/tectonic-1-3-release.html))
 * Backends
-    * [FileStore](bootcfg.md#data)
+    * [FileStore](matchbox.md#data)
 * [Troubleshooting](troubleshooting.md)
 * Going Further
     * [gRPC API Usage](config.md#grpc-api)

@@ -1,17 +1,38 @@
-# coreos-baremetal bootcfg
+# matchbox
+
+Notable changes between releases.
 
 ## Latest
 
+Rename `bootcfg` to CoreOS `matchbox`!
+
 * Add Profile `args` field to list kernel args
+* Update [Fuze](https://github.com/coreos/container-linux-config-transpiler) and [Ignition](https://github.com/coreos/ignition) to v0.11.2
+* Rename `bootcfg` binary to `matchbox`
+* Rename `bootcfg` packages to `matchbox`
+* Publish a `quay.io/coreos/matchbox` container image. The `quay.io/coreos/bootcfg` image will no longer be updated.
+* Rename environment variable prefix from `BOOTCFG*` to `MATCHBOX*`
+* Change config directory to `/etc/matchbox`
+* Change default `-data-path` to `/var/lib/matchbox`
+* Change default `-assets-path` to `/var/lib/matchbox/assets`
 * Deprecate Profile `cmd` field map of kernel args
 * Deprecate Pixiecore support
-* Update Fuze and Ignition to v0.11.2
 
 #### Examples
 
 * Upgrade Kubernetes v1.5.1 (static) example clusters
 * Upgrade Kubernetes v1.5.1 (self-hosted) example cluster
 * Combine rktnetes Ignition into Kubernetes static cluster
+
+#### Migration
+
+* binary users should install the `matchbox` binary (see [installation](Documentation/deployment.md))
+* rkt/docker users should start using `quay.io/coreos/matchbox` (see [installation](Documentation/deployment.md))
+* RPM users should uninstall bootcfg and install matchbox (see [installation](Documentation/deployment.md))
+* Move `/etc/bootcfg` configs and certificates to `/etc/matchbox`
+* Move `/var/lib/bootcfg` data to `/var/lib/matchbox`
+* See the new [contrib/systemd](contrib/systemd) service examples
+* Remove the old `bootcfg` user if you created one
 
 ## v0.4.2 (2016-12-7)
 

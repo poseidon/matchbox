@@ -5,7 +5,7 @@
   "metadata": {
     "coreos_channel": "stable",
     "coreos_version": "1185.3.0",
-    "ignition_endpoint": "http://bootcfg.foo:8080/ignition",
-    "baseurl": "http://bootcfg.foo:8080/assets/coreos"
+    "ignition_endpoint": "http://matchbox.foo:8080/ignition",
+    "baseurl": "http://matchbox.foo:8080/assets/coreos"
   }
 }

@@ -21,8 +21,8 @@ Tag, sign the release version, and push it to Github.
 
 Travis CI will build the Docker image and push it to Quay.io when the tag is pushed to master. Verify the new image and version.
 
-    sudo docker run quay.io/coreos/bootcfg:$VERSION -version
-    sudo rkt run --no-store quay.io/coreos/bootcfg:$VERSION -- -version
+    sudo docker run quay.io/coreos/matchbox:$VERSION -version
+    sudo rkt run --no-store quay.io/coreos/matchbox:$VERSION -- -version
 
 ## Github Release
 
@@ -37,7 +37,7 @@ Build the release tarballs.
 
 Verify the reported version.
 
-    ./_output/coreos-baremetal-v0.4.2-linux-amd64/bootcfg -version
+    ./_output/coreos-baremetal-v0.4.2-linux-amd64/matchbox -version
 
 ## ACI
 
@@ -47,18 +47,18 @@ Build the rkt ACI on a Linux host with `acbuild`,
 
 Check that the listed version is correct/clean.
 
-    sudo rkt --insecure-options=image run bootcfg.aci -- -version
+    sudo rkt --insecure-options=image run matchbox.aci -- -version
 
 Add the ACI to `output` for signing.
 
-    mv bootcfg.aci _output/bootcfg-$VERSION-linux-amd64.aci
+    mv matchbox.aci _output/matchbox-$VERSION-linux-amd64.aci
 
 ## Signing
 
 Sign the release tarballs and ACI with a [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) subkey.
 
     cd _output
-    gpg2 -a --default-key FC8A365E --detach-sign bootcfg-$VERSION-linux-amd64.aci
+    gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-amd64.aci
     gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-linux-amd64.tar.gz
     gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-darwin-amd64.tar.gz
     gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-linux-arm.tar.gz
@@ -66,7 +66,7 @@ Sign the release tarballs and ACI with a [CoreOS App Signing Key](https://coreos
 
 Verify the signatures.
 
-    gpg2 --verify bootcfg-$VERSION-linux-amd64.aci.asc bootcfg-$VERSION-linux-amd64.aci
+    gpg2 --verify matchbox-$VERSION-linux-amd64.aci.asc matchbox-$VERSION-linux-amd64.aci
     gpg2 --verify coreos-baremetal-$VERSION-linux-amd64.tar.gz.asc coreos-baremetal-$VERSION-linux-amd64.tar.gz
     gpg2 --verify coreos-baremetal-$VERSION-darwin-amd64.tar.gz.asc coreos-baremetal-$VERSION-darwin-amd64.tar.gz
     gpg2 --verify coreos-baremetal-$VERSION-linux-arm.tar.gz.asc coreos-baremetal-$VERSION-linux-arm.tar.gz

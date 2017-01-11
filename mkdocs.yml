@@ -15,14 +15,14 @@ extra:
 pages:
   - Home: 'index.md'
   - Tutorials:
-    - 'bootcfg with rkt': 'getting-started-rkt.md'
-    - 'bootcfg with docker': 'getting-started-docker.md'
+    - 'matchbox with rkt': 'getting-started-rkt.md'
+    - 'matchbox with docker': 'getting-started-docker.md'
   - Guides:
     - 'Network Setup': 'network-setup.md'
     - 'Machine Lifecycle': 'machine-lifecycle.md'
     - 'Background: PXE Booting': 'network-booting.md'
   - Installation: 'deployment.md'
-  - bootcfg Service: 'bootcfg.md'
+  - matchbox Service: 'matchbox.md'
   - Machine Configs:
     - 'Ignition': 'ignition.md'
     - 'Cloud-Config': 'cloud-config.md'

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Create a virtual bridge with PXE services and bootcfg
+# Create a virtual bridge with PXE services and matchbox
 # USAGE: ./scripts/devnet create [example]
 # USAGE: ./scripts/devnet destroy
 set -u
@@ -10,7 +10,7 @@ EXAMPLE=${2:-}
 BRIDGE=metal0
 COREOS_CHANNEL=stable
 COREOS_VERSION=1185.3.0
-BOOTCFG_ARGS=""
+MATCHBOX_ARGS=""
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -35,7 +35,7 @@ function main {
 function usage {
   echo "USAGE: ${0##*/} <command>"
   echo "Commands:"
-  echo -e "\tcreate\tcreate bootcfg and PXE services on the bridge"
+  echo -e "\tcreate\tcreate matchbox and PXE services on the bridge"
   echo -e "\tdestroy\tdestroy the services on the bridge"
 }
 
@@ -55,33 +55,33 @@ function create {
   check
 
   if [ -z "$EXAMPLE" ]; then
-    echo "Starting bootcfg"
+    echo "Starting matchbox"
   else
-    echo "Starting bootcfg configured to boot $EXAMPLE"
+    echo "Starting matchbox configured to boot $EXAMPLE"
   fi
 
   if [ -z "$EXAMPLE" ]; then
     # Mount a data volume with assets and enable gRPC
-    BOOTCFG_ARGS="-rpc-address=0.0.0.0:8081"
+    MATCHBOX_ARGS="-rpc-address=0.0.0.0:8081"
     DATA_MOUNT="--volume data,kind=host,source=$(mktemp -d) \
-    --mount volume=assets,target=/var/lib/bootcfg/assets \
+    --mount volume=assets,target=/var/lib/matchbox/assets \
     --volume assets,kind=host,source=$PWD/examples/assets,readOnly=true"
   else
     # Mount the given EXAMPLE
     DATA_MOUNT="--volume data,kind=host,source=$PWD/examples \
-    --mount volume=groups,target=/var/lib/bootcfg/groups \
+    --mount volume=groups,target=/var/lib/matchbox/groups \
     --volume groups,kind=host,source=$DIR/../examples/groups/$EXAMPLE"
   fi
 
-  systemd-run --unit=dev-bootcfg \
+  systemd-run --unit=dev-matchbox \
     rkt run \
-    --uuid-file-save=/tmp/bootcfg \
+    --uuid-file-save=/tmp/matchbox \
     --net=metal0:IP=172.18.0.2 \
-    --mount volume=config,target=/etc/bootcfg \
-    --volume config,kind=host,source=$PWD/examples/etc/bootcfg,readOnly=true \
-    --mount volume=data,target=/var/lib/bootcfg \
+    --mount volume=config,target=/etc/matchbox \
+    --volume config,kind=host,source=$PWD/examples/etc/matchbox,readOnly=true \
+    --mount volume=data,target=/var/lib/matchbox \
     $DATA_MOUNT \
-    quay.io/coreos/bootcfg:latest -- -address=0.0.0.0:8080 -log-level=debug $BOOTCFG_ARGS
+    quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   systemd-run --unit=dev-dnsmasq \
@@ -94,11 +94,11 @@ function create {
 }
 
 function destroy {
-  rkt stop --uuid-file=/tmp/bootcfg --force
-  rkt rm --uuid-file=/tmp/bootcfg
+  rkt stop --uuid-file=/tmp/matchbox --force
+  rkt rm --uuid-file=/tmp/matchbox
   rkt stop --uuid-file=/tmp/dnsmasq --force
   rkt rm --uuid-file=/tmp/dnsmasq
-  systemctl reset-failed dev-bootcfg
+  systemctl reset-failed dev-matchbox
   systemctl reset-failed dev-dnsmasq
 }
 

@@ -1,7 +1,7 @@
 
 # Examples
 
-These examples network boot and provision machines into CoreOS clusters using `bootcfg`. You can re-use their profiles to provision your own physical machines.
+These examples network boot and provision machines into CoreOS clusters using `matchbox`. You can re-use their profiles to provision your own physical machines.
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
@@ -22,11 +22,11 @@ These examples network boot and provision machines into CoreOS clusters using `b
 
 ## Tutorials
 
-Get started running `bootcfg` on your Linux machine to network boot and provision clusters of VMs or physical hardware.
+Get started running `matchbox` on your Linux machine to network boot and provision clusters of VMs or physical hardware.
 
 * Getting Started
-	* [bootcfg with rkt](../Documentation/getting-started-rkt.md)
-	* [bootcfg with Docker](../Documentation/getting-started-docker.md)
+	* [matchbox with rkt](../Documentation/getting-started-rkt.md)
+	* [matchbox with Docker](../Documentation/getting-started-docker.md)
 * [Kubernetes (static manifests)](../Documentation/kubernetes.md)
 * [Kubernetes (rktnetes)](../Documentation/rktnetes.md)
 * [Kubernetes (self-hosted)](../Documentation/bootkube.md)
@@ -41,7 +41,7 @@ Example profiles pass the `coreos.autologin` kernel argument. This skips the pas
 
 Example groups allow `ssh_authorized_keys` to be added for the `core` user as metadata. You might also include this directly in your Ignition.
 
-    # /var/lib/bootcfg/groups/default.json
+    # /var/lib/matchbox/groups/default.json
     {
         "name": "Example Machine Group",
         "profile": "pxe",

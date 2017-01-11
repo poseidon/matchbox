@@ -1,23 +1,23 @@
 [Unit]
-Description=CoreOS bootcfg Server
+Description=CoreOS matchbox Server
 Documentation=https://github.com/coreos/coreos-baremetal
 
 [Service]
-Environment="IMAGE=quay.io/coreos/bootcfg"
-Environment="VERSION=v0.4.2"
-Environment="BOOTCFG_ADDRESS=0.0.0.0:8080"
-Environment="BOOTCFG_RPC_ADDRESS=0.0.0.0:8081"
-Environment="BOOTCFG_LOG_LEVEL=debug"
-ExecStartPre=/usr/bin/mkdir -p /etc/bootcfg
-ExecStartPre=/usr/bin/mkdir -p /var/lib/bootcfg/assets
+Environment="IMAGE=quay.io/coreos/matchbox"
+Environment="VERSION=v0.5.0"
+Environment="MATCHBOX_ADDRESS=0.0.0.0:8080"
+Environment="MATCHBOX_RPC_ADDRESS=0.0.0.0:8081"
+Environment="MATCHBOX_LOG_LEVEL=debug"
+ExecStartPre=/usr/bin/mkdir -p /etc/matchbox
+ExecStartPre=/usr/bin/mkdir -p /var/lib/matchbox/assets
 ExecStart=/usr/bin/rkt run \
   --net=host \
   --inherit-env \
   --trust-keys-from-https \
-  --mount volume=data,target=/var/lib/bootcfg \
-  --mount volume=config,target=/etc/bootcfg \
-  --volume data,kind=host,source=/var/lib/bootcfg \
-  --volume config,kind=host,source=/etc/bootcfg \
+  --mount volume=data,target=/var/lib/matchbox \
+  --mount volume=config,target=/etc/matchbox \
+  --volume data,kind=host,source=/var/lib/matchbox \
+  --volume config,kind=host,source=/etc/matchbox \
   ${IMAGE}:${VERSION}
 
 [Install]

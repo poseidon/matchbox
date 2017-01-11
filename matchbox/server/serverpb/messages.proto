@@ -1,0 +1,67 @@
+syntax = "proto3";
+package serverpb;
+
+import "github.com/coreos/coreos-baremetal/matchbox/storage/storagepb/storage.proto";
+
+message SelectGroupRequest {
+  map<string, string> labels = 1;
+}
+
+message SelectGroupResponse {
+  storagepb.Group group = 1;
+}
+
+message SelectProfileRequest {
+  map<string, string> labels = 1;
+}
+
+message SelectProfileResponse {
+  storagepb.Profile profile = 1;
+}
+
+message GroupPutRequest {
+  storagepb.Group group = 1;
+}
+
+message GroupPutResponse {}
+
+message GroupGetRequest {
+  string id = 1;
+}
+
+message GroupListRequest {}
+
+message GroupGetResponse {
+  storagepb.Group group = 1;
+}
+
+message GroupListResponse {
+  repeated storagepb.Group groups = 1;
+}
+
+message ProfilePutRequest {
+  storagepb.Profile profile = 1;
+}
+
+message ProfilePutResponse {}
+
+message ProfileGetRequest {
+  string id = 1;
+}
+
+message ProfileGetResponse {
+  storagepb.Profile profile = 1;
+}
+
+message ProfileListRequest {}
+
+message ProfileListResponse {
+  repeated storagepb.Profile profiles = 1;
+}
+
+message IgnitionPutRequest {
+  string name = 1;
+  bytes config = 2;
+}
+
+message IgnitionPutResponse {}

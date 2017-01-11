@@ -5,8 +5,8 @@
 
 Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Use DHCP/TFTP to point iPXE clients to this endpoint as the next-server.
 
-    GET http://bootcfg.foo/boot.ipxe
-    GET http://bootcfg.foo/boot.ipxe.0   // for dnsmasq
+    GET http://matchbox.foo/boot.ipxe
+    GET http://matchbox.foo/boot.ipxe.0   // for dnsmasq
 
 **Response**
 
@@ -19,7 +19,7 @@ Client's booted with the `/ipxe.boot` endpoint will introspect and make a reques
 
 Finds the profile for the machine and renders the network boot config (kernel, options, initrd) as an iPXE script.
 
-    GET http://bootcfg.foo/ipxe?label=value
+    GET http://matchbox.foo/ipxe?label=value
 
 **Query Parameters**
 
@@ -32,7 +32,7 @@ Finds the profile for the machine and renders the network boot config (kernel, o
 **Response**
 
     #!ipxe
-    kernel /assets/coreos/1185.3.0/coreos_production_pxe.vmlinuz coreos.config.url=http://bootcfg.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.first_boot=1 coreos.autologin
+    kernel /assets/coreos/1185.3.0/coreos_production_pxe.vmlinuz coreos.config.url=http://matchbox.foo:8080/ignition?uuid=${uuid}&mac=${net0/mac:hexhyp} coreos.first_boot=1 coreos.autologin
     initrd  /assets/coreos/1185.3.0/coreos_production_pxe_image.cpio.gz
     boot
 
@@ -40,7 +40,7 @@ Finds the profile for the machine and renders the network boot config (kernel, o
 
 Finds the profile for the machine and renders the network boot config as a GRUB config. Use DHCP/TFTP to point GRUB clients to this endpoint as the next-server.
 
-    GET http://bootcfg.foo/grub?label=value
+    GET http://matchbox.foo/grub?label=value
 
 **Query Parameters**
 
@@ -56,16 +56,16 @@ Finds the profile for the machine and renders the network boot config as a GRUB 
     timeout=1
     menuentry "CoreOS" {
     echo "Loading kernel"
-    linuxefi "(http;bootcfg.foo:8080)/assets/coreos/1185.3.0/coreos_production_pxe.vmlinuz" "coreos.autologin" "coreos.config.url=http://bootcfg.foo:8080/ignition" "coreos.first_boot"
+    linuxefi "(http;matchbox.foo:8080)/assets/coreos/1185.3.0/coreos_production_pxe.vmlinuz" "coreos.autologin" "coreos.config.url=http://matchbox.foo:8080/ignition" "coreos.first_boot"
     echo "Loading initrd"
-    initrdefi "(http;bootcfg.foo:8080)/assets/coreos/1185.3.0/coreos_production_pxe_image.cpio.gz"
+    initrdefi "(http;matchbox.foo:8080)/assets/coreos/1185.3.0/coreos_production_pxe_image.cpio.gz"
     }
 
 ## Cloud Config
 
 Finds the profile matching the machine and renders the corresponding Cloud-Config with group metadata, selectors, and query params.
 
-    GET http://bootcfg.foo/cloud?label=value
+    GET http://matchbox.foo/cloud?label=value
 
 **Query Parameters**
 
@@ -89,7 +89,7 @@ Finds the profile matching the machine and renders the corresponding Cloud-Confi
 
 Finds the profile matching the machine and renders the corresponding Ignition Config with group metadata, selectors, and query params.
 
-    GET http://bootcfg.foo/ignition?label=value
+    GET http://matchbox.foo/ignition?label=value
 
 **Query Parameters**
 
@@ -116,7 +116,7 @@ Finds the profile matching the machine and renders the corresponding Ignition Co
 
 Finds the profile matching the machine and renders the corresponding generic config with group metadata, selectors, and query params.
 
-    GET http://bootcfg.foo/generic?label=value
+    GET http://matchbox.foo/generic?label=value
 
 **Query Parameters**
 
@@ -140,7 +140,7 @@ Finds the profile matching the machine and renders the corresponding generic con
 
 Finds the matching machine group and renders the group metadata, selectors, and query params in an "env file" style response.
 
-    GET http://bootcfg.foo/metadata?mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true
+    GET http://matchbox.foo/metadata?mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true
 
 **Query Parameters**
 
@@ -168,17 +168,17 @@ OpenPGPG signature endpoints serve detached binary and ASCII armored signatures 
 
 | Endpoint   | Signature Endpoint | ASCII Signature Endpoint |
 |------------|--------------------|-------------------------|
-| iPXE       | `http://bootcfg.foo/ipxe.sig` | `http://bootcfg.foo/ipxe.asc` |
-| GRUB2      | `http://bootcf.foo/grub.sig` | `http://bootcfg.foo/grub.asc` |
-| Ignition   | `http://bootcfg.foo/ignition.sig` | `http://bootcfg.foo/ignition.asc` |
-| Cloud-Config | `http://bootcfg.foo/cloud.sig` | `http://bootcfg.foo/cloud.asc` |
-| Generic    | `http://bootcfg.foo/generic.sig` | `http://bootcfg.foo/generic.asc` |
-| Metadata   | `http://bootcfg.foo/metadata.sig` | `http://bootcfg.foo/metadata.asc` |
+| iPXE       | `http://matchbox.foo/ipxe.sig` | `http://matchbox.foo/ipxe.asc` |
+| GRUB2      | `http://bootcf.foo/grub.sig` | `http://matchbox.foo/grub.asc` |
+| Ignition   | `http://matchbox.foo/ignition.sig` | `http://matchbox.foo/ignition.asc` |
+| Cloud-Config | `http://matchbox.foo/cloud.sig` | `http://matchbox.foo/cloud.asc` |
+| Generic    | `http://matchbox.foo/generic.sig` | `http://matchbox.foo/generic.asc` |
+| Metadata   | `http://matchbox.foo/metadata.sig` | `http://matchbox.foo/metadata.asc` |
 
 Get a config and its detached ASCII armored signature.
 
-    GET http://bootcfg.foo/ipxe?label=value
-    GET http://bootcfg.foo/ipxe.asc?label=value
+    GET http://matchbox.foo/ipxe?label=value
+    GET http://matchbox.foo/ipxe.asc?label=value
 
 **Response**
 
@@ -197,9 +197,9 @@ NO+p24BL3PHZyKw0nsrm275C913OxEVgnNZX7TQltaweW23Cd1YBNjcfb3zv+Zo=
 
 ## Assets
 
-If you need to serve static assets (e.g. kernel, initrd), `bootcfg` can serve arbitrary assets from the `-assets-path`.
+If you need to serve static assets (e.g. kernel, initrd), `matchbox` can serve arbitrary assets from the `-assets-path`.
 
-    bootcfg.foo/assets/
+    matchbox.foo/assets/
     └── coreos
         └── 1185.3.0
             ├── coreos_production_pxe.vmlinuz
