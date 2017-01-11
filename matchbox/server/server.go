@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sort"
 
-	"golang.org/x/net/context"
+	"context"
 
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 	"github.com/coreos/coreos-baremetal/matchbox/storage"

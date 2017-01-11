@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"text/template"
 
+	"context"
 	"github.com/Sirupsen/logrus"
-	"golang.org/x/net/context"
 )
 
 const ipxeBootstrap = `#!ipxe

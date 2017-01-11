@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"golang.org/x/net/context"
+	"context"
 )
 
 // ContextHandler defines a handler which receives a passed context.Context

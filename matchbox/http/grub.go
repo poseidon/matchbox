@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"text/template"
 
+	"context"
 	"github.com/Sirupsen/logrus"
-	"golang.org/x/net/context"
 )
 
 var grubTemplate = template.Must(template.New("GRUB2 config").Parse(`default=0
