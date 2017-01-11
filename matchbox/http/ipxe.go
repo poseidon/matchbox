@@ -11,7 +11,7 @@ import (
 )
 
 const ipxeBootstrap = `#!ipxe
-chain ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
+chain ipxe?uuid=${uuid}&mac=${mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
 `
 
 var ipxeTemplate = template.Must(template.New("iPXE config").Parse(`#!ipxe
