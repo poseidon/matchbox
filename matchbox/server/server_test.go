@@ -3,8 +3,8 @@ package server
 import (
 	"testing"
 
+	"context"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/net/context"
 
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 	"github.com/coreos/coreos-baremetal/matchbox/storage"

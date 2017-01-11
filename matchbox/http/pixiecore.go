@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"context"
 	"github.com/Sirupsen/logrus"
-	"golang.org/x/net/context"
 
 	"github.com/coreos/coreos-baremetal/matchbox/server"
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"

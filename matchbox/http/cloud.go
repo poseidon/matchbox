@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"context"
 	"github.com/Sirupsen/logrus"
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
-	"golang.org/x/net/context"
 
 	"github.com/coreos/coreos-baremetal/matchbox/server"
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"

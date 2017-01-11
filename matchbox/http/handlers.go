@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"golang.org/x/net/context"
+	"context"
 
 	"github.com/coreos/coreos-baremetal/matchbox/server"
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"

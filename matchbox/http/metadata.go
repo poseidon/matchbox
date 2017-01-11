@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
+	"context"
 	"github.com/Sirupsen/logrus"
-	"golang.org/x/net/context"
 )
 
 const plainContentType = "plain/text"

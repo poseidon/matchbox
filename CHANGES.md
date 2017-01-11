@@ -8,6 +8,13 @@ Rename `bootcfg` to CoreOS `matchbox`!
 
 * Add Profile `args` field to list kernel args
 * Update [Fuze](https://github.com/coreos/container-linux-config-transpiler) and [Ignition](https://github.com/coreos/ignition) to v0.11.2
+* Switch from `golang.org/x/net/context` to `context`
+* Deprecate Profile `cmd` field map of kernel args
+* Deprecate Pixiecore support
+* Drop build support for Go 1.6
+
+#### Rename
+
 * Rename `bootcfg` binary to `matchbox`
 * Rename `bootcfg` packages to `matchbox`
 * Publish a `quay.io/coreos/matchbox` container image. The `quay.io/coreos/bootcfg` image will no longer be updated.
@@ -15,8 +22,6 @@ Rename `bootcfg` to CoreOS `matchbox`!
 * Change config directory to `/etc/matchbox`
 * Change default `-data-path` to `/var/lib/matchbox`
 * Change default `-assets-path` to `/var/lib/matchbox/assets`
-* Deprecate Profile `cmd` field map of kernel args
-* Deprecate Pixiecore support
 
 #### Examples
 

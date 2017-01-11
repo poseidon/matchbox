@@ -3,8 +3,8 @@ package cli
 import (
 	"io/ioutil"
 
+	"context"
 	"github.com/spf13/cobra"
-	"golang.org/x/net/context"
 
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
 	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"

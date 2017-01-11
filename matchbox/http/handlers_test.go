@@ -6,9 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"context"
 	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/net/context"
 
 	"github.com/coreos/coreos-baremetal/matchbox/server"
 	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"

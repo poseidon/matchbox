@@ -3,7 +3,7 @@ package http
 import (
 	"errors"
 
-	"golang.org/x/net/context"
+	"context"
 
 	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
 )

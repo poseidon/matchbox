@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strings"
 
+	"context"
 	"github.com/Sirupsen/logrus"
 	fuze "github.com/coreos/fuze/config"
 	ignition "github.com/coreos/ignition/config"
-	"golang.org/x/net/context"
 
 	"github.com/coreos/coreos-baremetal/matchbox/server"
 	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
