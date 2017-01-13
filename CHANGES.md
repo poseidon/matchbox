@@ -27,6 +27,7 @@ Rename `bootcfg` to CoreOS `matchbox`!
 
 * Upgrade Kubernetes v1.5.1 (static) example clusters
 * Upgrade Kubernetes v1.5.1 (self-hosted) example cluster
+* Switch Kubernetes (self-hosted) to run flannel as pods
 * Combine rktnetes Ignition into Kubernetes static cluster
 
 #### Migration

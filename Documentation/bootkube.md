@@ -12,12 +12,12 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases/tag/v0.3.1) v0.3.1 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases/tag/v0.3.4) v0.3.4 and add it somewhere on your PATH.
 
-    $ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.1/bootkube.tar.gz
+    $ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.4/bootkube.tar.gz
     $ tar xzf bootkube.tar.gz
     $ ./bin/linux/bootkube version
-    Version: v0.3.1
+    Version: v0.3.4
 
 ## Examples
 
@@ -91,17 +91,23 @@ You may cleanup the `bootkube` assets on the node, but you should keep the copy 
 
     $ kubectl get pods --all-namespaces
     NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
-    kube-system   checkpoint-installer-cpjrm                 1/1       Running   0          2m
-    kube-system   kube-apiserver-rvjes                       1/1       Running   0          2m
-    kube-system   kube-controller-manager-3900529476-5n9xb   1/1       Running   0          4m
-    kube-system   kube-controller-manager-3900529476-rq6p8   1/1       Running   0          4m
-    kube-system   kube-dns-4101612645-oeu5g                  4/4       Running   0          4m
-    kube-system   kube-proxy-f5kb8                           1/1       Running   0          2m
-    kube-system   kube-proxy-jkg4z                           1/1       Running   0          2m
-    kube-system   kube-proxy-rrmuv                           1/1       Running   0          2m
-    kube-system   kube-scheduler-1084603659-qaqbk            1/1       Running   0          3m
-    kube-system   kube-scheduler-1084603659-rztvw            1/1       Running   0          4m
-    kube-system   pod-checkpointer-node1.example.com         1/1       Running   0          1m
+    kube-system   checkpoint-installer-p8g8r                 1/1       Running   1          13m
+    kube-system   kube-apiserver-s5gnx                       1/1       Running   1          41s
+    kube-system   kube-controller-manager-3438979800-jrlnd   1/1       Running   1          13m
+    kube-system   kube-controller-manager-3438979800-tkjx7   1/1       Running   1          13m
+    kube-system   kube-dns-4101612645-xt55f                  4/4       Running   4          13m
+    kube-system   kube-flannel-pl5c2                         2/2       Running   0          13m
+    kube-system   kube-flannel-r9t5r                         2/2       Running   3          13m
+    kube-system   kube-flannel-vfb0s                         2/2       Running   4          13m
+    kube-system   kube-proxy-cvhmj                           1/1       Running   0          13m
+    kube-system   kube-proxy-hf9mh                           1/1       Running   1          13m
+    kube-system   kube-proxy-kpl73                           1/1       Running   1          13m
+    kube-system   kube-scheduler-694795526-1l23b             1/1       Running   1          13m
+    kube-system   kube-scheduler-694795526-fks0b             1/1       Running   1          13m
+    kube-system   pod-checkpointer-node1.example.com         1/1       Running   2          10m
+
+
+
 
 Try deleting pods to see that the cluster is resilient to failures and machine restarts (CoreOS auto-updates).
 
