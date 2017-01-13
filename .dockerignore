@@ -1,8 +1,2 @@
-contrib/
-Documentation/
-examples/
-Godeps/
-scripts/
-vendor/
-vagrant/
-*.aci
+*
+!bin/matchbox
