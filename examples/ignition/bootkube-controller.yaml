@@ -14,21 +14,8 @@ systemd:
             Environment="ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
             Environment="ETCD_STRICT_RECONFIG_CHECK=true"
-    - name: flanneld.service
-      enable: true
-      dropins:
-        - name: 40-ExecStartPre-symlink.conf
-          contents: |
-            [Service]
-            ExecStartPre=/opt/init-flannel
     - name: docker.service
       enable: true
-      dropins:
-        - name: 40-flannel.conf
-          contents: |
-            [Unit]
-            Requires=flanneld.service
-            After=flanneld.service
     - name: locksmithd.service
       dropins:
         - name: 40-etcd-lock.conf
@@ -48,22 +35,26 @@ systemd:
       contents: |
         [Unit]
         Description=Kubelet via Hyperkube ACI
-        Wants=flanneld.service
         [Service]
         Environment="RKT_OPTS=--uuid-file-save=/var/run/kubelet-pod.uuid \
           --volume=resolv,kind=host,source=/etc/resolv.conf \
           --mount volume=resolv,target=/etc/resolv.conf \
+          --volume var-lib-cni,kind=host,source=/var/lib/cni \
+          --mount volume=var-lib-cni,target=/var/lib/cni \
           --volume var-log,kind=host,source=/var/log \
           --mount volume=var-log,target=/var/log"
         EnvironmentFile=/etc/kubernetes/kubelet.env
-        ExecStartPre=/usr/bin/systemctl is-active flanneld.service
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
+        ExecStartPre=/bin/mkdir -p /etc/kubernetes/cni/net.d
+        ExecStartPre=/bin/mkdir -p /var/lib/cni
         ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --require-kubeconfig \
+          --cni-conf-dir=/etc/kubernetes/cni/net.d \
+          --network-plugin=cni \
           --lock-file=/var/run/lock/kubelet.lock \
           --exit-on-lock-contention \
           --pod-manifest-path=/etc/kubernetes/manifests \
@@ -133,7 +124,7 @@ storage:
           # Wrapper for bootkube start
           set -e
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.1}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.4}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/home/core/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \
@@ -141,35 +132,6 @@ storage:
             --mount volume=assets,target=/assets \
             $RKT_OPTS \
             ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} --net=host --exec=/bootkube -- start --asset-dir=/assets --etcd-server=http://127.0.0.1:2379 "$@"
-    - path: /opt/init-flannel
-      filesystem: root
-      mode: 0544
-      contents:
-        inline: |
-          #!/bin/bash
-          function init_flannel {
-              echo "Waiting for etcd..."
-              while true
-              do
-                  IFS=',' read -ra ES <<< "{{.k8s_etcd_endpoints}}"
-                  for ETCD in "${ES[@]}"; do
-                      echo "Trying: $ETCD"
-                      if [ -n "$(curl --silent "$ETCD/v2/machines")" ]; then
-                          local ACTIVE_ETCD=$ETCD
-                          break
-                      fi
-                      sleep 1
-                  done
-                  if [ -n "$ACTIVE_ETCD" ]; then
-                      break
-                  fi
-              done
-              RES=$(curl --silent -X PUT -d "value={\"Network\":\"{{.k8s_pod_network}}\",\"Backend\":{\"Type\":\"vxlan\"}}" "$ACTIVE_ETCD/v2/keys/coreos.com/network/config?prevExist=false")
-              if [ -z "$(echo $RES | grep '"action":"create"')" ] && [ -z "$(echo $RES | grep 'Key already exists')" ]; then
-                  echo "Unexpected error configuring flannel pod network: $RES"
-              fi
-          }
-          init_flannel
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
