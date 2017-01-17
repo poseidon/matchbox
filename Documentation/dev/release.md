@@ -32,7 +32,6 @@ Publish the release on Github with release notes.
 
 Build the release tarballs.
 
-    make build
     make release
 
 Verify the reported version.
@@ -43,7 +42,7 @@ Verify the reported version.
 
 Build the rkt ACI on a Linux host with `acbuild`,
 
-    ./build-aci
+    make aci
 
 Check that the listed version is correct/clean.
 

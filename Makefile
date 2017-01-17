@@ -1,64 +1,85 @@
-
 export CGO_ENABLED:=0
-LD_FLAGS="-w -X github.com/coreos/matchbox/matchbox/version.Version=$(shell ./git-version)"
-LOCAL_BIN=/usr/local/bin
+
+VERSION=$(shell ./scripts/git-version)
+LD_FLAGS="-w -X github.com/coreos/matchbox/matchbox/version.Version=$(VERSION)"
+
+REPO=github.com/coreos/matchbox
+IMAGE_REPO=coreos/matchbox
+QUAY_REPO=quay.io/coreos/matchbox
 
 all: build
+
 build: clean bin/matchbox bin/bootcmd
 
-tools:
-	./scripts/gentools
-
-codegen: tools
-	./scripts/codegen
-
-bin/matchbox:
-	go build -o bin/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/matchbox
-
-bin/bootcmd:
-	go build -o bin/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/bootcmd
+bin/%:
+	@go build -o bin/$* -v -ldflags $(LD_FLAGS) $(REPO)/cmd/$*
 
 test:
-	./test
+	@./scripts/test
 
-install:
-	cp bin/matchbox $(LOCAL_BIN)
-	cp bin/bootcmd $(LOCAL_BIN)
+.PHONY: aci
+aci: clean build
+	@sudo ./scripts/build-aci
+
+.PHONY: docker-image
+docker-image:
+	@sudo docker build --rm=true -t $(IMAGE_REPO):$(VERSION) .
+	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(IMAGE_REPO):latest
+
+.PHONY: docker-push
+docker-push: docker-image
+	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(QUAY_REPO):latest
+	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(QUAY_REPO):$(VERSION)
+	@sudo docker push $(QUAY_REPO):latest
+	@sudo docker push $(QUAY_REPO):$(VERSION)
+
+.PHONY: vendor
+vendor:
+	@glide update --strip-vendor
+	@glide-vc --use-lock-file --no-tests --only-code
+
+.PHONY: codegen
+codegen: tools
+	@./scripts/codegen
+
+.PHONY: tools
+tools: bin/protoc bin/protoc-gen-go
+
+bin/protoc:
+	@./scripts/get-protoc
+
+bin/protoc-gen-go:
+	@go build -o bin/protoc-gen-go $(REPO)/vendor/github.com/golang/protobuf/protoc-gen-go
+
+clean:
+	@rm -rf bin
+
+clean-release:
+	@rm -rf _output
 
 release: \
 	clean \
+	clean-release \
 	_output/matchbox-linux-amd64.tar.gz \
 	_output/matchbox-linux-arm.tar.gz \
 	_output/matchbox-linux-arm64.tar.gz \
-	_output/matchbox-darwin-amd64.tar.gz \
+	_output/matchbox-darwin-amd64.tar.gz
 
-# matchbox
+bin/linux-amd64/matchbox: GOARGS = GOOS=linux GOARCH=amd64
+bin/linux-arm/matchbox: GOARGS = GOOS=linux GOARCH=arm
+bin/linux-arm64/matchbox: GOARGS = GOOS=linux GOARCH=arm64
+bin/darwin-amd64/matchbox: GOARGS = GOOS=darwin GOARCH=amd64
 
-bin/linux-amd64/matchbox:
-	GOOS=linux GOARCH=amd64 go build -o bin/linux-amd64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/matchbox
+bin/%/matchbox:
+	$(GOARGS) go build -o $@ -ldflags $(LD_FLAGS) -a $(REPO)/cmd/matchbox
 
-bin/linux-arm/matchbox:
-	GOOS=linux GOARCH=arm go build -o bin/linux-arm/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/matchbox
+bin/linux-amd64/bootcmd: GOARGS = GOOS=linux GOARCH=amd64
+bin/linux-arm/bootcmd: GOARGS = GOOS=linux GOARCH=arm
+bin/linux-arm64/bootcmd: GOARGS = GOOS=linux GOARCH=arm64
+bin/darwin-amd64/bootcmd: GOARGS = GOOS=darwin GOARCH=amd64
 
-bin/linux-arm64/matchbox:
-	GOOS=linux GOARCH=arm64 go build -o bin/linux-arm64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/matchbox
-
-bin/darwin-amd64/matchbox:
-	GOOS=darwin GOARCH=amd64 go build -o bin/darwin-amd64/matchbox -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/matchbox
-
-# bootcmd
-
-bin/linux-amd64/bootcmd:
-	GOOS=linux GOARCH=amd64 go build -o bin/linux-amd64/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/bootcmd
-
-bin/linux-arm/bootcmd:
-	GOOS=linux GOARCH=arm go build -o bin/linux-arm/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/bootcmd
-
-bin/linux-arm64/bootcmd:
-	GOOS=linux GOARCH=arm64 go build -o bin/linux-arm64/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/bootcmd
-
-bin/darwin-amd64/bootcmd:
-	GOOS=darwin GOARCH=amd64 go build -o bin/darwin-amd64/bootcmd -ldflags $(LD_FLAGS) -a github.com/coreos/matchbox/cmd/bootcmd
+bin/%/bootcmd:
+	$(GOARGS) go build -o $@ -ldflags $(LD_FLAGS) -a $(REPO)/cmd/bootcmd
 
 _output/matchbox-%.tar.gz: NAME=matchbox-$(VERSION)-$*
 _output/matchbox-%.tar.gz: DEST=_output/$(NAME)
@@ -69,11 +90,6 @@ _output/matchbox-%.tar.gz: bin/%/matchbox bin/%/bootcmd
 	./scripts/release-files $(DEST)
 	tar zcvf $(DEST).tar.gz -C _output $(NAME)
 
-clean:
-	rm -rf tools
-	rm -rf bin
-	rm -rf _output
-
-.PHONY: all build tools test install release clean
+.PHONY: all build clean test release
 .SECONDARY: _output/matchbox-linux-amd64 _output/matchbox-darwin-amd64
 

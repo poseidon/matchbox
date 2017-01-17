@@ -12,7 +12,7 @@ matrix:
 install:
   - go get github.com/golang/lint/golint
 script:
-  - ./test
+  - make test
 deploy:
   provider: script
   script: scripts/travis-docker-push

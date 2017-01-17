@@ -1,7 +1,0 @@
-#!/bin/bash -e
-
-LD_FLAGS="-w -X github.com/coreos/matchbox/matchbox/version.Version=$(./git-version)"
-CGO_ENABLED=0 go build -o bin/matchbox -ldflags "$LD_FLAGS" -a github.com/coreos/matchbox/cmd/matchbox
-
-# bootcmd CLI binary
-CGO_ENABLED=0 go build -o bin/bootcmd -ldflags "$LD_FLAGS" -a github.com/coreos/matchbox/cmd/bootcmd

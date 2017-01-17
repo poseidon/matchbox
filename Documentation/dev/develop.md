@@ -1,42 +1,26 @@
-
 # Development
 
-To develop `matchbox` locally, compile the binary and build the container image. The following tasks can also be performed using the `Makefile` if you prefer.
+To develop `matchbox` locally, compile the binary and build the container image.
 
 ## Static Binary
 
 Build the static binary.
 
-    ./build
+    make build
 
 Test with vendored dependencies.
 
-    ./test
-
-## Vendor
-
-Use `glide` to manage dependencies committed to the `vendor` directory.
-
-    glide update --strip-vendor --skip-test
-
-## Codegen
-
-Generate code from *proto* definitions using `protoc` and the `protoc-gen-go` plugin.
-
-    # install tools
-    ./scripts/gentools
-    # generate code from proto definitions in subpackages
-    ./scripts/codegen
+    make test
 
 ## Container Image
 
 Build an ACI `matchbox.aci`.
 
-    ./build-aci
+    make aci
 
 Alternately, build a Docker image `coreos/matchbox:latest`.
 
-    sudo ./build-docker
+    make docker-image
 
 ## Version
 
@@ -58,8 +42,21 @@ Alternately, run the Docker image on `docker0`.
 
     sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 
-### bootcmd
+## bootcmd
 
 Run `bootcmd` against the gRPC API of the service running via rkt.
 
     ./bin/bootcmd profile list --endpoints 172.18.0.2:8081 --cacert examples/etc/matchbox/ca.crt
+
+## Vendor
+
+Use `glide` and `glide-vc` to manage dependencies committed to the `vendor` directory.
+
+    make vendor
+
+## Codegen
+
+Generate code from *proto* definitions using `protoc` and the `protoc-gen-go` plugin.
+
+    make codegen
+
