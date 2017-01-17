@@ -1,13 +1,23 @@
 package: github.com/coreos/matchbox
 import:
+# gRPC and protobuf are used for the gRPC API
 - package: github.com/golang/protobuf
-  version: 7cc19b78d562895b13596ddce7aafb59dd789318
+  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
   subpackages:
   - proto
+  - protoc-gen-go
 - package: google.golang.org/grpc
-  version: 83e628beaa8cab332f304ad93dff7abc46722386
+  version: 1.0.5
   subpackages:
   - codes
+  - credentials
+  - grpclog
+  - internal
+  - metadata
+  - naming
+  - peer
+  - transport
+# Ignition and Fuze parse machine configs
 - package: github.com/coreos/ignition
   version: 3ffd793b1292c6b0b3519bce214bdb41f336faa7
   subpackages:
