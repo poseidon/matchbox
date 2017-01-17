@@ -18,26 +18,26 @@ Choose one of the supported installation options:
 
 ## Download
 
-Download the latest coreos-baremetal [release](https://github.com/coreos/coreos-baremetal/releases) to the provisioner host.
+Download the latest matchbox [release](https://github.com/coreos/matchbox/releases) to the provisioner host.
 
 ```sh
-$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.2/coreos-baremetal-v0.4.2-linux-amd64.tar.gz
-$ wget https://github.com/coreos/coreos-baremetal/releases/download/v0.4.2/coreos-baremetal-v0.4.2-linux-amd64.tar.gz.asc
+$ wget https://github.com/coreos/matchbox/releases/download/v0.4.2/matchbox-v0.4.2-linux-amd64.tar.gz
+$ wget https://github.com/coreos/matchbox/releases/download/v0.4.2/matchbox-v0.4.2-linux-amd64.tar.gz.asc
 ```
 
 Verify the release has been signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
 ```
 $ gpg --keyserver pgp.mit.edu --recv-key 18AD5014C99EF7E3BA5F6CE950BDD3E0FC8A365E
-$ gpg --verify coreos-baremetal-v0.4.2-linux-amd64.tar.gz.asc coreos-baremetal-v0.4.2-linux-amd64.tar.gz
+$ gpg --verify matchbox-v0.4.2-linux-amd64.tar.gz.asc matchbox-v0.4.2-linux-amd64.tar.gz
 # gpg: Good signature from "CoreOS Application Signing Key <security@coreos.com>"
 ```
 
 Untar the release.
 
 ```sh
-$ tar xzvf coreos-baremetal-v0.4.2-linux-amd64.tar.gz
-$ cd coreos-baremetal-v0.4.2-linux-amd64
+$ tar xzvf matchbox-v0.4.2-linux-amd64.tar.gz
+$ cd matchbox-v0.4.2-linux-amd64
 ```
 
 ## Install
@@ -241,19 +241,19 @@ For large production environments, use a cache proxy or mirror suitable for your
 
 ## Network
 
-Review [network setup](https://github.com/coreos/coreos-baremetal/blob/master/Documentation/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network. At a high level, your goals are to:
+Review [network setup](https://github.com/coreos/matchbox/blob/master/Documentation/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network. At a high level, your goals are to:
 
 * Chainload PXE firmwares to iPXE
 * Point iPXE client machines to the `matchbox` iPXE HTTP endpoint `http://matchbox.example.com:8080/boot.ipxe`
 * Ensure `matchbox.example.com` resolves to your `matchbox` deployment
 
-CoreOS provides [dnsmasq](https://github.com/coreos/coreos-baremetal/tree/master/contrib/dnsmasq) as `quay.io/coreos/dnsmasq`, if you wish to use rkt or Docker.
+CoreOS provides [dnsmasq](https://github.com/coreos/matchbox/tree/master/contrib/dnsmasq) as `quay.io/coreos/dnsmasq`, if you wish to use rkt or Docker.
 
 ## rkt
 
 Run the container image with rkt.
 
-latest or most recent tagged `matchbox` [release](https://github.com/coreos/coreos-baremetal/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
+latest or most recent tagged `matchbox` [release](https://github.com/coreos/matchbox/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
 
 ```sh
 $ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/coreos/matchbox:latest --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
@@ -293,4 +293,4 @@ The example manifests use Kubernetes `emptyDir` volumes to back the `matchbox` F
 
 ### Documentation
 
-View the [documentation](https://github.com/coreos/coreos-baremetal#coreos-on-baremetal) for `matchbox` service docs, tutorials, example clusters and Ignition configs, PXE booting guides, or machine lifecycle guides.
+View the [documentation](https://github.com/coreos/matchbox#coreos-on-baremetal) for `matchbox` service docs, tutorials, example clusters and Ignition configs, PXE booting guides, or machine lifecycle guides.

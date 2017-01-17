@@ -1,11 +1,8 @@
+# matchbox [![Build Status](https://travis-ci.org/coreos/matchbox.svg?branch=master)](https://travis-ci.org/coreos/matchbox) [![GoDoc](https://godoc.org/github.com/coreos/matchbox?status.png)](https://godoc.org/github.com/coreos/matchbox) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
 
-# CoreOS on Baremetal
+Network boot and provision CoreOS clusters on virtual or physical hardware.
 
-[![Build Status](https://travis-ci.org/coreos/coreos-baremetal.svg?branch=master)](https://travis-ci.org/coreos/coreos-baremetal) [![GoDoc](https://godoc.org/github.com/coreos/coreos-baremetal?status.png)](https://godoc.org/github.com/coreos/coreos-baremetal) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
-
-Guides and a service for network booting and provisioning CoreOS clusters on virtual or physical hardware.
-
-**Announcement**: coreos-baremetal and `bootcfg` are being renamed to CoreOS `matchbox`, which will be reflected in v0.5.0. Please see [CHANGES](CHANGES.md) or [#400](https://github.com/coreos/coreos-baremetal/issues/400). If you're looking for older docs, be sure to use the branch/tag switcher.
+**Announcement**: coreos-baremetal and `bootcfg` have been renamed to CoreOS `matchbox`, which will be reflected in v0.5.0. Please see [CHANGES](CHANGES.md) or [#400](https://github.com/coreos/matchbox/issues/400). If you're looking for older docs, be sure to use the branch/tag switcher.
 
 ## Guides
 
@@ -28,7 +25,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
     * [Cloud-Config](Documentation/cloud-config.md)
 * [Configuration](Documentation/config.md)
 * [HTTP API](Documentation/api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/matchbox/client)
+* [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
 * Installation
     * [CoreOS / Linux distros](Documentation/deployment.md)
     * [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)

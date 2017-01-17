@@ -1,6 +1,6 @@
 [Unit]
 Description=CoreOS matchbox Server
-Documentation=https://github.com/coreos/coreos-baremetal
+Documentation=https://github.com/coreos/matchbox
 
 [Service]
 User=matchbox

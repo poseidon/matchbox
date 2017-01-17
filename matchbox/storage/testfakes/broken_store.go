@@ -3,7 +3,7 @@ package testfakes
 import (
 	"errors"
 
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
 )
 
 var (

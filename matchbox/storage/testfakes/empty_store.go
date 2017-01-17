@@ -3,7 +3,7 @@ package testfakes
 import (
 	"fmt"
 
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
 )
 
 // EmptyStore is used for testing purposes.

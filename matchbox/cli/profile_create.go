@@ -6,8 +6,8 @@ import (
 	"context"
 	"github.com/spf13/cobra"
 
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
 )
 
 // profilePutCmd creates and updates Profiles.

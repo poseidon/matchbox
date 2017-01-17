@@ -9,8 +9,8 @@ import (
 	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
-	fake "github.com/coreos/coreos-baremetal/matchbox/storage/testfakes"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	fake "github.com/coreos/matchbox/matchbox/storage/testfakes"
 )
 
 func TestIPXEInspect(t *testing.T) {

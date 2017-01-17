@@ -10,8 +10,8 @@ import (
 	"github.com/Sirupsen/logrus"
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
 
-	"github.com/coreos/coreos-baremetal/matchbox/server"
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/server"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
 )
 
 // CloudConfig defines a cloud-init config.

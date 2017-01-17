@@ -6,10 +6,10 @@ import (
 	"context"
 	"github.com/stretchr/testify/assert"
 
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
-	"github.com/coreos/coreos-baremetal/matchbox/storage"
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
-	fake "github.com/coreos/coreos-baremetal/matchbox/storage/testfakes"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/storage"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	fake "github.com/coreos/matchbox/matchbox/storage/testfakes"
 )
 
 func TestSelectGroup(t *testing.T) {

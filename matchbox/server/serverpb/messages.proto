@@ -1,7 +1,7 @@
 syntax = "proto3";
 package serverpb;
 
-import "github.com/coreos/coreos-baremetal/matchbox/storage/storagepb/storage.proto";
+import "github.com/coreos/matchbox/matchbox/storage/storagepb/storage.proto";
 
 message SelectGroupRequest {
   map<string, string> labels = 1;

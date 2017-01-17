@@ -11,13 +11,13 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/coreos/pkg/flagutil"
 
-	web "github.com/coreos/coreos-baremetal/matchbox/http"
-	"github.com/coreos/coreos-baremetal/matchbox/rpc"
-	"github.com/coreos/coreos-baremetal/matchbox/server"
-	"github.com/coreos/coreos-baremetal/matchbox/sign"
-	"github.com/coreos/coreos-baremetal/matchbox/storage"
-	"github.com/coreos/coreos-baremetal/matchbox/tlsutil"
-	"github.com/coreos/coreos-baremetal/matchbox/version"
+	web "github.com/coreos/matchbox/matchbox/http"
+	"github.com/coreos/matchbox/matchbox/rpc"
+	"github.com/coreos/matchbox/matchbox/server"
+	"github.com/coreos/matchbox/matchbox/sign"
+	"github.com/coreos/matchbox/matchbox/storage"
+	"github.com/coreos/matchbox/matchbox/tlsutil"
+	"github.com/coreos/matchbox/matchbox/version"
 )
 
 var (

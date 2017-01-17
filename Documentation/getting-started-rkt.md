@@ -19,10 +19,10 @@ Next, install the package dependencies.
 
 **Note**: rkt does not yet integrate with SELinux on Fedora. As a workaround, temporarily set enforcement to permissive if you are comfortable (`sudo setenforce Permissive`). Check the rkt [distribution notes](https://github.com/coreos/rkt/blob/master/Documentation/distributions.md) or see the tracking [issue](https://github.com/coreos/rkt/issues/1727).
 
-Clone the [coreos-baremetal](https://github.com/coreos/coreos-baremetal) source which contains the examples and scripts.
+Clone the [matchbox](https://github.com/coreos/matchbox) source which contains the examples and scripts.
 
-    git clone https://github.com/coreos/coreos-baremetal.git
-    cd coreos-baremetal
+    git clone https://github.com/coreos/matchbox.git
+    cd matchbox
 
 Download CoreOS image assets referenced by the `etcd` [example](../examples) to `examples/assets`.
 

@@ -6,8 +6,8 @@ import (
 
 	"context"
 
-	"github.com/coreos/coreos-baremetal/matchbox/server"
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/server"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
 )
 
 // homeHandler shows the server name for rooted requests. Otherwise, a 404 is

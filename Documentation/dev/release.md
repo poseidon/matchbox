@@ -1,7 +1,7 @@
 
 # Release Guide
 
-This guide covers releasing new versions of coreos-baremetal.
+This guide covers releasing new versions of matchbox.
 
 ## Version
 
@@ -37,7 +37,7 @@ Build the release tarballs.
 
 Verify the reported version.
 
-    ./_output/coreos-baremetal-v0.4.2-linux-amd64/matchbox -version
+    ./_output/matchbox-v0.4.2-linux-amd64/matchbox -version
 
 ## ACI
 
@@ -59,18 +59,18 @@ Sign the release tarballs and ACI with a [CoreOS App Signing Key](https://coreos
 
     cd _output
     gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-amd64.aci
-    gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-linux-amd64.tar.gz
-    gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-darwin-amd64.tar.gz
-    gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-linux-arm.tar.gz
-    gpg2 -a --default-key FC8A365E --detach-sign coreos-baremetal-$VERSION-linux-arm64.tar.gz
+    gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
+    gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
+    gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-arm.tar.gz
+    gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
 
 Verify the signatures.
 
     gpg2 --verify matchbox-$VERSION-linux-amd64.aci.asc matchbox-$VERSION-linux-amd64.aci
-    gpg2 --verify coreos-baremetal-$VERSION-linux-amd64.tar.gz.asc coreos-baremetal-$VERSION-linux-amd64.tar.gz
-    gpg2 --verify coreos-baremetal-$VERSION-darwin-amd64.tar.gz.asc coreos-baremetal-$VERSION-darwin-amd64.tar.gz
-    gpg2 --verify coreos-baremetal-$VERSION-linux-arm.tar.gz.asc coreos-baremetal-$VERSION-linux-arm.tar.gz
-    gpg2 --verify coreos-baremetal-$VERSION-linux-arm64.tar.gz.asc coreos-baremetal-$VERSION-linux-arm64.tar.gz
+    gpg2 --verify matchbox-$VERSION-linux-amd64.tar.gz.asc matchbox-$VERSION-linux-amd64.tar.gz
+    gpg2 --verify matchbox-$VERSION-darwin-amd64.tar.gz.asc matchbox-$VERSION-darwin-amd64.tar.gz
+    gpg2 --verify matchbox-$VERSION-linux-arm.tar.gz.asc matchbox-$VERSION-linux-arm.tar.gz
+    gpg2 --verify matchbox-$VERSION-linux-arm64.tar.gz.asc matchbox-$VERSION-linux-arm64.tar.gz
 
 ## Publish
 

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
 )
 
 // Config initializes a fileStore.

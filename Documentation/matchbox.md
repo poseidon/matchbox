@@ -21,7 +21,7 @@ See [configuration](config.md) flags and variables.
 ## API
 
 * [HTTP API](api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/matchbox/client)
+* [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
 
 ## Data
 

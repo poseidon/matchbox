@@ -9,8 +9,8 @@ import (
 	"context"
 	"github.com/Sirupsen/logrus"
 
-	"github.com/coreos/coreos-baremetal/matchbox/server"
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/server"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
 )
 
 // genericHandler returns a handler that responds with the generic config

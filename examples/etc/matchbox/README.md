@@ -7,7 +7,7 @@ Create FAKE TLS credentials for running the `matchbox` gRPC API examples.
 
 Navigate to the example directory which will be mounted as `/etc/matchbox` in examples:
 
-    cd coreos-baremetal/examples/etc/matchbox
+    cd matchbox/examples/etc/matchbox
 
 Set certificate subject alt names which should be used by exporting `SAN`. Use the DNS name or IP at which `matchbox` is hosted.
 
