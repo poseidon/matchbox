@@ -1,4 +1,4 @@
-package: github.com/coreos/coreos-baremetal
+package: github.com/coreos/matchbox
 import:
 - package: github.com/golang/protobuf
   version: 7cc19b78d562895b13596ddce7aafb59dd789318

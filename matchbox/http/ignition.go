@@ -10,8 +10,8 @@ import (
 	fuze "github.com/coreos/fuze/config"
 	ignition "github.com/coreos/ignition/config"
 
-	"github.com/coreos/coreos-baremetal/matchbox/server"
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/server"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
 )
 
 // ignitionHandler returns a handler that responds with the Ignition config

@@ -7,8 +7,8 @@ import (
 	"context"
 	"github.com/Sirupsen/logrus"
 
-	"github.com/coreos/coreos-baremetal/matchbox/server"
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/server"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
 )
 
 // pixiecoreHandler returns a handler that renders the boot config JSON for

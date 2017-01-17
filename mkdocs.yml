@@ -11,7 +11,7 @@ extra:
   include_toc: yes
   show_powered_by: false
   extra_nav_links:
-    Github: https://github.com/coreos/coreos-baremetal
+    Github: https://github.com/coreos/matchbox
 pages:
   - Home: 'index.md'
   - Tutorials:

@@ -33,7 +33,7 @@ package serverpb
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import storagepb "github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+import storagepb "github.com/coreos/matchbox/matchbox/storage/storagepb"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal

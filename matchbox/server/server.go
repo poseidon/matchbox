@@ -6,9 +6,9 @@ import (
 
 	"context"
 
-	pb "github.com/coreos/coreos-baremetal/matchbox/server/serverpb"
-	"github.com/coreos/coreos-baremetal/matchbox/storage"
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
+	"github.com/coreos/matchbox/matchbox/storage"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
 )
 
 // Possible service errors

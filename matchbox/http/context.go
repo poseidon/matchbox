@@ -5,7 +5,7 @@ import (
 
 	"context"
 
-	"github.com/coreos/coreos-baremetal/matchbox/storage/storagepb"
+	"github.com/coreos/matchbox/matchbox/storage/storagepb"
 )
 
 // unexported key prevents collisions

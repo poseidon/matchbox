@@ -24,7 +24,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
     * [matchbox with Docker](getting-started-docker.md)
 * [Configuration](config.md)
 * [HTTP API](api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/coreos-baremetal/matchbox/client)
+* [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
 * Installation
     * [CoreOS / Linux distros](deployment.md)
     * [rkt](deployment.md#rkt) / [docker](deployment.md#docker)
@@ -43,7 +43,7 @@ Guides and a service for network booting and provisioning CoreOS clusters on vir
 
 ### Examples
 
-The [examples](https://github.com/coreos/coreos-baremetal/tree/master/examples) network boot and provision CoreOS clusters. Network boot QEMU/KVM VMs to try the examples on your Linux laptop.
+The [examples](https://github.com/coreos/matchbox/tree/master/examples) network boot and provision CoreOS clusters. Network boot QEMU/KVM VMs to try the examples on your Linux laptop.
 
 * Multi-node [Kubernetes cluster](kubernetes.md)
 * Multi-node [rktnetes](rktnetes.md) cluster (i.e. Kubernetes with rkt as the container runtime)

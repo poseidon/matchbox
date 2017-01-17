@@ -4,7 +4,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 
-	"github.com/coreos/coreos-baremetal/matchbox/server"
+	"github.com/coreos/matchbox/matchbox/server"
 )
 
 var (
