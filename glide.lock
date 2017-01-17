@@ -1,5 +1,5 @@
-hash: ab93fb738044e38ceeca7b0c8078bd00b48f1d345e9597a42a0451cd48410d3b
-updated: 2016-12-11T21:07:54.854170864-08:00
+hash: 43e05a7344389822ca63e1636c73f7ef5d9f16bb8623eff576cc3b1552a1116e
+updated: 2017-01-17T02:22:14.823634277-08:00
 imports:
 - name: github.com/ajeddeloh/go-json
   version: 73d058cf8437a1989030afe571eeab9f90eebbbd
@@ -47,9 +47,10 @@ imports:
   subpackages:
   - spew
 - name: github.com/golang/protobuf
-  version: 7cc19b78d562895b13596ddce7aafb59dd789318
+  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
   subpackages:
   - proto
+  - protoc-gen-go
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/pmezard/go-difflib
@@ -93,11 +94,11 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 478fcf54317e52ab69f40bb4c7a1520288d7f7ea
+  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
   subpackages:
   - unix
 - name: google.golang.org/grpc
-  version: 83e628beaa8cab332f304ad93dff7abc46722386
+  version: 708a7f9f3283aa2d4f6132d287d78683babe55c8
   subpackages:
   - codes
   - credentials
@@ -106,6 +107,8 @@ imports:
   - metadata
   - naming
   - peer
+  - stats
+  - tap
   - transport
 - name: gopkg.in/yaml.v2
   version: f7716cbe52baa25d2e9b0d0da546fcf909fc16b4

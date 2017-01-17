@@ -1,8 +1,0 @@
-build
-gen
-bin
-local.properties
-test/local.properties
-test/build
-test/gen
-test/bin
