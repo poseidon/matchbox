@@ -62,15 +62,29 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
     172.18.0.22 node2.example.com
     172.18.0.23 node3.example.com
 
+Trust the needed ACIs.
+
 ## Containers
 
-Run the latest `matchbox` ACI with rkt and the `etcd` example.
+Run the `matchbox` and `dnsmasq` services on the `metal0` bridge. `dnsmasq` will run DHCP, DNS, and TFTP services to create a suitable network boot environment. `matchbox` will serve provisioning configs to machines on the network which attempt to PXE boot.
 
-    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
+Trust the needed ACIs.
 
-If you get an error about the IP assignment, stop old pods and run garbage collection.
+    sudo rkt trust --prefix quay.io/coreos/matchbox
+    sudo rkt trust --prefix quay.io/coreos/alpine-sh
+    sudo rkt trust --prefix coreos.com/dnsmasq
 
-    sudo rkt gc --grace-period=0
+The `devnet` wrapper script can quickly rkt run `matchbox` and `dnsmasq` in systemd transient units. Create can take the name of any example cluster in [examples](../examples).
+
+    sudo ./scripts/devnet create etcd
+
+Inspect the journal logs or check the status of the systemd services.
+
+    # quick status
+    sudo ./scripts/devnet status
+    # tail logs
+    journalctl -f -u dev-matchbox
+    journalctl -f -u dev-dnsmasq
 
 Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
@@ -78,20 +92,18 @@ Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how 
 * Ignition [http://172.18.0.2:8080/ignition?mac=52:54:00:a1:9c:ae](http://172.18.0.2:8080/ignition?mac=52:54:00:a1:9c:ae)
 * Metadata [http://172.18.0.2:8080/metadata?mac=52:54:00:a1:9c:ae](http://172.18.0.2:8080/metadata?mac=52:54:00:a1:9c:ae)
 
-## Network
+### Manual
 
-Since the virtual network has no network boot services, use the `dnsmasq` ACI to create an iPXE network boot environment which runs DHCP, DNS, and TFTP.
+If you prefer to start the containers yourself, instead of using `devnet`:
 
-Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
-
-    sudo rkt trust --prefix coreos.com/dnsmasq
-    # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-
-Run the `coreos.com/dnsmasq` ACI with rkt.
-
+    # matchbox with etcd example
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
+    # dnsmasq
     sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=metal0:IP=172.18.0.3 --mount volume=config,target=/etc/dnsmasq.conf --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf
 
-In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.18.0.50 and 172.18.0.99, resolves `matchbox.foo` to 172.18.0.2 (the IP where `matchbox` runs), and points iPXE clients to `http://matchbox.foo:8080/boot.ipxe`.
+If you get an error about the IP assignment, stop old pods and run garbage collection.
+
+    sudo rkt gc --grace-period=0
 
 ## Client VMs
 
@@ -123,10 +135,15 @@ The example profile added autologin so you can verify that etcd works between no
 
 ## Cleanup
 
-Press ^] three times to stop a rkt pod. Clean up the VM machines.
+Clean up the systemd units running `matchbox` and `dnsmasq`.
 
-    sudo ./scripts/libvirt poweroff
+    sudo ./scripts/devnet destroy
+
+Clean up VM machines.
+
     sudo ./scripts/libvirt destroy
+
+Press ^] three times to stop any rkt pod.
 
 ## Going Further
 
