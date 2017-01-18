@@ -1,7 +1,0 @@
-#!/bin/bash -e
-
-REPO=coreos/matchbox
-GIT_SHA=$(./git-version)
-
-docker build --rm=true -t $REPO:$GIT_SHA .
-docker tag $REPO:$GIT_SHA $REPO:latest

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# USAGE: ./get-protoc bin/protoc
+# Get the 'protoc' protocol buffer compiler
+set -eu
+
+DEST=${1:-"bin/protoc"}
+VERSION="3.1.0"
+
+OS=$(uname | tr A-Z a-z)
+if [[ $OS == 'darwin' ]]; then
+  OS=osx     # protoc names downloads with OSX, not darwin
+fi
+
+FILE="protoc-${VERSION}-${OS}-x86_64.zip"
+URL="https://github.com/google/protobuf/releases/download/v${VERSION}/${FILE}"
+
+curl -L -# -o protoc.zip ${URL}
+unzip -p protoc.zip bin/protoc > ${DEST}
+chmod +x ${DEST}
+rm -f protoc.zip
+

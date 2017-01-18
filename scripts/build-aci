@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-GIT_SHA=$(./git-version)
+GIT_SHA=$(./scripts/git-version)
 
 # Start with an empty ACI
 acbuild --debug begin

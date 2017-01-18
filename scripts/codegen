@@ -1,21 +1,11 @@
 #!/usr/bin/env bash
+# USAGE ./scripts/codegen
 # Generate Go protocol buffer code from proto definitions
 
 set -eu
 
-# Add tools to the PATH so binaries are the correct version
-export PATH=$PWD/tools:$PATH
-
-# Check location and tools
-if ! [[ "$0" =~ "scripts/codegen" ]]; then
-	echo "must be run from repository root"
-	exit 255
-fi
-
-if ! [[ $(protoc --version) =~ "3.0.0" ]]; then
-	echo "could not find protoc 3.0.0"
-	exit 255
-fi
+# Add protoc and protoc-gen-go tools to PATH
+export PATH=$PWD/bin:$PATH
 
 # protobuf subpackages end in "pb"
 PBUFS=$(go list ./... | grep -v /vendor | grep 'pb$')
@@ -29,3 +19,4 @@ for pkg in $PBUFS ; do
   protoc --go_out=plugins=grpc:. -I=.:"${GOPATH}/src/" *.proto
   popd > /dev/null
 done
+
