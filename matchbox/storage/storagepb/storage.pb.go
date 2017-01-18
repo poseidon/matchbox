@@ -26,7 +26,9 @@ var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
-const _ = proto.ProtoPackageIsVersion1
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 // Group selects one or more machines and matches them to a Profile.
 type Group struct {
@@ -47,9 +49,37 @@ func (m *Group) String() string            { return proto.CompactTextString(m) }
 func (*Group) ProtoMessage()               {}
 func (*Group) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
+func (m *Group) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Group) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Group) GetProfile() string {
+	if m != nil {
+		return m.Profile
+	}
+	return ""
+}
+
 func (m *Group) GetSelector() map[string]string {
 	if m != nil {
 		return m.Selector
+	}
+	return nil
+}
+
+func (m *Group) GetMetadata() []byte {
+	if m != nil {
+		return m.Metadata
 	}
 	return nil
 }
@@ -75,11 +105,46 @@ func (m *Profile) String() string            { return proto.CompactTextString(m)
 func (*Profile) ProtoMessage()               {}
 func (*Profile) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
+func (m *Profile) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Profile) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Profile) GetIgnitionId() string {
+	if m != nil {
+		return m.IgnitionId
+	}
+	return ""
+}
+
+func (m *Profile) GetCloudId() string {
+	if m != nil {
+		return m.CloudId
+	}
+	return ""
+}
+
 func (m *Profile) GetBoot() *NetBoot {
 	if m != nil {
 		return m.Boot
 	}
 	return nil
+}
+
+func (m *Profile) GetGenericId() string {
+	if m != nil {
+		return m.GenericId
+	}
+	return ""
 }
 
 // NetBoot describes network or PXE boot settings for a machine.
@@ -99,9 +164,30 @@ func (m *NetBoot) String() string            { return proto.CompactTextString(m)
 func (*NetBoot) ProtoMessage()               {}
 func (*NetBoot) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
+func (m *NetBoot) GetKernel() string {
+	if m != nil {
+		return m.Kernel
+	}
+	return ""
+}
+
+func (m *NetBoot) GetInitrd() []string {
+	if m != nil {
+		return m.Initrd
+	}
+	return nil
+}
+
 func (m *NetBoot) GetCmdline() map[string]string {
 	if m != nil {
 		return m.Cmdline
+	}
+	return nil
+}
+
+func (m *NetBoot) GetArgs() []string {
+	if m != nil {
+		return m.Args
 	}
 	return nil
 }
@@ -111,6 +197,8 @@ func init() {
 	proto.RegisterType((*Profile)(nil), "storagepb.Profile")
 	proto.RegisterType((*NetBoot)(nil), "storagepb.NetBoot")
 }
+
+func init() { proto.RegisterFile("storage.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
 	// 355 bytes of a gzipped FileDescriptorProto
