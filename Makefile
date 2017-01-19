@@ -66,7 +66,7 @@ release: \
 	_output/matchbox-darwin-amd64.tar.gz
 
 bin/linux-amd64/matchbox: GOARGS = GOOS=linux GOARCH=amd64
-bin/linux-arm/matchbox: GOARGS = GOOS=linux GOARCH=arm
+bin/linux-arm/matchbox: GOARGS = GOOS=linux GOARCH=arm GOARM=6
 bin/linux-arm64/matchbox: GOARGS = GOOS=linux GOARCH=arm64
 bin/darwin-amd64/matchbox: GOARGS = GOOS=darwin GOARCH=amd64
 
@@ -74,7 +74,7 @@ bin/%/matchbox:
 	$(GOARGS) go build -o $@ -ldflags $(LD_FLAGS) -a $(REPO)/cmd/matchbox
 
 bin/linux-amd64/bootcmd: GOARGS = GOOS=linux GOARCH=amd64
-bin/linux-arm/bootcmd: GOARGS = GOOS=linux GOARCH=arm
+bin/linux-arm/bootcmd: GOARGS = GOOS=linux GOARCH=arm GOARM=6
 bin/linux-arm64/bootcmd: GOARGS = GOOS=linux GOARCH=arm64
 bin/darwin-amd64/bootcmd: GOARGS = GOOS=darwin GOARCH=amd64
 
