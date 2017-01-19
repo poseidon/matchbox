@@ -58,7 +58,7 @@ Rename `bootcfg` to CoreOS `matchbox`!
 
 #### Improvements
 
-* Add ARM and AMR64 release architectures (#309)
+* Add ARM and ARM64 release architectures (#309)
 * Add guide for installing bootcfg on CoreOS (#306)
 * Improvements to the bootcfg cert-gen script (#310)
 
