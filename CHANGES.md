@@ -4,8 +4,9 @@ Notable changes between releases.
 
 ## Latest
 
-Rename `bootcfg` to CoreOS `matchbox`!
+## v0.5.0 (2017-01-23) 
 
+* Rename project to CoreOS `matchbox`!
 * Add Profile `args` field to list kernel args
 * Update [Fuze](https://github.com/coreos/container-linux-config-transpiler) and [Ignition](https://github.com/coreos/ignition) to v0.11.2
 * Switch from `golang.org/x/net/context` to `context`
@@ -15,6 +16,7 @@ Rename `bootcfg` to CoreOS `matchbox`!
 
 #### Rename
 
+* Move repo from github.com/coreos/coreos-baremetal to github.com/coreos/matchbox
 * Rename `bootcfg` binary to `matchbox`
 * Rename `bootcfg` packages to `matchbox`
 * Publish a `quay.io/coreos/matchbox` container image. The `quay.io/coreos/bootcfg` image will no longer be updated.

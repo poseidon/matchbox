@@ -7,7 +7,7 @@ This guide covers releasing new versions of matchbox.
 
 Create a release commit which updates old version references.
 
-    export VERSION=v0.4.2
+    export VERSION=v0.5.0
 
 ## Tag
 
@@ -36,7 +36,7 @@ Build the release tarballs.
 
 Verify the reported version.
 
-    ./_output/matchbox-v0.4.2-linux-amd64/matchbox -version
+    ./_output/matchbox-v0.5.0-linux-amd64/matchbox -version
 
 ## ACI
 

@@ -51,25 +51,6 @@ function check {
   if [ ! -d $DIR/../examples/assets/coreos/$COREOS_VERSION ]; then
     echo "Most examples use CoreOS $COREOS_CHANNEL $COREOS_VERSION. You may wish to download it with './scripts/get-coreos $COREOS_CHANNEL $COREOS_VERSION'."
   fi
-
-  if ! ip link show metal0 > /dev/null; then
-    echo "Creating the metal0 virtual bridge"
-    mkdir -p /etc/rkt/net.d
-    cat > /etc/rkt/net.d/20-metal.conf << EOF
-{
-  "name": "metal0",
-  "type": "bridge",
-  "bridge": "metal0",
-  "isGateway": true,
-  "ipMasq": true,
-  "ipam": {
-    "type": "host-local",
-    "subnet": "172.18.0.0/24",
-    "routes" : [ { "dst" : "0.0.0.0/0" } ]
-   }
-}
-EOF
-  fi
 }
 
 function create {
