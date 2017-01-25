@@ -44,18 +44,12 @@ $ cd matchbox-v0.5.0-linux-amd64
 
 ### RPM-based Distro
 
-On an RPM-based provisioner, install the `matchbox` RPM from the Copr [repository](https://copr.fedorainfracloud.org/coprs/dghubble/matchbox/) using `dnf` or `yum`.
+On an RPM-based provisioner, install the `matchbox` RPM from the Copr [repository](https://copr.fedorainfracloud.org/coprs/g/CoreOS/matchbox/) using `dnf` or `yum`.
 
 ```sh
-dnf copr enable dghubble/matchbox
+dnf copr enable @CoreOS/matchbox
 dnf install matchbox
-
-# requires yum-plugin-copr
-yum copr enable dghubble/matchbox
-yum install matchbox
 ```
-
-Alternately, download the repo file and place it in `/etc/yum.repos.d/`.
 
 ### CoreOS
 
