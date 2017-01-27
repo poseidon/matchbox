@@ -1,0 +1,5 @@
+{
+  "id": "ssh",
+  "name": "SSH Authorized Keys",
+  "ignition_id": "ssh.yaml"
+}

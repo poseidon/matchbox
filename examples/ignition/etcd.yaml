@@ -21,12 +21,8 @@ systemd:
             [Service]
             Environment="REBOOT_STRATEGY=etcd-lock"
 
-{{ if index . "ssh_authorized_keys" }}
-passwd:
-  users:
-    - name: core
-      ssh_authorized_keys:
-        {{ range $element := .ssh_authorized_keys }}
-        - {{$element}}
-        {{end}}
-{{end}}
+
+ignition:
+  config:
+    append:
+      - source: http://172.15.0.2:8080/ignition?profile=authkeys
