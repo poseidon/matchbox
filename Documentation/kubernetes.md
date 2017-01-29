@@ -1,7 +1,7 @@
 
 # Kubernetes
 
-The Kubernetes example provisions a 3 node Kubernetes v1.5.1 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The Kubernetes example provisions a 3 node Kubernetes v1.5.2 cluster with one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 

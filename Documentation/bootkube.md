@@ -1,7 +1,7 @@
 
 # Self-Hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.5.1 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.5.2 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -12,12 +12,12 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases/tag/v0.3.4) v0.3.4 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases/tag/v0.3.5) v0.3.5 and add it somewhere on your PATH.
 
-    $ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.4/bootkube.tar.gz
+    $ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.5/bootkube.tar.gz
     $ tar xzf bootkube.tar.gz
     $ ./bin/linux/bootkube version
-    Version: v0.3.4
+    Version: v0.3.5
 
 ## Examples
 
@@ -64,8 +64,8 @@ Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node w
 
 Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
 
-    scp -r assets core@node1.example.com:/home/core/assets
-    ssh core@node1.example.com 'sudo systemctl start bootkube'
+    scp -r assets core@node1.example.com:/home/core
+    ssh core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
 
 Optionally watch the Kubernetes control plane bootstrapping with the bootkube temporary api-server. You will see quite a bit of output.
 

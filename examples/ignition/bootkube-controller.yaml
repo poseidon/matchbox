@@ -74,7 +74,8 @@ systemd:
         Description=Bootstrap a Kubernetes control plane with a temp api-server
         [Service]
         Type=simple
-        ExecStart=/home/core/bootkube-start
+        WorkingDirectory=/opt/bootkube
+        ExecStart=/opt/bootkube/bootkube-start
 storage:
   {{ if index . "pxe" }}
   disks:
@@ -99,7 +100,7 @@ storage:
       contents:
         inline: |
           KUBELET_ACI=quay.io/coreos/hyperkube
-          KUBELET_VERSION=v1.5.1_coreos.0
+          KUBELET_VERSION=v1.5.2_coreos.0
     - path: /etc/hostname
       filesystem: root
       mode: 0644
@@ -111,7 +112,7 @@ storage:
       contents:
         inline: |
           fs.inotify.max_user_watches=16184
-    - path: /home/core/bootkube-start
+    - path: /opt/bootkube/bootkube-start
       filesystem: root
       mode: 0544
       user:
@@ -124,8 +125,8 @@ storage:
           # Wrapper for bootkube start
           set -e
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.4}"
-          BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/home/core/assets}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.5}"
+          BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \
             --volume assets,kind=host,source=$BOOTKUBE_ASSETS \
