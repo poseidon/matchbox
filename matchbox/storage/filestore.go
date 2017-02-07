@@ -5,24 +5,28 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/coreos/matchbox/matchbox/storage/storagepb"
 )
 
 // Config initializes a fileStore.
 type Config struct {
-	Root string
+	Root   string
+	Logger *logrus.Logger
 }
 
 // fileStore implements ths Store interface. Queries to the file system
 // are restricted to the specified directory tree.
 type fileStore struct {
-	root string
+	root   string
+	logger *logrus.Logger
 }
 
 // NewFileStore returns a new memory-backed Store.
 func NewFileStore(config *Config) Store {
 	return &fileStore{
-		root: config.Root,
+		root:   config.Root,
+		logger: config.Logger,
 	}
 }
 
@@ -64,6 +68,8 @@ func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 		group, err := s.GroupGet(name)
 		if err == nil {
 			groups = append(groups, group)
+		} else if s.logger != nil {
+			s.logger.Infof("Group %q: %v", name, err)
 		}
 	}
 	return groups, nil
@@ -107,6 +113,8 @@ func (s *fileStore) ProfileList() ([]*storagepb.Profile, error) {
 		profile, err := s.ProfileGet(name)
 		if err == nil {
 			profiles = append(profiles, profile)
+		} else if s.logger != nil {
+			s.logger.Infof("Profile %q: %v", name, err)
 		}
 	}
 	return profiles, nil
