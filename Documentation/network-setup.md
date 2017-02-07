@@ -52,7 +52,18 @@ You can chainload from a menu entry or use other [iPXE commands](http://ipxe.org
 
 ## GRUB
 
-Needs docs.
+Needs more docs.
+
+`grub-mknetdir --net-directory=/var/lib/tftpboot`
+
+/var/lib/tftpboot/boot/grub/grub.cfg:
+```ini
+insmod i386-pc/http.mod
+set root=http,matchbox.foo:8080
+configfile /grub
+```
+
+Make sure to replace variables in the example config files; instead of iPXE variables, use GRUB variables. Check the [GRUB2 manual](https://www.gnu.org/software/grub/manual/grub.html#Network).
 
 ### Configuring DHCP
 

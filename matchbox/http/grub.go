@@ -10,12 +10,19 @@ import (
 )
 
 var grubTemplate = template.Must(template.New("GRUB2 config").Parse(`default=0
+fallback=1
 timeout=1
-menuentry "CoreOS" {
+menuentry "CoreOS (EFI)" {
 echo "Loading kernel"
-linuxefi "{{.Kernel}}"{{range $key, $value := .Cmdline}} {{if $value}}"{{$key}}={{$value}}"{{else}}"{{$key}}"{{end}}{{end}}
+linuxefi "{{.Kernel}}"{{range $arg := .Args}} {{$arg}}{{end}}{{range $key, $value := .Cmdline}} {{if $value}}"{{$key}}={{$value}}"{{else}}"{{$key}}"{{end}}{{end}}
 echo "Loading initrd"
-initrdefi {{ range $element := .Initrd }}"{{$element}}" {{end}}
+initrdefi {{ range $element := .Initrd }} "{{$element}}"{{end}}
+}
+menuentry "CoreOS (BIOS)" {
+echo "Loading kernel"
+linux "{{.Kernel}}"{{range $arg := .Args}} {{$arg}}{{end}}{{range $key, $value := .Cmdline}} {{if $value}}"{{$key}}={{$value}}"{{else}}"{{$key}}"{{end}}{{end}}
+echo "Loading initrd"
+initrd {{ range $element := .Initrd }} "{{$element}}"{{end}}
 }
 `))
 
