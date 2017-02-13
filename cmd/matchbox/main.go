@@ -122,7 +122,8 @@ func main() {
 
 	// storage
 	store := storage.NewFileStore(&storage.Config{
-		Root: flags.dataPath,
+		Root:   flags.dataPath,
+		Logger: log,
 	})
 
 	// core logic
