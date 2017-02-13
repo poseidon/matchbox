@@ -202,7 +202,7 @@ Certificate chain
 Download a recent CoreOS [release](https://coreos.com/releases/) with signatures.
 
 ```sh
-$ ./scripts/get-coreos stable 1185.3.0 .     # note the "." 3rd argument
+$ ./scripts/get-coreos stable 1235.9.0 .     # note the "." 3rd argument
 ```
 
 Move the images to `/var/lib/matchbox/assets`,
@@ -214,7 +214,7 @@ $ sudo cp -r coreos /var/lib/matchbox/assets
 ```
 /var/lib/matchbox/assets/
 ├── coreos
-│   └── 1185.3.0
+│   └── 1235.9.0
 │       ├── CoreOS_Image_Signing_Key.asc
 │       ├── coreos_production_image.bin.bz2
 │       ├── coreos_production_image.bin.bz2.sig
@@ -227,7 +227,7 @@ $ sudo cp -r coreos /var/lib/matchbox/assets
 and verify the images are acessible.
 
 ```
-$ curl http://matchbox.example.com:8080/assets/coreos/1185.3.0/
+$ curl http://matchbox.example.com:8080/assets/coreos/1235.9.0/
 <pre>...
 ```
 
