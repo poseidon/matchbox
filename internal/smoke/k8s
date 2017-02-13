@@ -10,27 +10,28 @@ main() {
   ./scripts/devnet create k8s
   ./scripts/libvirt create
 
-  until kubelet "172.18.0.21" && kubelet "172.18.0.22" && kubelet "172.18.0.23"
+  until kubelet "node1.example.com" \
+    && kubelet "node2.example.com" \
+    && kubelet "node3.example.com"
   do
     sleep 10
-    echo "Waiting for kubelets..."
+    echo "Waiting for Kubelets to start..."
   done
 
-  until curl --silent -k "https://172.18.0.21:443" > /dev/null
+  until curl --silent -k "https://node1.example.com:443" > /dev/null
   do
     sleep 10
-    echo "Waiting for Kubernetes API..."
+    echo "Waiting for the Kubernetes API..."
   done
 
   until [[ "$(readyNodes)" == "3" ]]; do
     sleep 5
-    echo "Waiting for nodes..."
+    echo "$(readyNodes) of 3 nodes are Ready..."
   done
-
-  sleep 5
 
   echo "Getting nodes..."
   k8s get nodes
+
   echo "Getting pods..."
   k8s get pods --all-namespaces
 
@@ -44,10 +45,12 @@ k8s() {
   ./bin/kubectl --kubeconfig=$ASSETS_DIR/tls/kubeconfig "$@"
 }
 
+# kubelet health checks the given kubelet endpoint
 kubelet() {
   curl --silent --fail -m 1 http://$1:10255/healthz > /dev/null
 }
 
+# ready nodes returns the number of Ready Kubernetes nodes
 readyNodes() {
   k8s get nodes -o template --template='{{range .items}}{{range .status.conditions}}{{if eq .type "Ready"}}{{.}}{{end}}{{end}}{{end}}' | grep -o -E True | wc -l
 }
