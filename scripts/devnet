@@ -1,6 +1,7 @@
 #!/bin/bash
 # Create a virtual bridge with PXE services and matchbox
 # USAGE: ./scripts/devnet create [example]
+# USAGE: ./scripts/devnet status
 # USAGE: ./scripts/devnet destroy
 set -u
 
@@ -11,6 +12,8 @@ BRIDGE=metal0
 COREOS_CHANNEL=stable
 COREOS_VERSION=1235.9.0
 MATCHBOX_ARGS=""
+
+ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -48,7 +51,7 @@ function check {
     exit 1
   fi
 
-  if [ ! -d $DIR/../examples/assets/coreos/$COREOS_VERSION ]; then
+  if [ ! -d $ASSETS_DIR/coreos/$COREOS_VERSION ]; then
     echo "Most examples use CoreOS $COREOS_CHANNEL $COREOS_VERSION. You may wish to download it with './scripts/get-coreos $COREOS_CHANNEL $COREOS_VERSION'."
   fi
 }
@@ -67,12 +70,14 @@ function create {
     MATCHBOX_ARGS="-rpc-address=0.0.0.0:8081"
     DATA_MOUNT="--volume data,kind=host,source=$(mktemp -d) \
     --mount volume=assets,target=/var/lib/matchbox/assets \
-    --volume assets,kind=host,source=$PWD/examples/assets,readOnly=true"
+    --volume assets,kind=host,source=$ASSETS_DIR,readOnly=true"
   else
     # Mount the given EXAMPLE
     DATA_MOUNT="--volume data,kind=host,source=$PWD/examples \
     --mount volume=groups,target=/var/lib/matchbox/groups \
-    --volume groups,kind=host,source=$DIR/../examples/groups/$EXAMPLE"
+    --volume groups,kind=host,source=$DIR/../examples/groups/$EXAMPLE \
+    --mount volume=assets,target=/var/lib/matchbox/assets \
+    --volume assets,kind=host,source=$ASSETS_DIR,readOnly=true"
   fi
 
   rkt rm --uuid-file=/var/run/matchbox-pod.uuid > /dev/null 2>&1
