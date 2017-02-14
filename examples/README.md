@@ -18,7 +18,6 @@ These examples network boot and provision machines into CoreOS clusters using `m
 | rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | stable/1235.9.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
 | bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | stable/1235.9.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | stable/1235.9.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| torus | Torus distributed storage | stable/1235.9.0 | Disk | [tutorial](../Documentation/torus.md) |
 
 ## Tutorials
 
@@ -30,7 +29,6 @@ Get started running `matchbox` on your Linux machine to network boot and provisi
 * [Kubernetes (static manifests)](../Documentation/kubernetes.md)
 * [Kubernetes (rktnetes)](../Documentation/rktnetes.md)
 * [Kubernetes (self-hosted)](../Documentation/bootkube.md)
-* [Torus Storage](../Documentation/torus.md)
 * [Lab Examples](https://github.com/dghubble/metal)
 
 ## Autologin

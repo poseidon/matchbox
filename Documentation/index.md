@@ -50,7 +50,6 @@ The [examples](https://github.com/coreos/matchbox/tree/master/examples) network 
 * Multi-node [self-hosted](bootkube.md) Kubernetes cluster
 * [Upgrading](bootkube-upgrades.md) self-hosted Kubernetes clusters
 * Multi-node etcd2 or etcd3 cluster
-* Multi-node [Torus](torus.md) distributed storage cluster
 * Network boot or Install to Disk
 * Multi-stage CoreOS installs
 * [GRUB Netboot](grub.md) CoreOS

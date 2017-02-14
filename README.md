@@ -40,7 +40,6 @@ The [examples](examples) network boot and provision CoreOS clusters. Network boo
 * Multi-node [self-hosted](Documentation/bootkube.md) Kubernetes cluster
 * [Upgrading](Documentation/bootkube-upgrades.md) self-hosted Kubernetes clusters
 * Multi-node etcd2 or etcd3 cluster
-* Multi-node [Torus](Documentation/torus.md) distributed storage cluster
 * Network boot and/or install to disk (multi-stage installs)
 
 ### Enterprise

@@ -35,4 +35,3 @@ pages:
     - rktnetes (static): 'rktnetes.md'
     - Self-hosted Kubernetes: 'bootkube.md'
     - Upgrading Kubernetes: 'bootkube-upgrades.md'
-    - Torus: 'torus.md'
