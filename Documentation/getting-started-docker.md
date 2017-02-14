@@ -24,7 +24,7 @@ Clone the [matchbox](https://github.com/coreos/matchbox) source which contains t
 
 Download CoreOS image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
 
-    ./scripts/get-coreos stable 1185.3.0 ./examples/assets
+    ./scripts/get-coreos stable 1235.9.0 ./examples/assets
 
 For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name as you would in production.
 

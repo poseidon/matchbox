@@ -26,7 +26,7 @@ Clone the [matchbox](https://github.com/coreos/matchbox) source which contains t
 
 Download CoreOS image assets referenced by the `etcd` [example](../examples) to `examples/assets`.
 
-    ./scripts/get-coreos stable 1185.3.0 ./examples/assets
+    ./scripts/get-coreos stable 1235.9.0 ./examples/assets
 
 Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
 
