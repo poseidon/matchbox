@@ -28,7 +28,7 @@ Configuration arguments can be provided at the command line. Check the dnsmasq [
 
 | flag     | description | example |
 |----------|-------------|---------|
-| --dhcp-range | Enable DHCP, lease given range | `172.18,0.50,172.18.0.99`, `192.168.1.1,proxy,255.255.255.0` |
+| --dhcp-range | Enable DHCP, lease given range | `172.18.0.50,172.18.0.99`, `192.168.1.1,proxy,255.255.255.0` |
 | --dhcp-boot | DHCP next server option | `http://matchbox.foo:8080/boot.ipxe` |
 | --enable-tftp | Enable serving from tftp-root over TFTP | NA |
 | --address | IP address for a domain name | /matchbox.foo/172.18.0.2 |
