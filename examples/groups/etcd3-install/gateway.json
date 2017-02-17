@@ -1,0 +1,11 @@
+{
+  "id": "default",
+  "name": "default",
+  "profile": "etcd3-gateway",
+  "selector": {
+    "os": "installed"
+  },
+  "metadata": {
+    "etcd_endpoints": "node1.example.com:2379,node2.example.com:2379,node3.example.com:2379"
+  }
+}

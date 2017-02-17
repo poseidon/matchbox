@@ -8,13 +8,10 @@ systemd:
           contents: |
             [Service]
             Environment="ETCD_IMAGE_TAG=v3.1.0"
-            Environment="ETCD_NAME={{.etcd_name}}"
-            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379"
-            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380"
-            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
-            Environment="ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380"
-            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
-            Environment="ETCD_STRICT_RECONFIG_CHECK=true"
+            ExecStart=
+            ExecStart=/usr/lib/coreos/etcd-wrapper gateway start \
+              --listen-addr=127.0.0.1:2379 \
+              --endpoints={{.etcd_endpoints}}
     - name: locksmithd.service
       dropins:
         - name: 40-etcd-lock.conf
@@ -31,3 +28,4 @@ passwd:
         - {{$element}}
         {{end}}
 {{end}}
+

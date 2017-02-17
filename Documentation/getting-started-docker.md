@@ -1,7 +1,7 @@
 
 # Getting Started with Docker
 
-In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clusters, etcd clusters, and test network setups.
+In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clusters, etcd3 clusters, and test network setups.
 
 *Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
@@ -39,9 +39,9 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
 Run the latest `matchbox` Docker image from `quay.io/coreos/matchbox` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
 
     sudo docker pull quay.io/coreos/matchbox:latest
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd3:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 
-Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
+Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
 * iPXE [http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae)
 * Ignition [http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae)
@@ -75,11 +75,12 @@ Use the wrapper script to act on all nodes.
 
 ## Verify
 
-The VMs should network boot and provision themselves into a three node etcd cluster, with other nodes behaving as etcd proxies.
+The VMs should network boot and provision themselves into a three node etcd3 cluster, with other nodes behaving as etcd3 gateways.
 
-The example profile added autologin so you can verify that etcd works between nodes.
+The example profile added autologin so you can verify that etcd3 works between nodes.
 
-    systemctl status etcd2
+    systemctl status etcd-member
+    ETCDCTL_API=3
     etcdctl set /message hello
     etcdctl get /message
 
