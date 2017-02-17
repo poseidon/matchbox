@@ -8,8 +8,6 @@ These examples network boot and provision machines into CoreOS clusters using `m
 | simple | CoreOS with autologin, using iPXE | stable/1235.9.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | simple-install | CoreOS Install, using iPXE | stable/1235.9.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | grub | CoreOS via GRUB2 Netboot | stable/1235.9.0 | RAM | NA |
-| etcd | A 3 node etcd cluster with proxies | stable/1235.9.0 | RAM | [reference](https://coreos.com/os/docs/latest/cluster-architectures.html) |
-| etcd-install | Install a 3 node etcd cluster to disk | stable/1235.9.0 | Disk | [reference](https://coreos.com/os/docs/latest/installing-to-disk.html) |
 | etcd3 | A 3 node etcd3 cluster with proxies | stable/1235.9.0 | RAM | None |
 | etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1235.9.0 | Disk | None |
 | k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | stable/1235.9.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
