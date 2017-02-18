@@ -1,15 +1,17 @@
 ---
 systemd:
   units:
-    - name: etcd2.service
+    - name: etcd-member.service
       enable: true
       dropins:
         - name: 40-etcd-cluster.conf
           contents: |
             [Service]
-            Environment="ETCD_PROXY=on"
-            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
-            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+            Environment="ETCD_IMAGE_TAG=v3.1.0"
+            ExecStart=
+            ExecStart=/usr/lib/coreos/etcd-wrapper gateway start \
+              --listen-addr=127.0.0.1:2379 \
+              --endpoints={{.etcd_endpoints}}
     - name: docker.service
       enable: true
     - name: locksmithd.service
@@ -101,7 +103,7 @@ storage:
       contents:
         inline: |
           KUBELET_ACI=quay.io/coreos/hyperkube
-          KUBELET_VERSION=v1.5.2_coreos.0
+          KUBELET_VERSION=v1.5.2_coreos.2
     - path: /etc/hostname
       filesystem: root
       mode: 0644

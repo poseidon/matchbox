@@ -8,7 +8,7 @@
   },
   "metadata": {
     "domain_name": "node2.example.com",
-    "etcd_initial_cluster": "node1=http://node1.example.com:2380",
+    "etcd_endpoints": "node1.example.com:2379",
     "k8s_dns_service_ip": "10.3.0.10",
     "ssh_authorized_keys": [
       "ADD ME"
