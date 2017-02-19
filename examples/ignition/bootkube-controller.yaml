@@ -1,12 +1,13 @@
 ---
 systemd:
   units:
-    - name: etcd2.service
+    - name: etcd-member.service
       enable: true
       dropins:
         - name: 40-etcd-cluster.conf
           contents: |
             [Service]
+            Environment="ETCD_IMAGE_TAG=v3.1.0"
             Environment="ETCD_NAME={{.etcd_name}}"
             Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379"
             Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380"
@@ -113,7 +114,7 @@ storage:
       contents:
         inline: |
           KUBELET_ACI=quay.io/coreos/hyperkube
-          KUBELET_VERSION=v1.5.2_coreos.0
+          KUBELET_VERSION=v1.5.2_coreos.2
     - path: /etc/hostname
       filesystem: root
       mode: 0644
@@ -138,7 +139,7 @@ storage:
           # Wrapper for bootkube start
           set -e
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.5}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.7}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \

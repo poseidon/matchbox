@@ -12,12 +12,12 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases/tag/v0.3.5) v0.3.5 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.3.7 and add it somewhere on your PATH.
 
-    $ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.5/bootkube.tar.gz
+    $ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.7/bootkube.tar.gz
     $ tar xzf bootkube.tar.gz
     $ ./bin/linux/bootkube version
-    Version: v0.3.5
+    Version: v0.3.7
 
 ## Examples
 

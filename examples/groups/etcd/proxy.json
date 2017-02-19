@@ -1,8 +1,0 @@
-{
-  "id": "default",
-  "name": "default",
-  "profile": "etcd-proxy",
-  "metadata": {
-    "etcd_initial_cluster": "node1=http://node1.example.com:2380,node2=http://node2.example.com:2380,node3=http://node3.example.com:2380"
-  }
-}

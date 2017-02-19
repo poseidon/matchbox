@@ -1,36 +1,20 @@
 ---
 systemd:
   units:
-    - name: etcd3.service
+    - name: etcd-member.service
       enable: true
-      contents: |
-        [Unit]
-        Type=notify
-        Description=etcd3
-        Conflicts=etcd2.service
-        [Service]
-        Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
-        ExecStartPre=/usr/bin/mkdir -p /var/lib/etcd3
-        ExecStartPre=/usr/bin/rkt trust --prefix "coreos.com/etcd" --skip-fingerprint-review
-        ExecStart=/usr/bin/rkt run \
-          --net=host \
-          --volume data-dir,kind=host,source=/var/lib/etcd3 \
-          --mount volume=data-dir,target=/var/lib/etcd3 \
-          $RKT_OPTS \
-          coreos.com/etcd:v3.0.6 -- \
-          -name={{.etcd_name}} \
-          -advertise-client-urls=http://{{.domain_name}}:2379 \
-          -initial-advertise-peer-urls=http://{{.domain_name}}:2380 \
-          -listen-client-urls=http://0.0.0.0:2379 \
-          -listen-peer-urls=http://0.0.0.0:2380 \
-          -initial-cluster={{.etcd_initial_cluster}} \
-          -data-dir=/var/lib/etcd3
-        Restart=always
-        RestartSec=10
-        LimitNOFILE=40000
-        TimeoutStartSec=0
-        [Install]
-        WantedBy=multi-user.target
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_IMAGE_TAG=v3.1.0"
+            Environment="ETCD_NAME={{.etcd_name}}"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+            Environment="ETCD_STRICT_RECONFIG_CHECK=true"
     - name: locksmithd.service
       dropins:
         - name: 40-etcd-lock.conf

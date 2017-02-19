@@ -1,7 +1,7 @@
 
 # Getting Started with rkt
 
-In this tutorial, we'll run `matchbox` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd clusters, and test network setups.
+In this tutorial, we'll run `matchbox` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd3 clusters, and test network setups.
 
 *Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
@@ -76,7 +76,7 @@ Trust the needed ACIs.
 
 The `devnet` wrapper script can quickly rkt run `matchbox` and `dnsmasq` in systemd transient units. Create can take the name of any example cluster in [examples](../examples).
 
-    sudo ./scripts/devnet create etcd
+    sudo ./scripts/devnet create etcd3
 
 Inspect the journal logs or check the status of the systemd services.
 
@@ -86,7 +86,7 @@ Inspect the journal logs or check the status of the systemd services.
     journalctl -f -u dev-matchbox
     journalctl -f -u dev-dnsmasq
 
-Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
+Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
 
 * iPXE [http://172.18.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae](http://172.18.0.2:8080/ipxe?mac=52:54:00:a1:9c:ae)
 * Ignition [http://172.18.0.2:8080/ignition?mac=52:54:00:a1:9c:ae](http://172.18.0.2:8080/ignition?mac=52:54:00:a1:9c:ae)
@@ -96,8 +96,8 @@ Take a look at the [etcd groups](../examples/groups/etcd) to get an idea of how 
 
 If you prefer to start the containers yourself, instead of using `devnet`:
 
-    # matchbox with etcd example
-    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
+    # matchbox with etcd3 example
+    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd3 quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
     # dnsmasq
     sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=metal0:IP=172.18.0.3 --mount volume=config,target=/etc/dnsmasq.conf --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf
 
@@ -125,11 +125,12 @@ Use the wrapper script to act on all nodes.
 
 ## Verify
 
-The VMs should network boot and provision themselves into a three node etcd cluster, with other nodes behaving as etcd proxies.
+The VMs should network boot and provision themselves into a three node etcd3 cluster, with other nodes behaving as etcd3 gateways.
 
-The example profile added autologin so you can verify that etcd works between nodes.
+The example profile added autologin so you can verify that etcd3 works between nodes.
 
-    systemctl status etcd2
+    systemctl status etcd-member
+    ETCDCTL_API=3
     etcdctl set /message hello
     etcdctl get /message
 
