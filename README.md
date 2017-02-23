@@ -44,13 +44,10 @@ The [examples](examples) network boot and provision CoreOS clusters. Network boo
 
 ### Enterprise
 
-[Tectonic](https://coreos.com/tectonic/) is the enterprise-ready Kubernetes offering from CoreOS (free for 10 nodes!). The [Tectonic Installer](https://tectonic.com/enterprise/docs/latest/deployer/platform-baremetal.html) app integrates directly with `matchbox` through its gRPC API to provide a rich graphical client for populating `matchbox` with machine configs.
+[Tectonic](https://coreos.com/tectonic/) is the enterprise-ready Kubernetes offering from CoreOS (free for 10 nodes!). The [Tectonic Installer](https://coreos.com/tectonic/docs/latest/install/bare-metal/#4-tectonic-installer) app integrates directly with `matchbox` through its gRPC API to provide a rich graphical client for populating `matchbox` with machine configs.
 
-Learn more from our [docs](https://tectonic.com/enterprise/docs/latest/deployer/platform-baremetal.html) or [blog](https://tectonic.com/blog/tectonic-1-3-release.html).
+Learn more from our [docs](https://coreos.com/tectonic/docs/latest/) or [blog](https://coreos.com/blog/tectonic-1-5-2.html).
 
 ![Tectonic Installer](Documentation/img/tectonic-installer.png)
 
 ![Tectonic Console](Documentation/img/tectonic-console.png)
-
-
-
