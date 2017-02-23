@@ -15,7 +15,7 @@ Here are example signature endpoints without their query parameters.
 | Cloud-Config | `http://matchbox.foo/cloud.sig` | `http://matchbox.foo/cloud.asc` |
 | Metadata   | `http://matchbox.foo/metadata.sig` | `http://matchbox.foo/metadata.asc` |
 
-In production, mount your signing keyring and source the passphrase from a [Kubernetes secret](http://kubernetes.io/v1.1/docs/user-guide/secrets.html). Use a signing subkey exported to a keyring by itself, which can be revoked by a primary key, if needed.
+In production, mount your signing keyring and source the passphrase from a [Kubernetes secret](https://kubernetes.io/docs/user-guide/secrets/). Use a signing subkey exported to a keyring by itself, which can be revoked by a primary key, if needed.
 
 To try it locally, you may use the test fixture keyring. **Warning: The test fixture keyring is for examples only.**
 
@@ -49,4 +49,3 @@ Create a signing key or subkey according to your requirements and security polic
     gpg2 --homedir path/in/vault --expert --gen-key
     ...
     gpg2 --homedir path/in/vault --export-secret-key KEYID > path/in/vault/secring.gpg
-
