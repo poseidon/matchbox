@@ -33,33 +33,45 @@ Configuration arguments can be provided as flags or as environment variables.
 
 ## Version
 
-    ./bin/matchbox -version
-    sudo rkt run quay.io/coreos/matchbox:latest -- -version
-    sudo docker run quay.io/coreos/matchbox:latest -version
+```sh
+$ ./bin/matchbox -version
+$ sudo rkt run quay.io/coreos/matchbox:latest -- -version
+$ sudo docker run quay.io/coreos/matchbox:latest -version
+```
 
 ## Usage
 
 Run the binary.
 
-    ./bin/matchbox -address=0.0.0.0:8080 -log-level=debug -data-path=examples -assets-path=examples/assets
+```sh
+$ ./bin/matchbox -address=0.0.0.0:8080 -log-level=debug -data-path=examples -assets-path=examples/assets
+```
 
 Run the latest ACI with rkt.
 
-    sudo rkt run --mount volume=assets,target=/var/lib/matchbox/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
+```sh
+$ sudo rkt run --mount volume=assets,target=/var/lib/matchbox/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
+```
 
 Run the latest Docker image.
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples/assets:/var/lib/matchbox/assets:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+```sh
+$ sudo docker run -p 8080:8080 --rm -v $PWD/examples/assets:/var/lib/matchbox/assets:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+```
 
 #### With Examples
 
 Mount `examples` to pre-load the [example](../examples/README.md) machine groups and profiles. Run the container with rkt,
 
-    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
+```sh
+$ sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
+```
 
 or with Docker.
 
-    sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+```sh
+$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+```
 
 ### gRPC API
 
@@ -67,43 +79,61 @@ The gRPC API allows clients with a TLS client certificate and key to make RPC re
 
 Run the binary with TLS credentials from `examples/etc/matchbox`.
 
-    ./bin/matchbox -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug -data-path=examples -assets-path=examples/assets -cert-file examples/etc/matchbox/server.crt -key-file examples/etc/matchbox/server.key -ca-file examples/etc/matchbox/ca.crt
+```sh
+$ ./bin/matchbox -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug -data-path=examples -assets-path=examples/assets -cert-file examples/etc/matchbox/server.crt -key-file examples/etc/matchbox/server.key -ca-file examples/etc/matchbox/ca.crt
+```
 
 Clients, such as `bootcmd`, verify the server's certificate with a CA bundle passed via `-ca-file` and present a client certificate and key via `-cert-file` and `-key-file` to cal the gRPC API.
 
-    ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
+```sh
+$ ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
+```
 
 #### With rkt
 
 Run the ACI with rkt and TLS credentials from `examples/etc/matchbox`.
 
-    sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples,readOnly=true --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=$PWD/examples/etc/matchbox --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+```sh
+$ sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples,readOnly=true --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=$PWD/examples/etc/matchbox --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+```
 
 A `bootcmd` client can call the gRPC API running at the IP used in the rkt example.
 
-    ./bin/bootcmd profile list --endpoints 172.18.0.2:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
+```sh
+$ ./bin/bootcmd profile list --endpoints 172.18.0.2:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
+```
 
 #### With docker
 
 Run the Docker image with TLS credentials from `examples/etc/matchbox`.
 
-    sudo docker run -p 8080:8080 -p 8081:8081 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/etc/matchbox:/etc/matchbox:Z,ro -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+```sh
+$ sudo docker run -p 8080:8080 -p 8081:8081 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/etc/matchbox:/etc/matchbox:Z,ro -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+```
 
 A `bootcmd` client can call the gRPC API running at the IP used in the Docker example.
 
-    ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
+```sh
+$ ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
+```
 
 ### OpenPGP [Signing](openpgp.md)
 
 Run with the binary with a test key.
 
-    export MATCHBOX_PASSPHRASE=test
-    ./bin/matchbox -address=0.0.0.0:8080 -key-ring-path matchbox/sign/fixtures/secring.gpg -data-path=examples -assets-path=examples/assets
+```sh
+$ export MATCHBOX_PASSPHRASE=test
+$ ./bin/matchbox -address=0.0.0.0:8080 -key-ring-path matchbox/sign/fixtures/secring.gpg -data-path=examples -assets-path=examples/assets
+```
 
 Run the ACI with a test key.
 
-    sudo rkt run --net=metal0:IP=172.18.0.2 --set-env=MATCHBOX_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/matchbox/sign/fixtures --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
+```sh
+$ sudo rkt run --net=metal0:IP=172.18.0.2 --set-env=MATCHBOX_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/matchbox/sign/fixtures --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
+```
 
 Run the Docker image with a test key.
 
-    sudo docker run -p 8080:8080 --rm --env MATCHBOX_PASSPHRASE=test -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z -v $PWD/matchbox/sign/fixtures:/secrets:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug -key-ring-path secrets/secring.gpg
+```sh
+$ sudo docker run -p 8080:8080 --rm --env MATCHBOX_PASSPHRASE=test -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z -v $PWD/matchbox/sign/fixtures:/secrets:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug -key-ring-path secrets/secring.gpg
+```

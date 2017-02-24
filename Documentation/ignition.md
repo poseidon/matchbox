@@ -1,4 +1,3 @@
-
 # Ignition
 
 Ignition is a system for declaratively provisioning disks during the initramfs, before systemd starts. It runs only on the first boot and handles partitioning disks, formatting partitions, writing files (regular files, systemd units, networkd units, etc.), and configuring users. See the Ignition [docs](https://coreos.com/ignition/docs/latest/) for details.
@@ -13,14 +12,16 @@ The [Fuze schema](https://github.com/coreos/fuze/blob/master/doc/configuration.m
 
 Fuze template files can be added in the `/var/lib/matchbox/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
 
-    /var/lib/matchbox
-     ├── cloud
-     ├── ignition
-     │   └── k8s-controller.yaml
-     │   └── etcd.yaml
-     │   └── k8s-worker.yaml
-     │   └── raw.ign
-     └── profiles
+```
+/var/lib/matchbox
+ ├── cloud
+ ├── ignition
+ │   └── k8s-controller.yaml
+ │   └── etcd.yaml
+ │   └── k8s-worker.yaml
+ │   └── raw.ign
+ └── profiles
+```
 
 ### Reference
 
@@ -57,102 +58,109 @@ Here is an example Fuze template. This template will be rendered into a Fuze con
 
 ignition/format-disk.yaml.tmpl:
 
-    ---
-    storage:
-      disks:
-        - device: /dev/sda
-          wipe_table: true
-          partitions:
-            - label: ROOT
-      filesystems:
-        - name: root
-          mount:
-            device: "/dev/sda1"
-            format: "ext4"
-            create:
-              force: true
-              options:
-                - "-LROOT"
-      files:
-        - filesystem: root
-          path: /home/core/foo
-          mode: 0644
-          user:
-            id: 500
-          group:
-            id: 500
-          contents:
-            inline: |
-              {{.example_contents}}
-    {{ if index . "ssh_authorized_keys" }}
-    passwd:
-      users:
-        - name: core
-          ssh_authorized_keys:
-            {{ range $element := .ssh_authorized_keys }}
-            - {{$element}}
-            {{end}}
-    {{end}}
+<!-- {% raw %} -->
+```yaml
+
+---
+storage:
+  disks:
+    - device: /dev/sda
+      wipe_table: true
+      partitions:
+        - label: ROOT
+  filesystems:
+    - name: root
+      mount:
+        device: "/dev/sda1"
+        format: "ext4"
+        create:
+          force: true
+          options:
+            - "-LROOT"
+  files:
+    - filesystem: root
+      path: /home/core/foo
+      mode: 0644
+      user:
+        id: 500
+      group:
+        id: 500
+      contents:
+        inline: |
+          {{.example_contents}}
+{{ if index . "ssh_authorized_keys" }}
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        {{ range $element := .ssh_authorized_keys }}
+        - {{$element}}
+        {{end}}
+{{end}}
+```
+<!-- {% endraw %} -->
 
 The Ignition config response (formatted) to a query `/ignition?label=value` for a CoreOS instance supporting Ignition 2.0.0 would be:
 
-    {
-      "ignition": {
-        "version": "2.0.0",
-        "config": {}
-      },
-      "storage": {
-        "disks": [
+```json
+{
+  "ignition": {
+    "version": "2.0.0",
+    "config": {}
+  },
+  "storage": {
+    "disks": [
+      {
+        "device": "/dev/sda",
+        "wipeTable": true,
+        "partitions": [
           {
-            "device": "/dev/sda",
-            "wipeTable": true,
-            "partitions": [
-              {
-                "label": "ROOT",
-                "number": 0,
-                "size": 0,
-                "start": 0
-              }
-            ]
-          }
-        ],
-        "filesystems": [
-          {
-            "name": "root",
-            "mount": {
-              "device": "/dev/sda1",
-              "format": "ext4",
-              "create": {
-                "force": true,
-                "options": [
-                  "-LROOT"
-                ]
-              }
-            }
-          }
-        ],
-        "files": [
-          {
-            "filesystem": "root",
-            "path": "/home/core/foo",
-            "contents": {
-              "source": "data:,Example%20file%20contents%0A",
-              "verification": {}
-            },
-            "mode": 420,
-            "user": {
-              "id": 500
-            },
-            "group": {
-              "id": 500
-            }
+            "label": "ROOT",
+            "number": 0,
+            "size": 0,
+            "start": 0
           }
         ]
-      },
-      "systemd": {},
-      "networkd": {},
-      "passwd": {}
-    }
+      }
+    ],
+    "filesystems": [
+      {
+        "name": "root",
+        "mount": {
+          "device": "/dev/sda1",
+          "format": "ext4",
+          "create": {
+            "force": true,
+            "options": [
+              "-LROOT"
+            ]
+          }
+        }
+      }
+    ],
+    "files": [
+      {
+        "filesystem": "root",
+        "path": "/home/core/foo",
+        "contents": {
+          "source": "data:,Example%20file%20contents%0A",
+          "verification": {}
+        },
+        "mode": 420,
+        "user": {
+          "id": 500
+        },
+        "group": {
+          "id": 500
+        }
+      }
+    ]
+  },
+  "systemd": {},
+  "networkd": {},
+  "passwd": {}
+}
+```
 
 See [examples/ignition](../examples/ignition) for numerous Fuze template examples.
 

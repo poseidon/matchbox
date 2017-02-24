@@ -1,4 +1,3 @@
-
 # Lifecycle of a Physical Machine
 
 Physical machines [network boot](network-booting.md) in an network boot environment with DHCP/TFTP/DNS services or with [coreos/dnsmasq](../contrib/dnsmasq).

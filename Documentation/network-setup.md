@@ -1,4 +1,3 @@
-
 # Network Setup
 
 This guide shows how to create a DHCP/TFTP/DNS network boot environment to work with `matchbox` to boot and provision PXE, iPXE, or GRUB2 client machines.
@@ -34,19 +33,25 @@ The setup of DHCP, TFTP, and DNS services on a network varies greatly. If you wi
 
 Add a DNS entry (e.g. `matchbox.foo`, `provisoner.mycompany-internal`) that resolves to a deployment of the CoreOS `matchbox` service from machines you intend to boot and provision.
 
-    dig matchbox.foo
+```sh
+$ dig matchbox.foo
+```
 
 If you deployed `matchbox` to a known IP address (e.g. dedicated host, load balanced endpoint, Kubernetes NodePort) and use `dnsmasq`, a domain name to IPv4/IPv6 address mapping could be added to the `/etc/dnsmasq.conf`.
 
-    # dnsmasq.conf
-    address=/matchbox.foo/172.18.0.2
+```
+# dnsmasq.conf
+address=/matchbox.foo/172.18.0.2
+```
 
 ## iPXE
 
 Servers with DHCP/TFTP/ services which already network boot iPXE clients can use the `chain` command to make clients download and execute the iPXE boot script from `matchbox`.
 
-    # /var/www/html/ipxe/default.ipxe
-    chain http://matchbox.foo:8080/boot.ipxe
+```
+# /var/www/html/ipxe/default.ipxe
+chain http://matchbox.foo:8080/boot.ipxe
+```
 
 You can chainload from a menu entry or use other [iPXE commands](http://ipxe.org/cmd) if you have needs beyond just delegating to the iPXE script served by `matchbox`.
 
@@ -87,9 +92,11 @@ address=/matchbox.foo/192.168.1.100
 
 Add [unidonly.kpxe](http://boot.ipxe.org/undionly.kpxe) (and undionly.kpxe.0 if using dnsmasq) to your tftp-root (e.g. `/var/lib/tftpboot`).
 
-    sudo systemctl start dnsmasq
-    sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
-    sudo firewall-cmd --list-services
+```sh
+$ sudo systemctl start dnsmasq
+$ sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
+$ sudo firewall-cmd --list-services
+```
 
 #### proxy DHCP
 
@@ -118,21 +125,21 @@ log-dhcp
 Add [unidonly.kpxe](http://boot.ipxe.org/undionly.kpxe) (and undionly.kpxe.0 if using dnsmasq) to your tftp-root (e.g. `/var/lib/tftpboot`).
 
 ```sh
-sudo systemctl start dnsmasq
-sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
-sudo firewall-cmd --list-services
+$ sudo systemctl start dnsmasq
+$ sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
+$ sudo firewall-cmd --list-services
 ```
 
 With rkt:
 
 ```sh
-sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp
+$ sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp
 ```
 
 With Docker:
 
 ```sh
-sudo docker run --net=host --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp
+$ sudo docker run --net=host --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp
 ```
 
 ### Configurable TFTP
@@ -141,11 +148,13 @@ If your DHCP server is configured to PXE boot clients, but you don't have contro
 
 Example `/var/lib/tftpboot/pxelinux.cfg/default`:
 
-    timeout 10
-    default iPXE
-    LABEL iPXE
-    KERNEL ipxe.lkrn
-    APPEND dhcp && chain http://matchbox.foo:8080/boot.ipxe
+```
+timeout 10
+default iPXE
+LABEL iPXE
+KERNEL ipxe.lkrn
+APPEND dhcp && chain http://matchbox.foo:8080/boot.ipxe
+```
 
 Add ipxe.lkrn to `/var/lib/tftpboot` (see [iPXE docs](http://ipxe.org/embed)).
 
@@ -156,24 +165,24 @@ On networks without network services, the `coreos.com/dnsmasq:v0.3.0` rkt ACI or
 With rkt:
 
 ```sh
-sudo rkt trust --prefix coreos.com/dnsmasq
+$ sudo rkt trust --prefix coreos.com/dnsmasq
 # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
 ```
 
 ```sh
-sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/192.168.1.2 --log-queries --log-dhcp
+$ sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/192.168.1.2 --log-queries --log-dhcp
 ```
 
 With Docker:
 
 ```sh
-sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/192.168.1.2 --log-queries --log-dhcp
+$ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/192.168.1.2 --log-queries --log-dhcp
 ```
 
 Ensure that `matchbox.foo` resolves to a `matchbox` deployment and that you've allowed the services to run in your firewall configuration.
 
 ```sh
-sudo firewall-cmd --add-service=dhcp --add-service=tftp --add-service=dns
+$ sudo firewall-cmd --add-service=dhcp --add-service=tftp --add-service=dns
 ```
 
 ## Troubleshooting

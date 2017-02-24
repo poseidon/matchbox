@@ -21,8 +21,10 @@ Machines can be booted and configured with CoreOS using several network boot pro
 
 [PXELINUX](http://www.syslinux.org/wiki/index.php/PXELINUX) is a common network boot program which loads a config file from `mybootdir/pxelinux.cfg/`  over TFTP. The file is chosen based on the client's UUID, MAC address, IP address, or a default.
 
-    mybootdir/pxelinux.cfg/b8945908-d6a6-41a9-611d-74a6ab80b83d
-    mybootdir/pxelinux.cfg/default
+```sh
+$ mybootdir/pxelinux.cfg/b8945908-d6a6-41a9-611d-74a6ab80b83d
+$ mybootdir/pxelinux.cfg/default
+```
 
 Here is an example PXE config file which boots a CoreOS image hosted on the TFTP server.
 
