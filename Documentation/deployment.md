@@ -11,7 +11,7 @@ Choose one of the supported installation options:
 
 * [CoreOS (rkt)](#coreos)
 * [RPM-based](#rpm-based-distro)
-* [General Linux (binary)](#general-linux)
+* [Generic Linux (binary)](#generic-linux)
 * [With rkt](#rkt)
 * [With docker](#docker)
 * [Kubernetes Service](#kubernetes)
@@ -59,9 +59,9 @@ On a CoreOS provisioner, rkt run `matchbox` image with the provided systemd unit
 $ sudo cp contrib/systemd/matchbox-on-coreos.service /etc/systemd/system/matchbox.service
 ```
 
-### General Linux
+### Generic Linux
 
-Pre-built binaries are available for general Linux distributions. Copy the `matchbox` static binary to an appropriate location on the host.
+Pre-built binaries are available for generic Linux distributions. Copy the `matchbox` static binary to an appropriate location on the host.
 
 ```sh
 $ sudo cp matchbox /usr/local/bin
