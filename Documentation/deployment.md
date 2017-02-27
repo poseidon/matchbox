@@ -27,7 +27,7 @@ $ wget https://github.com/coreos/matchbox/releases/download/v0.5.0/matchbox-v0.5
 
 Verify the release has been signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
-```
+```sh
 $ gpg --keyserver pgp.mit.edu --recv-key 18AD5014C99EF7E3BA5F6CE950BDD3E0FC8A365E
 $ gpg --verify matchbox-v0.5.0-linux-amd64.tar.gz.asc matchbox-v0.5.0-linux-amd64.tar.gz
 # gpg: Good signature from "CoreOS Application Signing Key <security@coreos.com>"
@@ -89,7 +89,9 @@ $ sudo cp contrib/systemd/matchbox-local.service /etc/systemd/system/
 
 Customize matchbox by editing the systemd unit or adding a systemd dropin. Find the complete set of `matchbox` flags and environment variables at [config](config.md).
 
-    sudo systemctl edit matchbox
+```sh
+$ sudo systemctl edit matchbox
+```
 
 By default, the read-only HTTP machine endpoint will be exposed on port **8080**.
 
@@ -226,7 +228,7 @@ $ sudo cp -r coreos /var/lib/matchbox/assets
 
 and verify the images are acessible.
 
-```
+```sh
 $ curl http://matchbox.example.com:8080/assets/coreos/1235.9.0/
 <pre>...
 ```
@@ -269,7 +271,7 @@ Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` o
 
 Create a `matchbox` Kubernetes `Deployment` and `Service` based on the example manifests provided in [contrib/k8s](../contrib/k8s).
 
-```
+```sh
 $ kubectl apply -f contrib/k8s/matchbox-deployment.yaml
 $ kubectl apply -f contrib/k8s/matchbox-service.yaml
 ```

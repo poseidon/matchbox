@@ -7,12 +7,14 @@ CoreOS Cloud-Config is a system for configuring machines with a Cloud-Config fil
 
 Cloud-Config template files can be added in `/var/lib/matchbox/cloud` or in a `cloud` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
 
-    /var/lib/matchbox
-    ├── cloud
-    │   ├── cloud.yaml
-    │   └── script.sh
-    ├── ignition
-    └── profiles
+```
+/var/lib/matchbox
+├── cloud
+│   ├── cloud.yaml
+│   └── script.sh
+├── ignition
+└── profiles
+```
 
 ## Reference
 
@@ -22,19 +24,23 @@ Reference a Cloud-Config in a [Profile](matchbox.md#profiles) with `cloud_id`. W
 
 Here is an example Cloud-Config which starts some units and writes a file.
 
-    #cloud-config
-    coreos:
-      units:
-        - name: etcd2.service
-          command: start
-        - name: fleet.service
-          command: start
-    write_files:
-      - path: "/home/core/welcome"
-        owner: "core"
-        permissions: "0644"
-        content: |
-          {{.greeting}}
+<!-- {% raw %} -->
+```yaml
+#cloud-config
+coreos:
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+write_files:
+  - path: "/home/core/welcome"
+    owner: "core"
+    permissions: "0644"
+    content: |
+      {{.greeting}}
+```
+<!-- {% endraw %} -->
 
 The Cloud-Config [Validator](https://coreos.com/validate/) is also useful for checking your Cloud-Config files for errors.
 
