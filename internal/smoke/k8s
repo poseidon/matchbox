@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -e
+
+ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
+
+main() {
+  cleanup
+  ./scripts/get-kubectl
+  ./scripts/tls/k8s-certgen -d $ASSETS_DIR/tls
+  ./scripts/devnet create k8s
+  ./scripts/libvirt create
+
+  until kubelet "172.18.0.21" && kubelet "172.18.0.22" && kubelet "172.18.0.23"
+  do
+    sleep 10
+    echo "Waiting for kubelets..."
+  done
+
+  until curl --silent -k "https://172.18.0.21:443" > /dev/null
+  do
+    sleep 10
+    echo "Waiting for Kubernetes API..."
+  done
+
+  until [[ "$(readyNodes)" == "3" ]]; do
+    sleep 5
+    echo "Waiting for nodes..."
+  done
+
+  sleep 5
+
+  echo "Getting nodes..."
+  k8s get nodes
+  echo "Getting pods..."
+  k8s get pods --all-namespaces
+
+  echo "k8s cluster came up!"
+  echo
+
+  cleanup
+}
+
+k8s() {
+  ./bin/kubectl --kubeconfig=$ASSETS_DIR/tls/kubeconfig "$@"
+}
+
+kubelet() {
+  curl --silent --fail -m 1 http://$1:10255/healthz > /dev/null
+}
+
+readyNodes() {
+  k8s get nodes -o template --template='{{range .items}}{{range .status.conditions}}{{if eq .type "Ready"}}{{.}}{{end}}{{end}}{{end}}' | grep -o -E True | wc -l
+}
+
+cleanup() {
+  rm -rf $ASSETS_DIR/tls
+  ./scripts/libvirt destroy || true
+  ./scripts/devnet destroy || true
+  rkt gc --grace-period=0
+}
+
+main $@

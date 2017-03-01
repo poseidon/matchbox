@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# USAGE: ./get-kubectl bin/kubectl
+# Get the kubectl client
+set -eu
+
+DEST=${1:-"bin/kubectl"}
+VERSION="v1.5.2"
+
+URL="https://storage.googleapis.com/kubernetes-release/release/${VERSION}/bin/linux/amd64/kubectl"
+
+mkdir -p $(dirname $DEST)
+curl -L -o ${DEST} ${URL}
+chmod +x ${DEST}
+
