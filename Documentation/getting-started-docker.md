@@ -35,11 +35,11 @@ $ ./scripts/get-coreos stable 1235.9.0 ./examples/assets
 For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name as you would in production.
 
 ```sh
-$ # /etc/hosts
-$ ...
-$ 172.17.0.21 node1.example.com
-$ 172.17.0.22 node2.example.com
-$ 172.17.0.23 node3.example.com
+# /etc/hosts
+...
+172.17.0.21 node1.example.com
+172.17.0.22 node2.example.com
+172.17.0.23 node3.example.com
 ```
 
 ## Containers
