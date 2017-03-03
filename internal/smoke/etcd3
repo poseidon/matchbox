@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${DIR}/common"
+
 main() {
   cleanup
   ./scripts/devnet create etcd3
@@ -23,12 +26,6 @@ main() {
 # etcd health checks the given etcd client endpoint
 etcd() {
   curl --silent --fail -m 1 http://$1:2379/health > /dev/null
-}
-
-cleanup() {
-  ./scripts/libvirt destroy || true
-  ./scripts/devnet destroy || true
-  rkt gc --grace-period=0
 }
 
 main $@

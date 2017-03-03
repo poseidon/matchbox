@@ -2,16 +2,10 @@
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-ssh() {
-  command ssh -i ${DIR}/fake_rsa -o stricthostkeychecking=no "$@"
-}
-
-scp() {
-  command scp -i ${DIR}/fake_rsa -o stricthostkeychecking=no "$@"
-}
+source "${DIR}/common"
 
 main() {
+  rm -rf assets
   cleanup
 
   ./scripts/get-bootkube
@@ -52,33 +46,32 @@ main() {
   
   echo "Getting nodes..."
   k8s get nodes
-  
+
+  sleep 10
   echo "Getting pods..."
   k8s get pods --all-namespaces
 
   echo "bootkube cluster came up!"
   echo
 
+  rm -rf assets
   cleanup
+}
+
+ssh() {
+  command ssh -i ${DIR}/fake_rsa -o stricthostkeychecking=no "$@"
+}
+
+scp() {
+  command scp -i ${DIR}/fake_rsa -o stricthostkeychecking=no "$@"
 }
 
 k8s() {
   ./bin/kubectl --kubeconfig=assets/auth/kubeconfig "$@"
 }
 
-kubelet() {
-  curl --silent --fail -m 1 http://$1:10255/healthz > /dev/null
-}
-
 readyNodes() {
   k8s get nodes -o template --template='{{range .items}}{{range .status.conditions}}{{if eq .type "Ready"}}{{.}}{{end}}{{end}}{{end}}' | grep -o -E True | wc -l
-}
-
-cleanup() {
-  rm -rf assets
-  ./scripts/libvirt destroy || true
-  ./scripts/devnet destroy || true
-  rkt gc --grace-period=0
 }
 
 main $@

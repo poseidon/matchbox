@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
+source "${DIR}/common"
 
 main() {
   cleanup
@@ -32,12 +34,14 @@ main() {
   echo "Getting nodes..."
   k8s get nodes
 
+  sleep 10
   echo "Getting pods..."
   k8s get pods --all-namespaces
 
   echo "k8s cluster came up!"
   echo
 
+  rm -rf $ASSETS_DIR/tls
   cleanup
 }
 
@@ -45,21 +49,9 @@ k8s() {
   ./bin/kubectl --kubeconfig=$ASSETS_DIR/tls/kubeconfig "$@"
 }
 
-# kubelet health checks the given kubelet endpoint
-kubelet() {
-  curl --silent --fail -m 1 http://$1:10255/healthz > /dev/null
-}
-
 # ready nodes returns the number of Ready Kubernetes nodes
 readyNodes() {
   k8s get nodes -o template --template='{{range .items}}{{range .status.conditions}}{{if eq .type "Ready"}}{{.}}{{end}}{{end}}{{end}}' | grep -o -E True | wc -l
-}
-
-cleanup() {
-  rm -rf $ASSETS_DIR/tls
-  ./scripts/libvirt destroy || true
-  ./scripts/devnet destroy || true
-  rkt gc --grace-period=0
 }
 
 main $@
