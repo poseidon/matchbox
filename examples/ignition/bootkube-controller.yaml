@@ -139,7 +139,7 @@ storage:
           # Wrapper for bootkube start
           set -e
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.7}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.9}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \
