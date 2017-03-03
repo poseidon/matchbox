@@ -23,8 +23,8 @@ main() {
 
   echo "Add kubeconfig to nodes"
   for node in 'node1' 'node2' 'node3'; do
-    scp assets/auth/kubeconfig core@$node.example.com:/home/core/kubeconfig
-    ssh core@$node.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
+    scp assets/auth/kubeconfig core@${node}.example.com:/home/core/kubeconfig
+    ssh core@${node}.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
   done
 
   until kubelet "node1.example.com" \
