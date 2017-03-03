@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+# kubelet health checks the given kubelet endpoint
+kubelet() {
+  curl --silent --fail -m 1 http://$1:10255/healthz > /dev/null
+}
+
+cleanup() {
+  ./scripts/libvirt destroy || true
+  ./scripts/devnet destroy || true
+  rkt gc --grace-period=0
+}

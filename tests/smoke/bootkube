@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${DIR}/common"
+
+main() {
+  rm -rf assets
+  cleanup
+
+  ./scripts/get-bootkube
+  ./scripts/devnet create bootkube
+  ./scripts/libvirt create
+
+  echo "bootkube render"
+  ./bin/bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com
+
+  for i in `seq 1 10`; do
+    ssh node1.example.com -o ConnectTimeout=5 -- 'echo "Connected"' && break
+    echo "Waiting for nodes to PXE boot..."
+    sleep 10
+  done
+
+  echo "Add kubeconfig to nodes"
+  for node in 'node1' 'node2' 'node3'; do
+    scp assets/auth/kubeconfig core@${node}.example.com:/home/core/kubeconfig
+    ssh core@${node}.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
+  done
+
+  until kubelet "node1.example.com" \
+    && kubelet "node2.example.com" \
+    && kubelet "node3.example.com"
+  do
+    sleep 10
+    echo "Waiting for Kubelets to start..."
+  done
+
+  echo "bootkube start"
+  scp -r assets core@node1.example.com:/home/core
+  ssh core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
+
+  until [[ "$(readyNodes)" == "3" ]]; do
+    sleep 5
+    echo "$(readyNodes) of 3 nodes are Ready..."
+  done
+  
+  echo "Getting nodes..."
+  k8s get nodes
+
+  sleep 10
+  echo "Getting pods..."
+  k8s get pods --all-namespaces
+
+  echo "bootkube cluster came up!"
+  echo
+
+  rm -rf assets
+  cleanup
+}
+
+ssh() {
+  command ssh -i ${DIR}/fake_rsa -o stricthostkeychecking=no "$@"
+}
+
+scp() {
+  command scp -i ${DIR}/fake_rsa -o stricthostkeychecking=no "$@"
+}
+
+k8s() {
+  ./bin/kubectl --kubeconfig=assets/auth/kubeconfig "$@"
+}
+
+readyNodes() {
+  k8s get nodes -o template --template='{{range .items}}{{range .status.conditions}}{{if eq .type "Ready"}}{{.}}{{end}}{{end}}{{end}}' | grep -o -E True | wc -l
+}
+
+main $@

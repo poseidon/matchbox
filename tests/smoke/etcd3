@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${DIR}/common"
+
 main() {
   cleanup
   ./scripts/devnet create etcd3
   ./scripts/libvirt create
 
-  until etcd "172.18.0.21" && etcd "172.18.0.22" && etcd "172.18.0.23"
+  until etcd "node1.example.com" \
+    && etcd "node2.example.com" \
+    && etcd "node3.example.com"
   do
     sleep 3
     echo "Waiting for etcd cluster..."
@@ -18,14 +23,9 @@ main() {
   cleanup
 }
 
+# etcd health checks the given etcd client endpoint
 etcd() {
   curl --silent --fail -m 1 http://$1:2379/health > /dev/null
-}
-
-cleanup() {
-  ./scripts/libvirt destroy || true
-  ./scripts/devnet destroy || true
-  rkt gc --grace-period=0
 }
 
 main $@
