@@ -6,6 +6,7 @@ ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
 source "${DIR}/common"
 
 main() {
+  rm -rf $ASSETS_DIR/tls
   cleanup
   ./scripts/get-kubectl
   ./scripts/tls/k8s-certgen -d $ASSETS_DIR/tls
