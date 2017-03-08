@@ -8,6 +8,7 @@ main() {
   rm -rf assets
   cleanup
 
+  ./scripts/get-kubectl
   ./scripts/get-bootkube
   ./scripts/devnet create bootkube
   ./scripts/libvirt create
