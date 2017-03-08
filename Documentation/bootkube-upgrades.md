@@ -1,5 +1,5 @@
 
-# Upgrading Self-hosted Kubernetes
+# Upgrading self-hosted Kubernetes
 
 [Self-hosted](bootkube.md) Kubernetes clusters schedule Kubernetes components such as the apiserver, kubelet, scheduler, and controller-manager as pods like other applications (except with node selectors). This allows Kubernetes level operations to be performed to upgrade clusters in place, rather than by re-provisioning.
 
@@ -119,7 +119,7 @@ Server Version: version.Info{Major:"1", Minor:"4", GitVersion:"v1.4.3+coreos.0",
 
 Finally, upgrade the kubelets and kube-proxies.
 
-## Kubelet and Proxy
+## kubelet and kube-proxy
 
 Show the current kubelet and kube-proxy version on each node.
 
@@ -180,7 +180,7 @@ $ kubectl get nodes -o yaml | grep 'kubeletVersion\|kubeProxyVersion'
 
 Now, Kubernetes components have been upgraded to a new version of Kubernetes!
 
-## Going Further
+## Going further
 
 Bare-metal or virtualized self-hosted Kubernetes clusters can be upgraded in place in 5-10 minutes. Here is a bare-metal example:
 

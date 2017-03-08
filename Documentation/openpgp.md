@@ -1,5 +1,5 @@
 
-# OpenPGP Signing
+# OpenPGP signing
 
 The `matchbox` OpenPGP signature endpoints serve detached binary and ASCII armored signatures of rendered configs, if enabled. Each config endpoint has corresponding signature endpoints, typically suffixed with `.sig` or `.asc`.
 
@@ -35,7 +35,7 @@ gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: BE2F 12BC 3642 2594 570A  CCBB 8DC4 2020 9896 356A
 ```
 
-## Signing Key Generation
+## Signing key generation
 
 Create a signing key or subkey according to your requirements and security policies. Here are some basic [guides](https://coreos.com/rkt/docs/latest/signing-and-verification-guide.html).
 

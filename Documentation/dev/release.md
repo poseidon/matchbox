@@ -1,5 +1,5 @@
 
-# Release Guide
+# Release guide
 
 This guide covers releasing new versions of matchbox.
 
@@ -30,7 +30,7 @@ $ sudo docker run quay.io/coreos/matchbox:$VERSION -version
 $ sudo rkt run --no-store quay.io/coreos/matchbox:$VERSION -- -version
 ```
 
-## Github Release
+## Github release
 
 Publish the release on Github with release notes.
 

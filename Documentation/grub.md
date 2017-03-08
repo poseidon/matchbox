@@ -1,5 +1,5 @@
 
-# GRUB2 Netboot
+# GRUB2 netboot
 
 Use GRUB to network boot UEFI hardware.
 

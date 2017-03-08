@@ -4,7 +4,7 @@
 
 Running DHCP or proxyDHCP with `coreos/dnsmasq` on a host requires that the Firewall allow DHCP and TFTP (for chainloading) services to run.
 
-## Port Collision
+## Port collision
 
 Running DHCP or proxyDHCP can cause port already in use collisions depending on what's running. Fedora runs bootp listening on udp/67 for example. Find the service using the port.
 

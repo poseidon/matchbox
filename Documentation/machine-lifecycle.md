@@ -1,4 +1,6 @@
-# Lifecycle of a Physical Machine
+# Lifecycle of a physical machine
+
+## About boot environment
 
 Physical machines [network boot](network-booting.md) in an network boot environment with DHCP/TFTP/DNS services or with [coreos/dnsmasq](../contrib/dnsmasq).
 
@@ -8,7 +10,6 @@ CoreOS boots ("first boot" from disk) and runs Ignition to provision its disk wi
 
 Coordinated auto-updates are enabled. Systems like [fleet](https://coreos.com/docs/#fleet) or [Kubernetes](http://kubernetes.io/docs/) coordinate container services. IPMI, vendor utilities, or first-boot are used to re-provision machines into new roles.
 
+## Machine lifecycle
+
 ![Machine Lifecycle](img/machine-lifecycle.png)
-
-
-

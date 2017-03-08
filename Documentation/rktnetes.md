@@ -19,7 +19,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 * [rktnetes-install](../examples/groups/rktnetes-install) - Install a Kubernetes cluster to disk
 * [Lab examples](https://github.com/dghubble/metal) - Lab hardware examples
 
-### Assets
+## Assets
 
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 

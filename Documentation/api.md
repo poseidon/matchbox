@@ -1,7 +1,7 @@
 
 # HTTP API
 
-## iPXE Script
+## iPXE script
 
 Serves a static iPXE boot script which gathers client machine attributes and chainloads to the iPXE endpoint. Use DHCP/TFTP to point iPXE clients to this endpoint as the next-server.
 
@@ -27,7 +27,7 @@ Finds the profile for the machine and renders the network boot config (kernel, o
 GET http://matchbox.foo/ipxe?label=value
 ```
 
-**Query Parameters**
+**Query parameters**
 
 | Name | Type   | Description     |
 |------|--------|-----------------|
@@ -52,7 +52,7 @@ Finds the profile for the machine and renders the network boot config as a GRUB 
 GET http://matchbox.foo/grub?label=value
 ```
 
-**Query Parameters**
+**Query parameters**
 
 | Name | Type   | Description     |
 |------|--------|-----------------|
@@ -73,7 +73,7 @@ initrdefi "(http;matchbox.foo:8080)/assets/coreos/1235.9.0/coreos_production_pxe
 }
 ```
 
-## Cloud Config
+## Cloud config
 
 Finds the profile matching the machine and renders the corresponding Cloud-Config with group metadata, selectors, and query params.
 
@@ -109,7 +109,7 @@ Finds the profile matching the machine and renders the corresponding Ignition Co
 GET http://matchbox.foo/ignition?label=value
 ```
 
-**Query Parameters**
+**Query parameters**
 
 | Name | Type   | Description     |
 |------|--------|-----------------|
@@ -132,7 +132,7 @@ GET http://matchbox.foo/ignition?label=value
 }
 ```
 
-## Generic Config
+## Generic config
 
 Finds the profile matching the machine and renders the corresponding generic config with group metadata, selectors, and query params.
 
@@ -140,7 +140,7 @@ Finds the profile matching the machine and renders the corresponding generic con
 GET http://matchbox.foo/generic?label=value
 ```
 
-**Query Parameters**
+**Query parameters**
 
 | Name | Type   | Description     |
 |------|--------|-----------------|
@@ -189,7 +189,7 @@ REQUEST_QUERY_GATE=true
 REQUEST_RAW_QUERY=mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true
 ```
 
-## OpenPGP Signatures
+## OpenPGP signatures
 
 OpenPGPG signature endpoints serve detached binary and ASCII armored signatures of rendered configs, if enabled. See [OpenPGP Signing](openpgp.md).
 

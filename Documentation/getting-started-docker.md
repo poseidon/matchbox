@@ -1,5 +1,5 @@
 
-# Getting Started with Docker
+# Getting started with Docker
 
 In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clusters, etcd3 clusters, and test network setups.
 
@@ -105,7 +105,7 @@ $ ETCDCTL_API=3
 $ etcdctl set /message hello
 $ etcdctl get /message
 ```
-## Cleanup
+## Clean up
 
 Clean up the containers and VM machines.
 
@@ -115,6 +115,6 @@ $ sudo ./scripts/libvirt poweroff
 $ sudo ./scripts/libvirt destroy
 ```
 
-## Going Further
+## Going further
 
 Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.

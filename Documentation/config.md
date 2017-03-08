@@ -1,5 +1,5 @@
 
-# Flags and Variables
+# Flags and variables
 
 Configuration arguments can be provided as flags or as environment variables.
 
@@ -16,7 +16,7 @@ Configuration arguments can be provided as flags or as environment variables.
 | -key-ring-path | MATCHBOX_KEY_RING_PATH | (no key ring) | ~/.secrets/vault/matchbox/secring.gpg |
 | (no flag) | MATCHBOX_PASSPHRASE | (no passphrase) | "secret passphrase" |
 
-## Files and Directories
+## Files and directories
 
 | Data | Default Location                                  |
 |:---------|:--------------------------------------------------|
@@ -59,7 +59,7 @@ Run the latest Docker image.
 $ sudo docker run -p 8080:8080 --rm -v $PWD/examples/assets:/var/lib/matchbox/assets:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 ```
 
-#### With Examples
+### With examples
 
 Mount `examples` to pre-load the [example](../examples/README.md) machine groups and profiles. Run the container with rkt,
 
@@ -73,7 +73,7 @@ or with Docker.
 $ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 ```
 
-### gRPC API
+### With gRPC API
 
 The gRPC API allows clients with a TLS client certificate and key to make RPC requests to programmatically create or update `matchbox` resources. The API can be enabled with the `-rpc-address` flag and by providing a TLS server certificate and key with `-cert-file` and `-key-file` and a CA certificate for authenticating clients with `-ca-file`.
 
@@ -89,7 +89,7 @@ Clients, such as `bootcmd`, verify the server's certificate with a CA bundle pas
 $ ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
 ```
 
-#### With rkt
+### With rkt
 
 Run the ACI with rkt and TLS credentials from `examples/etc/matchbox`.
 
@@ -103,7 +103,7 @@ A `bootcmd` client can call the gRPC API running at the IP used in the rkt examp
 $ ./bin/bootcmd profile list --endpoints 172.18.0.2:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
 ```
 
-#### With docker
+### With docker
 
 Run the Docker image with TLS credentials from `examples/etc/matchbox`.
 
@@ -117,7 +117,7 @@ A `bootcmd` client can call the gRPC API running at the IP used in the Docker ex
 $ ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
 ```
 
-### OpenPGP [Signing](openpgp.md)
+### With openPGP [Signing](openpgp.md)
 
 Run with the binary with a test key.
 

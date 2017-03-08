@@ -2,7 +2,7 @@
 
 To develop `matchbox` locally, compile the binary and build the container image.
 
-## Static Binary
+## Static binary
 
 Build the static binary.
 
@@ -16,7 +16,7 @@ Test with vendored dependencies.
 $ make test
 ```
 
-## Container Image
+## Container image
 
 Build an ACI `matchbox.aci`.
 

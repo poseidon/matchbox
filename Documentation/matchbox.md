@@ -7,7 +7,7 @@ Network boot endpoints provide PXE, iPXE, GRUB support. `matchbox` can be deploy
 
 ![Bootcfg Overview](img/overview.png)
 
-## Getting Started
+## Getting started
 
 Get started running `matchbox` on your Linux machine, with rkt or Docker.
 
@@ -119,7 +119,7 @@ Meanwhile, `/var/lib/matchbox/groups/proxy.json` acts as the default machine gro
 
 For example, a request to `/ignition?mac=52:54:00:89:d8:10` would render the Ignition template in the "etcd" `Profile`, with the machine group's metadata. A request to `/ignition` would match the default group (which has no selectors) and render the Ignition in the "etcd-proxy" Profile. Avoid defining multiple default groups as resolution will not be deterministic.
 
-#### Reserved Selectors
+#### Reserved selectors
 
 Group selectors can use any key/value pairs you find useful. However, several labels have a defined purpose and will be normalized or parsed specially.
 
@@ -128,7 +128,7 @@ Group selectors can use any key/value pairs you find useful. However, several la
 * `hostname` - hostname reported by a network boot program
 * `serial` - serial reported by a network boot program
 
-### Config Templates
+### Config templates
 
 Profiles can reference various templated configs. Ignition JSON configs can be generated from [Fuze config](https://github.com/coreos/fuze/blob/master/doc/configuration.md) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files can be used to render arbitrary untyped configs (experimental). Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with machine group metadata, selectors, and query params.
 
@@ -180,7 +180,7 @@ See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download
 
 `matchbox` does not implement or exec a DHCP/TFTP server. Read [network setup](network-setup.md) or use the [coreos/dnsmasq](../contrib/dnsmasq) image if you need a quick DHCP, proxyDHCP, TFTP, or DNS setup.
 
-## Going Further
+## Going further
 
 * [gRPC API Usage](config.md#grpc-api)
 * [Metadata](api.md#metadata)
