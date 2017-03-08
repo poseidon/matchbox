@@ -112,7 +112,6 @@ Environment="MATCHBOX_RPC_ADDRESS=0.0.0.0:8081"
 ```
 
 The Tectonic [Installer](https://tectonic.com/enterprise/docs/latest/install/bare-metal/index.html) uses this API. Tectonic users with a CoreOS provisioner can start with an example that enables it.
-*Note: rkt must already be installed before using this example*
 
 ```sh
 $ sudo cp contrib/systemd/matchbox-for-tectonic.service /etc/systemd/system/matchbox.service
