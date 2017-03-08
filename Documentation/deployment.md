@@ -42,7 +42,7 @@ $ cd matchbox-v0.5.0-linux-amd64
 
 ## Install
 
-### RPM-based Distro
+### RPM-based distro
 
 On an RPM-based provisioner, install the `matchbox` RPM from the Copr [repository](https://copr.fedorainfracloud.org/coprs/g/CoreOS/matchbox/) using `dnf` or `yum`.
 
@@ -67,7 +67,7 @@ Pre-built binaries are available for generic Linux distributions. Copy the `matc
 $ sudo cp matchbox /usr/local/bin
 ```
 
-#### Set Up User/Group
+#### Set up User/Group
 
 The `matchbox` service should be run by a non-root user with access to the `matchbox` data directory (`/var/lib/matchbox`). Create a `matchbox` user and group.
 
@@ -77,7 +77,7 @@ $ sudo mkdir -p /var/lib/matchbox/assets
 $ sudo chown -R matchbox:matchbox /var/lib/matchbox
 ```
 
-#### Create systemd Service
+#### Create systemd service
 
 Copy the provided `matchbox` systemd unit file.
 
@@ -128,7 +128,7 @@ $ sudo firewall-cmd --zone=MYZONE --add-port=8080/tcp --permanent
 $ sudo firewall-cmd --zone=MYZONE --add-port=8081/tcp --permanent
 ```
 
-## Generate TLS Credentials
+## Generate TLS credentials
 
 *Skip this unless you need to enable the gRPC API*
 
@@ -287,6 +287,6 @@ $ kubectl logs POD-NAME
 
 The example manifests use Kubernetes `emptyDir` volumes to back the `matchbox` FileStore (`/var/lib/matchbox`). This doesn't provide long-term persistent storage so you may wish to mount your machine groups, profiles, and Ignition configs with a [gitRepo](http://kubernetes.io/docs/user-guide/volumes/#gitrepo) and host image assets on a file server.
 
-### Documentation
+## Documentation
 
 View the [documentation](https://github.com/coreos/matchbox#coreos-on-baremetal) for `matchbox` service docs, tutorials, example clusters and Ignition configs, PXE booting guides, or machine lifecycle guides.

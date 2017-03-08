@@ -2,13 +2,13 @@
 
 Ignition is a system for declaratively provisioning disks during the initramfs, before systemd starts. It runs only on the first boot and handles partitioning disks, formatting partitions, writing files (regular files, systemd units, networkd units, etc.), and configuring users. See the Ignition [docs](https://coreos.com/ignition/docs/latest/) for details.
 
-## Fuze Configs
+## Fuze configs
 
 Ignition 2.0.0+ configs are versioned, *machine-friendly* JSON documents (which contain encoded file contents). Operators should write and maintain configs in a *human-friendly* format, such as CoreOS [fuze](https://github.com/coreos/fuze) configs. As of `matchbox` v0.4.0, Fuze configs are the primary way to use CoreOS Ignition.
 
 The [Fuze schema](https://github.com/coreos/fuze/blob/master/doc/configuration.md) formalizes and improves upon the YAML to Ignition JSON transform. Fuze provides better support for Ignition 2.0.0+, handles file content encoding, patches Ignition bugs, performs better validations, and lets services (like `matchbox`) negotiate the Ignition version required by a CoreOS client.
 
-## Adding Fuze Configs
+### Adding Fuze configs
 
 Fuze template files can be added in the `/var/lib/matchbox/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
 

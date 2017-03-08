@@ -1,4 +1,4 @@
-# Network Setup
+# Network setup
 
 This guide shows how to create a DHCP/TFTP/DNS network boot environment to work with `matchbox` to boot and provision PXE, iPXE, or GRUB2 client machines.
 

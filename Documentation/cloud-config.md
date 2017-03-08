@@ -1,5 +1,5 @@
 
-# Cloud Config
+# Cloud config
 
 **Note:** We recommend migrating to [Ignition](ignition.md) for hardware provisioning.
 

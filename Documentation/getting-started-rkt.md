@@ -1,4 +1,4 @@
-# Getting Started with rkt
+# Getting started with rkt
 
 In this tutorial, we'll run `matchbox` on your Linux machine with `rkt` and `CNI` to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clustes, etcd3 clusters, and test network setups.
 
@@ -163,7 +163,7 @@ $ etcdctl set /message hello
 $ etcdctl get /message
 ```
 
-## Cleanup
+## Clean up
 
 Clean up the systemd units running `matchbox` and `dnsmasq`.
 
@@ -179,7 +179,6 @@ $ sudo ./scripts/libvirt destroy
 
 Press ^] three times to stop any rkt pod.
 
-## Going Further
+## Going further
 
 Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
-
