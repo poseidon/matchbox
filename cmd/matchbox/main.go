@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"net/url"
 	"os"
 
 	"github.com/Sirupsen/logrus"
@@ -79,9 +78,6 @@ func main() {
 	}
 
 	// validate arguments
-	if url, err := url.Parse(flags.address); err != nil || url.String() == "" {
-		log.Fatal("A valid HTTP listen address is required")
-	}
 	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
 		log.Fatal("A valid -data-path is required")
 	}
