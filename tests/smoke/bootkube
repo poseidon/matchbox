@@ -7,7 +7,9 @@ source "${DIR}/common"
 main() {
   rm -rf assets
   cleanup
+  trap cleanup EXIT
 
+  ./scripts/get-kubectl
   ./scripts/get-bootkube
   ./scripts/devnet create bootkube
   ./scripts/libvirt create
