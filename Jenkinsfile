@@ -9,7 +9,7 @@ parallel (
   etcd3: {
     node('fedora && bare-metal') {
       stage('etcd3') {
-        timeout(time:120, unit:'SECONDS') {
+        timeout(time:3, unit:'MINUTES') {
           git 'https://github.com/dghubble/matchbox.git'
           sh '''#!/bin/bash -e
           cat /etc/os-release

@@ -6,6 +6,8 @@ source "${DIR}/common"
 
 main() {
   cleanup
+  trap cleanup EXIT
+
   ./scripts/devnet create etcd3
   ./scripts/libvirt create
 

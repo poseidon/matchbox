@@ -8,6 +8,8 @@ source "${DIR}/common"
 main() {
   rm -rf $ASSETS_DIR/tls
   cleanup
+  trap cleanup EXIT
+
   ./scripts/get-kubectl
   ./scripts/tls/k8s-certgen -d $ASSETS_DIR/tls
   ./scripts/devnet create k8s
