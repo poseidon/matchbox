@@ -10,7 +10,7 @@ parallel (
     node('fedora && bare-metal') {
       stage('etcd3') {
         timeout(time:3, unit:'MINUTES') {
-          git 'https://github.com/dghubble/matchbox.git'
+          checkout scm
           sh '''#!/bin/bash -e
           cat /etc/os-release
           export ASSETS_DIR=~/assets; ./tests/smoke/etcd3
@@ -23,7 +23,7 @@ parallel (
     node('fedora && bare-metal') {
       stage('k8s') {
         timeout(time:8, unit:'MINUTES') {
-          git 'https://github.com/dghubble/matchbox.git'
+          checkout scm          
           sh '''#!/bin/bash -e
           cat /etc/os-release
           export ASSETS_DIR=~/assets; ./tests/smoke/k8s
@@ -36,7 +36,7 @@ parallel (
     node('fedora && bare-metal') {
       stage('bootkube') {
         timeout(time:10, unit:'MINUTES') {
-          git 'https://github.com/dghubble/matchbox.git'
+          checkout scm          
           sh '''#!/bin/bash -e
           cat /etc/os-release
           chmod 600 ./tests/smoke/fake_rsa
