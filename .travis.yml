@@ -4,7 +4,7 @@ services:
   - docker
 go:
   - 1.7.4
-  - 1.8rc1
+  - 1.8
   - tip
 matrix:
   allow_failures:
@@ -19,6 +19,6 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    go: '1.7.4'
+    go: '1.8'
 notifications:
   email: change
