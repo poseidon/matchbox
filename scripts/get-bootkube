@@ -8,9 +8,7 @@ VERSION="v0.3.11"
 
 URL="https://github.com/kubernetes-incubator/bootkube/releases/download/${VERSION}/bootkube.tar.gz"
 
-if [[ ! -f $DEST/bootkube ]]; then
-  mkdir -p $DEST
-  curl -L -O ${URL}
-  tar -C $DEST --strip-components=2 -xzf bootkube.tar.gz bin/linux/bootkube
-  chmod +x ${DEST}/bootkube
-fi
+mkdir -p $DEST
+curl -L -O ${URL}
+tar -C $DEST --strip-components=2 -xzf bootkube.tar.gz bin/linux/bootkube
+chmod +x ${DEST}/bootkube
