@@ -60,10 +60,13 @@ systemd:
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/cni/net.d
         ExecStartPre=/bin/mkdir -p /var/lib/cni
+        ExecStartPre=/usr/bin/bash -c "grep 'certificate-authority-data' /etc/kubernetes/kubeconfig | awk '{print $2}' | base64 -d > /etc/kubernetes/ca.crt"
         ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
         ExecStart=/usr/lib/coreos/kubelet-wrapper \
           --kubeconfig=/etc/kubernetes/kubeconfig \
           --require-kubeconfig \
+          --client-ca-file=/etc/kubernetes/ca.crt \
+          --anonymous-auth=false \
           --cni-conf-dir=/etc/kubernetes/cni/net.d \
           --network-plugin=cni \
           --lock-file=/var/run/lock/kubelet.lock \
@@ -103,7 +106,7 @@ storage:
       contents:
         inline: |
           KUBELET_ACI=quay.io/coreos/hyperkube
-          KUBELET_VERSION=v1.5.2_coreos.2
+          KUBELET_VERSION=v1.5.4_coreos.0
     - path: /etc/hostname
       filesystem: root
       mode: 0644
