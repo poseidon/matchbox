@@ -8,8 +8,6 @@ VERSION="v1.5.2"
 
 URL="https://storage.googleapis.com/kubernetes-release/release/${VERSION}/bin/linux/amd64/kubectl"
 
-if [[ ! -f $DEST/kubectl ]]; then
-  mkdir -p ${DEST}
-  curl -L -o ${DEST}/kubectl ${URL}
-  chmod +x ${DEST}/kubectl
-fi
+mkdir -p ${DEST}
+curl -L -o ${DEST}/kubectl ${URL}
+chmod +x ${DEST}/kubectl
