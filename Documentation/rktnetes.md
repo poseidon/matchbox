@@ -1,6 +1,6 @@
 # Kubernetes (with rkt)
 
-The `rktnetes` example provisions a 3 node Kubernetes v1.5.2 cluster with [rkt](https://github.com/coreos/rkt) as the container runtime. The cluster has one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The `rktnetes` example provisions a 3 node Kubernetes v1.5.4 cluster with [rkt](https://github.com/coreos/rkt) as the container runtime. The cluster has one controller, two workers, and TLS authentication. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
