@@ -62,7 +62,7 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
   "id": "etcd",
   "name": "CoreOS with etcd2",
   "cloud_id": "",
-  "ignition_id": "etcd.yaml"
+  "ignition_id": "etcd.yaml",
   "generic_id": "some-service.cfg",
   "boot": {
     "kernel": "/assets/coreos/1235.9.0/coreos_production_pxe.vmlinuz",
