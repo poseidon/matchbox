@@ -84,15 +84,12 @@ systemd:
       enable: true
     - name: {{.uuid}}.service
       enable: true
-
-
-{{ include "nested.partial.yaml" . }}
+{{include "nested.partial.yaml" . | indent 4 }}
 `
 
-	nestedPartial := `
-    - name: {{.request.query.foo}}.service
-      enable: true
-      contents: {{.request.raw_query}}
+	nestedPartial := `- name: {{.request.query.foo}}.service
+  enable: true
+  contents: {{.request.raw_query}}
 `
 
 	content := `

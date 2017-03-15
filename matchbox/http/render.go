@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"text/template"
 
+	"strings"
+
 	"github.com/coreos/matchbox/matchbox/server"
 )
 
@@ -64,6 +66,16 @@ func (s *Server) renderTemplateWithFuncMap(
 
 func (s *Server) templateFuncMap(ctx context.Context, core server.Server) template.FuncMap {
 	return template.FuncMap{
+		"indent": func(spaces int, content string) string {
+			lines := strings.Split(content, "\n")
+
+			var output string
+			for _, line := range lines {
+				output += "\n" + strings.Repeat(" ", spaces) + line
+			}
+
+			return output
+		},
 		"include": func(name string, data interface{}) (string, error) {
 			contents, err := core.IgnitionGet(ctx, name)
 			if err != nil {

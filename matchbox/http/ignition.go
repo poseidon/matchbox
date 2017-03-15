@@ -91,6 +91,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 
 		// Parse bytes into a Fuze Config
 		config, report := fuze.Parse(buf.Bytes())
+
 		if report.IsFatal() {
 			s.logger.Errorf("error parsing Fuze config: %s", report.String())
 			http.NotFound(w, req)
