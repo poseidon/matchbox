@@ -1,7 +1,7 @@
 
 # Self-hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.5.4 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.5.5 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -12,13 +12,13 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.3.11 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.3.12 and add it somewhere on your PATH.
 
 ```sh
-$ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.11/bootkube.tar.gz
+$ wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.3.12/bootkube.tar.gz
 $ tar xzf bootkube.tar.gz
 $ ./bin/linux/bootkube version
-Version: v0.3.11
+Version: v0.3.12
 ```
 
 ## Examples
