@@ -106,7 +106,7 @@ storage:
       contents:
         inline: |
           KUBELET_ACI=quay.io/coreos/hyperkube
-          KUBELET_VERSION=v1.5.4_coreos.0
+          KUBELET_VERSION=v1.5.5_coreos.0
     - path: /etc/hostname
       filesystem: root
       mode: 0644
