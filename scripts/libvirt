@@ -2,6 +2,7 @@
 # Manage VM nodes which have a specific set of hardware attributes.
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+VM_MEMORY=${VM_MEMORY:-1024}
 
 source "${DIR}/common.sh"
 
@@ -42,7 +43,7 @@ function usage {
   echo -e "\tdestroy\t\tdestroy the QEMU/KVM nodes"
 }
 
-COMMON_VIRT_OPTS="--memory=1024 --vcpus=1 --pxe --disk pool=default,size=6 --os-type=linux --os-variant=generic --noautoconsole --events on_poweroff=preserve"
+COMMON_VIRT_OPTS="--memory=$VM_MEMORY --vcpus=1 --pxe --disk pool=default,size=6 --os-type=linux --os-variant=generic --noautoconsole --events on_poweroff=preserve"
 
 function create_docker {
   virt-install --name $NODE1_NAME --network=bridge:docker0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network
