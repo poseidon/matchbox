@@ -22,7 +22,7 @@ parallel (
   k8s: {
     node('fedora && bare-metal') {
       stage('k8s') {
-        timeout(time:8, unit:'MINUTES') {
+        timeout(time:12, unit:'MINUTES') {
           checkout scm          
           sh '''#!/bin/bash -e
           cat /etc/os-release
