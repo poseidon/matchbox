@@ -19,6 +19,11 @@ func (s *EmptyStore) GroupGet(id string) (*storagepb.Group, error) {
 	return nil, fmt.Errorf("Group not found")
 }
 
+// GroupDelete returns a nil error (successful deletion).
+func (s *EmptyStore) GroupDelete(id string) error {
+	return nil
+}
+
 // GroupList returns an empty list of groups.
 func (s *EmptyStore) GroupList() (groups []*storagepb.Group, err error) {
 	return groups, nil
@@ -32,6 +37,11 @@ func (s *EmptyStore) ProfilePut(profile *storagepb.Profile) error {
 // ProfileGet returns a profile not found error.
 func (s *EmptyStore) ProfileGet(id string) (*storagepb.Profile, error) {
 	return nil, fmt.Errorf("Profile not found")
+}
+
+// ProfileDelete returns a nil error (successful deletion).
+func (s *EmptyStore) ProfileDelete(id string) error {
+	return nil
 }
 
 // ProfileList returns an empty list of profiles.

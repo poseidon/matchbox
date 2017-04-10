@@ -56,6 +56,11 @@ func (s *fileStore) GroupGet(id string) (*storagepb.Group, error) {
 	return group, err
 }
 
+// GroupDelete deletes a machine Group by id.
+func (s *fileStore) GroupDelete(id string) error {
+	return Dir(s.root).deleteFile(filepath.Join("groups", id+".json"))
+}
+
 // GroupList lists all machine Groups.
 func (s *fileStore) GroupList() ([]*storagepb.Group, error) {
 	files, err := Dir(s.root).readDir("groups")
@@ -99,6 +104,11 @@ func (s *fileStore) ProfileGet(id string) (*storagepb.Profile, error) {
 		return nil, err
 	}
 	return profile, err
+}
+
+// ProfileDelete deletes a profile by id.
+func (s *fileStore) ProfileDelete(id string) error {
+	return Dir(s.root).deleteFile(filepath.Join("profiles", id+".json"))
 }
 
 // ProfileList lists all profiles.

@@ -23,6 +23,11 @@ func (s *BrokenStore) GroupGet(id string) (*storagepb.Group, error) {
 	return nil, errIntentional
 }
 
+// GroupDelete returns an error.
+func (s *BrokenStore) GroupDelete(id string) error {
+	return errIntentional
+}
+
 // GroupList returns an error.
 func (s *BrokenStore) GroupList() (groups []*storagepb.Group, err error) {
 	return groups, errIntentional
@@ -36,6 +41,11 @@ func (s *BrokenStore) ProfilePut(profile *storagepb.Profile) error {
 // ProfileGet returns an error.
 func (s *BrokenStore) ProfileGet(id string) (*storagepb.Profile, error) {
 	return nil, errIntentional
+}
+
+// ProfileDelete returns an error.
+func (s *BrokenStore) ProfileDelete(id string) error {
+	return errIntentional
 }
 
 // ProfileList returns an error.

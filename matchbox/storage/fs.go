@@ -55,6 +55,16 @@ func (d Dir) writeFile(path string, data []byte) error {
 	return ioutil.WriteFile(path, data, defaultFileMode)
 }
 
+// deleteFile removes the file at the given path, restricted to a specific
+// directory tree.
+func (d Dir) deleteFile(path string) error {
+	path, err := d.sanitize(path)
+	if err != nil {
+		return err
+	}
+	return os.Remove(path)
+}
+
 // Borrowed directly from net/http Dir.Open and FileServer.
 func (d Dir) sanitize(name string) (string, error) {
 	if filepath.Separator != '/' && strings.ContainsRune(name, filepath.Separator) ||

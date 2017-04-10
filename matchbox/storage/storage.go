@@ -18,6 +18,8 @@ type Store interface {
 	GroupPut(group *storagepb.Group) error
 	// GroupGet returns a machine Group by id.
 	GroupGet(id string) (*storagepb.Group, error)
+	// GroupDelete deletes a machine Group by id.
+	GroupDelete(id string) error
 	// GroupList lists all machine Groups.
 	GroupList() ([]*storagepb.Group, error)
 
@@ -25,6 +27,8 @@ type Store interface {
 	ProfilePut(profile *storagepb.Profile) error
 	// ProfileGet gets a profile by id.
 	ProfileGet(id string) (*storagepb.Profile, error)
+	// ProfileDelete deletes a profile by id.
+	ProfileDelete(id string) error
 	// ProfileList lists all profiles.
 	ProfileList() ([]*storagepb.Profile, error)
 
