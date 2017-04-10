@@ -5,6 +5,7 @@ Notable changes between releases.
 ## Latest
 
 * Build matchbox with Go 1.8 for container images and binaries 
+* Generate code with gRPC v1.2.1 and matching Go protoc-gen-go plugin
 
 ### Examples
 
