@@ -29,6 +29,11 @@ func (s *groupServer) GroupGet(ctx context.Context, req *pb.GroupGetRequest) (*p
 	return &pb.GroupGetResponse{Group: group}, grpcError(err)
 }
 
+func (s *groupServer) GroupDelete(ctx context.Context, req *pb.GroupDeleteRequest) (*pb.GroupDeleteResponse, error) {
+	err := s.srv.GroupDelete(ctx, req)
+	return &pb.GroupDeleteResponse{}, grpcError(err)
+}
+
 func (s *groupServer) GroupList(ctx context.Context, req *pb.GroupListRequest) (*pb.GroupListResponse, error) {
 	groups, err := s.srv.GroupList(ctx, req)
 	return &pb.GroupListResponse{Groups: groups}, grpcError(err)

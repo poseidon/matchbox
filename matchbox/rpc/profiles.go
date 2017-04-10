@@ -30,6 +30,11 @@ func (s *profileServer) ProfileGet(ctx context.Context, req *pb.ProfileGetReques
 	return &pb.ProfileGetResponse{Profile: profile}, grpcError(err)
 }
 
+func (s *profileServer) ProfileDelete(ctx context.Context, req *pb.ProfileDeleteRequest) (*pb.ProfileDeleteResponse, error) {
+	err := s.srv.ProfileDelete(ctx, req)
+	return &pb.ProfileDeleteResponse{}, grpcError(err)
+}
+
 func (s *profileServer) ProfileList(ctx context.Context, req *pb.ProfileListRequest) (*pb.ProfileListResponse, error) {
 	profiles, err := s.srv.ProfileList(ctx, req)
 	return &pb.ProfileListResponse{Profiles: profiles}, grpcError(err)

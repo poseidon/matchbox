@@ -28,6 +28,8 @@ type Server interface {
 	GroupPut(context.Context, *pb.GroupPutRequest) (*storagepb.Group, error)
 	// Get a machine Group by id.
 	GroupGet(context.Context, *pb.GroupGetRequest) (*storagepb.Group, error)
+	// Delete a machine Group by id.
+	GroupDelete(context.Context, *pb.GroupDeleteRequest) error
 	// List all machine Groups.
 	GroupList(context.Context, *pb.GroupListRequest) ([]*storagepb.Group, error)
 
@@ -35,6 +37,8 @@ type Server interface {
 	ProfilePut(context.Context, *pb.ProfilePutRequest) (*storagepb.Profile, error)
 	// Get a Profile by id.
 	ProfileGet(context.Context, *pb.ProfileGetRequest) (*storagepb.Profile, error)
+	// Delete a Profile by id.
+	ProfileDelete(context.Context, *pb.ProfileDeleteRequest) error
 	// List all Profiles.
 	ProfileList(context.Context, *pb.ProfileListRequest) ([]*storagepb.Profile, error)
 
@@ -86,6 +90,10 @@ func (s *server) GroupGet(ctx context.Context, req *pb.GroupGetRequest) (*storag
 	return group, nil
 }
 
+func (s *server) GroupDelete(ctx context.Context, req *pb.GroupDeleteRequest) error {
+	return s.store.GroupDelete(req.Id)
+}
+
 func (s *server) GroupList(ctx context.Context, req *pb.GroupListRequest) ([]*storagepb.Group, error) {
 	groups, err := s.store.GroupList()
 	if err != nil {
@@ -114,6 +122,10 @@ func (s *server) ProfileGet(ctx context.Context, req *pb.ProfileGetRequest) (*st
 		return nil, err
 	}
 	return profile, nil
+}
+
+func (s *server) ProfileDelete(ctx context.Context, req *pb.ProfileDeleteRequest) error {
+	return s.store.ProfileDelete(req.Id)
 }
 
 func (s *server) ProfileList(ctx context.Context, req *pb.ProfileListRequest) ([]*storagepb.Profile, error) {
