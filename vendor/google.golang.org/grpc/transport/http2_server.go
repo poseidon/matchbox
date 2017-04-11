@@ -88,6 +88,8 @@ type http2Server struct {
 	// sendQuotaPool provides flow control to outbound message.
 	sendQuotaPool *quotaPool
 
+	stats stats.Handler
+
 	mu            sync.Mutex // guard the following
 	state         transportState
 	activeStreams map[uint32]*Stream
@@ -146,14 +148,15 @@ func newHTTP2Server(conn net.Conn, config *ServerConfig) (_ ServerTransport, err
 		shutdownChan:    make(chan struct{}),
 		activeStreams:   make(map[uint32]*Stream),
 		streamSendQuota: defaultWindowSize,
+		stats:           config.StatsHandler,
 	}
-	if stats.On() {
-		t.ctx = stats.TagConn(t.ctx, &stats.ConnTagInfo{
+	if t.stats != nil {
+		t.ctx = t.stats.TagConn(t.ctx, &stats.ConnTagInfo{
 			RemoteAddr: t.remoteAddr,
 			LocalAddr:  t.localAddr,
 		})
 		connBegin := &stats.ConnBegin{}
-		stats.HandleConn(t.ctx, connBegin)
+		t.stats.HandleConn(t.ctx, connBegin)
 	}
 	go t.controller()
 	t.writableChan <- 0
@@ -250,8 +253,8 @@ func (t *http2Server) operateHeaders(frame *http2.MetaHeadersFrame, handle func(
 		t.updateWindow(s, uint32(n))
 	}
 	s.ctx = traceCtx(s.ctx, s.method)
-	if stats.On() {
-		s.ctx = stats.TagRPC(s.ctx, &stats.RPCTagInfo{FullMethodName: s.method})
+	if t.stats != nil {
+		s.ctx = t.stats.TagRPC(s.ctx, &stats.RPCTagInfo{FullMethodName: s.method})
 		inHeader := &stats.InHeader{
 			FullMethod:  s.method,
 			RemoteAddr:  t.remoteAddr,
@@ -259,7 +262,7 @@ func (t *http2Server) operateHeaders(frame *http2.MetaHeadersFrame, handle func(
 			Compression: s.recvCompress,
 			WireLength:  int(frame.Header().Length),
 		}
-		stats.HandleRPC(s.ctx, inHeader)
+		t.stats.HandleRPC(s.ctx, inHeader)
 	}
 	handle(s)
 	return
@@ -378,7 +381,7 @@ func (t *http2Server) updateWindow(s *Stream, n uint32) {
 }
 
 func (t *http2Server) handleData(f *http2.DataFrame) {
-	size := len(f.Data())
+	size := f.Header().Length
 	if err := t.fc.onData(uint32(size)); err != nil {
 		grpclog.Printf("transport: http2Server %v", err)
 		t.Close()
@@ -393,6 +396,11 @@ func (t *http2Server) handleData(f *http2.DataFrame) {
 		return
 	}
 	if size > 0 {
+		if f.Header().Flags.Has(http2.FlagDataPadded) {
+			if w := t.fc.onRead(uint32(size) - uint32(len(f.Data()))); w > 0 {
+				t.controlBuf.put(&windowUpdate{0, w})
+			}
+		}
 		s.mu.Lock()
 		if s.state == streamDone {
 			s.mu.Unlock()
@@ -408,13 +416,20 @@ func (t *http2Server) handleData(f *http2.DataFrame) {
 			t.controlBuf.put(&resetStream{s.id, http2.ErrCodeFlowControl})
 			return
 		}
+		if f.Header().Flags.Has(http2.FlagDataPadded) {
+			if w := s.fc.onRead(uint32(size) - uint32(len(f.Data()))); w > 0 {
+				t.controlBuf.put(&windowUpdate{s.id, w})
+			}
+		}
 		s.mu.Unlock()
 		// TODO(bradfitz, zhaoq): A copy is required here because there is no
 		// guarantee f.Data() is consumed before the arrival of next frame.
 		// Can this copy be eliminated?
-		data := make([]byte, size)
-		copy(data, f.Data())
-		s.write(recvMsg{data: data})
+		if len(f.Data()) > 0 {
+			data := make([]byte, len(f.Data()))
+			copy(data, f.Data())
+			s.write(recvMsg{data: data})
+		}
 	}
 	if f.Header().Flags.Has(http2.FlagDataEndStream) {
 		// Received the end of stream from the client.
@@ -540,11 +555,11 @@ func (t *http2Server) WriteHeader(s *Stream, md metadata.MD) error {
 	if err := t.writeHeaders(s, t.hBuf, false); err != nil {
 		return err
 	}
-	if stats.On() {
+	if t.stats != nil {
 		outHeader := &stats.OutHeader{
 			WireLength: bufLen,
 		}
-		stats.HandleRPC(s.Context(), outHeader)
+		t.stats.HandleRPC(s.Context(), outHeader)
 	}
 	t.writableChan <- 0
 	return nil
@@ -603,11 +618,11 @@ func (t *http2Server) WriteStatus(s *Stream, statusCode codes.Code, statusDesc s
 		t.Close()
 		return err
 	}
-	if stats.On() {
+	if t.stats != nil {
 		outTrailer := &stats.OutTrailer{
 			WireLength: bufLen,
 		}
-		stats.HandleRPC(s.Context(), outTrailer)
+		t.stats.HandleRPC(s.Context(), outTrailer)
 	}
 	t.closeStream(s)
 	t.writableChan <- 0
@@ -789,9 +804,9 @@ func (t *http2Server) Close() (err error) {
 	for _, s := range streams {
 		s.cancel()
 	}
-	if stats.On() {
+	if t.stats != nil {
 		connEnd := &stats.ConnEnd{}
-		stats.HandleConn(t.ctx, connEnd)
+		t.stats.HandleConn(t.ctx, connEnd)
 	}
 	return
 }

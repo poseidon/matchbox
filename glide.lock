@@ -1,5 +1,5 @@
-hash: 43e05a7344389822ca63e1636c73f7ef5d9f16bb8623eff576cc3b1552a1116e
-updated: 2017-01-17T02:22:14.823634277-08:00
+hash: 9b6db105e9175308cb3a911161d68bbc80a5ee762bb7f08c926101cc5389b115
+updated: 2017-04-10T15:46:19.530989294-07:00
 imports:
 - name: github.com/ajeddeloh/go-json
   version: 73d058cf8437a1989030afe571eeab9f90eebbbd
@@ -47,7 +47,7 @@ imports:
   subpackages:
   - spew
 - name: github.com/golang/protobuf
-  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
+  version: 2bba0603135d7d7f5cb73b2125beeda19c09f4ef
   subpackages:
   - proto
   - protoc-gen-go
@@ -94,16 +94,17 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
+  version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
   subpackages:
   - unix
 - name: google.golang.org/grpc
-  version: 708a7f9f3283aa2d4f6132d287d78683babe55c8
+  version: 8050b9cbc271307e5a716a9d782803d09b0d6f2d
   subpackages:
   - codes
   - credentials
   - grpclog
   - internal
+  - keepalive
   - metadata
   - naming
   - peer
