@@ -13,7 +13,7 @@ import (
 	fake "github.com/coreos/matchbox/matchbox/storage/testfakes"
 )
 
-func TestGroupPutAndDelete(t *testing.T) {
+func TestGroupCRUD(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{})
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
@@ -91,7 +91,7 @@ func TestGroupList(t *testing.T) {
 	}
 }
 
-func TestProfilePutAndDelete(t *testing.T) {
+func TestProfileCRUD(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{})
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
@@ -148,7 +148,7 @@ func TestProfileList(t *testing.T) {
 	}
 }
 
-func TestIgnitionPut(t *testing.T) {
+func TestIgnitionCRUD(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{})
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
@@ -157,11 +157,20 @@ func TestIgnitionPut(t *testing.T) {
 	// assert that:
 	// - Ignition template creation was successful
 	// - Ignition template can be retrieved by name
+	// - Ignition template can be deleted by name
 	err = store.IgnitionPut(fake.IgnitionYAMLName, []byte(fake.IgnitionYAML))
 	assert.Nil(t, err)
+
 	template, err := store.IgnitionGet(fake.IgnitionYAMLName)
 	assert.Nil(t, err)
 	assert.Equal(t, fake.IgnitionYAML, template)
+
+	err = store.IgnitionDelete(fake.IgnitionYAMLName)
+	assert.Nil(t, err)
+	_, err = store.IgnitionGet(fake.IgnitionYAMLName)
+	if assert.Error(t, err) {
+		assert.IsType(t, err, &os.PathError{})
+	}
 }
 
 func TestIgnitionGet(t *testing.T) {

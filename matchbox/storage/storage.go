@@ -36,6 +36,8 @@ type Store interface {
 	IgnitionPut(name string, config []byte) error
 	// IgnitionGet gets an Ignition template by name.
 	IgnitionGet(name string) (string, error)
+	// IgnitionDelete deletes an Ignition template by name.
+	IgnitionDelete(name string) error
 
 	// CloudGet gets a Cloud-Config template by name.
 	CloudGet(name string) (string, error)
