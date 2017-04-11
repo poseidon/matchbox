@@ -13,7 +13,7 @@ import (
 	fake "github.com/coreos/matchbox/matchbox/storage/testfakes"
 )
 
-func TestGroupPut(t *testing.T) {
+func TestGroupPutAndDelete(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{})
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
@@ -22,11 +22,20 @@ func TestGroupPut(t *testing.T) {
 	// assert that:
 	// - Group creation was successful
 	// - Group can be retrieved by id
+	// - Group can be deleted by id
 	err = store.GroupPut(fake.Group)
 	assert.Nil(t, err)
+
 	group, err := store.GroupGet(fake.Group.Id)
 	assert.Nil(t, err)
 	assert.Equal(t, fake.Group, group)
+
+	err = store.GroupDelete(fake.Group.Id)
+	assert.Nil(t, err)
+	_, err = store.GroupGet(fake.Group.Id)
+	if assert.Error(t, err) {
+		assert.IsType(t, err, &os.PathError{})
+	}
 }
 
 func TestGroupGet(t *testing.T) {
@@ -82,7 +91,7 @@ func TestGroupList(t *testing.T) {
 	}
 }
 
-func TestProfilePut(t *testing.T) {
+func TestProfilePutAndDelete(t *testing.T) {
 	dir, err := setup(&fake.FixedStore{})
 	assert.Nil(t, err)
 	defer os.RemoveAll(dir)
@@ -91,11 +100,20 @@ func TestProfilePut(t *testing.T) {
 	// assert that:
 	// - Profile creation was successful
 	// - Profile can be retrieved by id
+	// - Profile can be deleted by id
 	err = store.ProfilePut(fake.Profile)
 	assert.Nil(t, err)
+
 	profile, err := store.ProfileGet(fake.Profile.Id)
 	assert.Nil(t, err)
 	assert.Equal(t, fake.Profile, profile)
+
+	err = store.ProfileDelete(fake.Profile.Id)
+	assert.Nil(t, err)
+	_, err = store.ProfileGet(fake.Profile.Id)
+	if assert.Error(t, err) {
+		assert.IsType(t, err, &os.PathError{})
+	}
 }
 
 func TestProfileGet(t *testing.T) {

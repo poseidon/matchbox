@@ -8,6 +8,8 @@ service Groups {
   rpc GroupPut(serverpb.GroupPutRequest) returns (serverpb.GroupPutResponse) {};
   // Get a machine Group by id.
   rpc GroupGet(serverpb.GroupGetRequest) returns (serverpb.GroupGetResponse) {};
+  // Delete a machine Group by id.
+  rpc GroupDelete(serverpb.GroupDeleteRequest) returns (serverpb.GroupDeleteResponse) {};
   // List all machine Groups.
   rpc GroupList(serverpb.GroupListRequest) returns (serverpb.GroupListResponse) {};
 }
@@ -17,6 +19,8 @@ service Profiles {
   rpc ProfilePut(serverpb.ProfilePutRequest) returns (serverpb.ProfilePutResponse) {};
   // Get a Profile by id.
   rpc ProfileGet(serverpb.ProfileGetRequest) returns (serverpb.ProfileGetResponse) {};
+  // Delete a Profile by id.
+  rpc ProfileDelete(serverpb.ProfileDeleteRequest) returns (serverpb.ProfileDeleteResponse) {};
   // List all Profiles.
   rpc ProfileList(serverpb.ProfileListRequest) returns (serverpb.ProfileListResponse) {};
 }

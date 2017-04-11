@@ -25,6 +25,7 @@ func TestDir(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.RemoveAll(tdir)
 
+	// create a Dir, restricted to the temp dir
 	dir := Dir(tdir)
 	// write files rooted in the dir
 	for _, c := range cases {
@@ -40,6 +41,17 @@ func TestDir(t *testing.T) {
 		b, err := dir.readFile(c.path)
 		assert.Nil(t, err)
 		assert.Equal(t, []byte(c.expected), b)
+	}
+	// delete the files that were written
+	for _, c := range cases {
+		err := dir.deleteFile(c.path)
+		assert.Nil(t, err)
+	}
+	// ensure the expected files were removed
+	for _, c := range cases {
+		rpath := filepath.Join(tdir, c.expected)
+		_, err := os.Stat(rpath)
+		assert.True(t, os.IsNotExist(err), "expected path %s would not exist", rpath)
 	}
 }
 

@@ -40,6 +40,12 @@ func (s *FixedStore) GroupGet(id string) (*storagepb.Group, error) {
 	return nil, fmt.Errorf("Group not found")
 }
 
+// GroupDelete deletes the Group from the Groups map with the given id.
+func (s *FixedStore) GroupDelete(id string) error {
+	delete(s.Groups, id)
+	return nil
+}
+
 // GroupList returns the groups in the Groups map.
 func (s *FixedStore) GroupList() ([]*storagepb.Group, error) {
 	groups := make([]*storagepb.Group, len(s.Groups))
@@ -63,6 +69,12 @@ func (s *FixedStore) ProfileGet(id string) (*storagepb.Profile, error) {
 		return profile, nil
 	}
 	return nil, fmt.Errorf("Profile not found")
+}
+
+// ProfileDelete deletes the Profile from the Profiles map with the given id.
+func (s *FixedStore) ProfileDelete(id string) error {
+	delete(s.Profiles, id)
+	return nil
 }
 
 // ProfileList returns the profiles in the Profiles map.

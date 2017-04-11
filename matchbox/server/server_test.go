@@ -68,16 +68,23 @@ func TestSelectProfile(t *testing.T) {
 	}
 }
 
-func TestGroupCreate(t *testing.T) {
+func TestGroupCRUD(t *testing.T) {
 	srv := NewServer(&Config{Store: fake.NewFixedStore()})
 	_, err := srv.GroupPut(context.Background(), &pb.GroupPutRequest{Group: fake.Group})
 	// assert that:
 	// - Group creation is successful
 	// - Group can be retrieved by id
+	// - Group can be deleted by id
 	assert.Nil(t, err)
+
 	group, err := srv.GroupGet(context.Background(), &pb.GroupGetRequest{Id: fake.Group.Id})
-	assert.Equal(t, fake.Group, group)
 	assert.Nil(t, err)
+	assert.Equal(t, fake.Group, group)
+
+	err = srv.GroupDelete(context.Background(), &pb.GroupDeleteRequest{Id: fake.Group.Id})
+	assert.Nil(t, err)
+	_, err = srv.GroupGet(context.Background(), &pb.GroupGetRequest{Id: fake.Group.Id})
+	assert.Error(t, err)
 }
 
 func TestGroupCreate_Invalid(t *testing.T) {
@@ -105,20 +112,29 @@ func TestGroup_BrokenStore(t *testing.T) {
 	assert.Error(t, err)
 	_, err = srv.GroupGet(context.Background(), &pb.GroupGetRequest{Id: fake.Group.Id})
 	assert.Error(t, err)
+	err = srv.GroupDelete(context.Background(), &pb.GroupDeleteRequest{Id: fake.Group.Id})
+	assert.Error(t, err)
 	_, err = srv.GroupList(context.Background(), &pb.GroupListRequest{})
 	assert.Error(t, err)
 }
 
-func TestProfileCreate(t *testing.T) {
+func TestProfileCRUD(t *testing.T) {
 	srv := NewServer(&Config{Store: fake.NewFixedStore()})
 	_, err := srv.ProfilePut(context.Background(), &pb.ProfilePutRequest{Profile: fake.Profile})
 	// assert that:
 	// - Profile creation is successful
 	// - Profile can be retrieved by id
+	// - Profile can be deleted by id
 	assert.Nil(t, err)
+
 	profile, err := srv.ProfileGet(context.Background(), &pb.ProfileGetRequest{Id: fake.Profile.Id})
 	assert.Equal(t, fake.Profile, profile)
 	assert.Nil(t, err)
+
+	err = srv.ProfileDelete(context.Background(), &pb.ProfileDeleteRequest{Id: fake.Group.Id})
+	assert.Nil(t, err)
+	_, err = srv.ProfileGet(context.Background(), &pb.ProfileGetRequest{Id: fake.Group.Id})
+	assert.Error(t, err)
 }
 
 func TestProfileCreate_Invalid(t *testing.T) {
