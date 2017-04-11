@@ -39,7 +39,7 @@ systemd:
         After=network-online.target
         [Service]
         ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/ssl
-        ExecStart=/usr/bin/bash -c "[ -f /etc/kubernetes/ssl/%i ] || curl {{.k8s_cert_endpoint}}/tls/%i -o /etc/kubernetes/ssl/%i"
+        ExecStart=/usr/bin/bash -c "[ -f /etc/kubernetes/ssl/%i ] || curl --fail {{.k8s_cert_endpoint}}/tls/%i -o /etc/kubernetes/ssl/%i"
     - name: k8s-assets.target
       contents: |
         [Unit]
