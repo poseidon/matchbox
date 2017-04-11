@@ -26,8 +26,12 @@ service Profiles {
 }
 
 service Ignition {
-  // Create or update an Ignition template.
+  // Create or update an Container Linux Config template.
   rpc IgnitionPut(serverpb.IgnitionPutRequest) returns (serverpb.IgnitionPutResponse) {};
+  // Get a Container Linux Config template by name.
+  rpc IgnitionGet(serverpb.IgnitionGetRequest) returns (serverpb.IgnitionGetResponse) {};
+  // Delete a Container Linux Config template by name.
+  rpc IgnitionDelete(serverpb.IgnitionDeleteRequest) returns (serverpb.IgnitionDeleteResponse) {};
 }
 
 service Select {

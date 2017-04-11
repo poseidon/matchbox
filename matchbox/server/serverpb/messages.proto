@@ -72,3 +72,15 @@ message IgnitionPutRequest {
   bytes config = 2;
 }
 message IgnitionPutResponse {}
+
+message IgnitionGetRequest {
+  string name = 1;
+}
+message IgnitionGetResponse {
+  bytes config = 1;
+}
+
+message IgnitionDeleteRequest {
+  string name = 1;
+}
+message IgnitionDeleteResponse {}
