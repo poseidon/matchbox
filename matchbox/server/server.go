@@ -45,7 +45,9 @@ type Server interface {
 	// Create or update an Ignition template.
 	IgnitionPut(context.Context, *pb.IgnitionPutRequest) (string, error)
 	// Get an Ignition template by name.
-	IgnitionGet(ctx context.Context, name string) (string, error)
+	IgnitionGet(context.Context, *pb.IgnitionGetRequest) (string, error)
+	// Delete an Ignition template by name.
+	IgnitionDelete(context.Context, *pb.IgnitionDeleteRequest) error
 
 	// Get a Cloud-Config template by name.
 	CloudGet(ctx context.Context, name string) (string, error)
@@ -176,8 +178,13 @@ func (s *server) IgnitionPut(ctx context.Context, req *pb.IgnitionPutRequest) (s
 }
 
 // IgnitionGet gets an Ignition template by name.
-func (s *server) IgnitionGet(ctx context.Context, name string) (string, error) {
-	return s.store.IgnitionGet(name)
+func (s *server) IgnitionGet(ctx context.Context, req *pb.IgnitionGetRequest) (string, error) {
+	return s.store.IgnitionGet(req.Name)
+}
+
+// IgnitionGet deletes an Ignition template by name.
+func (s *server) IgnitionDelete(ctx context.Context, req *pb.IgnitionDeleteRequest) error {
+	return s.store.IgnitionDelete(req.Name)
 }
 
 // CloudGet gets a Cloud-Config template by name.

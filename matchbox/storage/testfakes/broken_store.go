@@ -63,6 +63,11 @@ func (s *BrokenStore) IgnitionGet(name string) (string, error) {
 	return "", errIntentional
 }
 
+// IgnitionDelete returns an error.
+func (s *BrokenStore) IgnitionDelete(name string) error {
+	return errIntentional
+}
+
 // CloudGet returns an error.
 func (s *BrokenStore) CloudGet(name string) (string, error) {
 	return "", errIntentional

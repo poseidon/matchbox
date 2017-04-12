@@ -41,7 +41,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 			return
 		}
 
-		contents, err := core.IgnitionGet(ctx, profile.IgnitionId)
+		contents, err := core.IgnitionGet(ctx, &pb.IgnitionGetRequest{Name: profile.IgnitionId})
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
 				"labels":     labelsFromRequest(nil, req),

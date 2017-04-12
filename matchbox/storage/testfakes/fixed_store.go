@@ -102,6 +102,12 @@ func (s *FixedStore) IgnitionGet(name string) (string, error) {
 	return "", fmt.Errorf("no Ignition template %s", name)
 }
 
+// IgnitionDelete deletes an Ignition template by name.
+func (s *FixedStore) IgnitionDelete(name string) error {
+	delete(s.IgnitionConfigs, name)
+	return nil
+}
+
 // CloudGet returns a Cloud-config template by name.
 func (s *FixedStore) CloudGet(name string) (string, error) {
 	if config, present := s.CloudConfigs[name]; present {

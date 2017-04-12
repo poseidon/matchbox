@@ -188,11 +188,13 @@ func TestProfiles_BrokenStore(t *testing.T) {
 	assert.Error(t, err)
 	_, err = srv.ProfileGet(context.Background(), &pb.ProfileGetRequest{Id: fake.Profile.Id})
 	assert.Error(t, err)
+	err = srv.ProfileDelete(context.Background(), &pb.ProfileDeleteRequest{Id: fake.Profile.Id})
+	assert.Error(t, err)
 	_, err = srv.ProfileList(context.Background(), &pb.ProfileListRequest{})
 	assert.Error(t, err)
 }
 
-func TestIgnitionPut(t *testing.T) {
+func TestIgnitionCRUD(t *testing.T) {
 	srv := NewServer(&Config{Store: fake.NewFixedStore()})
 	req := &pb.IgnitionPutRequest{
 		Name:   fake.IgnitionYAMLName,
@@ -202,10 +204,16 @@ func TestIgnitionPut(t *testing.T) {
 	// assert that:
 	// - Ignition template creation is successful
 	// - Ignition template can be retrieved by name
+	// - Ignition template can be deleted by name
 	assert.Nil(t, err)
-	template, err := srv.IgnitionGet(context.Background(), fake.IgnitionYAMLName)
+	template, err := srv.IgnitionGet(context.Background(), &pb.IgnitionGetRequest{Name: fake.IgnitionYAMLName})
 	assert.Equal(t, fake.IgnitionYAML, template)
 	assert.Nil(t, err)
+
+	err = srv.IgnitionDelete(context.Background(), &pb.IgnitionDeleteRequest{Name: fake.IgnitionYAMLName})
+	assert.Nil(t, err)
+	_, err = srv.IgnitionGet(context.Background(), &pb.IgnitionGetRequest{Name: fake.IgnitionYAMLName})
+	assert.Error(t, err)
 }
 
 func TestIgnition_BrokenStore(t *testing.T) {
@@ -216,4 +224,7 @@ func TestIgnition_BrokenStore(t *testing.T) {
 	}
 	_, err := srv.IgnitionPut(context.Background(), req)
 	assert.Error(t, err)
+	_, err = srv.IgnitionGet(context.Background(), &pb.IgnitionGetRequest{Name: fake.IgnitionYAMLName})
+	assert.Error(t, err)
+	err = srv.IgnitionDelete(context.Background(), &pb.IgnitionDeleteRequest{Name: fake.IgnitionYAMLName})
 }

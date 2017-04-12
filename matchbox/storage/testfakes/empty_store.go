@@ -59,6 +59,11 @@ func (s *EmptyStore) IgnitionGet(name string) (string, error) {
 	return "", fmt.Errorf("no Ignition template %s", name)
 }
 
+// IgnitionDelete returns a nil error (successful deletion).
+func (s *EmptyStore) IgnitionDelete(name string) error {
+	return nil
+}
+
 // CloudGet returns a Cloud-config template not found error.
 func (s *EmptyStore) CloudGet(name string) (string, error) {
 	return "", fmt.Errorf("no Cloud-Config template %s", name)

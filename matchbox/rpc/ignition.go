@@ -23,3 +23,13 @@ func (s *ignitionServer) IgnitionPut(ctx context.Context, req *pb.IgnitionPutReq
 	_, err := s.srv.IgnitionPut(ctx, req)
 	return &pb.IgnitionPutResponse{}, grpcError(err)
 }
+
+func (s *ignitionServer) IgnitionGet(ctx context.Context, req *pb.IgnitionGetRequest) (*pb.IgnitionGetResponse, error) {
+	template, err := s.srv.IgnitionGet(ctx, req)
+	return &pb.IgnitionGetResponse{Config: []byte(template)}, grpcError(err)
+}
+
+func (s *ignitionServer) IgnitionDelete(ctx context.Context, req *pb.IgnitionDeleteRequest) (*pb.IgnitionDeleteResponse, error) {
+	err := s.srv.IgnitionDelete(ctx, req)
+	return &pb.IgnitionDeleteResponse{}, grpcError(err)
+}

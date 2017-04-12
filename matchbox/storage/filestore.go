@@ -141,6 +141,11 @@ func (s *fileStore) IgnitionGet(name string) (string, error) {
 	return string(data), err
 }
 
+// IgnitionDelete deletes an Ignition template by name.
+func (s *fileStore) IgnitionDelete(name string) error {
+	return Dir(s.root).deleteFile(filepath.Join("ignition", name))
+}
+
 // CloudGet gets a Cloud-Config template by name.
 func (s *fileStore) CloudGet(name string) (string, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("cloud", name))
