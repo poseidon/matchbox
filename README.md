@@ -2,7 +2,7 @@
 
 Network boot and provision CoreOS clusters on virtual or physical hardware.
 
-**Announcement**: coreos-baremetal and `bootcfg` have been renamed to CoreOS `matchbox`, which will be reflected in v0.5.0. Please see [CHANGES](CHANGES.md) or [#400](https://github.com/coreos/matchbox/issues/400). If you're looking for older docs, be sure to use the branch/tag switcher.
+**Announcement**: A pre-alpha [Matchbox Terraform Provider](https://github.com/coreos/terraform-provider-matchbox) is available. Terraform users can write configs to interact with the matchbox API in an upcoming release.
 
 ## Guides
 
