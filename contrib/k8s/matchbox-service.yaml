@@ -3,14 +3,16 @@ kind: Service
 metadata:
   name: matchbox
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     name: matchbox
     phase: prod
   ports:
-    - protocol: TCP
-      port: 80
-      # port exposed on each node
-      nodePort: 31488
-      # name or port exposed on targeted pod(s)
+    - name: http
+      protocol: TCP
+      port: 8080
       targetPort: 8080
+    - name: https
+      protocol: TCP
+      port: 8081
+      targetPort: 8081

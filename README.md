@@ -27,9 +27,9 @@ Network boot and provision CoreOS clusters on virtual or physical hardware.
 * [HTTP API](Documentation/api.md)
 * [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
 * Installation
-    * [CoreOS / Linux distros](Documentation/deployment.md)
-    * [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
-    * [Kubernetes](Documentation/deployment.md#kubernetes)
+    * Installing on [CoreOS / Linux distros](Documentation/deployment.md)
+    * Installing on [Kubernetes](Documentation/deployment.md#kubernetes)
+    * Running with [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
 
 ### Examples
 

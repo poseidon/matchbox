@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: matchbox
-  namespace: default
 spec:
   replicas: 1
   strategy:
@@ -18,41 +17,44 @@ spec:
         - name: matchbox
           image: quay.io/coreos/matchbox:v0.5.0
           env:
-            - {name: MATCHBOX_ADDRESS, value: "0.0.0.0:8080"}
-            - {name: MATCHBOX_LOG_LEVEL, value: "debug"}
+            - name: MATCHBOX_ADDRESS
+              value: "0.0.0.0:8080"
+            - name: MATCHBOX_RPC_ADDRESS
+              value: "0.0.0.0:8081"
+            - name: MATCHBOX_LOG_LEVEL
+              value: "debug"
           ports:
-            # port exposed on pod IP
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8081
           resources:
             requests:
               cpu: "50m"
               memory: "50Mi"
           volumeMounts:
+            - name: config
+              mountPath: /etc/matchbox
             - name: groups
               mountPath: /var/lib/matchbox/groups
             - name: profiles
               mountPath: /var/lib/matchbox/profiles
             - name: ignition
               mountPath: /var/lib/matchbox/ignition
-            - name: cloud
-              mountPath: /var/lib/matchbox/cloud
-            - name: generic
-              mountPath: /var/lib/matchbox/generic
             - name: assets
               mountPath: /var/lib/matchbox/assets
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
+        - name: config
+          secret:
+            secretName: matchbox-rpc
         - name: groups
           emptyDir: {}
         - name: profiles
           emptyDir: {}
         - name: ignition
-          emptyDir: {}
-        - name: cloud
-          emptyDir: {}
-        - name: generic
           emptyDir: {}
         - name: assets
           emptyDir: {}

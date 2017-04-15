@@ -1,4 +1,3 @@
-
 # Installation
 
 This guide walks through deploying the `matchbox` service on a Linux host (via RPM, rkt, docker, or binary) or on a Kubernetes cluster.
@@ -269,24 +268,42 @@ Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` o
 
 ## Kubernetes
 
-Create a `matchbox` Kubernetes `Deployment` and `Service` based on the example manifests provided in [contrib/k8s](../contrib/k8s).
+Install `matchbox` on a Kubernetes cluster by creating a deployment and service.
 
 ```sh
 $ kubectl apply -f contrib/k8s/matchbox-deployment.yaml
 $ kubectl apply -f contrib/k8s/matchbox-service.yaml
+$ kubectl get services
+NAME                 CLUSTER-IP   EXTERNAL-IP   PORT(S)             AGE
+matchbox             10.3.0.145   <none>        8080/TCP,8081/TCP   46m
 ```
 
-This runs the `matchbox` service exposed on NodePort `tcp:31488` on each node in the cluster. `MATCHBOX_LOG_LEVEL` is set to debug.
+Example manifests in [contrib/k8s](../contrib/k8s) enable the gRPC API to allow client apps to update matchbox objects. Generate TLS server credentials for `matchbox-rpc.example.com` [as shown](#generate-tls-credentials) and create a Kubernetes secret. Alternately, edit the example manifests if you don't need the gRPC API enabled.
 
 ```sh
-$ kubectl get deployments
-$ kubectl get services
-$ kubectl get pods
-$ kubectl logs POD-NAME
+$ kubectl create secret generic matchbox-rpc --from-file=ca.crt --from-file=server.crt --from-file=server.key
 ```
 
-The example manifests use Kubernetes `emptyDir` volumes to back the `matchbox` FileStore (`/var/lib/matchbox`). This doesn't provide long-term persistent storage so you may wish to mount your machine groups, profiles, and Ignition configs with a [gitRepo](http://kubernetes.io/docs/user-guide/volumes/#gitrepo) and host image assets on a file server.
+Create an Ingress resource to expose the HTTP read-only and gRPC API endpoints. The Ingress example requires the cluster to have a functioning [Nginx Ingress Controller](https://github.com/kubernetes/ingress).
 
-## Documentation
+```sh
+$ kubectl create -f contrib/k8s/matchbox-ingress.yaml
+$ kubectl get ingress
+NAME      HOSTS                                          ADDRESS            PORTS     AGE
+matchbox  matchbox.example.com,matchbox-rpc.example.com  10.128.0.3,10...   80, 443   32m
+```
 
-View the [documentation](https://github.com/coreos/matchbox#coreos-on-baremetal) for `matchbox` service docs, tutorials, example clusters and Ignition configs, PXE booting guides, or machine lifecycle guides.
+Add DNS records `matchbox.example.com` and `matchbox-rpc.example.com` to route traffic to the Ingress Controller.
+
+Verify `http://matchbox.example.com` responds with the text "matchbox" and verify gRPC clients can connect to `matchbox-rpc.example.com:443`.
+
+```sh
+$ curl http://matchbox.example.com
+$ openssl s_client -connect matchbox-rpc.example.com:443 -CAfile ca.crt -cert client.crt -key client.key
+```
+
+### Operational notes
+
+* Secrets: Matchbox **can** be run as a public facing service. However, you **must** follow best practices and avoid writing secret material into machine user-data. Instead, load secret materials from an internal secret store.
+* Storage: Example manifests use Kubernetes `emptyDir` volumes to store `matchbox` data. Swap those out for a Kubernetes persistent volume if available.
+
