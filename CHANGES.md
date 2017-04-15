@@ -10,7 +10,7 @@ Notable changes between releases.
 ### Examples
 
 * Upgrade Kubernetes v1.5.5 (static) example clusters
-* Upgrade Kubernetes v1.5.6 (self-hosted) example cluster
+* Upgrade Kubernetes v1.6.1 (self-hosted) example cluster
 * Use etcd3 by default in all clusters (remove etcd2 clusters)
 
 ## v0.5.0 (2017-01-23) 

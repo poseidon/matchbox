@@ -35,7 +35,7 @@ parallel (
   bootkube: {
     node('fedora && bare-metal') {
       stage('bootkube') {
-        timeout(time:10, unit:'MINUTES') {
+        timeout(time:12, unit:'MINUTES') {
           checkout scm          
           sh '''#!/bin/bash -e
           cat /etc/os-release

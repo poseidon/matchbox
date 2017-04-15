@@ -59,9 +59,9 @@ systemd:
           --mount volume=var-log,target=/var/log"
         EnvironmentFile=/etc/kubernetes/kubelet.env
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
-        ExecStartPre=/bin/mkdir -p /srv/kubernetes/manifests
-        ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/cni/net.d
+        ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
+        ExecStartPre=/bin/mkdir -p /etc/kubernetes/inactive-manifests
         ExecStartPre=/bin/mkdir -p /var/lib/cni
         ExecStartPre=/usr/bin/bash -c "grep 'certificate-authority-data' /etc/kubernetes/kubeconfig | awk '{print $2}' | base64 -d > /etc/kubernetes/ca.crt"
         ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
@@ -117,7 +117,7 @@ storage:
       contents:
         inline: |
           KUBELET_ACI=quay.io/coreos/hyperkube
-          KUBELET_VERSION=v1.5.6_coreos.0
+          KUBELET_VERSION=v1.6.1_coreos.0
     - path: /etc/hostname
       filesystem: root
       mode: 0644
@@ -141,15 +141,20 @@ storage:
           #!/bin/bash
           # Wrapper for bootkube start
           set -e
+          mkdir -p /tmp/bootkube
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.3.13}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.4.0}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \
             --volume assets,kind=host,source=$BOOTKUBE_ASSETS \
             --mount volume=assets,target=/assets \
+            --volume bootstrap,kind=host,source=/etc/kubernetes/manifests \
+            --mount volume=bootstrap,target=/etc/kubernetes/manifests \
+            --volume temp,kind=host,source=/tmp/bootkube \
+            --mount volume=temp,target=/tmp/bootkube \
             $RKT_OPTS \
-            ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} --net=host --exec=/bootkube -- start --asset-dir=/assets --etcd-server=http://127.0.0.1:2379 "$@"
+            ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} --net=host --exec=/bootkube -- start --asset-dir=/assets "$@"
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:
