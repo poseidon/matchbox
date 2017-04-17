@@ -1,0 +1,25 @@
+---
+systemd:
+  units:
+    - name: etcd-member.service
+      enable: true
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_IMAGE_TAG=v3.1.0"
+            ExecStart=
+            ExecStart=/usr/lib/coreos/etcd-wrapper gateway start \
+              --listen-addr=127.0.0.1:2379 \
+              --endpoints={{.etcd_endpoints}}
+    - name: locksmithd.service
+      dropins:
+        - name: 40-etcd-lock.conf
+          contents: |
+            [Service]
+            Environment="REBOOT_STRATEGY=etcd-lock"
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - {{.ssh_authorized_key}}

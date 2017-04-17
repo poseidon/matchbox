@@ -1,0 +1,28 @@
+---
+systemd:
+  units:
+    - name: etcd-member.service
+      enable: true
+      dropins:
+        - name: 40-etcd-cluster.conf
+          contents: |
+            [Service]
+            Environment="ETCD_IMAGE_TAG=v3.1.0"
+            Environment="ETCD_NAME={{.etcd_name}}"
+            Environment="ETCD_ADVERTISE_CLIENT_URLS=http://{{.domain_name}}:2379"
+            Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{.domain_name}}:2380"
+            Environment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+            Environment="ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380"
+            Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
+            Environment="ETCD_STRICT_RECONFIG_CHECK=true"
+    - name: locksmithd.service
+      dropins:
+        - name: 40-etcd-lock.conf
+          contents: |
+            [Service]
+            Environment="REBOOT_STRATEGY=etcd-lock"
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - {{.ssh_authorized_key}}
