@@ -7,7 +7,7 @@ import (
 
 	"context"
 	"github.com/Sirupsen/logrus"
-	fuze "github.com/coreos/fuze/config"
+	ct "github.com/coreos/container-linux-config-transpiler/config"
 	ignition "github.com/coreos/ignition/config"
 
 	"github.com/coreos/matchbox/matchbox/server"
@@ -16,9 +16,9 @@ import (
 
 // ignitionHandler returns a handler that responds with the Ignition config
 // matching the request. The Ignition file referenced in the Profile is parsed
-// as raw Ignition (for .ign/.ignition) or rendered to a Fuze config (YAML)
-// and converted to Ignition. Ignition configs are served as HTTP JSON
-// responses.
+// as raw Ignition (for .ign/.ignition) or rendered from a Container Linux
+// Config (YAML) and converted to Ignition. Ignition configs are served as HTTP
+// JSON responses.
 func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
@@ -48,7 +48,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 				"group":      group.Id,
 				"group_name": group.Name,
 				"profile":    group.Profile,
-			}).Infof("No Ignition or Fuze template named: %s", profile.IgnitionId)
+			}).Infof("No Ignition or Container Linux Config template named: %s", profile.IgnitionId)
 			http.NotFound(w, req)
 			return
 		}
@@ -58,7 +58,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 			"labels":  labelsFromRequest(nil, req),
 			"group":   group.Id,
 			"profile": profile.Id,
-		}).Debug("Matched an Ignition or Fuze template")
+		}).Debug("Matched an Ignition or Container Linux Config template")
 
 		// Skip rendering if raw Ignition JSON is provided
 		if isIgnition(profile.IgnitionId) {
@@ -70,7 +70,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 			return
 		}
 
-		// Fuze Config template
+		// Container Linux Config template
 
 		// collect data for rendering
 		data, err := collectVariables(req, group)
@@ -88,18 +88,18 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 			return
 		}
 
-		// Parse bytes into a Fuze Config
-		config, report := fuze.Parse(buf.Bytes())
+		// Parse bytes into a Container Linux Config
+		config, report := ct.Parse(buf.Bytes())
 		if report.IsFatal() {
-			s.logger.Errorf("error parsing Fuze config: %s", report.String())
+			s.logger.Errorf("error parsing Container Linux config: %s", report.String())
 			http.NotFound(w, req)
 			return
 		}
 
-		// Convert Fuze Config into an Ignition Config
-		ign, report := fuze.ConvertAs2_0_0(config)
+		// Convert Container Linux Config into an Ignition Config
+		ign, report := ct.ConvertAs2_0(config, "")
 		if report.IsFatal() {
-			s.logger.Errorf("error converting Fuze config: %s", report.String())
+			s.logger.Errorf("error converting Container Linux config: %s", report.String())
 			http.NotFound(w, req)
 			return
 		}

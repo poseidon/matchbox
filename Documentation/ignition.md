@@ -1,16 +1,16 @@
-# Ignition
+# Container Linux Configs
 
-Ignition is a system for declaratively provisioning disks during the initramfs, before systemd starts. It runs only on the first boot and handles partitioning disks, formatting partitions, writing files (regular files, systemd units, networkd units, etc.), and configuring users. See the Ignition [docs](https://coreos.com/ignition/docs/latest/) for details.
+A Container Linux Config is a YAML document which declares how Container Linux instances' disks should be provisioned on network boot and first-boot from disk. Configs can declare disk paritions, write files (regular files, systemd units, networkd units, etc.), and configure users. See the Container Linux Config [spec](https://coreos.com/os/docs/latest/configuration.html).
 
-## Fuze configs
+### Ignition
 
-Ignition 2.0.0+ configs are versioned, *machine-friendly* JSON documents (which contain encoded file contents). Operators should write and maintain configs in a *human-friendly* format, such as CoreOS [fuze](https://github.com/coreos/fuze) configs. As of `matchbox` v0.4.0, Fuze configs are the primary way to use CoreOS Ignition.
+Container Linux Configs are validated and converted to *machine-friendly* Ignition configs (JSON) by matchbox when serving to booting machines. [Ignition](https://coreos.com/ignition/docs/latest/), the provisioning utility shipped in Container Linux, will parse and execute the Ignition config to realize the desired configuration. Matchbox users usually only need to write Container Linux Configs.
 
-The [Fuze schema](https://github.com/coreos/fuze/blob/master/doc/configuration.md) formalizes and improves upon the YAML to Ignition JSON transform. Fuze provides better support for Ignition 2.0.0+, handles file content encoding, patches Ignition bugs, performs better validations, and lets services (like `matchbox`) negotiate the Ignition version required by a CoreOS client.
+*Note: Container Linux directory names are still named "ignition" for historical reasons as outlined below. A future breaking change will rename to "container-linux-config".*
 
-### Adding Fuze configs
+## Adding Container Linux Configs
 
-Fuze template files can be added in the `/var/lib/matchbox/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
+Container Linux Config templates can be added to the `/var/lib/matchbox/ignition` directory or in an `ignition` subdirectory of a custom `-data-path`. Template files may contain [Go template](https://golang.org/pkg/text/template/) elements which will be evaluated with group metadata, selectors, and query params.
 
 ```
 /var/lib/matchbox
@@ -23,38 +23,13 @@ Fuze template files can be added in the `/var/lib/matchbox/ignition` directory o
  └── profiles
 ```
 
-### Reference
+## Referencing in Profiles
 
-Reference an Fuze config in a [Profile](matchbox.md#profiles) with `ignition_id`. When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `matchbox` [Ignition endpoint](api.md#ignition-config).
-
-### Migration from v0.3.0
-
-In v0.4.0, `matchbox` switched to using the CoreOS [fuze](https://github.com/coreos/fuze) library, which formalizes and improves upon the YAML to Ignition JSON transform. Fuze provides better support for Ignition 2.0.0+, handles file content encoding, patches Ignition bugs, and performs better validations.
-
-Upgrade your Ignition YAML templates to match the [Fuze config schema](https://github.com/coreos/fuze/blob/master/doc/configuration.md). Typically, you'll need to do the following:
-
-* Remove `ignition_version: 1`, Fuze configs are version-less
-* Update `filesystems` section and set the `name`
-* Update `files` section to use `inline` as shown below
-* Replace `uid` and `gid` with `user` and `group` objects as shown above
-
-Maintain readable inline file contents in Fuze:
-
-```
-...
-files:
-  - path: /etc/foo.conf
-    filesystem: root
-    contents:
-      inline: |
-        foo bar
-```
-
-Support for the older Ignition v1 format has been dropped, so CoreOS machines must be **1010.1.0 or newer**. Read the upstream Ignition v1 to 2.0.0 [migration guide](https://coreos.com/ignition/docs/latest/migrating-configs.html) to understand the reasons behind schema changes.
+Profiles can include a Container Linux Config for provisioning machines. Specify the Container Linux Config in a [Profile](matchbox.md#profiles) with `ignition_id`. When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `matchbox` [Ignition endpoint](api.md#ignition-config).
 
 ## Examples
 
-Here is an example Fuze template. This template will be rendered into a Fuze config (YAML), using group metadata, selectors, and query params as template variables. Finally, the Fuze config is served to client machines as Ignition JSON.
+Here is an example Container Linux Config template. Variables will be interpreted using group metadata, selectors, and query params. Matchbox will convert the config to Ignition to serve Container Linux machines.
 
 ignition/format-disk.yaml.tmpl:
 
@@ -162,7 +137,7 @@ The Ignition config response (formatted) to a query `/ignition?label=value` for 
 }
 ```
 
-See [examples/ignition](../examples/ignition) for numerous Fuze template examples.
+See [examples/ignition](../examples/ignition) for numerous Container Linux Config template examples.
 
 ### Raw Ignition
 

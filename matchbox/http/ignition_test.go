@@ -40,7 +40,7 @@ func TestIgnitionHandler_V2JSON(t *testing.T) {
 }
 
 func TestIgnitionHandler_V2YAML(t *testing.T) {
-	// exercise templating features, not a realistic Fuze template
+	// exercise templating features, not a realistic Container Linux Config template
 	content := `
 systemd:
   units:
@@ -66,7 +66,7 @@ systemd:
 	req, _ := http.NewRequest("GET", "/?foo=some-param&bar=b", nil)
 	h.ServeHTTP(ctx, w, req)
 	// assert that:
-	// - Fuze template rendered with Group selectors, metadata, and query variables
+	// - Container Linux Config template rendered with Group selectors, metadata, and query variables
 	// - Transformed to an Ignition config (JSON)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))

@@ -130,16 +130,16 @@ Group selectors can use any key/value pairs you find useful. However, several la
 
 ### Config templates
 
-Profiles can reference various templated configs. Ignition JSON configs can be generated from [Fuze config](https://github.com/coreos/fuze/blob/master/doc/configuration.md) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files can be used to render arbitrary untyped configs (experimental). Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with machine group metadata, selectors, and query params.
+Profiles can reference various templated configs. Ignition JSON configs can be generated from [Container Linux Config](https://github.com/coreos/container-linux-config-transpiler/blob/master/doc/configuration.md) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files can be used to render arbitrary untyped configs (experimental). Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with machine group metadata, selectors, and query params.
 
 For details and examples:
 
-* [Ignition Config](ignition.md)
+* [Container Linux Config](ignition.md)
 * [Cloud-Config](cloud-config.md)
 
 #### Variables
 
-Within Ignition/Fuze templates, Cloud-Config templates, or generic templates, you can use group metadata, selectors, or request-scoped query params. For example, a request `/generic?mac=52-54-00-89-d8-10&foo=some-param&bar=b` would match the `node1.json` machine group shown above. If the group's profile ("etcd") referenced a generic template, the following variables could be used.
+Within Container Linux Config templates, Cloud-Config templates, or generic templates, you can use group metadata, selectors, or request-scoped query params. For example, a request `/generic?mac=52-54-00-89-d8-10&foo=some-param&bar=b` would match the `node1.json` machine group shown above. If the group's profile ("etcd") referenced a generic template, the following variables could be used.
 
 <!-- {% raw %} -->
 ```
