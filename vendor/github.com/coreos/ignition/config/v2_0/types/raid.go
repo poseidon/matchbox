@@ -15,25 +15,31 @@
 package types
 
 import (
-	"errors"
-	"path"
+	"fmt"
 
 	"github.com/coreos/ignition/config/validate/report"
 )
 
-var (
-	ErrPathRelative = errors.New("path not absolute")
-)
-
-type Path string
-
-func (p Path) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + string(p) + `"`), nil
+type Raid struct {
+	Name    string `json:"name"`
+	Level   string `json:"level"`
+	Devices []Path `json:"devices,omitempty"`
+	Spares  int    `json:"spares,omitempty"`
 }
 
-func (p Path) Validate() report.Report {
-	if !path.IsAbs(string(p)) {
-		return report.ReportFromError(ErrPathRelative, report.EntryError)
+func (n Raid) Validate() report.Report {
+	switch n.Level {
+	case "linear", "raid0", "0", "stripe":
+		if n.Spares != 0 {
+			return report.ReportFromError(fmt.Errorf("spares unsupported for %q arrays", n.Level), report.EntryError)
+		}
+	case "raid1", "1", "mirror":
+	case "raid4", "4":
+	case "raid5", "5":
+	case "raid6", "6":
+	case "raid10", "10":
+	default:
+		return report.ReportFromError(fmt.Errorf("unrecognized raid level: %q", n.Level), report.EntryError)
 	}
 	return report.Report{}
 }

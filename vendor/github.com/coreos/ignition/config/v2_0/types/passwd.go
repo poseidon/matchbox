@@ -14,9 +14,7 @@
 
 package types
 
-type Raid struct {
-	Name    string   `yaml:"name"`
-	Level   string   `yaml:"level"`
-	Devices []string `yaml:"devices"`
-	Spares  int      `yaml:"spares"`
+type Passwd struct {
+	Users  []User  `json:"users,omitempty"`
+	Groups []Group `json:"groups,omitempty"`
 }

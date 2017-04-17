@@ -14,24 +14,6 @@
 
 package types
 
-type Config struct {
-	Ignition Ignition `yaml:"ignition"`
-	Storage  Storage  `yaml:"storage"`
-	Systemd  Systemd  `yaml:"systemd"`
-	Networkd Networkd `yaml:"networkd"`
-	Passwd   Passwd   `yaml:"passwd"`
-}
-
-type Ignition struct {
-	Config IgnitionConfig `yaml:"config"`
-}
-
-type IgnitionConfig struct {
-	Append  []ConfigReference `yaml:"append"`
-	Replace *ConfigReference  `yaml:"replace"`
-}
-
-type ConfigReference struct {
-	Source       string       `yaml:"source"`
-	Verification Verification `yaml:"verification"`
+type Networkd struct {
+	Units []NetworkdUnit `json:"units,omitempty"`
 }

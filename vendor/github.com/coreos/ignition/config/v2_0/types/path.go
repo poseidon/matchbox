@@ -14,19 +14,26 @@
 
 package types
 
-type Systemd struct {
-	Units []SystemdUnit `yaml:"units"`
+import (
+	"errors"
+	"path"
+
+	"github.com/coreos/ignition/config/validate/report"
+)
+
+var (
+	ErrPathRelative = errors.New("path not absolute")
+)
+
+type Path string
+
+func (p Path) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + string(p) + `"`), nil
 }
 
-type SystemdUnit struct {
-	Name     string              `yaml:"name"`
-	Enable   bool                `yaml:"enable"`
-	Mask     bool                `yaml:"mask"`
-	Contents string              `yaml:"contents"`
-	DropIns  []SystemdUnitDropIn `yaml:"dropins"`
-}
-
-type SystemdUnitDropIn struct {
-	Name     string `yaml:"name"`
-	Contents string `yaml:"contents"`
+func (p Path) Validate() report.Report {
+	if !path.IsAbs(string(p)) {
+		return report.ReportFromError(ErrPathRelative, report.EntryError)
+	}
+	return report.Report{}
 }

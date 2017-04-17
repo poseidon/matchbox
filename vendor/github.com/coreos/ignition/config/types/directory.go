@@ -15,29 +15,15 @@
 package types
 
 import (
-	"encoding/json"
-	"errors"
 	"path"
 )
 
-var (
-	ErrPathRelative = errors.New("path not absolute")
-)
+type Directory Node
 
-type Path string
-
-func (d *Path) UnmarshalJSON(data []byte) error {
-	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
-		return err
+func (d *Directory) Depth() int {
+	count := 0
+	for p := path.Clean(string(d.Path)); p != "/"; count++ {
+		p = path.Dir(p)
 	}
-	*d = Path(s)
-	return d.AssertValid()
-}
-
-func (d Path) AssertValid() error {
-	if !path.IsAbs(string(d)) {
-		return ErrPathRelative
-	}
-	return nil
+	return count
 }

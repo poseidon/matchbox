@@ -14,53 +14,14 @@
 
 package types
 
-import (
-	"errors"
-	"os"
-
-	"github.com/coreos/ignition/config/validate/report"
-)
-
-var (
-	ErrFileIllegalMode = errors.New("illegal file mode")
-	ErrNoFilesystem    = errors.New("no filesystem specified")
-)
-
+// File represents regular files
 type File struct {
-	Filesystem string       `json:"filesystem,omitempty"`
-	Path       Path         `json:"path,omitempty"`
-	Contents   FileContents `json:"contents,omitempty"`
-	Mode       FileMode     `json:"mode,omitempty"`
-	User       FileUser     `json:"user,omitempty"`
-	Group      FileGroup    `json:"group,omitempty"`
-}
-
-func (f File) Validate() report.Report {
-	if f.Filesystem == "" {
-		return report.ReportFromError(ErrNoFilesystem, report.EntryError)
-	}
-	return report.Report{}
-}
-
-type FileUser struct {
-	Id int `json:"id,omitempty"`
-}
-
-type FileGroup struct {
-	Id int `json:"id,omitempty"`
+	Node
+	Contents FileContents `json:"contents,omitempty"`
 }
 
 type FileContents struct {
 	Compression  Compression  `json:"compression,omitempty"`
 	Source       Url          `json:"source,omitempty"`
 	Verification Verification `json:"verification,omitempty"`
-}
-
-type FileMode os.FileMode
-
-func (m FileMode) Validate() report.Report {
-	if (m &^ 07777) != 0 {
-		return report.ReportFromError(ErrFileIllegalMode, report.EntryError)
-	}
-	return report.Report{}
 }

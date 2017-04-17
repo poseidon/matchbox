@@ -14,30 +14,6 @@
 
 package types
 
-import (
-	"encoding/json"
-	"errors"
-	"path"
-)
-
-var (
-	ErrPathRelative = errors.New("path not absolute")
-)
-
-type Path string
-
-func (d *Path) UnmarshalJSON(data []byte) error {
-	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
-		return err
-	}
-	*d = Path(s)
-	return d.AssertValid()
-}
-
-func (d Path) AssertValid() error {
-	if !path.IsAbs(string(d)) {
-		return ErrPathRelative
-	}
-	return nil
+type Verification struct {
+	Hash *Hash `json:"hash,omitempty"`
 }

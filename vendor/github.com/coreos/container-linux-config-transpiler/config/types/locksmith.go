@@ -1,4 +1,4 @@
-// Copyright 2016 CoreOS, Inc.
+// Copyright 2017 CoreOS, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,29 +15,27 @@
 package types
 
 import (
-	"encoding/json"
 	"errors"
-	"path"
+	"strings"
+
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 var (
-	ErrPathRelative = errors.New("path not absolute")
+	ErrUnknownStrategy = errors.New("unknown reboot strategy")
 )
 
-type Path string
-
-func (d *Path) UnmarshalJSON(data []byte) error {
-	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
-		return err
-	}
-	*d = Path(s)
-	return d.AssertValid()
+type Locksmith struct {
+	RebootStrategy RebootStrategy `yaml:"reboot_strategy"`
 }
 
-func (d Path) AssertValid() error {
-	if !path.IsAbs(string(d)) {
-		return ErrPathRelative
+type RebootStrategy string
+
+func (r RebootStrategy) Validate() report.Report {
+	switch strings.ToLower(string(r)) {
+	case "reboot", "etcd-lock", "off":
+		return report.Report{}
+	default:
+		return report.ReportFromError(ErrUnknownStrategy, report.EntryError)
 	}
-	return nil
 }

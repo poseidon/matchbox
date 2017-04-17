@@ -17,7 +17,7 @@ package types
 import (
 	"encoding/json"
 	"errors"
-	"path/filepath"
+	"path"
 )
 
 type SystemdUnit struct {
@@ -46,7 +46,7 @@ func (n *SystemdUnitName) UnmarshalJSON(data []byte) error {
 }
 
 func (n SystemdUnitName) AssertValid() error {
-	switch filepath.Ext(string(n)) {
+	switch path.Ext(string(n)) {
 	case ".service", ".socket", ".device", ".mount", ".automount", ".swap", ".target", ".path", ".timer", ".snapshot", ".slice", ".scope":
 		return nil
 	default:
@@ -67,7 +67,7 @@ func (n *SystemdUnitDropInName) UnmarshalJSON(data []byte) error {
 }
 
 func (n SystemdUnitDropInName) AssertValid() error {
-	switch filepath.Ext(string(n)) {
+	switch path.Ext(string(n)) {
 	case ".conf":
 		return nil
 	default:
@@ -93,7 +93,7 @@ func (n *NetworkdUnitName) UnmarshalJSON(data []byte) error {
 }
 
 func (n NetworkdUnitName) AssertValid() error {
-	switch filepath.Ext(string(n)) {
+	switch path.Ext(string(n)) {
 	case ".link", ".netdev", ".network":
 		return nil
 	default:

@@ -14,16 +14,9 @@
 
 package types
 
-type Disk struct {
-	Device     string      `yaml:"device"`
-	WipeTable  bool        `yaml:"wipe_table"`
-	Partitions []Partition `yaml:"partitions"`
-}
-
-type Partition struct {
-	Label    string `yaml:"label"`
-	Number   int    `yaml:"number"`
-	Size     string `yaml:"size"`
-	Start    string `yaml:"start"`
-	TypeGUID string `yaml:"type_guid"`
+type Group struct {
+	Name         string `json:"name,omitempty"`
+	Gid          *uint  `json:"gid,omitempty"`
+	PasswordHash string `json:"passwordHash,omitempty"`
+	System       bool   `json:"system,omitempty"`
 }

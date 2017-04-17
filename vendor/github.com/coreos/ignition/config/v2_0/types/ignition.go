@@ -29,9 +29,8 @@ var (
 )
 
 type Ignition struct {
-	Version  IgnitionVersion `json:"version,omitempty"  merge:"old"`
-	Config   IgnitionConfig  `json:"config,omitempty"   merge:"new"`
-	Timeouts Timeouts        `json:"timeouts,omitempty" merge:"new"`
+	Version IgnitionVersion `json:"version,omitempty" merge:"old"`
+	Config  IgnitionConfig  `json:"config,omitempty"  merge:"new"`
 }
 
 type IgnitionConfig struct {

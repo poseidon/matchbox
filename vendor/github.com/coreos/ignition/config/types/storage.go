@@ -19,4 +19,5 @@ type Storage struct {
 	Arrays      []Raid       `json:"raid,omitempty"`
 	Filesystems []Filesystem `json:"filesystems,omitempty"`
 	Files       []File       `json:"files,omitempty"`
+	Directories []Directory  `json:"directories,omitempty"`
 }
