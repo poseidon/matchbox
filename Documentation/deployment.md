@@ -131,7 +131,7 @@ $ sudo firewall-cmd --zone=MYZONE --add-port=8081/tcp --permanent
 
 *Skip this unless you need to enable the gRPC API*
 
-The `matchbox` gRPC API allows client apps (`bootcmd` CLI, Tectonic Installer, etc.) to update how machines are provisioned. TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
+The `matchbox` gRPC API allows client apps (terraform-provider-matchbox, Tectonic Installer, etc.) to update how machines are provisioned. TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
 
 If your organization manages public key infrastructure and a certificate authority, create a server certificate and key for the `matchbox` service and a client certificate and key for each client tool.
 
@@ -254,7 +254,7 @@ latest or most recent tagged `matchbox` [release](https://github.com/coreos/matc
 $ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/coreos/matchbox:latest --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
-Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/matchbox` volume mounts.
+Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.
 
 ## Docker
 
@@ -264,7 +264,7 @@ Run the container image with docker.
 sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
-Create machine profiles, groups, or Ignition configs at runtime with `bootcmd` or by using your own `/var/lib/matchbox` volume mounts.
+Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.
 
 ## Kubernetes
 
