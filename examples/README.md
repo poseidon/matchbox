@@ -1,7 +1,7 @@
 
 # Examples
 
-These examples network boot and provision machines into CoreOS clusters using `matchbox`. You can re-use their profiles to provision your own physical machines.
+These examples network boot and provision machines into Container Linux clusters using `matchbox`. You can re-use their profiles to provision your own physical machines.
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|

@@ -4,14 +4,21 @@ Notable changes between releases.
 
 ## Latest
 
-* Build matchbox with Go 1.8 for container images and binaries 
+* New [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) plugin for Terraform users!
+* New hosted [documentation](https://coreos.com/matchbox/docs/latest) on coreos.com
+* Add `ProfileDelete`, `GroupDelete`, `IgnitionGet` and `IgnitionDelete` gRPC endpoints
+* Build matchbox with Go 1.8 for container images and binaries
 * Generate code with gRPC v1.2.1 and matching Go protoc-gen-go plugin
+* Update Ignition to v0.14.0 and coreos-cloudinit to v1.13.0
+* Update "fuze" docs to the new name [Container Linux Configs](https://coreos.com/os/docs/latest/configuration.html)
+* Remove `bootcmd` binary from release tarballs
 
 ### Examples
 
 * Upgrade Kubernetes v1.5.5 (static) example clusters
 * Upgrade Kubernetes v1.6.1 (self-hosted) example cluster
 * Use etcd3 by default in all clusters (remove etcd2 clusters)
+* Add Terraform examples for etcd3 and self-hosted Kubernetes 1.6.1
 
 ## v0.5.0 (2017-01-23) 
 
