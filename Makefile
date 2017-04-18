@@ -9,7 +9,7 @@ QUAY_REPO=quay.io/coreos/matchbox
 
 all: build
 
-build: clean bin/matchbox bin/bootcmd
+build: clean bin/matchbox
 
 bin/%:
 	@go build -o bin/$* -v -ldflags $(LD_FLAGS) $(REPO)/cmd/$*
@@ -73,20 +73,11 @@ bin/darwin-amd64/matchbox: GOARGS = GOOS=darwin GOARCH=amd64
 bin/%/matchbox:
 	$(GOARGS) go build -o $@ -ldflags $(LD_FLAGS) -a $(REPO)/cmd/matchbox
 
-bin/linux-amd64/bootcmd: GOARGS = GOOS=linux GOARCH=amd64
-bin/linux-arm/bootcmd: GOARGS = GOOS=linux GOARCH=arm GOARM=6
-bin/linux-arm64/bootcmd: GOARGS = GOOS=linux GOARCH=arm64
-bin/darwin-amd64/bootcmd: GOARGS = GOOS=darwin GOARCH=amd64
-
-bin/%/bootcmd:
-	$(GOARGS) go build -o $@ -ldflags $(LD_FLAGS) -a $(REPO)/cmd/bootcmd
-
 _output/matchbox-%.tar.gz: NAME=matchbox-$(VERSION)-$*
 _output/matchbox-%.tar.gz: DEST=_output/$(NAME)
-_output/matchbox-%.tar.gz: bin/%/matchbox bin/%/bootcmd
+_output/matchbox-%.tar.gz: bin/%/matchbox
 	mkdir -p $(DEST)
 	cp bin/$*/matchbox $(DEST)
-	cp bin/$*/bootcmd $(DEST)
 	./scripts/release-files $(DEST)
 	tar zcvf $(DEST).tar.gz -C _output $(NAME)
 
