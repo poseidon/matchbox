@@ -134,7 +134,7 @@ Profiles can reference various templated configs. Ignition JSON configs can be g
 
 For details and examples:
 
-* [Container Linux Config](ignition.md)
+* [Container Linux Config](container-linux-config.md)
 * [Cloud-Config](cloud-config.md)
 
 #### Variables

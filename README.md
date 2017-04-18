@@ -21,7 +21,7 @@ Network boot and provision CoreOS clusters on virtual or physical hardware.
 * [Profiles](Documentation/matchbox.md#profiles)
 * [Groups](Documentation/matchbox.md#groups)
 * Config Templates
-    * [Ignition](Documentation/ignition.md)
+    * [Container Linux Config](Documentation/container-linux-config.md)
     * [Cloud-Config](Documentation/cloud-config.md)
 * [Configuration](Documentation/config.md)
 * [HTTP API](Documentation/api.md)
