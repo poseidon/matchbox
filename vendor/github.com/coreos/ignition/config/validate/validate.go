@@ -20,7 +20,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/coreos/ignition/config/types"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
@@ -75,10 +74,7 @@ func Validate(vObj reflect.Value, ast AstNode, source io.ReadSeeker) (r report.R
 		((vObj.Kind() != reflect.Ptr) ||
 			(!vObj.IsNil() && !vObj.Elem().Type().Implements(reflect.TypeOf((*validator)(nil)).Elem()))) {
 		sub_r := obj.Validate()
-		if vObj.Type() != reflect.TypeOf(types.Config{}) {
-			// Config checks are done on the config as a whole and shouldn't get line numbers
-			sub_r.AddPosition(line, col, highlight)
-		}
+		sub_r.AddPosition(line, col, highlight)
 		r.Merge(sub_r)
 
 		// Dont recurse on invalid inner nodes, it mostly leads to bogus messages
@@ -122,12 +118,18 @@ type field struct {
 }
 
 // getFields returns a field of all the fields in the struct, including the fields of
-// embedded structs.
+// embedded structs and structs inside interface{}'s
 func getFields(vObj reflect.Value) []field {
+	if vObj.Kind() != reflect.Struct {
+		return nil
+	}
 	ret := []field{}
 	for i := 0; i < vObj.Type().NumField(); i++ {
 		if vObj.Type().Field(i).Anonymous {
-			ret = append(ret, getFields(vObj.Field(i))...)
+			// in the case of an embedded type that is an alias to interface, extract the
+			// real type contained by the interface
+			realObj := reflect.ValueOf(vObj.Field(i).Interface())
+			ret = append(ret, getFields(realObj)...)
 		} else {
 			ret = append(ret, field{Type: vObj.Type().Field(i), Value: vObj.Field(i)})
 		}

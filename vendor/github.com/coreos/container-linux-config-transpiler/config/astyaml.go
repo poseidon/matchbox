@@ -26,35 +26,35 @@ var (
 	ErrNotDocumentNode = errors.New("Can only convert from document node")
 )
 
-type YamlNode struct {
+type yamlNode struct {
 	key yaml.Node
 	yaml.Node
 }
 
-func FromYamlDocumentNode(n yaml.Node) (YamlNode, error) {
+func fromYamlDocumentNode(n yaml.Node) (yamlNode, error) {
 	if n.Kind != yaml.DocumentNode {
-		return YamlNode{}, ErrNotDocumentNode
+		return yamlNode{}, ErrNotDocumentNode
 	}
 
-	return YamlNode{
+	return yamlNode{
 		key:  n,
 		Node: *n.Children[0],
 	}, nil
 }
 
-func (n YamlNode) ValueLineCol(source io.ReadSeeker) (int, int, string) {
+func (n yamlNode) ValueLineCol(source io.ReadSeeker) (int, int, string) {
 	return n.Line, n.Column, ""
 }
 
-func (n YamlNode) KeyLineCol(source io.ReadSeeker) (int, int, string) {
+func (n yamlNode) KeyLineCol(source io.ReadSeeker) (int, int, string) {
 	return n.key.Line, n.key.Column, ""
 }
 
-func (n YamlNode) LiteralValue() interface{} {
+func (n yamlNode) LiteralValue() interface{} {
 	return n.Value
 }
 
-func (n YamlNode) SliceChild(index int) (validate.AstNode, bool) {
+func (n yamlNode) SliceChild(index int) (validate.AstNode, bool) {
 	if n.Kind != yaml.SequenceNode {
 		return nil, false
 	}
@@ -62,13 +62,13 @@ func (n YamlNode) SliceChild(index int) (validate.AstNode, bool) {
 		return nil, false
 	}
 
-	return YamlNode{
+	return yamlNode{
 		key:  yaml.Node{},
 		Node: *n.Children[index],
 	}, true
 }
 
-func (n YamlNode) KeyValueMap() (map[string]validate.AstNode, bool) {
+func (n yamlNode) KeyValueMap() (map[string]validate.AstNode, bool) {
 	if n.Kind != yaml.MappingNode {
 		return nil, false
 	}
@@ -77,7 +77,7 @@ func (n YamlNode) KeyValueMap() (map[string]validate.AstNode, bool) {
 	for i := 0; i < len(n.Children); i += 2 {
 		key := *n.Children[i]
 		value := *n.Children[i+1]
-		kvmap[key.Value] = YamlNode{
+		kvmap[key.Value] = yamlNode{
 			key:  key,
 			Node: value,
 		}
@@ -85,6 +85,6 @@ func (n YamlNode) KeyValueMap() (map[string]validate.AstNode, bool) {
 	return kvmap, true
 }
 
-func (n YamlNode) Tag() string {
+func (n yamlNode) Tag() string {
 	return "yaml"
 }

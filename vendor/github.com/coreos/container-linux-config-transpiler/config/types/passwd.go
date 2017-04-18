@@ -14,6 +14,11 @@
 
 package types
 
+import (
+	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"github.com/coreos/ignition/config/validate/report"
+)
+
 type Passwd struct {
 	Users  []User  `yaml:"users"`
 	Groups []Group `yaml:"groups"`
@@ -44,4 +49,43 @@ type Group struct {
 	Gid          *uint  `yaml:"gid"`
 	PasswordHash string `yaml:"password_hash"`
 	System       bool   `yaml:"system"`
+}
+
+func init() {
+	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
+		for _, user := range in.Passwd.Users {
+			newUser := ignTypes.User{
+				Name:              user.Name,
+				PasswordHash:      user.PasswordHash,
+				SSHAuthorizedKeys: user.SSHAuthorizedKeys,
+			}
+
+			if user.Create != nil {
+				newUser.Create = &ignTypes.UserCreate{
+					Uid:          user.Create.Uid,
+					GECOS:        user.Create.GECOS,
+					Homedir:      user.Create.Homedir,
+					NoCreateHome: user.Create.NoCreateHome,
+					PrimaryGroup: user.Create.PrimaryGroup,
+					Groups:       user.Create.Groups,
+					NoUserGroup:  user.Create.NoUserGroup,
+					System:       user.Create.System,
+					NoLogInit:    user.Create.NoLogInit,
+					Shell:        user.Create.Shell,
+				}
+			}
+
+			out.Passwd.Users = append(out.Passwd.Users, newUser)
+		}
+
+		for _, group := range in.Passwd.Groups {
+			out.Passwd.Groups = append(out.Passwd.Groups, ignTypes.Group{
+				Name:         group.Name,
+				Gid:          group.Gid,
+				PasswordHash: group.PasswordHash,
+				System:       group.System,
+			})
+		}
+		return out, report.Report{}
+	})
 }

@@ -17,7 +17,7 @@ package types
 import (
 	"encoding/json"
 	"errors"
-	"path/filepath"
+	"path"
 )
 
 var (
@@ -25,19 +25,18 @@ var (
 )
 
 type Path string
-type path Path
 
 func (d *Path) UnmarshalJSON(data []byte) error {
-	td := path(*d)
-	if err := json.Unmarshal(data, &td); err != nil {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
 		return err
 	}
-	*d = Path(td)
+	*d = Path(s)
 	return d.AssertValid()
 }
 
 func (d Path) AssertValid() error {
-	if !filepath.IsAbs(string(d)) {
+	if !path.IsAbs(string(d)) {
 		return ErrPathRelative
 	}
 	return nil

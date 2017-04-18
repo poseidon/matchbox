@@ -17,9 +17,15 @@ import:
   - naming
   - peer
   - transport
-# Ignition and Fuze parse machine configs
+# Container Linux Config Transpiler and Ignition
+- package: github.com/coreos/container-linux-config-transpiler
+  version: v0.2.2
+  subpackages:
+  - config
+  - config/types
+  - config/templating
 - package: github.com/coreos/ignition
-  version: 3ffd793b1292c6b0b3519bce214bdb41f336faa7
+  version: d75d0aa3bf307f0954ce4ea8cac56dacec8d16ce
   subpackages:
   - config
   - config/types
@@ -28,17 +34,18 @@ import:
   - config/validate
   - config/validate/astjson
   - config/validate/report
-- package: github.com/coreos/fuze
-  version: 63c72bc1c8875f7f4ca11800a1a8de0478a69a12
-  subpackages:
-  - config
-  - config/types
 - package: github.com/ajeddeloh/yaml
   version: 1072abfea31191db507785e2e0c1b8d1440d35a5
 - package: github.com/vincent-petithory/dataurl
   version: 9a301d65acbb728fcc3ace14f45f511a4cfeea9c
+- package: github.com/alecthomas/units
+  version: 6b4e7dc5e3143b85ea77909c72caf89416fc2915 
+- package: github.com/coreos/go-semver
+  version: 5e3acbb5668c4c3deb4842615c4098eb61fb6b1e
+  subpackages:
+  - semver
 - package: github.com/coreos/coreos-cloudinit
-  version: v1.11.0
+  version: v1.13.0
   subpackages:
   - config
 - package: github.com/coreos/pkg
@@ -71,14 +78,8 @@ import:
   version: f7716cbe52baa25d2e9b0d0da546fcf909fc16b4
 - package: github.com/coreos/yaml
   version: 6b16a5714269b2f70720a45406b1babd947a17ef
-- package: github.com/alecthomas/units
-  version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
 - package: github.com/camlistore/camlistore
   version: 9106ce829629773474c689b34aacd7d3aaa99426
-- package: github.com/coreos/go-semver
-  version: 294930c1e79c64e7dbe360054274fdad492c8cf5
-  subpackages:
-  - semver
 - package: github.com/coreos/go-systemd
   version: v12
   subpackages:

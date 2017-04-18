@@ -109,7 +109,6 @@ var (
 	oemConfigs = map[string]oemConfig{
 		"digitalocean": {
 			"from-digitalocean-metadata": "http://169.254.169.254/",
-			"convert-netconf":            "digitalocean",
 		},
 		"ec2-compat": {
 			"from-ec2-metadata": "http://169.254.169.254/",
@@ -170,11 +169,10 @@ func main() {
 	switch flags.convertNetconf {
 	case "":
 	case "debian":
-	case "digitalocean":
 	case "packet":
 	case "vmware":
 	default:
-		fmt.Printf("Invalid option to -convert-netconf: '%s'. Supported options: 'debian, digitalocean, packet, vmware'\n", flags.convertNetconf)
+		fmt.Printf("Invalid option to -convert-netconf: '%s'. Supported options: 'debian, packet, vmware'\n", flags.convertNetconf)
 		os.Exit(2)
 	}
 
@@ -256,8 +254,6 @@ func main() {
 		switch flags.convertNetconf {
 		case "debian":
 			ifaces, err = network.ProcessDebianNetconf(metadata.NetworkConfig.([]byte))
-		case "digitalocean":
-			ifaces, err = network.ProcessDigitalOceanNetconf(metadata.NetworkConfig.(digitalocean.Metadata))
 		case "packet":
 			ifaces, err = network.ProcessPacketNetconf(metadata.NetworkConfig.(packet.NetworkData))
 		case "vmware":

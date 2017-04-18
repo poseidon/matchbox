@@ -21,6 +21,7 @@ import (
 
 	"github.com/coreos/ignition/config/types"
 	"github.com/coreos/ignition/config/v1"
+	"github.com/coreos/ignition/config/v2_0"
 	"github.com/coreos/ignition/config/validate"
 	astjson "github.com/coreos/ignition/config/validate/astjson"
 	"github.com/coreos/ignition/config/validate/report"
@@ -40,14 +41,16 @@ var (
 // Parse parses the raw config into a types.Config struct and generates a report of any
 // errors, warnings, info, and deprecations it encountered
 func Parse(rawConfig []byte) (types.Config, report.Report, error) {
-	switch majorVersion(rawConfig) {
-	case 1:
+	switch version(rawConfig) {
+	case types.IgnitionVersion{Major: 1}:
 		config, err := ParseFromV1(rawConfig)
 		if err != nil {
 			return types.Config{}, report.ReportFromError(err, report.EntryError), err
 		}
 
 		return config, report.ReportFromError(ErrDeprecated, report.EntryDeprecated), nil
+	case types.IgnitionVersion{Major: 2, Minor: 0}:
+		return ParseFromV2_0(rawConfig)
 	default:
 		return ParseFromLatest(rawConfig)
 	}
@@ -136,10 +139,19 @@ func ParseFromV1(rawConfig []byte) (types.Config, error) {
 		return types.Config{}, err
 	}
 
-	return TranslateFromV1(config)
+	return TranslateFromV1(config), nil
 }
 
-func majorVersion(rawConfig []byte) int64 {
+func ParseFromV2_0(rawConfig []byte) (types.Config, report.Report, error) {
+	cfg, report, err := v2_0.Parse(rawConfig)
+	if err != nil {
+		return types.Config{}, report, err
+	}
+
+	return TranslateFromV2_0(cfg), report, err
+}
+
+func version(rawConfig []byte) types.IgnitionVersion {
 	var composite struct {
 		Version  *int `json:"ignitionVersion"`
 		Ignition struct {
@@ -147,18 +159,15 @@ func majorVersion(rawConfig []byte) int64 {
 		} `json:"ignition"`
 	}
 
-	if json.Unmarshal(rawConfig, &composite) != nil {
-		return 0
+	if json.Unmarshal(rawConfig, &composite) == nil {
+		if composite.Ignition.Version != nil {
+			return *composite.Ignition.Version
+		} else if composite.Version != nil {
+			return types.IgnitionVersion{Major: int64(*composite.Version)}
+		}
 	}
 
-	var major int64
-	if composite.Ignition.Version != nil {
-		major = composite.Ignition.Version.Major
-	} else if composite.Version != nil {
-		major = int64(*composite.Version)
-	}
-
-	return major
+	return types.IgnitionVersion{}
 }
 
 func isEmpty(userdata []byte) bool {

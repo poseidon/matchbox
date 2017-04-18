@@ -14,19 +14,23 @@
 
 package types
 
-type Filesystem struct {
-	Name  string `yaml:"name"`
-	Mount *Mount `yaml:"mount"`
-	Path  string `yaml:"path"`
-}
+import (
+	"errors"
 
-type Mount struct {
-	Device string  `yaml:"device"`
-	Format string  `yaml:"format"`
-	Create *Create `yaml:"create"`
-}
+	"github.com/coreos/ignition/config/validate/report"
+)
 
-type Create struct {
-	Force   bool     `yaml:"force"`
-	Options []string `yaml:"options"`
+var (
+	ErrCompressionInvalid = errors.New("invalid compression method")
+)
+
+type Compression string
+
+func (c Compression) Validate() report.Report {
+	switch c {
+	case "", "gzip":
+	default:
+		return report.ReportFromError(ErrCompressionInvalid, report.EntryError)
+	}
+	return report.Report{}
 }

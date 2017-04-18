@@ -1,38 +1,42 @@
-hash: 9b6db105e9175308cb3a911161d68bbc80a5ee762bb7f08c926101cc5389b115
-updated: 2017-04-10T15:46:19.530989294-07:00
+hash: 205de0b66ed059a1f10d3fb36c7d465439818123940a9aaa68ddc71cc3bbfddd
+updated: 2017-04-17T17:09:48.864562358-07:00
 imports:
 - name: github.com/ajeddeloh/go-json
   version: 73d058cf8437a1989030afe571eeab9f90eebbbd
 - name: github.com/ajeddeloh/yaml
   version: 1072abfea31191db507785e2e0c1b8d1440d35a5
 - name: github.com/alecthomas/units
-  version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
+  version: 6b4e7dc5e3143b85ea77909c72caf89416fc2915
 - name: github.com/camlistore/camlistore
   version: 9106ce829629773474c689b34aacd7d3aaa99426
-- name: github.com/coreos/coreos-cloudinit
-  version: 4c333e657bfbaa8f6594298b48324f45e6bf5961
+- name: github.com/coreos/container-linux-config-transpiler
+  version: 12554ca0a5ce8ea4a6c594242ccb23d8b9bff493
   subpackages:
   - config
-- name: github.com/coreos/fuze
-  version: 63c72bc1c8875f7f4ca11800a1a8de0478a69a12
-  subpackages:
-  - config
+  - config/templating
   - config/types
+- name: github.com/coreos/coreos-cloudinit
+  version: 5be99bf577f2768193c7fb587ef5a8806c1503cf
+  subpackages:
+  - config
 - name: github.com/coreos/go-semver
-  version: 294930c1e79c64e7dbe360054274fdad492c8cf5
+  version: 5e3acbb5668c4c3deb4842615c4098eb61fb6b1e
   subpackages:
   - semver
 - name: github.com/coreos/go-systemd
   version: 43e4800a6165b4e02bb2a36673c54b230d6f7b26
   subpackages:
   - journal
+  - unit
 - name: github.com/coreos/ignition
-  version: 3ffd793b1292c6b0b3519bce214bdb41f336faa7
+  version: d75d0aa3bf307f0954ce4ea8cac56dacec8d16ce
   subpackages:
   - config
   - config/types
   - config/v1
   - config/v1/types
+  - config/v2_0
+  - config/v2_0/types
   - config/validate
   - config/validate/astjson
   - config/validate/report
