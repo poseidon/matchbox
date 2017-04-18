@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"context"
+
 	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
@@ -56,6 +57,52 @@ systemd:
 	store := &fake.FixedStore{
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
+	}
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(c)
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/?foo=some-param&bar=b", nil)
+	h.ServeHTTP(ctx, w, req)
+	// assert that:
+	// - Fuze template rendered with Group selectors, metadata, and query variables
+	// - Transformed to an Ignition config (JSON)
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, expectedIgnitionV2, w.Body.String())
+}
+
+func TestIgnitionHandler_V2YAML_Include(t *testing.T) {
+	// exercise templating features, not a realistic Fuze template
+
+	partial := `
+systemd:
+  units:
+    - name: {{.service_name}}.service
+      enable: true
+    - name: {{.uuid}}.service
+      enable: true
+{{include "nested.partial.yaml" . | indent 4 }}
+`
+
+	nestedPartial := `- name: {{.request.query.foo}}.service
+  enable: true
+  contents: {{.request.raw_query}}
+`
+
+	content := `
+{{ include "partial.yaml" . }}
+`
+	expectedIgnitionV2 := `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true},{"name":"some-param.service","enable":true,"contents":"foo=some-param\u0026bar=b"}]},"networkd":{},"passwd":{}}`
+	store := &fake.FixedStore{
+		Profiles: map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
+		IgnitionConfigs: map[string]string{
+			testProfileIgnitionYAML.IgnitionId: content,
+			"partial.yaml":                     partial,
+			"nested.partial.yaml":              nestedPartial,
+		},
 	}
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})

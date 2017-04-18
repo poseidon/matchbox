@@ -2,10 +2,10 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"net/http"
 	"strings"
 
-	"context"
 	"github.com/Sirupsen/logrus"
 	fuze "github.com/coreos/fuze/config"
 	ignition "github.com/coreos/ignition/config"
@@ -82,7 +82,8 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 
 		// render the template for an Ignition config with data
 		var buf bytes.Buffer
-		err = s.renderTemplate(&buf, data, contents)
+		funcs := s.templateFuncMap(ctx, core)
+		err = s.renderTemplateWithFuncMap(&buf, funcs, data, contents)
 		if err != nil {
 			http.NotFound(w, req)
 			return
@@ -90,6 +91,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 
 		// Parse bytes into a Fuze Config
 		config, report := fuze.Parse(buf.Bytes())
+
 		if report.IsFatal() {
 			s.logger.Errorf("error parsing Fuze config: %s", report.String())
 			http.NotFound(w, req)
