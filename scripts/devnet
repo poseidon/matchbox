@@ -101,7 +101,7 @@ function create {
     --net=metal0:IP=172.18.0.3 \
     --mount volume=config,target=/etc/dnsmasq.conf \
     --volume config,kind=host,source=$DIR/../contrib/dnsmasq/metal0.conf \
-    coreos.com/dnsmasq:v0.3.0
+    quay.io/coreos/dnsmasq:v0.3.0
 
   status
 }

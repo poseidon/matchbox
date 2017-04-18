@@ -1,30 +1,44 @@
+# dnsmasq [![Docker Repository on Quay](https://quay.io/repository/coreos/dnsmasq/status "Docker Repository on Quay")](https://quay.io/repository/coreos/dnsmasq)
 
-# dnsmasq
-
-[![Docker Repository on Quay](https://quay.io/repository/coreos/dnsmasq/status "Docker Repository on Quay")](https://quay.io/repository/coreos/dnsmasq)
-
-`dnsmasq` provides an App Container Image (ACI) or Docker image for running DHCP, proxy DHCP, DNS, and/or TFTP with [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) in a container/pod. Use it to test different network setups with clusters of network bootable machines.
+`dnsmasq` provides a container image for running DHCP, proxy DHCP, DNS, and/or TFTP with [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html). Use it to test different network setups with clusters of network bootable machines.
 
 The image bundles `undionly.kpxe` which chainloads PXE clients to iPXE and `grub.efi` (experimental) which chainloads UEFI architectures to GRUB2.
 
 ## Usage
 
-Run the `coreos.com/dnsmasq` ACI with rkt.
+Run the container image as a DHCP, DNS, and TFTP service.
 
-    sudo rkt trust --prefix coreos.com/dnsmasq
-    # gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-    sudo rkt run coreos.com/dnsmasq:v0.3.0
+```sh
+sudo rkt run --net=host quay.io/coreos/dnsmasq -- -d -q \
+  --dhcp-range=192.168.1.3,192.168.1.254 \
+  --enable-tftp \
+  --tftp-root=/var/lib/tftpboot \
+  --dhcp-userclass=set:ipxe,iPXE \
+  --dhcp-boot=tag:#ipxe,undionly.kpxe \
+  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
+  --address=/matchbox.example.com/192.168.1.2 \
+  --log-queries \
+  --log-dhcp
+```
 
-Press ^] three times to kill the container.
+```sh
+sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
+  -d -q \
+  --dhcp-range=192.168.1.3,192.168.1.254 \
+  --enable-tftp --tftp-root=/var/lib/tftpboot \
+  --dhcp-userclass=set:ipxe,iPXE \
+  --dhcp-boot=tag:#ipxe,undionly.kpxe \
+  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
+  --address=/matchbox.example/192.168.1.2 \
+  --log-queries \
+  --log-dhcp
+```
 
-Alternately, Docker can be used.
-
-    docker pull quay.io/coreos/dnsmasq
-    docker run --cap-add NET_ADMIN quay.io/coreos/dnsmasq
+Press ^] three times to stop the rkt pod. Press ctrl-C to stop the Docker container.
 
 ## Configuration Flags
 
-Configuration arguments can be provided at the command line. Check the dnsmasq [man pages](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) for a complete list, but here are some important flags.
+Configuration arguments can be provided as flags. Check the dnsmasq [man pages](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html) for a complete list.
 
 | flag     | description | example |
 |----------|-------------|---------|
@@ -33,30 +47,12 @@ Configuration arguments can be provided at the command line. Check the dnsmasq [
 | --enable-tftp | Enable serving from tftp-root over TFTP | NA |
 | --address | IP address for a domain name | /matchbox.foo/172.18.0.2 |
 
-## ACI
+## Development
 
-Build a `dnsmasq` ACI with the build script which uses [acbuild](https://github.com/appc/acbuild).
+Build a container image locally.
 
-    cd contrib/dnsmasq
-    ./get-tftp-files
-    sudo ./build-aci
+    make docker-image
 
-Run `dnsmasq.aci` with rkt to run DHCP/proxyDHCP/TFTP/DNS services.
+Run the image with Docker on the `docker0` bridge (default).
 
-DHCP+TFTP+DNS on the `metal0` bridge:
-
-    sudo rkt --insecure-options=image run dnsmasq.aci --net=metal0 -- -d -q --dhcp-range=172.18.0.50,172.18.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.18.0.1 --address=/matchbox.foo/172.18.0.2
-
-## Docker
-
-Build a Docker image locally using the tag `latest`.
-
-    cd contrib/dnsmasq
-    ./get-tftp-files
-    sudo ./build-docker
-
-Run the Docker image to run DHCP/proxyDHCP/TFTP/DNS services.
-
-DHCP+TFTP+DNS on the `docker0` bridge:
-
-    sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --address=/matchbox.foo/172.17.0.2
+    sudo docker run --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q

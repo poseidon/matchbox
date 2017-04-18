@@ -1,6 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -eu
 
-DEST=tftpboot
+DEST=${1:-"tftpboot"}
 
 if [ ! -d $DEST ]; then
   echo "Creating directory $DEST"
@@ -9,3 +10,6 @@ fi
 
 curl -s -o $DEST/undionly.kpxe http://boot.ipxe.org/undionly.kpxe
 cp $DEST/undionly.kpxe $DEST/undionly.kpxe.0
+
+# Any vaguely recent CoreOS grub.efi is fine
+curl -s -o $DEST/grub.efi https://stable.release.core-os.net/amd64-usr/1298.7.0/coreos_production_pxe_grub.efi
