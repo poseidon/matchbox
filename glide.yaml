@@ -45,7 +45,7 @@ import:
   subpackages:
   - semver
 - package: github.com/coreos/coreos-cloudinit
-  version: v1.11.0
+  version: v1.13.0
   subpackages:
   - config
 - package: github.com/coreos/pkg

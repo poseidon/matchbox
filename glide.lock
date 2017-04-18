@@ -1,5 +1,5 @@
-hash: d7d6d80b5734d981194ff7ff4cfa150cedae4549133301d1845f110e48729543
-updated: 2017-04-17T15:53:14.762097698-07:00
+hash: 205de0b66ed059a1f10d3fb36c7d465439818123940a9aaa68ddc71cc3bbfddd
+updated: 2017-04-17T17:09:48.864562358-07:00
 imports:
 - name: github.com/ajeddeloh/go-json
   version: 73d058cf8437a1989030afe571eeab9f90eebbbd
@@ -16,7 +16,7 @@ imports:
   - config/templating
   - config/types
 - name: github.com/coreos/coreos-cloudinit
-  version: 4c333e657bfbaa8f6594298b48324f45e6bf5961
+  version: 5be99bf577f2768193c7fb587ef5a8806c1503cf
   subpackages:
   - config
 - name: github.com/coreos/go-semver
