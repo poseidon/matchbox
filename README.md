@@ -1,8 +1,8 @@
 # matchbox [![Build Status](https://travis-ci.org/coreos/matchbox.svg?branch=master)](https://travis-ci.org/coreos/matchbox) [![GoDoc](https://godoc.org/github.com/coreos/matchbox?status.png)](https://godoc.org/github.com/coreos/matchbox) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
 
-Network boot and provision CoreOS clusters on virtual or physical hardware.
+Network boot and provision Container Linux clusters on virtual or physical hardware.
 
-**Announcement**: A pre-alpha [Matchbox Terraform Provider](https://github.com/coreos/terraform-provider-matchbox) is available. Terraform users can write configs to interact with the matchbox API in an upcoming release.
+**Announcement**: A new [Matchbox Terraform Provider](https://github.com/coreos/terraform-provider-matchbox) is available for Terraform users.
 
 ## Guides
 
@@ -15,7 +15,7 @@ Network boot and provision CoreOS clusters on virtual or physical hardware.
 
 ## matchbox
 
-`matchbox` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, and GRUB. `matchbox` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
+`matchbox` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create Container Linux clusters. Groups match machines based on labels (e.g. MAC, UUID, stage, region) and use named Profiles for provisioning. Network boot endpoints provide PXE, iPXE, and GRUB. `matchbox` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with [rkt](https://coreos.com/rkt/docs/latest/), or as a Docker container.
 
 * [matchbox Service](Documentation/matchbox.md)
 * [Profiles](Documentation/matchbox.md#profiles)
@@ -33,7 +33,7 @@ Network boot and provision CoreOS clusters on virtual or physical hardware.
 
 ### Examples
 
-The [examples](examples) network boot and provision CoreOS clusters. Network boot [QEMU/KVM](scripts/README.md#libvirt) VMs to try the examples on your Linux laptop.
+Network boot the [examples](examples) on [QEMU/KVM](scripts/README.md#libvirt) VMs to try them on your Linux laptop.
 
 * Multi-node [Kubernetes cluster](Documentation/kubernetes.md)
 * Multi-node [rktnetes](Documentation/rktnetes.md) cluster (i.e. Kubernetes with rkt as the container runtime)

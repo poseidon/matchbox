@@ -4,7 +4,7 @@ This guide walks through deploying the `matchbox` service on a Linux host (via R
 
 ## Provisoner
 
-`matchbox` is a service for network booting and provisioning machines to create CoreOS clusters. `matchbox` should be installed on a provisioner machine (CoreOS or any Linux distribution) or cluster (Kubernetes) which can serve configs to client machines in a lab or datacenter.
+`matchbox` is a service for network booting and provisioning machines to create Container Linux clusters. `matchbox` should be installed on a provisioner machine (CoreOS or any Linux distribution) or cluster (Kubernetes) which can serve configs to client machines in a lab or datacenter.
 
 Choose one of the supported installation options:
 
