@@ -99,9 +99,11 @@ function create {
     --uuid-file-save=/var/run/dnsmasq-pod.uuid \
     --trust-keys-from-https \
     --net=metal0:IP=172.18.0.3 \
+    --dns=host \
     --mount volume=config,target=/etc/dnsmasq.conf \
     --volume config,kind=host,source=$DIR/../contrib/dnsmasq/metal0.conf \
-    coreos.com/dnsmasq:v0.3.0
+    quay.io/coreos/dnsmasq:v0.3.0 \
+    --caps-retain="CAP_NET_ADMIN,CAP_NET_BIND_SERVICE"
 
   status
 }

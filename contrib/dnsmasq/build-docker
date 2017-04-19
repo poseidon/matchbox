@@ -1,5 +1,0 @@
-#!/bin/bash -e
-
-REPO=coreos/dnsmasq
-
-docker build -q --rm=true -t $REPO:latest .
