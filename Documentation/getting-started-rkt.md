@@ -6,7 +6,7 @@ In this tutorial, we'll run `matchbox` on your Linux machine with `rkt` and `CNI
 
 ## Requirements
 
-Install [rkt](https://coreos.com/rkt/docs/latest/distributions.html) 1.8 or higher ([example script](https://github.com/dghubble/phoenix/blob/master/fedora/sources.sh)) and setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
+Install [rkt](https://coreos.com/rkt/docs/latest/distributions.html) 1.12.0 or higher ([example script](https://github.com/dghubble/phoenix/blob/master/fedora/sources.sh)) and setup rkt [privilege separation](https://coreos.com/rkt/docs/latest/trying-out-rkt.html).
 
 Next, install the package dependencies.
 
@@ -33,6 +33,8 @@ Download CoreOS image assets referenced by the `etcd` [example](../examples) to 
 $ ./scripts/get-coreos stable 1235.9.0 ./examples/assets
 ```
 
+## Network
+
 Define the `metal0` virtual bridge with [CNI](https://github.com/appc/cni).
 
 ```bash
@@ -57,11 +59,10 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 
 ```sh
 $ sudo firewall-cmd --add-interface=metal0 --zone=trusted
+$ sudo firewall-cmd --add-interface=metal0 --zone=trusted --permanent
 ```
 
-After a recent update, you may see a warning that NetworkManager controls the interface. Work-around this using the firewall-config GUI to add `metal0` to the trusted zone.
-
-For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name as you would in production.
+For development convenience, you may wish to add `/etc/hosts` entries for nodes to refer to them by name.
 
 ```
 # /etc/hosts
@@ -71,21 +72,11 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
 172.18.0.23 node3.example.com
 ```
 
-Trust the needed ACIs.
-
 ## Containers
 
 Run the `matchbox` and `dnsmasq` services on the `metal0` bridge. `dnsmasq` will run DHCP, DNS, and TFTP services to create a suitable network boot environment. `matchbox` will serve provisioning configs to machines on the network which attempt to PXE boot.
 
-Trust the needed ACIs.
-
-```sh
-$ sudo rkt trust --prefix quay.io/coreos/matchbox
-$ sudo rkt trust --prefix quay.io/coreos/alpine-sh
-$ sudo rkt trust --prefix coreos.com/dnsmasq
-```
-
-The `devnet` wrapper script can quickly rkt run `matchbox` and `dnsmasq` in systemd transient units. Create can take the name of any example cluster in [examples](../examples).
+The `devnet` wrapper script rkt runs `matchbox` and `dnsmasq` in systemd transient units. Create can take the name of any example cluster in [examples](../examples).
 
 ```sh
 $ sudo ./scripts/devnet create etcd3
@@ -94,9 +85,7 @@ $ sudo ./scripts/devnet create etcd3
 Inspect the journal logs or check the status of the systemd services.
 
 ```
-# quick status
 $ sudo ./scripts/devnet status
-# tail logs
 $ journalctl -f -u dev-matchbox
 $ journalctl -f -u dev-dnsmasq
 ```
@@ -109,13 +98,23 @@ Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of ho
 
 ### Manual
 
-If you prefer to start the containers yourself, instead of using `devnet`:
+If you prefer to start the containers yourself, instead of using `devnet`,
 
+```sh
+sudo rkt run --net=metal0:IP=172.18.0.2 \
+  --mount volume=data,target=/var/lib/matchbox \
+  --volume data,kind=host,source=$PWD/examples \
+  --mount volume=groups,target=/var/lib/matchbox/groups \
+  --volume groups,kind=host,source=$PWD/examples/groups/etcd3 \
+  quay.io/coreos/matchbox:v0.5.0 -- -address=0.0.0.0:8080 -log-level=debug
 ```
-# matchbox with etcd3 example
-$ sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd3 quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
-# dnsmasq
-$ sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=metal0:IP=172.18.0.3 --mount volume=config,target=/etc/dnsmasq.conf --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf
+```sh
+sudo rkt run --net=metal0:IP=172.18.0.3 \
+  --dns=host \
+  --mount volume=config,target=/etc/dnsmasq.conf \
+  --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf \
+  quay.io/coreos/dnsmasq:v0.4.0 \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE
 ```
 
 If you get an error about the IP assignment, stop old pods and run garbage collection.
