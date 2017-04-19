@@ -1,4 +1,3 @@
-
 # GRUB2 netboot
 
 Use GRUB to network boot UEFI hardware.
@@ -23,10 +22,25 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 $ sudo firewall-cmd --add-interface=metal0 --zone=trusted
 ```
 
-Run the `coreos.com/dnsmasq` ACI with rkt.
+Run the `quay.io/coreos/dnsmasq` container image with rkt or docker.
 
 ```sh
-$ sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=metal0:IP=172.18.0.3 -- -d -q --dhcp-range=172.18.0.50,172.18.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-match=set:efi-bc,option:client-arch,7 --dhcp-boot=tag:efi-bc,grub.efi --dhcp-userclass=set:grub,GRUB2 --dhcp-boot=tag:grub,"(http;matchbox.foo:8080)/grub","172.18.0.2" --log-queries --log-dhcp --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:pxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/172.18.0.2
+sudo rkt run --net=metal0:IP=172.18.0.3 quay.io/coreos/dnsmasq \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE \
+  -- -d -q \
+  --dhcp-range=172.18.0.50,172.18.0.99 \
+  --enable-tftp \
+  --tftp-root=/var/lib/tftpboot \
+  --dhcp-match=set:efi-bc,option:client-arch,7 \
+  --dhcp-boot=tag:efi-bc,grub.efi \
+  --dhcp-userclass=set:grub,GRUB2 \
+  --dhcp-boot=tag:grub,"(http;matchbox.example.com:8080)/grub","172.18.0.2" \
+  --log-queries \
+  --log-dhcp \
+  --dhcp-userclass=set:ipxe,iPXE \
+  --dhcp-boot=tag:pxe,undionly.kpxe \
+  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
+  --address=/matchbox.foo/172.18.0.2
 ```
 
 ## Client VM

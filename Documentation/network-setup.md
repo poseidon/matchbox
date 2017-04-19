@@ -46,31 +46,16 @@ address=/matchbox.foo/172.18.0.2
 
 ## iPXE
 
-Servers with DHCP/TFTP/ services which already network boot iPXE clients can use the `chain` command to make clients download and execute the iPXE boot script from `matchbox`.
+Networks which already run DHCP and TFTP services to network boot PXE/iPXE clients can add an iPXE config to delegate or `chain` to the matchbox service's iPXE entrypoint.
 
 ```
 # /var/www/html/ipxe/default.ipxe
 chain http://matchbox.foo:8080/boot.ipxe
 ```
 
-You can chainload from a menu entry or use other [iPXE commands](http://ipxe.org/cmd) if you have needs beyond just delegating to the iPXE script served by `matchbox`.
+You can chainload from a menu entry or use other [iPXE commands](http://ipxe.org/cmd) if you need to do more than simple delegation.
 
-## GRUB
-
-Needs more docs.
-
-`grub-mknetdir --net-directory=/var/lib/tftpboot`
-
-/var/lib/tftpboot/boot/grub/grub.cfg:
-```ini
-insmod i386-pc/http.mod
-set root=http,matchbox.foo:8080
-configfile /grub
-```
-
-Make sure to replace variables in the example config files; instead of iPXE variables, use GRUB variables. Check the [GRUB2 manual](https://www.gnu.org/software/grub/manual/grub.html#Network).
-
-### Configuring DHCP
+### PXE-enabled DHCP
 
 Configure your DHCP server to supply options to older PXE client firmware to specify the location of an iPXE or GRUB network boot program on your TFTP server. Send clients to the `matchbox` iPXE script or GRUB config endpoints.
 
@@ -109,9 +94,11 @@ $ sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
 $ sudo firewall-cmd --list-services
 ```
 
-#### proxy DHCP
+See [dnsmasq](#coreosdnsmasq) below to run dnsmasq with a container.
 
-Alternately, a DHCP proxy server can be run alongside an existing non-PXE DHCP server. The proxy DHCP server provides only the next server and boot filename Options, leaving IP allocation to the DHCP server. Clients listen for both DHCP offers and merge the responses as though they had come from one PXE-enabled DHCP server.
+#### Proxy-DHCP
+
+Alternately, a proxy-DHCP server can be run alongside an existing non-PXE DHCP server. The proxy DHCP server provides only the next server and boot filename Options, leaving IP allocation to the DHCP server. Clients listen for both DHCP offers and merge the responses as though they had come from one PXE-enabled DHCP server.
 
 Example `/etc/dnsmasq.conf`:
 
@@ -141,21 +128,11 @@ $ sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
 $ sudo firewall-cmd --list-services
 ```
 
-With rkt:
-
-```sh
-$ sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp
-```
-
-With Docker:
-
-```sh
-$ sudo docker run --net=host --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.1,proxy,255.255.255.0 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.foo:8080/boot.ipxe --log-queries --log-dhcp
-```
+See [dnsmasq](#coreosdnsmasq) below to run dnsmasq with a container.
 
 ### Configurable TFTP
 
-If your DHCP server is configured to PXE boot clients, but you don't have control over this configuration, you can modify the pxelinux.cfg's served to PXE clients.
+If your DHCP server is configured to network boot PXE clients (but not iPXE clients), add a pxelinux.cfg to serve an iPXE kernel image and append commands.
 
 Example `/var/lib/tftpboot/pxelinux.cfg/default`:
 
@@ -171,30 +148,83 @@ Add ipxe.lkrn to `/var/lib/tftpboot` (see [iPXE docs](http://ipxe.org/embed)).
 
 ## coreos/dnsmasq
 
-On networks without network services, the `coreos.com/dnsmasq:v0.3.0` rkt ACI or `coreos/dnsmasq:latest` Docker image can setup an appropriate environment quickly. The images bundle `undionly.kpxe` and `grub.efi` for convenience. Here are some examples which run a DHCP/TFTP/DNS server on your host's network:
+The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `undionly.kpxe` and `grub.efi` for convenience. See [contrib/dnsmasq](contrib/dnsmasq) for details.
 
-With rkt:
-
-```sh
-$ sudo rkt trust --prefix coreos.com/dnsmasq
-# gpg key fingerprint is: 18AD 5014 C99E F7E3 BA5F  6CE9 50BD D3E0 FC8A 365E
-```
+Run DHCP, TFTP, and DNS on the host's network:
 
 ```sh
-$ sudo rkt run coreos.com/dnsmasq:v0.3.0 --net=host -- -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/192.168.1.2 --log-queries --log-dhcp
+sudo rkt run --net=host quay.io/coreos/dnsmasq \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE \
+  -- -d -q \
+  --dhcp-range=192.168.1.3,192.168.1.254 \
+  --enable-tftp \
+  --tftp-root=/var/lib/tftpboot \
+  --dhcp-userclass=set:ipxe,iPXE \
+  --dhcp-boot=tag:#ipxe,undionly.kpxe \
+  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
+  --address=/matchbox.example.com/192.168.1.2 \
+  --log-queries \
+  --log-dhcp
+```
+```sh
+sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
+  -d -q \
+  --dhcp-range=192.168.1.3,192.168.1.254 \
+  --enable-tftp --tftp-root=/var/lib/tftpboot \
+  --dhcp-userclass=set:ipxe,iPXE \
+  --dhcp-boot=tag:#ipxe,undionly.kpxe \
+  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
+  --address=/matchbox.example/192.168.1.2 \
+  --log-queries \
+  --log-dhcp
 ```
 
-With Docker:
+Run a proxy-DHCP and TFTP service on the host's network:
 
 ```sh
-$ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq -d -q --dhcp-range=192.168.1.3,192.168.1.254 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:#ipxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/192.168.1.2 --log-queries --log-dhcp
+sudo rkt run --net=host quay.io/coreos/dnsmasq \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE \
+  -- -d -q \
+  --dhcp-range=192.168.1.1,proxy,255.255.255.0 \
+  --enable-tftp --tftp-root=/var/lib/tftpboot \
+  --dhcp-userclass=set:ipxe,iPXE \
+  --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe \
+  --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.example.com:8080/boot.ipxe \
+  --log-queries \
+  --log-dhcp
+```
+```sh
+sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
+  -d -q \
+  --dhcp-range=192.168.1.1,proxy,255.255.255.0 \
+  --enable-tftp --tftp-root=/var/lib/tftpboot \
+  --dhcp-userclass=set:ipxe,iPXE \
+  --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe \
+  --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.example.com:8080/boot.ipxe \
+  --log-queries \
+  --log-dhcp
 ```
 
-Ensure that `matchbox.foo` resolves to a `matchbox` deployment and that you've allowed the services to run in your firewall configuration.
+Be sure to allow enabled services in your firewall configuration.
 
 ```sh
 $ sudo firewall-cmd --add-service=dhcp --add-service=tftp --add-service=dns
 ```
+
+## GRUB
+
+Grub can be used to delegate as well.
+
+`grub-mknetdir --net-directory=/var/lib/tftpboot`
+
+/var/lib/tftpboot/boot/grub/grub.cfg:
+```ini
+insmod i386-pc/http.mod
+set root=http,matchbox.foo:8080
+configfile /grub
+```
+
+Make sure to replace variables in the example config files; instead of iPXE variables, use GRUB variables. Check the [GRUB2 manual](https://www.gnu.org/software/grub/manual/grub.html#Network).
 
 ## Troubleshooting
 

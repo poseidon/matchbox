@@ -12,8 +12,8 @@ undionly:
 
 .PHONY: docker-image
 docker-image: undionly
-	sudo docker build --rm=true -t $(IMAGE_REPO):$(VERSION) .
-	sudo docker tag $(IMAGE_REPO):$(VERSION) $(IMAGE_REPO):latest
+	@sudo docker build --rm=true -t $(IMAGE_REPO):$(VERSION) .
+	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(IMAGE_REPO):latest
 
 .PHONY: docker-push
 docker-push:
