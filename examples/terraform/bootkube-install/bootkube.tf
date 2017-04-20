@@ -47,7 +47,7 @@ resource "matchbox_group" "node2" {
   }
   metadata {
     domain_name = "node2.example.com"
-    etcd_endpoints = "node1.example.com:2380"
+    etcd_endpoints = "node1.example.com:2379"
     k8s_dns_service_ip = "${var.k8s_dns_service_ip}"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
@@ -62,7 +62,7 @@ resource "matchbox_group" "node3" {
   }
   metadata {
     domain_name = "node3.example.com"
-    etcd_endpoints = "node1.example.com:2380"
+    etcd_endpoints = "node1.example.com:2379"
     k8s_dns_service_ip = "${var.k8s_dns_service_ip}"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
