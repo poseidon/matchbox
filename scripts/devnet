@@ -90,7 +90,7 @@ function create {
     --volume config,kind=host,source=$PWD/examples/etc/matchbox,readOnly=true \
     --mount volume=data,target=/var/lib/matchbox \
     $DATA_MOUNT \
-    quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
+    quay.io/coreos/matchbox:1cefbe5d9703f16c3428cd438f1639fd0e506ff9 -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   rkt rm --uuid-file=/var/run/dnsmasq-pod.uuid > /dev/null 2>&1
