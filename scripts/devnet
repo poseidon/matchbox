@@ -10,7 +10,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 EXAMPLE=${2:-}
 BRIDGE=metal0
 COREOS_CHANNEL=stable
-COREOS_VERSION=1235.9.0
+COREOS_VERSION=1298.7.0
 MATCHBOX_ARGS=""
 
 ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
@@ -90,7 +90,7 @@ function create {
     --volume config,kind=host,source=$PWD/examples/etc/matchbox,readOnly=true \
     --mount volume=data,target=/var/lib/matchbox \
     $DATA_MOUNT \
-    quay.io/coreos/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
+    quay.io/coreos/matchbox:1cefbe5d9703f16c3428cd438f1639fd0e506ff9 -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   rkt rm --uuid-file=/var/run/dnsmasq-pod.uuid > /dev/null 2>&1

@@ -2,7 +2,7 @@
 module "profiles" {
   source = "../modules/profiles"
   matchbox_http_endpoint = "http://matchbox.example.com:8080"
-  coreos_version = "1235.9.0"
+  coreos_version = "1298.7.0"
 }
 
 // Install CoreOS to disk before provisioning
@@ -12,7 +12,7 @@ resource "matchbox_group" "default" {
   // No selector, matches all nodes
   metadata {
     coreos_channel = "stable"
-    coreos_version = "1235.9.0"
+    coreos_version = "1298.7.0"
     ignition_endpoint = "http://matchbox.example.com:8080/ignition"
     baseurl = "http://matchbox.example.com:8080/assets/coreos"
     ssh_authorized_key = "${var.ssh_authorized_key}"

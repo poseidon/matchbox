@@ -30,7 +30,7 @@ $ cd matchbox
 Download CoreOS image assets referenced by the `etcd` [example](../examples) to `examples/assets`.
 
 ```sh
-$ ./scripts/get-coreos stable 1235.9.0 ./examples/assets
+$ ./scripts/get-coreos stable 1298.7.0 ./examples/assets
 ```
 
 ## Network

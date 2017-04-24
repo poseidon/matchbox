@@ -5,17 +5,17 @@ These examples network boot and provision machines into Container Linux clusters
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
-| simple | CoreOS with autologin, using iPXE | stable/1235.9.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| simple-install | CoreOS Install, using iPXE | stable/1235.9.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS via GRUB2 Netboot | stable/1235.9.0 | RAM | NA |
-| etcd3 | A 3 node etcd3 cluster with proxies | stable/1235.9.0 | RAM | None |
-| etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1235.9.0 | Disk | None |
-| k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | stable/1235.9.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| k8s-install | Kubernetes cluster, installed to disk | stable/1235.9.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | stable/1235.9.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
-| rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | stable/1235.9.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
-| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | stable/1235.9.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | stable/1235.9.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| simple | CoreOS with autologin, using iPXE | stable/1298.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| simple-install | CoreOS Install, using iPXE | stable/1298.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS via GRUB2 Netboot | stable/1298.7.0 | RAM | NA |
+| etcd3 | A 3 node etcd3 cluster with proxies | stable/1298.7.0 | RAM | None |
+| etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1298.7.0 | Disk | None |
+| k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | stable/1298.7.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| k8s-install | Kubernetes cluster, installed to disk | stable/1298.7.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
+| rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | stable/1298.7.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
+| rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | stable/1298.7.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
+| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 
 ## Tutorials
 
