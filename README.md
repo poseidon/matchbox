@@ -2,7 +2,7 @@
 
 Network boot and provision Container Linux clusters on virtual or physical hardware.
 
-**Announcement**: A new [Matchbox Terraform Provider][terraform] and [tutorial](Documentation/getting-started.md) are available.
+**Announcement**: Matchbox [v0.6.0](https://github.com/coreos/matchbox/releases) is released with a new [Matchbox Terraform Provider][terraform] and [tutorial](Documentation/getting-started.md).
 
 ## matchbox
 
