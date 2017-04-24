@@ -2,7 +2,7 @@
 
 Network boot and provision Container Linux clusters on virtual or physical hardware.
 
-**Announcement**: A new [Matchbox Terraform Provider][terraform] is available for Terraform users.
+**Announcement**: A new [Matchbox Terraform Provider][terraform] and [tutorial](Documentation/getting-started.md) are available.
 
 ## matchbox
 
@@ -30,6 +30,8 @@ Network boot and provision Container Linux clusters on virtual or physical hardw
 * [Network Setup](Documentation/network-setup.md)
 
 ### Tutorials
+
+* [Getting Started](Documentation/getting-started.md)
 
 Local QEMU/KVM
 

@@ -21,7 +21,7 @@ These examples network boot and provision machines into Container Linux clusters
 
 Get started running `matchbox` on your Linux machine to network boot and provision clusters of VMs or physical hardware.
 
-* Getting Started
+* [Getting Started](../Documentation/getting-started.md)
 	* [matchbox with rkt](../Documentation/getting-started-rkt.md)
 	* [matchbox with Docker](../Documentation/getting-started-docker.md)
 * [Kubernetes (static manifests)](../Documentation/kubernetes.md)
