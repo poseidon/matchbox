@@ -106,7 +106,7 @@ sudo rkt run --net=metal0:IP=172.18.0.2 \
   --volume data,kind=host,source=$PWD/examples \
   --mount volume=groups,target=/var/lib/matchbox/groups \
   --volume groups,kind=host,source=$PWD/examples/groups/etcd3 \
-  quay.io/coreos/matchbox:v0.5.0 -- -address=0.0.0.0:8080 -log-level=debug
+  quay.io/coreos/matchbox:v0.6.0 -- -address=0.0.0.0:8080 -log-level=debug
 ```
 ```sh
 sudo rkt run --net=metal0:IP=172.18.0.3 \

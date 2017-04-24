@@ -20,23 +20,23 @@ Choose one of the supported installation options:
 Download the latest matchbox [release](https://github.com/coreos/matchbox/releases) to the provisioner host.
 
 ```sh
-$ wget https://github.com/coreos/matchbox/releases/download/v0.5.0/matchbox-v0.5.0-linux-amd64.tar.gz
-$ wget https://github.com/coreos/matchbox/releases/download/v0.5.0/matchbox-v0.5.0-linux-amd64.tar.gz.asc
+$ wget https://github.com/coreos/matchbox/releases/download/v0.6.0/matchbox-v0.6.0-linux-amd64.tar.gz
+$ wget https://github.com/coreos/matchbox/releases/download/v0.6.0/matchbox-v0.6.0-linux-amd64.tar.gz.asc
 ```
 
 Verify the release has been signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
 
 ```sh
 $ gpg --keyserver pgp.mit.edu --recv-key 18AD5014C99EF7E3BA5F6CE950BDD3E0FC8A365E
-$ gpg --verify matchbox-v0.5.0-linux-amd64.tar.gz.asc matchbox-v0.5.0-linux-amd64.tar.gz
+$ gpg --verify matchbox-v0.6.0-linux-amd64.tar.gz.asc matchbox-v0.6.0-linux-amd64.tar.gz
 # gpg: Good signature from "CoreOS Application Signing Key <security@coreos.com>"
 ```
 
 Untar the release.
 
 ```sh
-$ tar xzvf matchbox-v0.5.0-linux-amd64.tar.gz
-$ cd matchbox-v0.5.0-linux-amd64
+$ tar xzvf matchbox-v0.6.0-linux-amd64.tar.gz
+$ cd matchbox-v0.6.0-linux-amd64
 ```
 
 ## Install

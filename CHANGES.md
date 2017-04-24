@@ -4,6 +4,8 @@ Notable changes between releases.
 
 ## Latest
 
+## v0.6.0 (2017-04-25)
+
 * New [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) plugin for Terraform users!
 * New hosted [documentation](https://coreos.com/matchbox/docs/latest) on coreos.com
 * Add `ProfileDelete`, `GroupDelete`, `IgnitionGet` and `IgnitionDelete` gRPC endpoints
