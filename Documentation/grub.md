@@ -26,7 +26,7 @@ Run the `quay.io/coreos/dnsmasq` container image with rkt or docker.
 
 ```sh
 sudo rkt run --net=metal0:IP=172.18.0.3 quay.io/coreos/dnsmasq \
-  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
   -- -d -q \
   --dhcp-range=172.18.0.50,172.18.0.99 \
   --enable-tftp \
