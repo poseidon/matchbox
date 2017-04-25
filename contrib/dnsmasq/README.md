@@ -9,7 +9,9 @@ The image bundles `undionly.kpxe` which chainloads PXE clients to iPXE and `grub
 Run the container image as a DHCP, DNS, and TFTP service.
 
 ```sh
-sudo rkt run --net=host quay.io/coreos/dnsmasq -- -d -q \
+sudo rkt run --net=host quay.io/coreos/dnsmasq \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
+  -- -d -q \
   --dhcp-range=192.168.1.3,192.168.1.254 \
   --enable-tftp \
   --tftp-root=/var/lib/tftpboot \

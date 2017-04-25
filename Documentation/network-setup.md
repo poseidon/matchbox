@@ -154,7 +154,7 @@ Run DHCP, TFTP, and DNS on the host's network:
 
 ```sh
 sudo rkt run --net=host quay.io/coreos/dnsmasq \
-  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
   -- -d -q \
   --dhcp-range=192.168.1.3,192.168.1.254 \
   --enable-tftp \
@@ -183,7 +183,7 @@ Run a proxy-DHCP and TFTP service on the host's network:
 
 ```sh
 sudo rkt run --net=host quay.io/coreos/dnsmasq \
-  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE \
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
   -- -d -q \
   --dhcp-range=192.168.1.1,proxy,255.255.255.0 \
   --enable-tftp --tftp-root=/var/lib/tftpboot \

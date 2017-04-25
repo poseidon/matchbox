@@ -114,7 +114,7 @@ sudo rkt run --net=metal0:IP=172.18.0.3 \
   --mount volume=config,target=/etc/dnsmasq.conf \
   --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf \
   quay.io/coreos/dnsmasq:v0.4.0 \
-  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE
+  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW
 ```
 
 If you get an error about the IP assignment, stop old pods and run garbage collection.
