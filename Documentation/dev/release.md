@@ -53,20 +53,20 @@ Verify the reported version.
 Sign the release tarballs and ACI with a [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) subkey.
 
 ```sh
-$ cd _output
-$ gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
-$ gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
-$ gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-arm.tar.gz
-$ gpg2 -a --default-key FC8A365E --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
+cd _output
+gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
+gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
+gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-linux-arm.tar.gz
+gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
 ```
 
 Verify the signatures.
 
 ```sh
-$ gpg2 --verify matchbox-$VERSION-linux-amd64.tar.gz.asc matchbox-$VERSION-linux-amd64.tar.gz
-$ gpg2 --verify matchbox-$VERSION-darwin-amd64.tar.gz.asc matchbox-$VERSION-darwin-amd64.tar.gz
-$ gpg2 --verify matchbox-$VERSION-linux-arm.tar.gz.asc matchbox-$VERSION-linux-arm.tar.gz
-$ gpg2 --verify matchbox-$VERSION-linux-arm64.tar.gz.asc matchbox-$VERSION-linux-arm64.tar.gz
+gpg2 --verify matchbox-$VERSION-linux-amd64.tar.gz.asc matchbox-$VERSION-linux-amd64.tar.gz
+gpg2 --verify matchbox-$VERSION-darwin-amd64.tar.gz.asc matchbox-$VERSION-darwin-amd64.tar.gz
+gpg2 --verify matchbox-$VERSION-linux-arm.tar.gz.asc matchbox-$VERSION-linux-arm.tar.gz
+gpg2 --verify matchbox-$VERSION-linux-arm64.tar.gz.asc matchbox-$VERSION-linux-arm64.tar.gz
 ```
 
 ## Publish
