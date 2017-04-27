@@ -50,8 +50,7 @@ systemd:
         [Unit]
         Description=Kubelet via Hyperkube ACI
         [Service]
-        Environment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
-        Environment=KUBELET_IMAGE_TAG=v1.6.1_coreos.0
+        EnvironmentFile=/etc/kubernetes/kubelet.env
         Environment="RKT_RUN_ARGS=--uuid-file-save=/var/run/kubelet-pod.uuid \
           --volume=resolv,kind=host,source=/etc/resolv.conf \
           --mount volume=resolv,target=/etc/resolv.conf \
@@ -78,7 +77,6 @@ systemd:
           --pod-manifest-path=/etc/kubernetes/manifests \
           --allow-privileged \
           --hostname-override={{.domain_name}} \
-          --node-labels=master=true \
           --node-labels=node-role.kubernetes.io/master \
           --cluster_dns={{.k8s_dns_service_ip}} \
           --cluster_domain=cluster.local
@@ -113,12 +111,13 @@ storage:
             - "-LROOT"
   {{end}}
   files:
-    - path: /etc/kubernetes/.empty
+    - path: /etc/kubernetes/kubelet.env
       filesystem: root
       mode: 0644
       contents:
         inline: |
-          empty
+          KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
+          KUBELET_IMAGE_TAG=v1.6.2_coreos.0
     - path: /etc/hostname
       filesystem: root
       mode: 0644
@@ -142,20 +141,20 @@ storage:
           #!/bin/bash
           # Wrapper for bootkube start
           set -e
-          mkdir -p /tmp/bootkube
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.4.0}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.4.1}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \
             --volume assets,kind=host,source=$BOOTKUBE_ASSETS \
             --mount volume=assets,target=/assets \
-            --volume bootstrap,kind=host,source=/etc/kubernetes/manifests \
-            --mount volume=bootstrap,target=/etc/kubernetes/manifests \
-            --volume temp,kind=host,source=/tmp/bootkube \
-            --mount volume=temp,target=/tmp/bootkube \
+            --volume bootstrap,kind=host,source=/etc/kubernetes \
+            --mount volume=bootstrap,target=/etc/kubernetes \
             $RKT_OPTS \
-            ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} --net=host --exec=/bootkube -- start --asset-dir=/assets "$@"
+            ${BOOTKUBE_ACI}:${BOOTKUBE_VERSION} \
+            --net=host \
+            --dns=host \
+            --exec=/bootkube -- start --asset-dir=/assets "$@"
 
 {{ if index . "ssh_authorized_keys" }}
 passwd:

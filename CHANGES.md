@@ -4,6 +4,10 @@ Notable changes between releases.
 
 ## Latest
 
+### Examples
+
+* Upgrade self-hosted Kubernetes cluster examples to v1.6.2
+
 ## v0.6.0 (2017-04-25)
 
 * New [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) plugin for Terraform users!
