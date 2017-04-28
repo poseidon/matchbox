@@ -24,10 +24,26 @@ bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 -
 
 ## Infrastructure
 
-Plan and apply terraform configurations. Create `bootkube-controller`, `bootkube-worker`, and `install-reboot` profiles and Container Linux configs. Create matcher groups for `node1.example.com`, `node2.example.com`, and `node3.example.com`.
+The bootkube-install example uses a [Terrform Module](https://www.terraform.io/docs/modules/index.html) called `profiles`. Before planning and applying the Terrafrom configurations, you must download and install this module.
 
 ```
 cd examples/bootkube-install
+terraform get
+Get: file:///path/to/your/matchbox/examples/terraform/modules/profiles
+```
+
+Instead of modifying the the example `profiles` module, you can create your own module and update the source reference in `bootkube.tf`. Terraform supports several [sources](https://www.terraform.io/docs/modules/sources.html) where modules can be downloaded from. Here is an example of using a GitHub source.
+```
+module "profiles" {
+  source                 = "git::https://github.com/coreos/matchbox.git//examples/terraform/modules/profiles?ref=64168bc42edd5f249b5f6c542319c202a308434b"
+  matchbox_http_endpoint = "${var.matchbox_http_endpoint}"
+  coreos_version         = "${var.container_linux_version}"
+}
+```
+
+Plan and apply terraform configurations. Create `bootkube-controller`, `bootkube-worker`, and `install-reboot` profiles and Container Linux configs. Create matcher groups for `node1.example.com`, `node2.example.com`, and `node3.example.com`.
+
+```
 terraform plan
 terraform apply
 ```
