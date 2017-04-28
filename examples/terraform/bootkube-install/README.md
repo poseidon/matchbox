@@ -1,6 +1,6 @@
 # Self-hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.1 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.2 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -9,17 +9,17 @@ The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes 
 * 3 machines with known DNS names and MAC addresses for this example
 * Matchbox provider credentials: a `client.crt`, `client.key`, and `ca.crt`.
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.0 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.1 and add it somewhere on your PATH.
 
 ```sh
 bootkube version
-Version v0.4.0
+Version v0.4.1
 ```
 
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 
 ```sh
-bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com
+bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=http://127.0.0.1:2379
 ```
 
 ## Infrastructure

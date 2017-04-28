@@ -15,7 +15,7 @@ main() {
   ./scripts/libvirt create
 
   echo "bootkube render"
-  ./bin/bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com
+  ./bin/bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=http://127.0.0.1:2379
 
   for i in `seq 1 10`; do
     ssh node1.example.com -o ConnectTimeout=5 -- 'echo "Connected"' && break

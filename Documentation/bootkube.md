@@ -1,6 +1,6 @@
 # Self-hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.1 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.2 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -11,11 +11,11 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.0 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.1 and add it somewhere on your PATH.
 
 ```sh
 $ bootkube version
-Version: v0.4.0
+Version: v0.4.1
 ```
 
 ## Examples
@@ -47,7 +47,7 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 
 ```sh
-$ bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com
+$ bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=http://127.0.0.1:2379
 ```
 
 ## Containers
