@@ -9,11 +9,11 @@ The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes 
 * 3 machines with known DNS names and MAC addresses for this example
 * Matchbox provider credentials: a `client.crt`, `client.key`, and `ca.crt`.
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.1 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.2 and add it somewhere on your PATH.
 
 ```sh
 bootkube version
-Version v0.4.1
+Version v0.4.2
 ```
 
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
