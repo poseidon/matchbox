@@ -32,5 +32,3 @@ bin/
 _output/
 tools/
 contrib/registry/data
-
-terraform.tfvars
