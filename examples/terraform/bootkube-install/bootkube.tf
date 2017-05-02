@@ -1,7 +1,7 @@
-// Create popular machine Profiles (convenience module)
+// Create popular profiles (convenience module)
 module "profiles" {
   source = "../modules/profiles"
-  matchbox_http_endpoint = "http://matchbox.example.com:8080"
+  matchbox_http_endpoint = "${var.matchbox_http_endpoint}"
   container_linux_version = "1298.7.0"
   container_linux_channel = "stable"
 }
@@ -14,8 +14,8 @@ resource "matchbox_group" "default" {
   metadata {
     container_linux_channel = "stable"
     container_linux_version = "1298.7.0"
-    ignition_endpoint = "http://matchbox.example.com:8080/ignition"
-    baseurl = "http://matchbox.example.com:8080/assets/coreos"
+    ignition_endpoint = "${var.matchbox_http_endpoint}/ignition"
+    baseurl = "${var.matchbox_http_endpoint}/assets/coreos"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
