@@ -232,7 +232,7 @@ $ curl http://matchbox.example.com:8080/assets/coreos/1298.7.0/
 <pre>...
 ```
 
-For large production environments, use a cache proxy or mirror suitable for your environment to serve CoreOS images. Review the cache proxy [guide](https://github.com/coreos/matchbox/blob/master/Documentation/proxy-setup.md) for details.
+For large production environments, use a cache proxy or mirror suitable for your environment to serve CoreOS images. See [contrib/squid](../contrib/squid/README.md) for details.
 
 ## Network
 

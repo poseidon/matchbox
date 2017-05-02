@@ -1,4 +1,4 @@
-# Cache Proxy
+# Squid Proxy (DRAFT)
 
 This guide shows how to setup a [Squid](http://www.squid-cache.org/) cache proxy for providing kernel/initrd files to PXE, iPXE, or GRUB2 client machines. This setup runs Squid as a Docker container using the [sameersbn/squid](https://quay.io/repository/sameersbn/squid)
 image.
