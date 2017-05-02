@@ -3,7 +3,12 @@ variable "matchbox_http_endpoint" {
   description = "Matchbox HTTP read-only endpoint (e.g. http://matchbox.example.com:8080)"
 }
 
-variable "coreos_version" {
-  type = "string"
-  description = "CoreOS kernel/initrd version to PXE boot. Must be present in matchbox assets."
+variable "container_linux_version" {
+  type        = "string"
+  description = "Container Linux version of the kernel/initrd to PXE or the image to install"
+}
+
+variable "container_linux_channel" {
+  type        = "string"
+  description = "Container Linux channel corresponding to the container_linux_version"
 }

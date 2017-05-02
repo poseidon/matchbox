@@ -2,17 +2,18 @@
 module "profiles" {
   source = "../modules/profiles"
   matchbox_http_endpoint = "http://matchbox.example.com:8080"
-  coreos_version = "1298.7.0"
+  container_linux_version = "1298.7.0"
+  container_linux_channel = "stable"
 }
 
-// Install CoreOS to disk before provisioning
+// Install Container Linux to disk before provisioning
 resource "matchbox_group" "default" {
   name = "default"
-  profile = "${module.profiles.coreos-install}"
+  profile = "${module.profiles.cached-container-linux-install}"
   // No selector, matches all nodes
   metadata {
-    coreos_channel = "stable"
-    coreos_version = "1298.7.0"
+    container_linux_channel = "stable"
+    container_linux_version = "1298.7.0"
     ignition_endpoint = "http://matchbox.example.com:8080/ignition"
     baseurl = "http://matchbox.example.com:8080/assets/coreos"
     ssh_authorized_key = "${var.ssh_authorized_key}"
@@ -67,4 +68,3 @@ resource "matchbox_group" "node3" {
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
-
