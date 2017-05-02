@@ -1,6 +1,6 @@
 # Self-hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.2 cluster. On-host kubelets wait for an apiserver to become reachable, then yield to kubelet pods scheduled via daemonset. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run on any controller to bootstrap a temporary apiserver which schedules control plane components as pods before exiting. An etcd cluster backs Kubernetes and coordinates CoreOS auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.2 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes and coordinate Container Linux auto-updates (enabled for disk installs).
 
 ## Requirements
 
