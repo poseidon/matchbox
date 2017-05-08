@@ -251,6 +251,7 @@ Run the container image with rkt.
 latest or most recent tagged `matchbox` [release](https://github.com/coreos/matchbox/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
 
 ```sh
+$ mkdir -p /var/lib/matchbox/assets
 $ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/coreos/matchbox:latest --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
@@ -261,7 +262,8 @@ Create machine profiles, groups, or Ignition configs by adding files to `/var/li
 Run the container image with docker.
 
 ```sh
-sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+$ mkdir -p /var/lib/matchbox/assets
+$ sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.
