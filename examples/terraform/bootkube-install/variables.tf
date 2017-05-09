@@ -18,3 +18,14 @@ variable "k8s_dns_service_ip" {
   default = "10.3.0.10"
   description = "Cluster DNS servce IP address passed via the Kubelet --cluster-dns flag"
 }
+
+variable "k8s_etcd_service_ip" {
+  type = "string"
+  default = "10.3.0.15"
+  description = "Cluster etcd service IP address, used if self-hosted etcd is enabled"
+}
+
+variable "experimental_self_hosted_etcd" {
+  default = "false"
+  description = "Create self-hosted etcd cluster as pods on Kubernetes, instead of on-hosts"
+}

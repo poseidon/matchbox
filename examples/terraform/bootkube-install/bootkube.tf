@@ -32,7 +32,9 @@ resource "matchbox_group" "node1" {
     domain_name = "node1.example.com"
     etcd_name = "node1"
     etcd_initial_cluster = "node1=http://node1.example.com:2380"
+    etcd_on_host = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip = "${var.k8s_dns_service_ip}"
+    k8s_etcd_service_ip = "${var.k8s_etcd_service_ip}"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
@@ -49,7 +51,9 @@ resource "matchbox_group" "node2" {
   metadata {
     domain_name = "node2.example.com"
     etcd_endpoints = "node1.example.com:2379"
+    etcd_on_host = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip = "${var.k8s_dns_service_ip}"
+    k8s_etcd_service_ip = "${var.k8s_etcd_service_ip}"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
@@ -64,7 +68,9 @@ resource "matchbox_group" "node3" {
   metadata {
     domain_name = "node3.example.com"
     etcd_endpoints = "node1.example.com:2379"
+    etcd_on_host = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip = "${var.k8s_dns_service_ip}"
+    k8s_etcd_service_ip = "${var.k8s_etcd_service_ip}"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
