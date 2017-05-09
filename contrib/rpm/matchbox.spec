@@ -8,7 +8,8 @@ Release:	2%{?dist}
 Summary:	Network boot and provision CoreOS machines
 License:	ASL 2.0
 URL:		https://%{import_path}
-Source0:	https://%{import_path}/archive/v%{version}.tar.gz
+Source0:        https://%{import_path}/archive/v%{version}/%{name}-%{version}.tar.gz
+
 
 BuildRequires: golang
 BuildRequires: systemd
@@ -28,9 +29,7 @@ ExclusiveArch: %{go_arches}
 BuildRequires: compiler(golang)
 
 %prep
-%setup
-# tarball has <repo>-<version> top level dir, not <name>-<version>
-#%setup -q -n %{repo}-%{version}
+%setup -q -n %{repo}-%{version}
 
 %build
 # create a Go workspace with a symlink to builddir source
