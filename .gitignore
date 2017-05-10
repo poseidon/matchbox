@@ -32,3 +32,4 @@ bin/
 _output/
 tools/
 contrib/registry/data
+contrib/rpm/*.tar.gz
