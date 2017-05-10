@@ -1,6 +1,7 @@
 ---
 systemd:
   units:
+    {{ if eq .etcd_on_host "true" }}
     - name: etcd-member.service
       enable: true
       dropins:
@@ -15,6 +16,7 @@ systemd:
             Environment="ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380"
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
             Environment="ETCD_STRICT_RECONFIG_CHECK=true"
+    {{ end }}
     - name: docker.service
       enable: true
     - name: locksmithd.service
@@ -23,6 +25,9 @@ systemd:
           contents: |
             [Service]
             Environment="REBOOT_STRATEGY=etcd-lock"
+            {{ if eq .etcd_on_host "false" -}}
+            Environment="LOCKSMITHD_ENDPOINT=http://{{.k8s_etcd_service_ip}}:2379"
+            {{ end }}
     - name: kubelet.path
       enable: true
       contents: |

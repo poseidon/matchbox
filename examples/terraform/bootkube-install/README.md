@@ -35,6 +35,8 @@ matchbox_rpc_endpoint = "matchbox.example.com:8081"
 ssh_authorized_key = "ADD ME"
 ```
 
+You may set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly. Warning, this is experimental and potentially dangerous.
+
 Configs in `bootkube-install` configure the matchbox provider, define profiles (e.g. `cached-container-linux-install`, `bootkube-controller`, `bootkube-worker`), and define 3 groups which match machines by MAC address to a profile. These resources declare that each machine should PXE boot and install Container Linux to disk. `node1` will provision itself as a controller, while `node2` and `noe3` provision themselves as workers.
 
 Fetch the [profiles](../README.md#modules) Terraform [module](https://www.terraform.io/docs/modules/index.html) which let's you use common machine profiles maintained in the matchbox repo (like `bootkube`).
@@ -53,6 +55,7 @@ Apply complete! Resources: 10 added, 0 changed, 0 destroyed.
 ```
 
 Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
+
 
 ## Machines
 
@@ -85,6 +88,12 @@ Use the `bootkube` tool to render Kubernetes manifests and credentials into an `
 
 ```sh
 bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=http://127.0.0.1:2379
+```
+
+If you set `experimental_self_hosted_etcd` to "true", use these flags instead:
+
+```sh
+bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --experimental-self-hosted-etcd
 ```
 
 Secure copy the kubeconfig to /etc/kubernetes/kubeconfig on every node which will path activate the `kubelet.service`.
