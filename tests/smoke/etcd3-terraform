@@ -8,7 +8,13 @@ main() {
   cleanup
   trap cleanup EXIT
 
-  ./scripts/devnet create etcd3
+  ./scripts/devnet create
+  
+  pushd examples/terraform/etcd3-install
+  terraform get
+  terraform apply -var-file $DIR/etcd3.tfvars
+  popd 
+
   ./scripts/libvirt create
 
   until etcd "node1.example.com" \

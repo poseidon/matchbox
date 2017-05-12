@@ -14,6 +14,7 @@ COREOS_VERSION=1298.7.0
 MATCHBOX_ARGS=""
 
 ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
+CONFIG_DIR="${CONFIG_DIR:-$PWD/examples/etc/matchbox}"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -87,10 +88,10 @@ function create {
     --trust-keys-from-https \
     --net=metal0:IP=172.18.0.2 \
     --mount volume=config,target=/etc/matchbox \
-    --volume config,kind=host,source=$PWD/examples/etc/matchbox,readOnly=true \
+    --volume config,kind=host,source=$CONFIG_DIR,readOnly=true \
     --mount volume=data,target=/var/lib/matchbox \
     $DATA_MOUNT \
-    quay.io/coreos/matchbox:c8af40108fb06f345a5fdae915874b0b1b606e1a -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
+    quay.io/coreos/matchbox:v0.6.0 -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   rkt rm --uuid-file=/var/run/dnsmasq-pod.uuid > /dev/null 2>&1
