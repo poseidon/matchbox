@@ -135,10 +135,10 @@ The `matchbox` gRPC API allows client apps (terraform-provider-matchbox, Tectoni
 
 If your organization manages public key infrastructure and a certificate authority, create a server certificate and key for the `matchbox` service and a client certificate and key for each client tool.
 
-Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `examples/etc/matchbox/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
+Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `scripts/tls/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
 
 ```sh
-$ cd examples/etc/matchbox
+$ cd scripts/tls
 # DNS or IP Subject Alt Names where matchbox can be reached
 $ export SAN=DNS.1:matchbox.example.com,IP.1:192.168.1.42
 $ ./cert-gen
