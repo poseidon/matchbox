@@ -94,10 +94,13 @@ systemd:
       contents: |
         [Unit]
         Description=Bootstrap a Kubernetes control plane with a temp api-server
+        ConditionPathExists=!/opt/bootkube/init_bootkube.done
         [Service]
-        Type=simple
+        Type=oneshot
+        RemainAfterExit=true
         WorkingDirectory=/opt/bootkube
         ExecStart=/opt/bootkube/bootkube-start
+        ExecStartPost=/bin/touch /opt/bootkube/init_bootkube.done
 storage:
   {{ if index . "pxe" }}
   disks:
@@ -146,6 +149,9 @@ storage:
           #!/bin/bash
           # Wrapper for bootkube start
           set -e
+          # Move experimental manifests
+          [ -d /opt/bootkube/assets/experimental/manifests ] && mv /opt/bootkube/assets/experimental/manifests/* /opt/bootkube/assets/manifests && rm -r /opt/bootkube/assets/experimental/manifests
+          [ -d /opt/bootkube/assets/experimental/bootstrap-manifests ] && mv /opt/bootkube/assets/experimental/bootstrap-manifests/* /opt/bootkube/assets/bootstrap-manifests && rm -r /opt/bootkube/assets/experimental/bootstrap-manifests
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
           BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.4.2}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"

@@ -4,7 +4,7 @@ Matchbox automates network booting and provisioning Container Linux clusters. Th
 
 | Name                          | Description                   |
 |-------------------------------|-------------------------------|
-| [etcd3-install](etcd-install) | Install a 3-node etcd3 cluster |
+| [etcd3-install](etcd3-install) | Install a 3-node etcd3 cluster |
 | [bootkube-install](bootkube-install) | Install a 3-node self-hosted Kubernetes v1.6.2 cluster | 
 
 ## Modules
@@ -38,7 +38,7 @@ Available modules:
 |          | etcd3-gateway | Provision an etcd3 gateway node |
 |          | bootkube-controller | Provision a self-hosted Kubernetes controller/master node |
 |          | bootkube-worker | Provisioner a self-hosted Kubernetes worker node |
-
+| bootkube |            | Creates a multi-controller, multi-worker self-hosted Kubernetes cluster |
 
 ## Customization
 

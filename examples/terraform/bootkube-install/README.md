@@ -1,6 +1,6 @@
 # Self-hosted Kubernetes
 
-The self-hosted Kubernetes example shows how to use matchbox to network boot and provision a 3 node "self-hosted" Kubernetes v1.6.2 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes and coordinate Container Linux auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example shows how to use matchbox to network boot and provision a 3 node "self-hosted" Kubernetes v1.6.2 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting.
 
 ## Requirements
 
@@ -10,7 +10,7 @@ Follow the getting started [tutorial](../../../Documentation/getting-started.md)
 * Matchbox provider credentials `client.crt`, `client.key`, and `ca.crt`
 * PXE [network boot](../../../Documentation/network-setup.md) environment
 * Terraform v0.9+ and [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) installed locally on your system
-* 3 machines with known DNS names and MAC addresses
+* Machines with known DNS names and MAC addresses
 
 If you prefer to provision QEMU/KVM VMs on your local Linux machine, set up the matchbox [development environment](../../../Documentation/getting-started-rkt.md).
 
@@ -32,14 +32,36 @@ Copy the `terraform.tfvars.example` file to `terraform.tfvars`. Ensure `provider
 ```hcl
 matchbox_http_endpoint = "http://matchbox.example.com:8080"
 matchbox_rpc_endpoint = "matchbox.example.com:8081"
+
+cluster_name = "demo"
+container_linux_version = "1298.7.0"
+container_linux_channel = "stable"
 ssh_authorized_key = "ADD ME"
+```
+
+Provide an ordered list of controller names, MAC addresses, and domain names. Provide an ordered list of worker names, MAC addresses, and domain names.
+
+```
+controller_names = ["node1"]
+controller_macs = ["52:54:00:a1:9c:ae"]
+controller_domains = ["node1.example.com"]
+worker_names = ["node2", "node3"]
+worker_macs = ["52:54:00:b2:2f:86", "52:54:00:c3:61:77"]
+worker_domains = ["node2.example.com", "node3.example.com"]
+```
+
+Finally, provide an `assets_dir` for generated manifests and a DNS name which you've setup to resolves to controller(s) (e.g. round-robin). Worker nodes and your kubeconfig will communicate via this endpoint.
+
+```
+k8s_domain_name = "cluster.example.com"
+asset_dir = "assets"
 ```
 
 You may set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly. Warning, this is experimental and potentially dangerous.
 
-Configs in `bootkube-install` configure the matchbox provider, define profiles (e.g. `cached-container-linux-install`, `bootkube-controller`, `bootkube-worker`), and define 3 groups which match machines by MAC address to a profile. These resources declare that each machine should PXE boot and install Container Linux to disk. `node1` will provision itself as a controller, while `node2` and `noe3` provision themselves as workers.
+## Apply
 
-Fetch the [profiles](../README.md#modules) Terraform [module](https://www.terraform.io/docs/modules/index.html) which let's you use common machine profiles maintained in the matchbox repo (like `bootkube`).
+Fetch the [bootkube](../README.md#modules) Terraform [module](https://www.terraform.io/docs/modules/index.html) for bare-metal, which is maintained in the in the matchbox repo.
 
 ```sh
 $ terraform get
@@ -49,13 +71,27 @@ Plan and apply to create the resources on Matchbox.
 
 ```sh
 $ terraform plan
-Plan: 10 to add, 0 to change, 0 to destroy.
-$ terraform apply
-Apply complete! Resources: 10 added, 0 changed, 0 destroyed.
+Plan: 37 to add, 0 to change, 0 to destroy.
 ```
 
-Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
+Terraform will configure matchbox with profiles (e.g. `cached-container-linux-install`, `bootkube-controller`, `bootkube-worker`) and add groups to match machines by MAC address to a profile. These resources declare that each machine should PXE boot and install Container Linux to disk. `node1` will provision itself as a controller, while `node2` and `noe3` provision themselves as workers.
 
+The module referenced in `cluster.tf` will also generate bootkube assets to `assets_dir` (exactly like the [bootkube](https://github.com/kubernetes-incubator/bootkube) binary would). These assets include Kubernetes bootstrapping and control plane manifests as well as a kubeconfig you can use to access the cluster. 
+
+```sh
+$ terraform apply
+module.cluster.null_resource.copy-kubeconfig.0: Still creating... (5m0s elapsed)
+module.cluster.null_resource.copy-kubeconfig.1: Still creating... (5m0s elapsed)
+module.cluster.null_resource.copy-kubeconfig.2: Still creating... (5m0s elapsed)
+...
+module.cluster.null_resource.bootkube-start: Still creating... (8m40s elapsed)
+...
+Apply complete! Resources: 37 added, 0 changed, 0 destroyed.
+```
+
+You can now move on to the "Machines" section. Apply will loop until it can successfully copy the kubeconfig to each node and start the one-time Kubernetes bootstrapping process on a controller. In practice, you may see `apply` fail if it connects before the disk install has completed. Run terraform apply until it reconciles successfully.
+
+Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
 
 ## Machines
 
@@ -71,56 +107,6 @@ For local QEMU/KVM development, create the QEMU/KVM VMs.
 ```sh
 $ sudo ./scripts/libvirt create
 $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
-```
-
-## bootkube
-
-*This section will soon be automated by terraform*
-
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.2 and add it somewhere on your PATH.
-
-```sh
-bootkube version
-Version v0.4.2
-```
-
-Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
-
-```sh
-bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=http://127.0.0.1:2379
-```
-
-If you set `experimental_self_hosted_etcd` to "true", use these flags instead:
-
-```sh
-bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --experimental-self-hosted-etcd
-```
-
-Secure copy the kubeconfig to /etc/kubernetes/kubeconfig on every node which will path activate the `kubelet.service`.
-
-```
-for node in 'node1' 'node2' 'node3'; do
-    scp assets/auth/kubeconfig core@$node.example.com:/home/core/kubeconfig
-    ssh core@$node.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
-done
-```
-
-Secure copy the bootkube generated assets to any controller node and run bootkube-start.
-
-```
-scp -r assets core@node1.example.com:/home/core
-ssh core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
-```
-
-Optionally watch bootkube start the Kubernetes control plane.
-
-```
-$ ssh core@node1.example.com 'journalctl -f -u bootkube'
-[  299.241291] bootkube[5]:     Pod Status:     kube-api-checkpoint     Running
-[  299.241618] bootkube[5]:     Pod Status:          kube-apiserver     Running
-[  299.241804] bootkube[5]:     Pod Status:          kube-scheduler     Running
-[  299.241993] bootkube[5]:     Pod Status: kube-controller-manager     Running
-[  299.311743] bootkube[5]: All self-hosted control plane components successfully started
 ```
 
 ## Verify
