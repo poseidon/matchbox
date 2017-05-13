@@ -10,7 +10,7 @@ main() {
   cleanup
   trap cleanup EXIT
 
-  ./scripts/get-kubectl
+  ./scripts/dev/get-kubectl
   ./scripts/tls/k8s-certgen -d $ASSETS_DIR/tls
   ./scripts/devnet create k8s
   ./scripts/libvirt create

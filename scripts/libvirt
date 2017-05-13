@@ -1,11 +1,8 @@
 #!/bin/bash
 # Manage VM nodes which have a specific set of hardware attributes.
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VM_MEMORY=${VM_MEMORY:-1024}
 VM_DISK=${VM_DISK:-10}
-
-source "${DIR}/common.sh"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -45,6 +42,18 @@ function usage {
 }
 
 COMMON_VIRT_OPTS="--memory=${VM_MEMORY} --vcpus=1 --pxe --disk pool=default,size=${VM_DISK} --os-type=linux --os-variant=generic --noautoconsole --events on_poweroff=preserve"
+
+NODE1_NAME=node1
+NODE1_MAC=52:54:00:a1:9c:ae
+
+NODE2_NAME=node2
+NODE2_MAC=52:54:00:b2:2f:86
+
+NODE3_NAME=node3
+NODE3_MAC=52:54:00:c3:61:77
+
+NODE4_NAME=node4
+NODE4_MAC=52:54:00:d7:99:c7
 
 function create_docker {
   virt-install --name $NODE1_NAME --network=bridge:docker0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network

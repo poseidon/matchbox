@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-GIT_SHA=$(./scripts/git-version)
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+GIT_SHA=$($DIR/git-version)
 
 # Start with an empty ACI
 acbuild --debug begin
