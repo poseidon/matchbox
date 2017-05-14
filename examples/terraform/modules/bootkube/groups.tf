@@ -10,11 +10,11 @@ resource "matchbox_group" "container-linux-install" {
   }
 
   metadata {
-    container_linux_channel     = "${var.container_linux_channel}"
-    container_linux_version     = "${var.container_linux_version}"
-    ignition_endpoint  = "${var.matchbox_http_endpoint}/ignition"
-    baseurl = "${var.matchbox_http_endpoint}/assets/coreos"
-    ssh_authorized_key = "${var.ssh_authorized_key}"
+    container_linux_channel = "${var.container_linux_channel}"
+    container_linux_version = "${var.container_linux_version}"
+    ignition_endpoint       = "${var.matchbox_http_endpoint}/ignition"
+    baseurl                 = "${var.matchbox_http_endpoint}/assets/coreos"
+    ssh_authorized_key      = "${var.ssh_authorized_key}"
   }
 }
 
@@ -32,9 +32,9 @@ resource "matchbox_group" "controller" {
     domain_name          = "${element(var.controller_domains, count.index)}"
     etcd_name            = "${element(var.controller_names, count.index)}"
     etcd_initial_cluster = "${join(",", formatlist("%s=http://%s:2380", var.controller_names, var.controller_domains))}"
-    etcd_on_host = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
+    etcd_on_host         = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip   = "${var.k8s_dns_service_ip}"
-    k8s_etcd_service_ip = "${var.k8s_etcd_service_ip}"
+    k8s_etcd_service_ip  = "${var.k8s_etcd_service_ip}"
     ssh_authorized_key   = "${var.ssh_authorized_key}"
   }
 }
@@ -50,11 +50,11 @@ resource "matchbox_group" "worker" {
   }
 
   metadata {
-    domain_name        = "${element(var.worker_domains, count.index)}"
-    etcd_endpoints     = "${join(",", formatlist("%s:2379", var.controller_domains))}"
-    etcd_on_host = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
-    k8s_dns_service_ip = "${var.k8s_dns_service_ip}"
+    domain_name         = "${element(var.worker_domains, count.index)}"
+    etcd_endpoints      = "${join(",", formatlist("%s:2379", var.controller_domains))}"
+    etcd_on_host        = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
+    k8s_dns_service_ip  = "${var.k8s_dns_service_ip}"
     k8s_etcd_service_ip = "${var.k8s_etcd_service_ip}"
-    ssh_authorized_key = "${var.ssh_authorized_key}"
+    ssh_authorized_key  = "${var.ssh_authorized_key}"
   }
 }

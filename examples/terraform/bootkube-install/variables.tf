@@ -1,10 +1,10 @@
 variable "matchbox_http_endpoint" {
-  type = "string"
+  type        = "string"
   description = "Matchbox HTTP read-only endpoint (e.g. http://matchbox.example.com:8080)"
 }
 
 variable "matchbox_rpc_endpoint" {
-  type = "string"
+  type        = "string"
   description = "Matchbox gRPC API endpoint, without the protocol (e.g. matchbox.example.com:8081)"
 }
 
@@ -19,12 +19,12 @@ variable "container_linux_version" {
 }
 
 variable "cluster_name" {
-  type = "string"
+  type        = "string"
   description = "Cluster name"
 }
 
 variable "ssh_authorized_key" {
-  type = "string"
+  type        = "string"
   description = "SSH public key to set as an authorized_key on machines"
 }
 
@@ -92,12 +92,12 @@ variable "k8s_dns_service_ip" {
 }
 
 variable "k8s_etcd_service_ip" {
-  type = "string"
-  default = "10.3.0.15"
+  type        = "string"
+  default     = "10.3.0.15"
   description = "Kubernetes service IP for self-hosted etcd, if enabled (must be within service_cidr)"
 }
 
 variable "experimental_self_hosted_etcd" {
-  default = "false"
+  default     = "false"
   description = "Create self-hosted etcd cluster as pods on Kubernetes, instead of on-hosts"
 }

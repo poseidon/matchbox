@@ -1,5 +1,5 @@
 variable "matchbox_http_endpoint" {
-  type = "string"
+  type        = "string"
   description = "Matchbox HTTP read-only endpoint (e.g. http://matchbox.example.com:8080)"
 }
 
