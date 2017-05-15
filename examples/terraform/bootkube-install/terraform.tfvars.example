@@ -17,3 +17,6 @@ worker_domains = ["node2.example.com", "node3.example.com"]
 # Bootkube
 k8s_domain_name = "cluster.example.com"
 asset_dir = "assets"
+
+# Optional
+# experimental_self_hosted_etcd = "true"
