@@ -1,4 +1,22 @@
 matchbox_http_endpoint = "http://matchbox.example.com:8080"
 matchbox_rpc_endpoint = "matchbox.example.com:8081"
 # ssh_authorized_key = "ADD ME"
-experimental_self_hosted_etcd = "false"
+
+cluster_name = "example"
+container_linux_version = "1298.7.0"
+container_linux_channel = "stable"
+
+# Machines
+controller_names = ["node1"]
+controller_macs = ["52:54:00:a1:9c:ae"]
+controller_domains = ["node1.example.com"]
+worker_names = ["node2", "node3"]
+worker_macs = ["52:54:00:b2:2f:86", "52:54:00:c3:61:77"]
+worker_domains = ["node2.example.com", "node3.example.com"]
+
+# Bootkube
+k8s_domain_name = "cluster.example.com"
+asset_dir = "assets"
+
+# Optional
+# experimental_self_hosted_etcd = "true"

@@ -3,11 +3,6 @@ variable "matchbox_http_endpoint" {
   description = "Matchbox HTTP read-only endpoint (e.g. http://matchbox.example.com:8080)"
 }
 
-variable "matchbox_rpc_endpoint" {
-  type        = "string"
-  description = "Matchbox gRPC API endpoint, without the protocol (e.g. matchbox.example.com:8081)"
-}
-
 variable "container_linux_channel" {
   type        = "string"
   description = "Container Linux channel corresponding to the container_linux_version"
