@@ -1,15 +1,6 @@
-# Examples with Terraform
+# Terraform Modules
 
-Matchbox automates network booting and provisioning Container Linux clusters. These examples show how to use matchbox with Teraform to create official reference clusters.
-
-| Name                          | Description                   |
-|-------------------------------|-------------------------------|
-| [etcd3-install](etcd3-install) | Install a 3-node etcd3 cluster |
-| [bootkube-install](bootkube-install) | Install a 3-node self-hosted Kubernetes v1.6.2 cluster | 
-
-## Modules
-
-Matchbox also provides Terraform [modules](https://www.terraform.io/docs/modules/usage.html) you can use directly within your own Terraform configs. Modules are updated regularly so it is **recommended** that you pin the module version (e.g. `ref=sha`) to keep your configs deterministic.
+Matchbox provides Terraform [modules](https://www.terraform.io/docs/modules/usage.html) you can re-use directly within your own Terraform configs. Modules are updated regularly so it is **recommended** that you pin the module version (e.g. `ref=sha`) to keep your configs deterministic.
 
 ```hcl
 module "profiles" {
