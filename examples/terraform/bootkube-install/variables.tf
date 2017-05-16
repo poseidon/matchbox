@@ -97,6 +97,12 @@ variable "k8s_etcd_service_ip" {
   description = "Kubernetes service IP for self-hosted etcd, if enabled (must be within service_cidr)"
 }
 
+variable "container_linux_oem" {
+  type        = "string"
+  default     = ""
+  description = "Specify an OEM image id to use as base for the installation (e.g. ami, vmware_raw, xen) or leave blank for the default image"
+}
+
 variable "experimental_self_hosted_etcd" {
   default     = "false"
   description = "Create self-hosted etcd cluster as pods on Kubernetes, instead of on-hosts"
