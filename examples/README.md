@@ -1,7 +1,24 @@
-
 # Examples
 
-These examples network boot and provision machines into Container Linux clusters using `matchbox`. You can re-use their profiles to provision your own physical machines.
+Matchbox automates network booting and provisioning of clusters. These examples show how to use matchbox on-premise or locally with [QEMU/KVM](scripts/README.md#libvirt).
+
+## Terraform Examples
+
+These examples use [Terraform](https://www.terraform.io/intro/) as a client to Matchbox.
+
+| Name                          | Description                   |
+|-------------------------------|-------------------------------|
+| [simple-install](terraform/simple-install) | Install Container Linux with an SSH key |
+| [etcd3-install](terraform/etcd3-install) | Install a 3-node etcd3 cluster |
+| [bootkube-install](terraform/bootkube-install) | Install a 3-node self-hosted Kubernetes v1.6.2 cluster |
+
+### Customization
+
+You are encouraged to look through the examples and Terraform modules. Implement your own profiles or package them as modules to meet your needs. We've just provided a starting point. Learn more about [matchbox](../Documentation/matchbox.md) and [Container Linux configs](../Documentation/container-linux-config.md).
+
+## Manual Examples
+
+These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/matchbox/` directory.
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
@@ -17,19 +34,9 @@ These examples network boot and provision machines into Container Linux clusters
 | bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 | bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 
-## Tutorials
+### Customization
 
-Get started running `matchbox` on your Linux machine to network boot and provision clusters of VMs or physical hardware.
-
-* [Getting Started](../Documentation/getting-started.md)
-	* [matchbox with rkt](../Documentation/getting-started-rkt.md)
-	* [matchbox with Docker](../Documentation/getting-started-docker.md)
-* [Kubernetes (static manifests)](../Documentation/kubernetes.md)
-* [Kubernetes (rktnetes)](../Documentation/rktnetes.md)
-* [Kubernetes (self-hosted)](../Documentation/bootkube.md)
-* [Lab Examples](https://github.com/dghubble/metal)
-
-## Autologin
+#### Autologin
 
 Example profiles pass the `coreos.autologin` kernel argument. This skips the password prompt for development and troubleshooting and should be removed **before production**.
 
@@ -46,8 +53,8 @@ Example groups allow `ssh_authorized_keys` to be added for the `core` user as me
         }
     }
 
-## Conditional Variables
+#### Conditional Variables
 
-### "pxe"
+**"pxe"**
 
 Some examples check the `pxe` variable to determine whether to create a `/dev/sda1` filesystem and partition for PXEing with `root=/dev/sda1` ("pxe":"true") or to write files to the existing filesystem on `/dev/disk/by-label/ROOT` ("pxe":"false").

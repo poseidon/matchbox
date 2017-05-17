@@ -1,12 +1,8 @@
 # matchbox [![Build Status](https://travis-ci.org/coreos/matchbox.svg?branch=master)](https://travis-ci.org/coreos/matchbox) [![GoDoc](https://godoc.org/github.com/coreos/matchbox?status.png)](https://godoc.org/github.com/coreos/matchbox) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
 
-Network boot and provision Container Linux clusters on virtual or physical hardware.
-
 **Announcement**: Matchbox [v0.6.0](https://github.com/coreos/matchbox/releases) is released with a new [Matchbox Terraform Provider][terraform] and [tutorial](Documentation/getting-started.md).
 
-## matchbox
-
-`matchbox` is a service that matches machines (based on labels like MAC, UUID, etc.) to profiles to PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], [Cloud-Config][cloud-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [terraform][terraform].
+`matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles to PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], [Cloud-Config][cloud-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [terraform][terraform].
 
 * [Documentation][docs]
 * [matchbox Service](Documentation/matchbox.md)
@@ -16,8 +12,7 @@ Network boot and provision Container Linux clusters on virtual or physical hardw
     * [Container Linux Config][cl-config]
     * [Cloud-Config][cloud-config]
 * [Configuration](Documentation/config.md)
-* [HTTP API](Documentation/api.md)
-* [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
+* [HTTP API](Documentation/api.md) / [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
 * [Background: Machine Lifecycle](Documentation/machine-lifecycle.md)
 * [Background: PXE Booting](Documentation/network-booting.md)
 
@@ -40,22 +35,33 @@ Local QEMU/KVM
 
 ### Example Clusters
 
-Network boot the [examples](examples) with [QEMU/KVM](scripts/README.md#libvirt) VMs to try them on your Linux laptop.
+Create [example](examples) clusters on-premise or locally with [QEMU/KVM](scripts/README.md#libvirt).
 
-* Multi-node [self-hosted](Documentation/bootkube.md) Kubernetes cluster
-* [Upgrading](Documentation/bootkube-upgrades.md) self-hosted Kubernetes clusters
-* Multi-node [Kubernetes cluster](Documentation/kubernetes.md)
-* Multi-node [rktnetes](Documentation/rktnetes.md) cluster (i.e. Kubernetes with rkt as the container runtime)
+**Terraform-based**
+
+* [simple-install](Documentation/getting-started.md) - Install Container Linux with an SSH key on all machines (beginner)
+* [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
+* [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node self-hosted Kubernetes v1.6.2 cluster
+* Terraform [Modules](examples/terraform/modules) - Re-usable Terraform Modules
+
+**Manual**
+
+* [etcd3](Documentation/getting-started-rkt.md) - Install a 3-node etcd3 cluster
+* [Kubernetes](Documentation/bootkube.md) - Install a 3-node self-hosted Kubernetes v1.6.2 cluster
+* Static [Kubernetes](Documentation/kubernetes.md) (discouraged, static systemd units)
+* Static [rktnetes](Documentation/rktnetes.md) (discouraged, static systemd units)
 
 ## Contrib
 
 * [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services with docker or rkt
+* [squid](contrib/squid/README.md) - Run a transparent cache proxy
+* [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) - Terraform plugin which supports "matchbox" provider
 
 ## Enterprise
 
 [Tectonic](https://coreos.com/tectonic/) is the enterprise-ready Kubernetes offering from CoreOS (free for 10 nodes!). The [Tectonic Installer](https://coreos.com/tectonic/docs/latest/install/bare-metal/#4-tectonic-installer) app integrates directly with `matchbox` through its gRPC API to provide a rich graphical client for populating `matchbox` with machine configs.
 
-Learn more from our [docs](https://coreos.com/tectonic/docs/latest/) or [blog](https://coreos.com/blog/tectonic-1-5-2.html).
+Learn more from our [docs](https://coreos.com/tectonic/docs/latest/) or [blog](https://coreos.com/blog/announcing-tectonic-1.6).
 
 ![Tectonic Installer](Documentation/img/tectonic-installer.png)
 
