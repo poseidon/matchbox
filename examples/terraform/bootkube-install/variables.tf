@@ -97,6 +97,12 @@ variable "k8s_etcd_service_ip" {
   description = "Kubernetes service IP for self-hosted etcd, if enabled (must be within service_cidr)"
 }
 
+variable "k8s_bootstrap_etcd_service_ip" {
+  type        = "string"
+  default     = "10.3.0.200"
+  description = "Kubernetes service IP for bootstrap self-hosted etcd, if enabled (must be within service_cidr)"
+}
+
 variable "container_linux_oem" {
   type        = "string"
   default     = ""

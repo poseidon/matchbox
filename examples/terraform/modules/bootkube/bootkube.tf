@@ -1,6 +1,6 @@
 # Self-hosted Kubernetes assets (kubeconfig, manifests)
 module "bootkube" {
-  source = "git::https://github.com/dghubble/bootkube-terraform.git?ref=bf57fb4de14638db481897b1c9228e974c2db90a"
+  source = "git::https://github.com/dghubble/bootkube-terraform.git?ref=209da6d09b1cadad655eee56d63ff0dc750c5bda"
 
   cluster_name                  = "${var.cluster_name}"
   api_servers                   = ["${var.k8s_domain_name}"]
@@ -11,5 +11,6 @@ module "bootkube" {
   kube_apiserver_service_ip     = "${var.k8s_apiserver_service_ip}"
   kube_dns_service_ip           = "${var.k8s_dns_service_ip}"
   kube_etcd_service_ip          = "${var.k8s_etcd_service_ip}"
+  kube_bootstrap_etcd_service_ip = "${var.k8s_bootstrap_etcd_service_ip}"
   experimental_self_hosted_etcd = "${var.experimental_self_hosted_etcd}"
 }
