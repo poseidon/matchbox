@@ -12,3 +12,9 @@ variable "ssh_authorized_key" {
   type        = "string"
   description = "SSH public key to set as an authorized_key on machines"
 }
+
+variable "container_linux_oem" {
+  type = "string"
+  default = ""
+  description = "Specify an OEM image id to use as base for the installation (e.g. ami, vmware_raw, xen) or leave blank for the default image"
+}
