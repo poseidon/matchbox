@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TERRAFORM_PID=0
+source "${DIR}/common"
+
+main() {
+  cleanup
+  trap cleanup EXIT
+
+  ./scripts/get-kubectl
+  ./scripts/devnet create
+  
+  # Add fake_rsa to ssh-agent
+  eval `ssh-agent -s`
+  chmod 600 ${DIR}/fake_rsa
+  ssh-add ${DIR}/fake_rsa
+
+  pushd examples/terraform/bootkube-install
+  terraform get
+  (until [[ "$(terraform apply -var-file ${DIR}/bootkube.tfvars)" == "0" ]]; do
+    echo "Wait and retry Terraform apply"
+    sleep 10
+  done) &
+  TERRAFORM_PID=$!
+  popd
+  
+  sleep 10
+  ./scripts/libvirt create
+
+  until kubelet "node1.example.com" \
+    && kubelet "node2.example.com" \
+    && kubelet "node3.example.com"
+  do
+    sleep 10
+    echo "Waiting for Kubelets to start..."
+  done
+
+  until [[ "$(readyNodes)" == "3" ]]; do
+    sleep 5
+    echo "$(readyNodes) of 3 nodes are Ready..."
+  done
+  
+  echo "Getting nodes..."
+  k8s get nodes
+
+  sleep 10
+  echo "Getting pods..."
+  k8s get pods --all-namespaces
+
+  echo "bootkube cluster came up!"
+  echo
+
+  rm -rf assets
+  cleanup
+}
+
+k8s() {
+  ./bin/kubectl --kubeconfig=examples/terraform/bootkube-install/assets/auth/kubeconfig "$@"
+}
+
+readyNodes() {
+  k8s get nodes -o template --template='{{range .items}}{{range .status.conditions}}{{if eq .type "Ready"}}{{.}}{{end}}{{end}}{{end}}' | grep -o -E True | wc -l
+}
+
+cleanup() {
+  ./scripts/libvirt destroy || true
+  ./scripts/devnet destroy || true
+  rkt gc --grace-period=0
+  if [[ -z "$TERRAFORM_PID" ]]; then
+    kill $TERRAFORM_PID
+  fi
+  rm -rf examples/terraform/bootkube-install/assets
+  rm -f examples/terraform/bootkube-install/*.tfstate*
+}
+
+main $@
