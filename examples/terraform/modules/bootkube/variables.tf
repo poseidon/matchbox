@@ -69,33 +69,12 @@ variable "pod_cidr" {
 }
 
 variable "service_cidr" {
-  description = "CIDR IP range to assign Kubernetes services"
+  description = <<EOD
+CIDR IP range to assign Kubernetes services.
+The 1st IP will be reserved for kube_apiserver, the 10th IP will be reserved for kube-dns, the 15th IP will be reserved for self-hosted etcd, and the 200th IP will be reserved for bootstrap self-hosted etcd.
+EOD
   type        = "string"
   default     = "10.3.0.0/16"
-}
-
-variable "k8s_apiserver_service_ip" {
-  description = "Kubernetes service IP for kube-apiserver (must be within service_cidr)"
-  type        = "string"
-  default     = "10.3.0.1"
-}
-
-variable "k8s_dns_service_ip" {
-  description = "Kubernetes service IP for kube-dns (must be within server_cidr)"
-  type        = "string"
-  default     = "10.3.0.10"
-}
-
-variable "k8s_etcd_service_ip" {
-  type        = "string"
-  default     = "10.3.0.15"
-  description = "Kubernetes service IP for self-hosted etcd, if enabled (must be within service_cidr)"
-}
-
-variable "k8s_bootstrap_etcd_service_ip" {
-  type        = "string"
-  default     = "10.3.0.200"
-  description = "Kubernetes service IP for bootstrap self-hosted etcd, if enabled (must be within service_cidr)"
 }
 
 variable "container_linux_oem" {
