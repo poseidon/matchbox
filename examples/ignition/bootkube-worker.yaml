@@ -107,7 +107,7 @@ storage:
       contents:
         inline: |
           KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
-          KUBELET_IMAGE_TAG=v1.6.2_coreos.0
+          KUBELET_IMAGE_TAG=v1.6.4_coreos.0
     - path: /etc/hostname
       filesystem: root
       mode: 0644
