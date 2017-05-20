@@ -2,7 +2,7 @@
 module "profiles" {
   source                  = "../modules/profiles"
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
-  container_linux_version = "1298.7.0"
+  container_linux_version = "1353.7.0"
   container_linux_channel = "stable"
 }
 
@@ -14,7 +14,7 @@ resource "matchbox_group" "default" {
   // No selector, matches all nodes
   metadata {
     container_linux_channel = "stable"
-    container_linux_version = "1298.7.0"
+    container_linux_version = "1353.7.0"
     container_linux_oem     = "${var.container_linux_oem}"
     ignition_endpoint       = "${var.matchbox_http_endpoint}/ignition"
     baseurl                 = "${var.matchbox_http_endpoint}/assets/coreos"

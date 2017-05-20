@@ -34,7 +34,7 @@ matchbox_http_endpoint = "http://matchbox.example.com:8080"
 matchbox_rpc_endpoint = "matchbox.example.com:8081"
 
 cluster_name = "demo"
-container_linux_version = "1298.7.0"
+container_linux_version = "1353.7.0"
 container_linux_channel = "stable"
 ssh_authorized_key = "ADD ME"
 ```
