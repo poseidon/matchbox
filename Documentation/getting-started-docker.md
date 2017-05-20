@@ -29,7 +29,7 @@ $ cd matchbox
 Download CoreOS image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
 
 ```sh
-$ ./scripts/get-coreos stable 1298.7.0 ./examples/assets
+$ ./scripts/get-coreos stable 1353.7.0 ./examples/assets
 ```
 
 For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name as you would in production.
