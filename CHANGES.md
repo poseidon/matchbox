@@ -6,7 +6,7 @@ Notable changes between releases.
 
 ### Examples
 
-* Upgrade self-hosted Kubernetes cluster examples to v1.6.2
+* Upgrade self-hosted Kubernetes cluster examples to v1.6.4
 * Add NoSchedule taint to self-hosted Kubernetes controllers
 
 ## v0.6.0 (2017-04-25)

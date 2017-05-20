@@ -71,8 +71,11 @@ cleanup() {
   if [[ -z "$TERRAFORM_PID" ]]; then
     kill $TERRAFORM_PID
   fi
-  rm -rf examples/terraform/bootkube-install/assets
-  rm -f examples/terraform/bootkube-install/*.tfstate*
+  pushd examples/terraform/bootkube-install
+  echo "yes" | terraform destroy || true
+  rm -f *.tfstate*
+  rm -rf assets
+  popd
 }
 
 main $@
