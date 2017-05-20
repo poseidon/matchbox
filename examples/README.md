@@ -22,13 +22,13 @@ These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/mat
 
 | Name       | Description | CoreOS Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
-| simple | CoreOS with autologin, using iPXE | stable/1298.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| simple-install | CoreOS Install, using iPXE | stable/1298.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS via GRUB2 Netboot | stable/1298.7.0 | RAM | NA |
-| etcd3 | PXE boot 3 node etcd3 cluster with proxies | stable/1298.7.0 | RAM | None |
-| etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1298.7.0 | Disk | None |
-| bootkube | PXE boot a self-hosted Kubernetes v1.6.4 cluster | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| bootkube-install | Install a self-hosted Kubernetes v1.6.4 cluster | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| simple | CoreOS with autologin, using iPXE | stable/1353.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| simple-install | CoreOS Install, using iPXE | stable/1353.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS via GRUB2 Netboot | stable/1353.7.0 | RAM | NA |
+| etcd3 | PXE boot a 3 node etcd3 cluster with proxies | stable/1353.7.0 | RAM | None |
+| etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1353.7.0 | Disk | None |
+| bootkube | PXE boot a self-hosted Kubernetes v1.6.4 cluster | stable/1353.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube-install | Install a self-hosted Kubernetes v1.6.4 cluster | stable/1353.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 
 ### Customization
 
