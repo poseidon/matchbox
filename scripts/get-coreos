@@ -9,7 +9,13 @@ set -eou pipefail
 GPG=${GPG:-/usr/bin/gpg}
 
 CHANNEL=${1:-"stable"}
-VERSION=${2:-"1298.7.0"}
+if [[ -z "${2:-}" ]]
+then
+    CURRENT_VERSION=$( curl -s \
+	"https://$CHANNEL.release.core-os.net/amd64-usr/current/version.txt" \
+	| sed -n 's/^COREOS_VERSION=\(.*\)/\1/p' )
+fi
+VERSION=${2:-"$CURRENT_VERSION"}
 DEST_DIR=${3:-"$PWD/examples/assets"}
 OEM_ID=${OEM_ID:-""}
 DEST=$DEST_DIR/coreos/$VERSION
