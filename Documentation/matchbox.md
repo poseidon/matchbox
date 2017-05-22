@@ -75,7 +75,7 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
 }
 ```
 
-The `"boot"` settings will be used to render configs to network boot programs such as iPXE, GRUB, or Pixiecore. You may reference remote kernel and initrd assets or [local assets](#assets).
+The `"boot"` settings will be used to render configs to network boot programs such as iPXE or GRUB. You may reference remote kernel and initrd assets or [local assets](#assets).
 
 To use Ignition, set the `coreos.config.url` kernel option to reference the `matchbox` [Ignition endpoint](api.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
 

@@ -4,6 +4,8 @@ Notable changes between releases.
 
 ## Latest
 
+* Remove pixiecore support (deprecated in v0.5.0)
+
 ### Examples
 
 * Upgrade self-hosted Kubernetes cluster examples to v1.6.4
