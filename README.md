@@ -48,8 +48,6 @@ Create [example](examples) clusters on-premise or locally with [QEMU/KVM](script
 
 * [etcd3](Documentation/getting-started-rkt.md) - Install a 3-node etcd3 cluster
 * [Kubernetes](Documentation/bootkube.md) - Install a 3-node self-hosted Kubernetes v1.6.4 cluster
-* Static [Kubernetes](Documentation/kubernetes.md) (discouraged, static systemd units)
-* Static [rktnetes](Documentation/rktnetes.md) (discouraged, static systemd units)
 
 ## Contrib
 

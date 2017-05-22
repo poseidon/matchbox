@@ -87,7 +87,6 @@ cat policy/etcd3.json
 ```
 
 (Optional) Configure Matchbox to not serve static assets by providing an empty assets-path value.
-**Note**: Asset serving is required for [Kubernetes TLS](https://github.com/coreos/matchbox/blob/master/Documentation/kubernetes.md#assets).
 ```
 # /etc/systemd/system/matchbox.service.d/override.conf
 [Service]
