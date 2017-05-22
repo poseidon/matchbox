@@ -55,16 +55,4 @@ parallel (
       }
     }
   },
-  "bootkube-terraform": {
-    node('fedora && bare-metal') {
-      stage('bootkube-terraform') {
-        timeout(time:15, unit:'MINUTES') {
-          checkout scm
-          sh '''#!/bin/bash -e
-          export ASSETS_DIR=~/assets; export CONFIG_DIR=~/matchbox/examples/etc/matchbox; ./tests/smoke/bootkube-terraform
-          '''
-        }
-      }
-    }
-  }
 )

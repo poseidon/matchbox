@@ -47,11 +47,11 @@ main() {
   done
   
   echo "Getting nodes..."
-  k8s get nodes
+  k8s get nodes || true
 
   sleep 10
   echo "Getting pods..."
-  k8s get pods --all-namespaces
+  k8s get pods --all-namespaces || true
 
   echo "bootkube cluster came up!"
   echo

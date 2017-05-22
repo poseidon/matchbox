@@ -1,10 +1,8 @@
 #!/bin/bash -e
 
 PKGS=$(go list ./... | grep -v /vendor)
-FORMATTABLE="$(ls -d */ | grep -v vendor/)"
-
-LINT_EXCLUDE='(/vendor|pb$)'
-LINTABLE=$(go list ./... | grep -v -E $LINT_EXCLUDE)
+FORMATTABLE=$(ls -d */ | grep -v -E '(vendor/|examples/)')
+LINTABLE=$(go list ./... | grep -v -E '(vendor/|pb$)')
 
 go test $PKGS -cover
 go vet $PKGS
