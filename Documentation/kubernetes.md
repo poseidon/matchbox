@@ -24,7 +24,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
 
 ```sh
-$ ./scripts/get-coreos stable 1298.7.0 ./examples/assets
+$ ./scripts/get-coreos stable 1353.7.0 ./examples/assets
 ```
 
 Optionally, add your SSH public key to each machine group definition [as shown](../examples/README.md#ssh-keys).
