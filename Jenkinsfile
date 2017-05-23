@@ -18,18 +18,6 @@ parallel (
       }
     }
   },
-  k8s: {
-    node('fedora && bare-metal') {
-      stage('k8s') {
-        timeout(time:12, unit:'MINUTES') {
-          checkout scm          
-          sh '''#!/bin/bash -e
-          export ASSETS_DIR=~/assets; ./tests/smoke/k8s
-          '''
-        }
-      }
-    }
-  },
   bootkube: {
     node('fedora && bare-metal') {
       stage('bootkube') {

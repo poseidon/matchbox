@@ -25,14 +25,10 @@ These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/mat
 | simple | CoreOS with autologin, using iPXE | stable/1298.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | simple-install | CoreOS Install, using iPXE | stable/1298.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | grub | CoreOS via GRUB2 Netboot | stable/1298.7.0 | RAM | NA |
-| etcd3 | A 3 node etcd3 cluster with proxies | stable/1298.7.0 | RAM | None |
+| etcd3 | PXE boot 3 node etcd3 cluster with proxies | stable/1298.7.0 | RAM | None |
 | etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1298.7.0 | Disk | None |
-| k8s | Kubernetes cluster with 1 master, 2 workers, and TLS-authentication | stable/1298.7.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| k8s-install | Kubernetes cluster, installed to disk | stable/1298.7.0 | Disk | [tutorial](../Documentation/kubernetes.md) |
-| rktnetes | Kubernetes cluster with rkt container runtime, 1 master, workers, TLS auth (experimental) | stable/1298.7.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
-| rktnetes-install | Kubernetes cluster with rkt container runtime, installed to disk (experimental) | stable/1298.7.0 | Disk | [tutorial](../Documentation/rktnetes.md) |
-| bootkube | iPXE boot a self-hosted Kubernetes cluster (with bootkube) | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| bootkube-install | Install a self-hosted Kubernetes cluster (with bootkube) | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube | PXE boot a self-hosted Kubernetes v1.6.4 cluster | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube-install | Install a self-hosted Kubernetes v1.6.4 cluster | stable/1298.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 
 ### Customization
 

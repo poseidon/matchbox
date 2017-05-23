@@ -180,4 +180,4 @@ Press ^] three times to stop any rkt pod.
 
 ## Going further
 
-Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters. Try the [k8s example](kubernetes.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters. Try the [k8s example](bootkube.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
