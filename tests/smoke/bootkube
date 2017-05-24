@@ -9,8 +9,8 @@ main() {
   cleanup
   trap cleanup EXIT
 
-  ./scripts/get-kubectl
-  ./scripts/get-bootkube
+  ./scripts/dev/get-kubectl
+  ./scripts/dev/get-bootkube
   ./scripts/devnet create bootkube
   ./scripts/libvirt create
 
