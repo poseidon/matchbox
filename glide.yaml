@@ -59,7 +59,7 @@ import:
 - package: github.com/spf13/cobra
   version: 65a708cee0a4424f4e353d031ce440643e312f92
 - package: golang.org/x/crypto
-  version: 5dc8cb4b8a8eb076cbb5a06bc3b8682c15bdbbd3
+  version: 7e9105388ebff089b3f99f0ef676ea55a6da3a7e
   subpackages:
   - cast5
   - openpgp
