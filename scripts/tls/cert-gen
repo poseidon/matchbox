@@ -41,5 +41,5 @@ openssl ca -batch -config openssl.conf -extensions usr_cert -days 365 -notext -m
 rm *.csr
 
 echo "*******************************************************************"
-echo "WARNING: Generating self-signed TLS-credentials. Its recommended to"
-echo "use your own organization's public key infrastructure"
+echo "WARNING: Generated credentials are self-signed. Prefer your"
+echo "organization's PKI for production deployments."
