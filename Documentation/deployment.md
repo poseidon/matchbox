@@ -43,12 +43,14 @@ $ cd matchbox-v0.6.0-linux-amd64
 
 ### RPM-based distro
 
-On an RPM-based provisioner, install the `matchbox` RPM from the Copr [repository](https://copr.fedorainfracloud.org/coprs/g/CoreOS/matchbox/) using `dnf` or `yum`.
+On an RPM-based provisioner (Fedora 24+), install the `matchbox` RPM from the Copr [repository](https://copr.fedorainfracloud.org/coprs/g/CoreOS/matchbox/) using `dnf`.
 
 ```sh
 dnf copr enable @CoreOS/matchbox
 dnf install matchbox
 ```
+
+RPMs are not currently available for CentOS and RHEL (due to Go version). CentOS and RHEL users should follow the Generic Linux section below.
 
 ### CoreOS
 
