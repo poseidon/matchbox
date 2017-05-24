@@ -57,7 +57,11 @@ k8s_domain_name = "cluster.example.com"
 asset_dir = "assets"
 ```
 
+### Options
+
 You may set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly. Warning, this is experimental and potentially dangerous.
+
+The example above defines a Kubernetes cluster with 1 controller and 2 workers. Check the `multi-controller.tfvars.example` for an example which defines 3 controllers and one worker.
 
 ## Apply
 
