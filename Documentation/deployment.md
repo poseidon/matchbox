@@ -127,31 +127,39 @@ $ sudo firewall-cmd --zone=MYZONE --add-port=8080/tcp --permanent
 $ sudo firewall-cmd --zone=MYZONE --add-port=8081/tcp --permanent
 ```
 
-## Generate TLS credentials
+## Generate TLS Certificates
 
-*Skip this unless you need to enable the gRPC API*
+The Matchbox gRPC API allows clients (terraform-provider-matchbox) to create and update Matchbox resources. TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
 
-The `matchbox` gRPC API allows client apps (terraform-provider-matchbox, Tectonic Installer, etc.) to update how machines are provisioned. TLS credentials are needed for client authentication and to establish a secure communication channel. Client machines (those PXE booting) read from the HTTP endpoints and do not require this setup.
+The `cert-gen` helper script generates a self-signed CA, server certificate, and client certificate. **Prefer your organization's PKI, if possible**
 
-If your organization manages public key infrastructure and a certificate authority, create a server certificate and key for the `matchbox` service and a client certificate and key for each client tool.
-
-Otherwise, generate a self-signed `ca.crt`, a server certificate  (`server.crt`, `server.key`), and client credentials (`client.crt`, `client.key`) with the `examples/etc/matchbox/cert-gen` script. Export the DNS name or IP (discouraged) of the provisioner host.
+Navigate to the `scripts/tls` directory.
 
 ```sh
-$ cd examples/etc/matchbox
-# DNS or IP Subject Alt Names where matchbox can be reached
-$ export SAN=DNS.1:matchbox.example.com,IP.1:192.168.1.42
+$ cd scripts/tls
+```
+
+Export `SAN` to set the Subject Alt Names which should be used in certificates. Provide the fully qualified domain name or IP (discouraged) where Matchbox will be installed.
+
+```sh
+# DNS or IP Subject Alt Names where matchbox runs
+$ export SAN=DNS.1:matchbox.example.com,IP.1:172.18.0.2
+```
+
+Generate a `ca.crt`, `server.crt`, `server.key`, `client.crt`, and `client.key`.
+
+```sh
 $ ./cert-gen
 ```
 
-Place the TLS credentials in the default location:
+Move TLS credentials to the matchbox server's default location.
 
 ```sh
 $ sudo mkdir -p /etc/matchbox
-$ sudo cp ca.crt server.crt server.key /etc/matchbox/
+$ sudo cp ca.crt server.crt server.key /etc/matchbox
 ```
 
-Save `client.crt`, `client.key`, and `ca.crt` to use with a client tool later.
+Save `client.crt`, `client.key`, and `ca.crt` for later use (e.g. `~/.matchbox`).
 
 ## Start matchbox
 
