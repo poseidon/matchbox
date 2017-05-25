@@ -6,6 +6,12 @@ Notable changes between releases.
 
 * Remove pixiecore support (deprecated in v0.5.0)
 
+## v0.6.1 (2017-05-25)
+
+* Improve the installation documentation
+* Move examples/etc/matchbox/cert-gen to scripts/tls
+* Build Matchbox with Go 1.8.3 for images and binaries
+
 ### Examples
 
 * Upgrade self-hosted Kubernetes cluster examples to v1.6.4

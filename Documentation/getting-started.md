@@ -34,7 +34,7 @@ Install [Terraform][terraform-dl] v0.9+ on your system.
 
 ```sh
 $ terraform version
-Terraform v0.9.2
+Terraform v0.9.4
 ```
 
 Add the `terraform-provider-matchbox` plugin binary on your system.
