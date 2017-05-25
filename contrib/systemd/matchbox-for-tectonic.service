@@ -4,7 +4,7 @@ Documentation=https://github.com/coreos/matchbox
 
 [Service]
 Environment="IMAGE=quay.io/coreos/matchbox"
-Environment="VERSION=v0.6.0"
+Environment="VERSION=v0.6.1"
 Environment="MATCHBOX_ADDRESS=0.0.0.0:8080"
 Environment="MATCHBOX_RPC_ADDRESS=0.0.0.0:8081"
 Environment="MATCHBOX_LOG_LEVEL=debug"

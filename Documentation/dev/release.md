@@ -8,7 +8,7 @@ This guide covers releasing new versions of matchbox.
 Create a release commit which updates old version references.
 
 ```sh
-$ export VERSION=v0.6.0
+$ export VERSION=v0.6.1
 ```
 
 ## Tag
@@ -45,7 +45,7 @@ $ make release
 Verify the reported version.
 
 ```
-./_output/matchbox-v0.6.0-linux-amd64/matchbox -version
+./_output/matchbox-v0.6.1-linux-amd64/matchbox -version
 ```
 
 ## Signing
@@ -54,10 +54,10 @@ Sign the release tarballs and ACI with a [CoreOS App Signing Key](https://coreos
 
 ```sh
 cd _output
-gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
-gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
-gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-linux-arm.tar.gz
-gpg2 --armor --local-user FC8A365E! --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
+gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
+gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
+gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-linux-arm.tar.gz
+gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
 ```
 
 Verify the signatures.
