@@ -17,6 +17,7 @@ pipeline {
                 sh '''#!/bin/bash -e
                 export ASSETS_DIR=~/assets; ./tests/smoke/etcd3
                 '''
+                deleteDir()
               }
             }
           },
@@ -28,6 +29,7 @@ pipeline {
                 chmod 600 ./tests/smoke/fake_rsa
                 export ASSETS_DIR=~/assets; ./tests/smoke/bootkube
                 '''
+                deleteDir()
               }
             }
           },
@@ -38,6 +40,7 @@ pipeline {
                 sh '''#!/bin/bash -e
                 export ASSETS_DIR=~/assets; export CONFIG_DIR=~/matchbox/examples/etc/matchbox; ./tests/smoke/etcd3-terraform
                 '''
+                deleteDir()
               }
             }
           },
