@@ -13,6 +13,12 @@ variable "ssh_authorized_key" {
   description = "SSH public key to set as an authorized_key on machines"
 }
 
+variable "install_disk" {
+  type = "string"
+  default = "/dev/sda"
+  description = "Disk device to which the install profiles should install Container Linux (e.g. /dev/sda)"
+}
+
 variable "container_linux_oem" {
   type = "string"
   default = ""

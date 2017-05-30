@@ -44,6 +44,7 @@ data "template_file" "container-linux-install-config" {
     container_linux_channel = "${var.container_linux_channel}"
     container_linux_version = "${var.container_linux_version}"
     ignition_endpoint = "${format("%s/ignition", var.matchbox_http_endpoint)}"
+    install_disk = "${var.install_disk}"
   }
 }
 

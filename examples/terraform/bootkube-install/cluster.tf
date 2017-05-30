@@ -18,10 +18,11 @@ module "cluster" {
   worker_domains     = "${var.worker_domains}"
 
   # bootkube assets
-  k8s_domain_name               = "${var.k8s_domain_name}"
-  asset_dir                     = "${var.asset_dir}"
+  k8s_domain_name = "${var.k8s_domain_name}"
+  asset_dir       = "${var.asset_dir}"
 
   # Optional
+  install_disk                  = "${var.install_disk}"
   container_linux_oem           = "${var.container_linux_oem}"
   experimental_self_hosted_etcd = "${var.experimental_self_hosted_etcd}"
 }

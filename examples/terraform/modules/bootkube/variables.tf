@@ -77,6 +77,14 @@ EOD
   default     = "10.3.0.0/16"
 }
 
+# optional
+
+variable "install_disk" {
+  type = "string"
+  default = "/dev/sda"
+  description = "Disk device to which the install profiles should install Container Linux (e.g. /dev/sda)"
+}
+
 variable "container_linux_oem" {
   type        = "string"
   default     = ""

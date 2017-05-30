@@ -32,16 +32,16 @@ Copy the `terraform.tfvars.example` file to `terraform.tfvars`. Ensure `provider
 ```hcl
 matchbox_http_endpoint = "http://matchbox.example.com:8080"
 matchbox_rpc_endpoint = "matchbox.example.com:8081"
+ssh_authorized_key = "ADD ME"
 
 cluster_name = "demo"
 container_linux_version = "1353.7.0"
 container_linux_channel = "stable"
-ssh_authorized_key = "ADD ME"
 ```
 
 Provide an ordered list of controller names, MAC addresses, and domain names. Provide an ordered list of worker names, MAC addresses, and domain names.
 
-```
+```hcl
 controller_names = ["node1"]
 controller_macs = ["52:54:00:a1:9c:ae"]
 controller_domains = ["node1.example.com"]
@@ -50,18 +50,26 @@ worker_macs = ["52:54:00:b2:2f:86", "52:54:00:c3:61:77"]
 worker_domains = ["node2.example.com", "node3.example.com"]
 ```
 
-Finally, provide an `assets_dir` for generated manifests and a DNS name which you've setup to resolves to controller(s) (e.g. round-robin). Worker nodes and your kubeconfig will communicate via this endpoint.
+Provide an `assets_dir` for generated manifests and a DNS name which you've setup to resolves to controller(s) (e.g. round-robin). Worker nodes and your kubeconfig will communicate via this endpoint.
 
-```
+```hcl
 k8s_domain_name = "cluster.example.com"
 asset_dir = "assets"
 ```
 
-### Options
+Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
 
-You may set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly. Warning, this is experimental and potentially dangerous.
+### Optional
 
-The example above defines a Kubernetes cluster with 1 controller and 2 workers. Check the `multi-controller.tfvars.example` for an example which defines 3 controllers and one worker.
+You may set certain optional variables to override defaults. Set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly.
+
+```hcl
+# install_disk = "/dev/sda"
+# container_linux_oem = ""
+# experimental_self_hosted_etcd = "true"
+```
+
+The default is to create a Kubernetes cluster with 1 controller and 2 workers as an example, but check `multi-controller.tfvars.example` for an example which defines 3 controllers and 1 worker.
 
 ## Apply
 
@@ -94,8 +102,6 @@ Apply complete! Resources: 37 added, 0 changed, 0 destroyed.
 ```
 
 You can now move on to the "Machines" section. Apply will loop until it can successfully copy the kubeconfig to each node and start the one-time Kubernetes bootstrapping process on a controller. In practice, you may see `apply` fail if it connects before the disk install has completed. Run terraform apply until it reconciles successfully.
-
-Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
 
 ## Machines
 

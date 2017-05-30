@@ -4,6 +4,7 @@ module "profiles" {
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
   container_linux_version = "1353.7.0"
   container_linux_channel = "stable"
+  install_disk = "${var.install_disk}"
 }
 
 // Install Container Linux to disk before provisioning
