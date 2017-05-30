@@ -14,7 +14,7 @@ resource "matchbox_profile" "container-linux-install" {
     "console=ttyS0",
   ]
 
-  container_linux_config = "${file("${path.module}/cl/container-linux-install.yaml.tmpl")}"
+  container_linux_config = "${data.template_file.container-linux-install-config.rendered}"
 }
 
 // Container Linux Install profile (from matchbox /assets cache)
@@ -34,7 +34,17 @@ resource "matchbox_profile" "cached-container-linux-install" {
     "console=ttyS0",
   ]
 
-  container_linux_config = "${file("${path.module}/cl/container-linux-install.yaml.tmpl")}"
+  container_linux_config = "${data.template_file.container-linux-install-config.rendered}"
+}
+
+data "template_file" "container-linux-install-config" {
+  template = "${file("${path.module}/cl/container-linux-install.yaml.tmpl")}"
+
+  vars {
+    container_linux_channel = "${var.container_linux_channel}"
+    container_linux_version = "${var.container_linux_version}"
+    ignition_endpoint = "${format("%s/ignition", var.matchbox_http_endpoint)}"
+  }
 }
 
 // etcd3 profile
