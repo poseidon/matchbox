@@ -73,15 +73,22 @@ variable "service_cidr" {
 CIDR IP range to assign Kubernetes services.
 The 1st IP will be reserved for kube_apiserver, the 10th IP will be reserved for kube-dns, the 15th IP will be reserved for self-hosted etcd, and the 200th IP will be reserved for bootstrap self-hosted etcd.
 EOD
-  type        = "string"
-  default     = "10.3.0.0/16"
+
+  type    = "string"
+  default = "10.3.0.0/16"
 }
 
 # optional
 
+variable "cached_install" {
+  type        = "string"
+  default     = "false"
+  description = "Whether Container Linux should PXE boot and install from matchbox /assets cache. Note that the admin must have downloaded the container_linux_version into matchbox assets."
+}
+
 variable "install_disk" {
-  type = "string"
-  default = "/dev/sda"
+  type        = "string"
+  default     = "/dev/sda"
   description = "Disk device to which the install profiles should install Container Linux (e.g. /dev/sda)"
 }
 

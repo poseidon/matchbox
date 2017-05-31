@@ -16,7 +16,13 @@ variable "container_linux_channel" {
 # optional
 
 variable "install_disk" {
-  type = "string"
-  default = "/dev/sda"
+  type        = "string"
+  default     = "/dev/sda"
   description = "Disk device to which the install profiles should install Container Linux (e.g. /dev/sda)"
+}
+
+variable "container_linux_oem" {
+  type        = "string"
+  default     = ""
+  description = "Specify an OEM image id to use as base for the installation (e.g. ami, vmware_raw, xen) or leave blank for the default image"
 }

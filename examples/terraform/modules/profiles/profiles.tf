@@ -17,6 +17,21 @@ resource "matchbox_profile" "container-linux-install" {
   container_linux_config = "${data.template_file.container-linux-install-config.rendered}"
 }
 
+data "template_file" "container-linux-install-config" {
+  template = "${file("${path.module}/cl/container-linux-install.yaml.tmpl")}"
+
+  vars {
+    container_linux_channel = "${var.container_linux_channel}"
+    container_linux_version = "${var.container_linux_version}"
+    ignition_endpoint       = "${format("%s/ignition", var.matchbox_http_endpoint)}"
+    install_disk            = "${var.install_disk}"
+    container_linux_oem     = "${var.container_linux_oem}"
+
+    # only cached-container-linux profile adds -b baseurl
+    baseurl_flag = ""
+  }
+}
+
 // Container Linux Install profile (from matchbox /assets cache)
 // Note: Admin must have downloaded container_linux_version into matchbox assets.
 resource "matchbox_profile" "cached-container-linux-install" {
@@ -34,17 +49,21 @@ resource "matchbox_profile" "cached-container-linux-install" {
     "console=ttyS0",
   ]
 
-  container_linux_config = "${data.template_file.container-linux-install-config.rendered}"
+  container_linux_config = "${data.template_file.cached-container-linux-install-config.rendered}"
 }
 
-data "template_file" "container-linux-install-config" {
+data "template_file" "cached-container-linux-install-config" {
   template = "${file("${path.module}/cl/container-linux-install.yaml.tmpl")}"
 
   vars {
     container_linux_channel = "${var.container_linux_channel}"
     container_linux_version = "${var.container_linux_version}"
-    ignition_endpoint = "${format("%s/ignition", var.matchbox_http_endpoint)}"
-    install_disk = "${var.install_disk}"
+    ignition_endpoint       = "${format("%s/ignition", var.matchbox_http_endpoint)}"
+    install_disk            = "${var.install_disk}"
+    container_linux_oem     = "${var.container_linux_oem}"
+
+    # profile uses -b baseurl to install from matchbox cache
+    baseurl_flag = "-b ${var.matchbox_http_endpoint}/assets/coreos"
   }
 }
 

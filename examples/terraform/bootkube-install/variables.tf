@@ -85,6 +85,12 @@ EOD
 
 # optional
 
+variable "cached_install" {
+  type        = "string"
+  default     = "false"
+  description = "Whether Container Linux should PXE boot and install from matchbox /assets cache. Note that the admin must have downloaded the container_linux_version into matchbox assets."
+}
+
 variable "install_disk" {
   type        = "string"
   default     = "/dev/sda"
