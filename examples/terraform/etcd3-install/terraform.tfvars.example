@@ -2,5 +2,6 @@ matchbox_http_endpoint = "http://matchbox.example.com:8080"
 matchbox_rpc_endpoint = "matchbox.example.com:8081"
 # ssh_authorized_key = "ADD ME"
 
-# Optional
+# Optional (defaults)
+# install_disk = "/dev/sda"
 # container_linux_oem = ""

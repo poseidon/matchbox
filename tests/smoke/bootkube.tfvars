@@ -19,5 +19,4 @@ k8s_domain_name = "cluster.example.com"
 asset_dir = "assets"
 
 # Optional
-# container_linux_oem = ""
-# experimental_self_hosted_etcd = "true"
+cached_install = "true"

@@ -37,6 +37,19 @@ ssh_authorized_key = "ADD ME"
 
 Configs in `etcd3-install` configure the matchbox provider, define profiles (e.g. `cached-container-linux-install`, `etcd3`), and define 3 groups which match machines by MAC address to a profile. These resources declare that the machines should PXE boot, install Container Linux to disk, and provision themselves into peers in a 3-node etcd3 cluster.
 
+Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
+
+### Optional
+
+You may set certain optional variables to override defaults.
+
+```hcl
+# install_disk = "/dev/sda"
+# container_linux_oem = ""
+```
+
+## Apply
+
 Fetch the [profiles](../README.md#modules) Terraform [module](https://www.terraform.io/docs/modules/index.html) which let's you use common machine profiles maintained in the matchbox repo (like `etcd3`).
 
 ```sh
@@ -51,8 +64,6 @@ Plan: 10 to add, 0 to change, 0 to destroy.
 $ terraform apply
 Apply complete! Resources: 10 added, 0 changed, 0 destroyed.
 ```
-
-Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
 
 ## Machines
 

@@ -4,6 +4,8 @@ module "profiles" {
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
   container_linux_version = "1353.7.0"
   container_linux_channel = "stable"
+  install_disk            = "${var.install_disk}"
+  container_linux_oem     = "${var.container_linux_oem}"
 }
 
 // Install Container Linux to disk before provisioning
@@ -12,13 +14,9 @@ resource "matchbox_group" "default" {
   profile = "${module.profiles.cached-container-linux-install}"
 
   // No selector, matches all nodes
+
   metadata {
-    container_linux_channel = "stable"
-    container_linux_version = "1353.7.0"
-    container_linux_oem     = "${var.container_linux_oem}"
-    ignition_endpoint       = "${var.matchbox_http_endpoint}/ignition"
-    baseurl                 = "${var.matchbox_http_endpoint}/assets/coreos"
-    ssh_authorized_key      = "${var.ssh_authorized_key}"
+    ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
 
