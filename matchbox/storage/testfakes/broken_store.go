@@ -68,12 +68,22 @@ func (s *BrokenStore) IgnitionDelete(name string) error {
 	return errIntentional
 }
 
-// CloudGet returns an error.
-func (s *BrokenStore) CloudGet(name string) (string, error) {
-	return "", errIntentional
+// GenericPut returns an error.
+func (s *BrokenStore) GenericPut(name string, config []byte) error {
+	return errIntentional
 }
 
 // GenericGet returns an error.
 func (s *BrokenStore) GenericGet(name string) (string, error) {
+	return "", errIntentional
+}
+
+// GenericDelete returns an error.
+func (s *BrokenStore) GenericDelete(name string) error {
+	return errIntentional
+}
+
+// CloudGet returns an error.
+func (s *BrokenStore) CloudGet(name string) (string, error) {
 	return "", errIntentional
 }

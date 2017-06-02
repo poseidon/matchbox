@@ -49,11 +49,15 @@ type Server interface {
 	// Delete an Ignition template by name.
 	IgnitionDelete(context.Context, *pb.IgnitionDeleteRequest) error
 
+	// Create or update an Generic template.
+	GenericPut(context.Context, *pb.GenericPutRequest) (string, error)
+	// Get an Generic template by name.
+	GenericGet(context.Context, *pb.GenericGetRequest) (string, error)
+	// Delete an Generic template by name.
+	GenericDelete(context.Context, *pb.GenericDeleteRequest) error
+
 	// Get a Cloud-Config template by name.
 	CloudGet(ctx context.Context, name string) (string, error)
-
-	// Get a generic template by name.
-	GenericGet(ctc context.Context, name string) (string, error)
 }
 
 // Config configures a server implementation.
@@ -182,17 +186,31 @@ func (s *server) IgnitionGet(ctx context.Context, req *pb.IgnitionGetRequest) (s
 	return s.store.IgnitionGet(req.Name)
 }
 
-// IgnitionGet deletes an Ignition template by name.
+// IgnitionDelete deletes an Ignition template by name.
 func (s *server) IgnitionDelete(ctx context.Context, req *pb.IgnitionDeleteRequest) error {
 	return s.store.IgnitionDelete(req.Name)
+}
+
+// GenericPut creates or updates an Generic template by name.
+func (s *server) GenericPut(ctx context.Context, req *pb.GenericPutRequest) (string, error) {
+	err := s.store.GenericPut(req.Name, req.Config)
+	if err != nil {
+		return "", err
+	}
+	return string(req.Config), err
+}
+
+// GenericGet gets an Generic template by name.
+func (s *server) GenericGet(ctx context.Context, req *pb.GenericGetRequest) (string, error) {
+	return s.store.GenericGet(req.Name)
+}
+
+// GenericDelete deletes an Generic template by name.
+func (s *server) GenericDelete(ctx context.Context, req *pb.GenericDeleteRequest) error {
+	return s.store.GenericDelete(req.Name)
 }
 
 // CloudGet gets a Cloud-Config template by name.
 func (s *server) CloudGet(ctx context.Context, name string) (string, error) {
 	return s.store.CloudGet(name)
-}
-
-// GenericGet gets a generic template by name.
-func (s *server) GenericGet(ctx context.Context, name string) (string, error) {
-	return s.store.GenericGet(name)
 }

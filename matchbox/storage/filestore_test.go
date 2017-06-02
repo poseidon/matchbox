@@ -187,6 +187,45 @@ func TestIgnitionGet(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestGenericCRUD(t *testing.T) {
+	dir, err := setup(&fake.FixedStore{})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	// assert that:
+	// - Generic template creation was successful
+	// - Generic template can be retrieved by name
+	// - Generic template can be deleted by name
+	err = store.GenericPut(fake.GenericName, []byte(fake.Generic))
+	assert.Nil(t, err)
+
+	template, err := store.GenericGet(fake.GenericName)
+	assert.Nil(t, err)
+	assert.Equal(t, fake.Generic, template)
+
+	err = store.GenericDelete(fake.GenericName)
+	assert.Nil(t, err)
+	_, err = store.GenericGet(fake.GenericName)
+	if assert.Error(t, err) {
+		assert.IsType(t, err, &os.PathError{})
+	}
+}
+
+func TestGenericGet(t *testing.T) {
+	contents := `{"ignitionVersion":1,"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
+	dir, err := setup(&fake.FixedStore{
+		GenericConfigs: map[string]string{"generic": contents},
+	})
+	assert.Nil(t, err)
+	defer os.RemoveAll(dir)
+
+	store := NewFileStore(&Config{Root: dir})
+	ign, err := store.GenericGet("generic")
+	assert.Equal(t, contents, ign)
+	assert.Nil(t, err)
+}
+
 func TestCloudGet(t *testing.T) {
 	contents := "#cloud-config"
 	dir, err := setup(&fake.FixedStore{
@@ -213,8 +252,9 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 	profileDir := filepath.Join(root, "profiles")
 	groupDir := filepath.Join(root, "groups")
 	ignitionDir := filepath.Join(root, "ignition")
+	genericDir := filepath.Join(root, "generic")
 	cloudDir := filepath.Join(root, "cloud")
-	if err := mkdirs(profileDir, groupDir, ignitionDir, cloudDir); err != nil {
+	if err := mkdirs(profileDir, groupDir, ignitionDir, genericDir, cloudDir); err != nil {
 		return root, err
 	}
 	// files
@@ -247,6 +287,13 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 	for name, content := range fixedStore.IgnitionConfigs {
 		ignitionFile := filepath.Join(ignitionDir, name)
 		err = ioutil.WriteFile(ignitionFile, []byte(content), defaultFileMode)
+		if err != nil {
+			return root, err
+		}
+	}
+	for name, content := range fixedStore.GenericConfigs {
+		genericFile := filepath.Join(genericDir, name)
+		err = ioutil.WriteFile(genericFile, []byte(content), defaultFileMode)
 		if err != nil {
 			return root, err
 		}
