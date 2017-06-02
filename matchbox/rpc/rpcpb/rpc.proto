@@ -26,12 +26,21 @@ service Profiles {
 }
 
 service Ignition {
-  // Create or update an Container Linux Config template.
+  // Create or update a Container Linux Config template.
   rpc IgnitionPut(serverpb.IgnitionPutRequest) returns (serverpb.IgnitionPutResponse) {};
   // Get a Container Linux Config template by name.
   rpc IgnitionGet(serverpb.IgnitionGetRequest) returns (serverpb.IgnitionGetResponse) {};
   // Delete a Container Linux Config template by name.
   rpc IgnitionDelete(serverpb.IgnitionDeleteRequest) returns (serverpb.IgnitionDeleteResponse) {};
+}
+
+service Generic {
+  // Create or update a Generic template.
+  rpc GenericPut(serverpb.GenericPutRequest) returns (serverpb.GenericPutResponse) {};
+  // Get a Generic template by name.
+  rpc GenericGet(serverpb.GenericGetRequest) returns (serverpb.GenericGetResponse) {};
+  // Delete a Generic template by name.
+  rpc GenericDelete(serverpb.GenericDeleteRequest) returns (serverpb.GenericDeleteResponse) {};
 }
 
 service Select {

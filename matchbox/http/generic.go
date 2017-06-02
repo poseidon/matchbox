@@ -35,7 +35,7 @@ func (s *Server) genericHandler(core server.Server) ContextHandler {
 			http.NotFound(w, req)
 			return
 		}
-		contents, err := core.GenericGet(ctx, profile.GenericId)
+		contents, err := core.GenericGet(ctx, &pb.GenericGetRequest{Name: profile.GenericId})
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
 				"labels":     labelsFromRequest(nil, req),

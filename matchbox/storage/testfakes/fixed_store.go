@@ -108,18 +108,30 @@ func (s *FixedStore) IgnitionDelete(name string) error {
 	return nil
 }
 
+// GenericPut create or updates an Generic template.
+func (s *FixedStore) GenericPut(name string, config []byte) error {
+	s.GenericConfigs[name] = string(config)
+	return nil
+}
+
+// GenericGet returns an Generic template by name.
+func (s *FixedStore) GenericGet(name string) (string, error) {
+	if config, present := s.GenericConfigs[name]; present {
+		return config, nil
+	}
+	return "", fmt.Errorf("no Generic template %s", name)
+}
+
+// GenericDelete deletes an Generic template by name.
+func (s *FixedStore) GenericDelete(name string) error {
+	delete(s.GenericConfigs, name)
+	return nil
+}
+
 // CloudGet returns a Cloud-config template by name.
 func (s *FixedStore) CloudGet(name string) (string, error) {
 	if config, present := s.CloudConfigs[name]; present {
 		return config, nil
 	}
 	return "", fmt.Errorf("no Cloud-Config template %s", name)
-}
-
-// GenericGet returns a generic template by name.
-func (s *FixedStore) GenericGet(name string) (string, error) {
-	if config, present := s.GenericConfigs[name]; present {
-		return config, nil
-	}
-	return "", fmt.Errorf("no generic template %s", name)
 }

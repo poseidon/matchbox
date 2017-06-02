@@ -228,3 +228,38 @@ func TestIgnition_BrokenStore(t *testing.T) {
 	assert.Error(t, err)
 	err = srv.IgnitionDelete(context.Background(), &pb.IgnitionDeleteRequest{Name: fake.IgnitionYAMLName})
 }
+
+func TestGenericCRUD(t *testing.T) {
+	srv := NewServer(&Config{Store: fake.NewFixedStore()})
+	req := &pb.GenericPutRequest{
+		Name:   fake.GenericName,
+		Config: []byte(fake.Generic),
+	}
+	_, err := srv.GenericPut(context.Background(), req)
+	// assert that:
+	// - Generic template creation is successful
+	// - Generic template can be retrieved by name
+	// - Generic template can be deleted by name
+	assert.Nil(t, err)
+	template, err := srv.GenericGet(context.Background(), &pb.GenericGetRequest{Name: fake.GenericName})
+	assert.Equal(t, fake.Generic, template)
+	assert.Nil(t, err)
+
+	err = srv.GenericDelete(context.Background(), &pb.GenericDeleteRequest{Name: fake.GenericName})
+	assert.Nil(t, err)
+	_, err = srv.GenericGet(context.Background(), &pb.GenericGetRequest{Name: fake.GenericName})
+	assert.Error(t, err)
+}
+
+func TestGeneric_BrokenStore(t *testing.T) {
+	srv := NewServer(&Config{&fake.BrokenStore{}})
+	req := &pb.GenericPutRequest{
+		Name:   fake.GenericName,
+		Config: []byte(fake.Generic),
+	}
+	_, err := srv.GenericPut(context.Background(), req)
+	assert.Error(t, err)
+	_, err = srv.GenericGet(context.Background(), &pb.GenericGetRequest{Name: fake.GenericName})
+	assert.Error(t, err)
+	err = srv.GenericDelete(context.Background(), &pb.GenericDeleteRequest{Name: fake.GenericName})
+}
