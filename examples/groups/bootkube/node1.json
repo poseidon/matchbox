@@ -7,7 +7,8 @@
   },
   "metadata": {
     "domain_name": "node1.example.com",
-    "etcd_initial_cluster": "node1=http://node1.example.com:2380",
+    "etcd_initial_cluster": "node1=https://node1.example.com:2380",
+    "etcd_endpoints": "https://node1.example.com:2379",
     "etcd_name": "node1",
     "k8s_dns_service_ip": "10.3.0.10",
     "pxe": "true",
