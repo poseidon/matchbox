@@ -39,26 +39,26 @@ fi
 echo "Downloading CoreOS $CHANNEL $VERSION images and sigs to $DEST"
 
 echo "CoreOS Image Signing Key"
-curl -# https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.asc -o $DEST/CoreOS_Image_Signing_Key.asc
+curl -# -C - https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.asc -o $DEST/CoreOS_Image_Signing_Key.asc
 $GPG --import < "$DEST/CoreOS_Image_Signing_Key.asc" || true
 
 # PXE kernel and sig
 echo "coreos_production_pxe.vmlinuz..."
-curl -# $BASE_URL/coreos_production_pxe.vmlinuz -o $DEST/coreos_production_pxe.vmlinuz
+curl -# -C - $BASE_URL/coreos_production_pxe.vmlinuz -o $DEST/coreos_production_pxe.vmlinuz
 echo "coreos_production_pxe.vmlinuz.sig"
-curl -# $BASE_URL/coreos_production_pxe.vmlinuz.sig -o $DEST/coreos_production_pxe.vmlinuz.sig
+curl -# -C - $BASE_URL/coreos_production_pxe.vmlinuz.sig -o $DEST/coreos_production_pxe.vmlinuz.sig
 
 # PXE initrd and sig
 echo "coreos_production_pxe_image.cpio.gz"
-curl -# $BASE_URL/coreos_production_pxe_image.cpio.gz -o $DEST/coreos_production_pxe_image.cpio.gz
+curl -# -C - $BASE_URL/coreos_production_pxe_image.cpio.gz -o $DEST/coreos_production_pxe_image.cpio.gz
 echo "coreos_production_pxe_image.cpio.gz.sig"
-curl -# $BASE_URL/coreos_production_pxe_image.cpio.gz.sig -o $DEST/coreos_production_pxe_image.cpio.gz.sig
+curl -# -C - $BASE_URL/coreos_production_pxe_image.cpio.gz.sig -o $DEST/coreos_production_pxe_image.cpio.gz.sig
 
 # Install image
 echo "coreos_production_image.bin.bz2"
-curl -# $BASE_URL/coreos_production_image.bin.bz2 -o $DEST/coreos_production_image.bin.bz2
+curl -# -C - $BASE_URL/coreos_production_image.bin.bz2 -o $DEST/coreos_production_image.bin.bz2
 echo "coreos_production_image.bin.bz2.sig"
-curl -# $BASE_URL/coreos_production_image.bin.bz2.sig -o $DEST/coreos_production_image.bin.bz2.sig
+curl -# -C - $BASE_URL/coreos_production_image.bin.bz2.sig -o $DEST/coreos_production_image.bin.bz2.sig
 
 # Install oem image
 if [[ -n "${IMAGE_NAME-}" ]]; then
