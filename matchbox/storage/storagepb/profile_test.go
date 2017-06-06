@@ -48,10 +48,9 @@ func TestProfileCopy(t *testing.T) {
 		CloudId:    "cloudy.tmpl",
 		IgnitionId: "ignition.tmpl",
 		Boot: &NetBoot{
-			Kernel:  "/image/kernel",
-			Initrd:  []string{"/image/initrd_a"},
-			Cmdline: map[string]string{"a": "b"},
-			Args:    []string{"a=b"},
+			Kernel: "/image/kernel",
+			Initrd: []string{"/image/initrd_a"},
+			Args:   []string{"a=b"},
 		},
 	}
 	clone := profile.Copy()
@@ -66,19 +65,16 @@ func TestProfileCopy(t *testing.T) {
 
 	// mutate the NetBoot struct
 	clone.Boot.Initrd = []string{"/image/initrd_b"}
-	clone.Boot.Cmdline["c"] = "d"
 	clone.Boot.Args = []string{"console=ttyS0"}
 	assert.NotEqual(t, profile.Boot.Initrd, clone.Boot.Initrd)
-	assert.NotEqual(t, profile.Boot.Cmdline, clone.Boot.Cmdline)
 	assert.NotEqual(t, profile.Boot.Args, clone.Boot.Args)
 }
 
 func TestNetBootCopy(t *testing.T) {
 	boot := &NetBoot{
-		Kernel:  "/image/kernel",
-		Initrd:  []string{"/image/initrd_a"},
-		Cmdline: map[string]string{"a": "b"},
-		Args:    []string{"a=b"},
+		Kernel: "/image/kernel",
+		Initrd: []string{"/image/initrd_a"},
+		Args:   []string{"a=b"},
 	}
 
 	clone := boot.Copy()
@@ -87,7 +83,6 @@ func TestNetBootCopy(t *testing.T) {
 	// - Mutation of the clone does not affect the original
 	assert.Equal(t, boot.Kernel, clone.Kernel)
 	assert.Equal(t, boot.Initrd, clone.Initrd)
-	assert.Equal(t, boot.Cmdline, clone.Cmdline)
 	assert.Equal(t, boot.Args, clone.Args)
 
 	// mutate the clone's slice field contents

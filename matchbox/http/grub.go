@@ -14,13 +14,13 @@ fallback=1
 timeout=1
 menuentry "CoreOS (EFI)" {
 echo "Loading kernel"
-linuxefi "{{.Kernel}}"{{range $arg := .Args}} {{$arg}}{{end}}{{range $key, $value := .Cmdline}} {{if $value}}"{{$key}}={{$value}}"{{else}}"{{$key}}"{{end}}{{end}}
+linuxefi "{{.Kernel}}"{{range $arg := .Args}} {{$arg}}{{end}}
 echo "Loading initrd"
 initrdefi {{ range $element := .Initrd }} "{{$element}}"{{end}}
 }
 menuentry "CoreOS (BIOS)" {
 echo "Loading kernel"
-linux "{{.Kernel}}"{{range $arg := .Args}} {{$arg}}{{end}}{{range $key, $value := .Cmdline}} {{if $value}}"{{$key}}={{$value}}"{{else}}"{{$key}}"{{end}}{{end}}
+linux "{{.Kernel}}"{{range $arg := .Args}} {{$arg}}{{end}}
 echo "Loading initrd"
 initrd {{ range $element := .Initrd }} "{{$element}}"{{end}}
 }
