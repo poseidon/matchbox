@@ -31,7 +31,7 @@ func runProfileDescribeCmd(cmd *cobra.Command, args []string) {
 	tw := newTabWriter(os.Stdout)
 	defer tw.Flush()
 	// legend
-	fmt.Fprintf(tw, "ID\tNAME\tIGNITION\tCLOUD\tKERNEL\tINITRD\tCMDLINE\n")
+	fmt.Fprintf(tw, "ID\tNAME\tIGNITION\tCLOUD\tKERNEL\tINITRD\tARGS\n")
 
 	client := mustClientFromCmd(cmd)
 	request := &pb.ProfileGetRequest{
@@ -42,5 +42,5 @@ func runProfileDescribeCmd(cmd *cobra.Command, args []string) {
 		return
 	}
 	p := resp.Profile
-	fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\t%s\t%#v\n", p.Id, p.Name, p.IgnitionId, p.CloudId, p.Boot.Kernel, p.Boot.Initrd, p.Boot.Cmdline)
+	fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", p.Id, p.Name, p.IgnitionId, p.CloudId, p.Boot.Kernel, p.Boot.Initrd, p.Boot.Args)
 }

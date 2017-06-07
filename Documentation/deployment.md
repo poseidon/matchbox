@@ -83,7 +83,7 @@ $ sudo chown -R matchbox:matchbox /var/lib/matchbox
 Copy the provided `matchbox` systemd unit file.
 
 ```sh
-$ sudo cp contrib/systemd/matchbox-local.service /etc/systemd/system/
+$ sudo cp contrib/systemd/matchbox-local.service /etc/systemd/system/matchbox.service
 ```
 
 ## Customization

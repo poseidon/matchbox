@@ -20,8 +20,14 @@ storage:
       contents:
         inline: |
           #!/bin/bash -ex
-          curl "{{.ignition_endpoint}}?{{.request.raw_query}}&os=installed" -o ignition.json
-          coreos-install -d /dev/sda -C {{.container_linux_channel}} -V {{.container_linux_version}} -i ignition.json {{if index . "baseurl"}}-b {{.baseurl}}{{end}} {{if index . "container_linux_oem"}}-o {{.container_linux_oem}}{{end}}
+          curl "${ignition_endpoint}?{{.request.raw_query}}&os=installed" -o ignition.json
+          coreos-install \
+            -d ${install_disk} \
+            -C ${container_linux_channel} \
+            -V ${container_linux_version} \
+            -o "${container_linux_oem}" \
+            ${baseurl_flag} \
+            -i ignition.json
           udevadm settle
           systemctl reboot
 passwd:
