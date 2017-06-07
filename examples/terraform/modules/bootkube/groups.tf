@@ -27,7 +27,8 @@ resource "matchbox_group" "controller" {
   metadata {
     domain_name          = "${element(var.controller_domains, count.index)}"
     etcd_name            = "${element(var.controller_names, count.index)}"
-    etcd_initial_cluster = "${join(",", formatlist("%s=http://%s:2380", var.controller_names, var.controller_domains))}"
+    etcd_initial_cluster = "${join(",", formatlist("%s=https://%s:2380", var.controller_names, var.controller_domains))}"
+    etcd_endpoints      = "${join(",", formatlist("https://%s:2379", var.controller_domains))}"
     etcd_on_host         = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip   = "${module.bootkube.kube_dns_service_ip}"
     k8s_etcd_service_ip  = "${module.bootkube.etcd_service_ip}"
@@ -47,7 +48,7 @@ resource "matchbox_group" "worker" {
 
   metadata {
     domain_name         = "${element(var.worker_domains, count.index)}"
-    etcd_endpoints      = "${join(",", formatlist("%s:2379", var.controller_domains))}"
+    etcd_endpoints      = "${join(",", formatlist("https://%s:2379", var.controller_domains))}"
     etcd_on_host        = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip  = "${module.bootkube.kube_dns_service_ip}"
     k8s_etcd_service_ip = "${module.bootkube.etcd_service_ip}"

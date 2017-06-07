@@ -1,5 +1,5 @@
-# Secure copy kubeconfig to all nodes to activate kubelet.service
-resource "null_resource" "copy-kubeconfig" {
+# Secure copy etcd TLS assets and kubeconfig to all nodes. Activates kubelet.service
+resource "null_resource" "copy-secrets" {
   count = "${length(var.controller_names) + length(var.worker_names)}"
 
   connection {
@@ -14,8 +14,37 @@ resource "null_resource" "copy-kubeconfig" {
     destination = "$HOME/kubeconfig"
   }
 
+  provisioner "file" {
+    content = "${module.bootkube.etcd_ca_cert}"
+    destination = "$HOME/etcd-ca.crt"
+  }
+
+  provisioner "file" {
+    content = "${module.bootkube.etcd_client_cert}"
+    destination = "$HOME/etcd-client.crt"
+  }
+
+  provisioner "file" {
+    content = "${module.bootkube.etcd_client_key}"
+    destination = "$HOME/etcd-client.key"
+  }
+
+  provisioner "file" {
+    content = "${module.bootkube.etcd_peer_cert}"
+    destination = "$HOME/etcd-peer.crt"
+  }
+
+  provisioner "file" {
+    content = "${module.bootkube.etcd_peer_key}"
+    destination = "$HOME/etcd-peer.key"
+  }
+
   provisioner "remote-exec" {
     inline = [
+      "sudo mkdir -p /etc/ssl/etcd",
+      "sudo mv etcd-* /etc/ssl/etcd/",
+      "sudo chown -R etcd:etcd /etc/ssl/etcd",
+      "sudo chmod -R 500 /etc/ssl/etcd",
       "sudo mv /home/core/kubeconfig /etc/kubernetes/kubeconfig",
     ]
   }
@@ -28,7 +57,7 @@ resource "null_resource" "bootkube-start" {
   # Terraform only does one task at a time, so it would try to bootstrap
   # Kubernetes and Tectonic while no Kubelets are running. Ensure all nodes
   # receive a kubeconfig before proceeding with bootkube and tectonic.
-  depends_on = ["null_resource.copy-kubeconfig"]
+  depends_on = ["null_resource.copy-secrets"]
 
   connection {
     type    = "ssh"
