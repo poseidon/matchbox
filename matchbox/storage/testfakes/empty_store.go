@@ -64,12 +64,22 @@ func (s *EmptyStore) IgnitionDelete(name string) error {
 	return nil
 }
 
+// GenericPut returns an error writing any Generic template.
+func (s *EmptyStore) GenericPut(name string, config []byte) error {
+	return fmt.Errorf("emptyStore does not accept Generic templates")
+}
+
+// GenericGet get returns an Generic template not found error.
+func (s *EmptyStore) GenericGet(name string) (string, error) {
+	return "", fmt.Errorf("no Generic template %s", name)
+}
+
+// GenericDelete returns a nil error (successful deletion).
+func (s *EmptyStore) GenericDelete(name string) error {
+	return nil
+}
+
 // CloudGet returns a Cloud-config template not found error.
 func (s *EmptyStore) CloudGet(name string) (string, error) {
 	return "", fmt.Errorf("no Cloud-Config template %s", name)
-}
-
-// GenericGet returns a generic template not found error.
-func (s *EmptyStore) GenericGet(name string) (string, error) {
-	return "", fmt.Errorf("no generic template %s", name)
 }
