@@ -1,6 +1,6 @@
 {
   "id": "install",
-  "name": "Simple CoreOS Alpha Install",
+  "name": "Simple CoreOS Container Linux Alpha Install",
   "profile": "simple-install",
   "metadata": {
     "coreos_channel": "stable",

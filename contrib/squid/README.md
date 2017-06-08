@@ -65,7 +65,7 @@ iptables -t nat -A PREROUTING -i enp14s0 -p tcp --dport 80 -j REDIRECT --to-port
 
 Your DHCP server should be configured so the Squid host is the default gateway for PXE, iPXE, or GRUB2 clients. For deployments that run Squid on the same host as dnsmasq, remove any DHCP option 3 settings. For example ```--dhcp-option=3,192.168.10.1"```
 
-Update Matchbox policies to use the url of the CoreOS kernel/initrd download site:
+Update Matchbox policies to use the url of the Container Linux kernel/initrd download site:
 ```
 cat policy/etcd3.json
 {

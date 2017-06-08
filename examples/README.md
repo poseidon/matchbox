@@ -20,11 +20,11 @@ You are encouraged to look through the examples and Terraform modules. Implement
 
 These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/matchbox/` directory.
 
-| Name       | Description | CoreOS Version | FS | Docs | 
+| Name       | Description | CoreOS Container Linux Version | FS | Docs | 
 |------------|-------------|----------------|----|-----------|
-| simple | CoreOS with autologin, using iPXE | stable/1353.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| simple-install | CoreOS Install, using iPXE | stable/1353.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS via GRUB2 Netboot | stable/1353.7.0 | RAM | NA |
+| simple | CoreOS Container Linux with autologin, using iPXE | stable/1353.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| simple-install | CoreOS Container Linux Install, using iPXE | stable/1353.7.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
+| grub | CoreOS Container Linux via GRUB2 Netboot | stable/1353.7.0 | RAM | NA |
 | etcd3 | PXE boot a 3 node etcd3 cluster with proxies | stable/1353.7.0 | RAM | None |
 | etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1353.7.0 | Disk | None |
 | bootkube | PXE boot a self-hosted Kubernetes v1.6.4 cluster | stable/1353.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |

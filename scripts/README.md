@@ -3,7 +3,7 @@
 
 ## get-coreos
 
-Run the `get-coreos` script to download CoreOS images, verify them, and move them into `examples/assets`.
+Run the `get-coreos` script to download CoreOS Container Linux images, verify them, and move them into `examples/assets`.
 
     ./scripts/get-coreos
     ./scripts/get-coreos channel version

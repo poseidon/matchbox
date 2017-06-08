@@ -75,7 +75,7 @@ passwd:
 ```
 <!-- {% endraw %} -->
 
-The Ignition config response (formatted) to a query `/ignition?label=value` for a CoreOS instance supporting Ignition 2.0.0 would be:
+The Ignition config response (formatted) to a query `/ignition?label=value` for a Container Linux instance supporting Ignition 2.0.0 would be:
 
 ```json
 {

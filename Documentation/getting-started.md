@@ -8,7 +8,7 @@ You'll install the `matchbox` service, setup a PXE network boot environment, and
 
 Install `matchbox` on a dedicated server or Kubernetes cluster. Generate TLS credentials and enable the gRPC API as directed. Save the `ca.crt`, `client.crt`, and `client.key` on your local machine (e.g. `~/.matchbox`).
 
-* Installing on [CoreOS / Linux distros](deployment.md)
+* Installing on [CoreOS Container Linux and other Linux distros](deployment.md)
 * Installing on [Kubernetes](deployment.md#kubernetes)
 * Running with [rkt](deployment.md#rkt) / [docker](deployment.md#docker)
 
@@ -61,7 +61,7 @@ $ git clone https://github.com/coreos/matchbox.git
 $ cd matchbox/examples/terraform
 ```
 
-Let's start with the `simple-install` example. With `simple-install`, any machines which PXE boot from matchbox will install CoreOS to `dev/sda`, reboot, and have your SSH key set. Its not much of a cluster, but we'll get to that later.
+Let's start with the `simple-install` example. With `simple-install`, any machines which PXE boot from matchbox will install Container Linux to `dev/sda`, reboot, and have your SSH key set. Its not much of a cluster, but we'll get to that later.
 
 ```sh
 $ cd simple-install

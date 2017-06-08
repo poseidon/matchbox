@@ -27,7 +27,7 @@ The [examples](../examples) statically assign IP addresses to libvirt client VMs
 
 ## Assets
 
-Download the CoreOS image assets referenced in the target [profile](../examples/profiles).
+Download the CoreOS Container Linux image assets referenced in the target [profile](../examples/profiles).
 
 ```sh
 $ ./scripts/get-coreos stable 1353.7.0 ./examples/assets
@@ -54,7 +54,7 @@ bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 -
 
 Use rkt or docker to start `matchbox` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [matchbox with rkt](getting-started-rkt.md) or [matchbox with Docker](getting-started-docker.md) for help.
 
-Client machines should boot and provision themselves. Local client VMs should network boot CoreOS and become available via SSH in about 1 minute. If you chose `bootkube-install`, notice that machines install CoreOS and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
+Client machines should boot and provision themselves. Local client VMs should network boot Container Linux and become available via SSH in about 1 minute. If you chose `bootkube-install`, notice that machines install Container Linux and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 
 ## bootkube
 
@@ -128,7 +128,7 @@ kube-system   kube-scheduler-694795526-fks0b             1/1       Running   1  
 kube-system   pod-checkpointer-node1.example.com         1/1       Running   2          10m
 ```
 
-Try deleting pods to see that the cluster is resilient to failures and machine restarts (CoreOS auto-updates).
+Try deleting pods to see that the cluster is resilient to failures and machine restarts (Container Linux auto-updates).
 
 ## Going further
 

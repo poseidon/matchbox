@@ -10,7 +10,7 @@ resource "matchbox_group" "default" {
   }
 }
 
-// Match machines which have CoreOS installed
+// Match machines which have CoreOS Container Linux installed
 resource "matchbox_group" "node1" {
   name    = "node1"
   profile = "${matchbox_profile.simple.name}"

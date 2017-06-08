@@ -15,7 +15,7 @@ The network environment can be set up in a number of ways, which we'll discuss. 
 
 ### Network boot programs
 
-Machines can be booted and configured with CoreOS using several network boot programs and approaches. Let's review them. If you're new to network booting or unsure which to choose, iPXE is a reasonable and flexible choice.
+Machines can be booted and configured with CoreOS Container Linux using several network boot programs and approaches. Let's review them. If you're new to network booting or unsure which to choose, iPXE is a reasonable and flexible choice.
 
 #### PXELINUX
 
@@ -26,7 +26,7 @@ $ mybootdir/pxelinux.cfg/b8945908-d6a6-41a9-611d-74a6ab80b83d
 $ mybootdir/pxelinux.cfg/default
 ```
 
-Here is an example PXE config file which boots a CoreOS image hosted on the TFTP server.
+Here is an example PXE config file which boots a Container Linux image hosted on the TFTP server.
 
 ```
 default coreos
@@ -53,7 +53,7 @@ This approach has a number of drawbacks. TFTP can be slow, managing config files
 
 A DHCPOFFER to iPXE client firmware specifies an HTTP boot script such as `http://matchbox.foo/boot.ipxe`.
 
-Here is an example iPXE script for booting the remote CoreOS stable image.
+Here is an example iPXE script for booting the remote Container Linux stable image.
 
 ```
 #!ipxe
