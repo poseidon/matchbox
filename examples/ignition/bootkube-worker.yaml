@@ -1,17 +1,6 @@
 ---
 systemd:
   units:
-    - name: etcd-member.service
-      enable: true
-      dropins:
-        - name: 40-etcd-cluster.conf
-          contents: |
-            [Service]
-            Environment="ETCD_IMAGE_TAG=v3.1.6"
-            ExecStart=
-            ExecStart=/usr/lib/coreos/etcd-wrapper gateway start \
-              --listen-addr=127.0.0.1:2379 \
-              --endpoints={{.etcd_endpoints}}
     - name: docker.service
       enable: true
     - name: locksmithd.service
@@ -20,6 +9,10 @@ systemd:
           contents: |
             [Service]
             Environment="REBOOT_STRATEGY=etcd-lock"
+            Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-ca.crt"
+            Environment="LOCKSMITHD_ETCD_CERTFILE=/etc/ssl/etcd/etcd-client.crt"
+            Environment="LOCKSMITHD_ETCD_KEYFILE=/etc/ssl/etcd/etcd-client.key"
+            Environment="LOCKSMITHD_ENDPOINT={{.etcd_endpoints}}"
     - name: kubelet.path
       enable: true
       contents: |
@@ -108,6 +101,12 @@ storage:
         inline: |
           KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
           KUBELET_IMAGE_TAG=v1.6.4_coreos.0
+    - path: /etc/ssl/etcd/.empty
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          empty
     - path: /etc/hostname
       filesystem: root
       mode: 0644

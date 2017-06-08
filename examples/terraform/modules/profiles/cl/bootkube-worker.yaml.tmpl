@@ -1,19 +1,6 @@
 ---
 systemd:
   units:
-    {{ if eq .etcd_on_host "true" }}
-    - name: etcd-member.service
-      enable: true
-      dropins:
-        - name: 40-etcd-cluster.conf
-          contents: |
-            [Service]
-            Environment="ETCD_IMAGE_TAG=v3.1.6"
-            ExecStart=
-            ExecStart=/usr/lib/coreos/etcd-wrapper gateway start \
-              --listen-addr=127.0.0.1:2379 \
-              --endpoints={{.etcd_endpoints}}
-    {{ end }}
     - name: docker.service
       enable: true
     - name: locksmithd.service
@@ -24,6 +11,11 @@ systemd:
             Environment="REBOOT_STRATEGY=etcd-lock"
             {{ if eq .etcd_on_host "false" -}}
             Environment="LOCKSMITHD_ENDPOINT=http://{{.k8s_etcd_service_ip}}:2379"
+            {{ else }}
+            Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-ca.crt"
+            Environment="LOCKSMITHD_ETCD_CERTFILE=/etc/ssl/etcd/etcd-client.crt"
+            Environment="LOCKSMITHD_ETCD_KEYFILE=/etc/ssl/etcd/etcd-client.key"
+            Environment="LOCKSMITHD_ENDPOINT={{.etcd_endpoints}}"
             {{ end }}
     - name: kubelet.path
       enable: true

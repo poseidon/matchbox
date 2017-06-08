@@ -47,7 +47,7 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
 
 ```sh
-$ bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=http://127.0.0.1:2379
+bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=https://node1.example.com:2379
 ```
 
 ## Containers
@@ -59,6 +59,15 @@ Client machines should boot and provision themselves. Local client VMs should ne
 ## bootkube
 
 We're ready to use bootkube to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
+
+Secure copy the etcd TLS assets to `/etc/ssl/etcd/*` on **every** node.
+
+```bash
+for node in 'node1' 'node2' 'node3'; do
+    scp -r assets/tls/etcd-* core@$node.example.com:/home/core/
+    ssh core@$node.example.com 'sudo mkdir -p /etc/ssl/etcd && sudo mv etcd-* /etc/ssl/etcd/ && sudo chown -R etcd:etcd /etc/ssl/etcd && sudo chmod -R 500 /etc/ssl/etcd/'
+done
+```
 
 Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node which will path activate the `kubelet.service`.
 
@@ -72,8 +81,8 @@ done
 Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
 
 ```sh
-$ scp -r assets core@node1.example.com:/home/core
-$ ssh core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
+scp -r assets core@node1.example.com:/home/core
+ssh core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
 ```
 
 Optionally watch the Kubernetes control plane bootstrapping with the bootkube temporary api-server. You will see quite a bit of output.
