@@ -3,6 +3,8 @@ package serverpb;
 
 import "github.com/coreos/matchbox/matchbox/storage/storagepb/storage.proto";
 
+// Selects
+
 message SelectGroupRequest {
   map<string, string> labels = 1;
 }
@@ -67,6 +69,8 @@ message ProfileListResponse {
   repeated storagepb.Profile profiles = 1;
 }
 
+// Ignition
+
 message IgnitionPutRequest {
   string name = 1;
   bytes config = 2;
@@ -84,3 +88,23 @@ message IgnitionDeleteRequest {
   string name = 1;
 }
 message IgnitionDeleteResponse {}
+
+// Generic
+
+message GenericPutRequest {
+  string name = 1;
+  bytes config = 2;
+}
+message GenericPutResponse {}
+
+message GenericGetRequest {
+  string name = 1;
+}
+message GenericGetResponse {
+  bytes config = 1;
+}
+
+message GenericDeleteRequest {
+  string name = 1;
+}
+message GenericDeleteResponse {}

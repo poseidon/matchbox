@@ -47,4 +47,12 @@ systemd:
     - name: etcd2.service
       enable: true
 `
+
+	// GenericName is a Generic template name for testing.
+	GenericName = "generic.tmpl"
+
+	// Generic is a Generic template for testing.
+	Generic = `
+This is a generic template.
+`
 )

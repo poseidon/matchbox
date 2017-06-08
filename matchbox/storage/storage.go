@@ -39,9 +39,13 @@ type Store interface {
 	// IgnitionDelete deletes an Ignition template by name.
 	IgnitionDelete(name string) error
 
+	// GenericPut creates or updates a Generic template.
+	GenericPut(name string, config []byte) error
+	// GenericGet gets a Generic template by name.
+	GenericGet(name string) (string, error)
+	// GenericDelete deletes a Generic template by name.
+	GenericDelete(name string) error
+
 	// CloudGet gets a Cloud-Config template by name.
 	CloudGet(name string) (string, error)
-
-	// GenericGet gets a generic template by name.
-	GenericGet(name string) (string, error)
 }

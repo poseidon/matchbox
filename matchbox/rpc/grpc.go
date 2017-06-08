@@ -23,5 +23,6 @@ func NewServer(s server.Server, tls *tls.Config) *grpc.Server {
 	rpcpb.RegisterProfilesServer(grpcServer, newProfileServer(s))
 	rpcpb.RegisterSelectServer(grpcServer, newSelectServer(s))
 	rpcpb.RegisterIgnitionServer(grpcServer, newIgnitionServer(s))
+	rpcpb.RegisterGenericServer(grpcServer, newGenericServer(s))
 	return grpcServer
 }

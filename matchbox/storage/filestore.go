@@ -146,14 +146,24 @@ func (s *fileStore) IgnitionDelete(name string) error {
 	return Dir(s.root).deleteFile(filepath.Join("ignition", name))
 }
 
-// CloudGet gets a Cloud-Config template by name.
-func (s *fileStore) CloudGet(name string) (string, error) {
-	data, err := Dir(s.root).readFile(filepath.Join("cloud", name))
+// GenericPut creates or updates an Generic template.
+func (s *fileStore) GenericPut(name string, config []byte) error {
+	return Dir(s.root).writeFile(filepath.Join("generic", name), config)
+}
+
+// GenericGet gets an Generic template by name.
+func (s *fileStore) GenericGet(name string) (string, error) {
+	data, err := Dir(s.root).readFile(filepath.Join("generic", name))
 	return string(data), err
 }
 
-// GenericGet gets a generic template by name.
-func (s *fileStore) GenericGet(name string) (string, error) {
-	data, err := Dir(s.root).readFile(filepath.Join("generic", name))
+// GenericDelete deletes an Generic template by name.
+func (s *fileStore) GenericDelete(name string) error {
+	return Dir(s.root).deleteFile(filepath.Join("generic", name))
+}
+
+// CloudGet gets a Cloud-Config template by name.
+func (s *fileStore) CloudGet(name string) (string, error) {
+	data, err := Dir(s.root).readFile(filepath.Join("cloud", name))
 	return string(data), err
 }
