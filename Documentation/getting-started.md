@@ -8,7 +8,7 @@ You'll install the `matchbox` service, setup a PXE network boot environment, and
 
 Install `matchbox` on a dedicated server or Kubernetes cluster. Generate TLS credentials and enable the gRPC API as directed. Save the `ca.crt`, `client.crt`, and `client.key` on your local machine (e.g. `~/.matchbox`).
 
-* Installing on [CoreOS Container Linux and other Linux distros](deployment.md)
+* Installing on [Container Linux / other distros](deployment.md)
 * Installing on [Kubernetes](deployment.md#kubernetes)
 * Running with [rkt](deployment.md#rkt) / [docker](deployment.md#docker)
 
