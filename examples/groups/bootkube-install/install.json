@@ -1,6 +1,6 @@
 {
   "id": "coreos-install",
-  "name": "CoreOS Install",
+  "name": "CoreOS Container Linux Install",
   "profile": "install-reboot",
   "metadata": {
     "coreos_channel": "stable",

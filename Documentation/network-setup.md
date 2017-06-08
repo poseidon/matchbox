@@ -2,7 +2,7 @@
 
 This guide shows how to create a DHCP/TFTP/DNS network boot environment to work with `matchbox` to boot and provision PXE, iPXE, or GRUB2 client machines.
 
-`matchbox` serves iPXE scripts or GRUB configs over HTTP to serve as the entrypoint for CoreOS cluster bring-up. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, you can configure your own network services to point to `matchbox` or use the convenient [coreos/dnsmasq](../contrib/dnsmasq) container image (used in libvirt demos).
+`matchbox` serves iPXE scripts or GRUB configs over HTTP to serve as the entrypoint for CoreOS Container Linux cluster bring-up. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, you can configure your own network services to point to `matchbox` or use the convenient [coreos/dnsmasq](../contrib/dnsmasq) container image (used in libvirt demos).
 
 *Note*: These are just suggestions. Your network administrator or system administrator should choose the right network setup for your company.
 

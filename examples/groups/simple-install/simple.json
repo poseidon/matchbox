@@ -1,6 +1,6 @@
 {
   "id": "simple",
-  "name": "Simple CoreOS Alpha",
+  "name": "Simple CoreOS Container Linux Alpha",
   "profile": "simple",
   "selector": {
     "os": "installed"

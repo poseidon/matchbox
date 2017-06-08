@@ -1,6 +1,6 @@
 # matchbox
 
-`matchbox` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create Container Linux clusters. `matchbox` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. MAC address, UUID, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config, generic configs). The aim is to use CoreOS Linux's early-boot capabilities to provision CoreOS machines.
+`matchbox` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS Container Linux clusters. `matchbox` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. MAC address, UUID, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config, generic configs). The aim is to use Container Linux's early-boot capabilities to provision Container Linux machines.
 
 Network boot endpoints provide PXE, iPXE, GRUB support. `matchbox` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with rkt, or as a Docker container.
 
@@ -59,7 +59,7 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
 ```json
 {
   "id": "etcd",
-  "name": "CoreOS with etcd2",
+  "name": "Container Linux with etcd2",
   "cloud_id": "",
   "ignition_id": "etcd.yaml",
   "generic_id": "some-service.cfg",
@@ -173,7 +173,7 @@ matchbox.foo/assets/
 
 For example, a `Profile` might refer to a local asset `/assets/coreos/VERSION/coreos_production_pxe.vmlinuz` instead of `http://stable.release.core-os.net/amd64-usr/VERSION/coreos_production_pxe.vmlinuz`.
 
-See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download, verify, and place CoreOS assets.
+See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download, verify, and place Container Linux assets.
 
 ## Network
 

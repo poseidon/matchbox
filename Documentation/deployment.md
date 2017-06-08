@@ -4,11 +4,11 @@ This guide walks through deploying the `matchbox` service on a Linux host (via R
 
 ## Provisoner
 
-`matchbox` is a service for network booting and provisioning machines to create Container Linux clusters. `matchbox` should be installed on a provisioner machine (CoreOS or any Linux distribution) or cluster (Kubernetes) which can serve configs to client machines in a lab or datacenter.
+`matchbox` is a service for network booting and provisioning machines to create CoreOS Container Linux clusters. `matchbox` should be installed on a provisioner machine (Container Linux or any Linux distribution) or cluster (Kubernetes) which can serve configs to client machines in a lab or datacenter.
 
 Choose one of the supported installation options:
 
-* [CoreOS (rkt)](#coreos)
+* [CoreOS Container Linux (rkt)](#coreos-container-linux)
 * [RPM-based](#rpm-based-distro)
 * [Generic Linux (binary)](#generic-linux)
 * [With rkt](#rkt)
@@ -52,9 +52,9 @@ dnf install matchbox
 
 RPMs are not currently available for CentOS and RHEL (due to Go version). CentOS and RHEL users should follow the Generic Linux section below.
 
-### CoreOS
+### CoreOS Container Linux
 
-On a CoreOS provisioner, rkt run `matchbox` image with the provided systemd unit.
+On a Container Linux provisioner, rkt run `matchbox` image with the provided systemd unit.
 
 ```sh
 $ sudo cp contrib/systemd/matchbox-on-coreos.service /etc/systemd/system/matchbox.service
@@ -112,7 +112,7 @@ Environment="MATCHBOX_ADDRESS=0.0.0.0:8080"
 Environment="MATCHBOX_RPC_ADDRESS=0.0.0.0:8081"
 ```
 
-The Tectonic [Installer](https://tectonic.com/enterprise/docs/latest/install/bare-metal/index.html) uses this API. Tectonic users with a CoreOS provisioner can start with an example that enables it.
+The Tectonic [Installer](https://tectonic.com/enterprise/docs/latest/install/bare-metal/index.html) uses this API. Tectonic users with a Container Linux provisioner can start with an example that enables it.
 
 ```sh
 $ sudo cp contrib/systemd/matchbox-for-tectonic.service /etc/systemd/system/matchbox.service
@@ -206,11 +206,11 @@ Certificate chain
 ....
 ```
 
-## Download CoreOS (optional)
+## Download Container Linux (optional)
 
-`matchbox` can serve CoreOS images in development or lab environments to reduce bandwidth usage and increase the speed of CoreOS PXE boots and installs to disk.
+`matchbox` can serve Container Linux images in development or lab environments to reduce bandwidth usage and increase the speed of Container Linux PXE boots and installs to disk.
 
-Download a recent CoreOS [release](https://coreos.com/releases/) with signatures.
+Download a recent Container Linux [release](https://coreos.com/releases/) with signatures.
 
 ```sh
 $ ./scripts/get-coreos stable 1353.7.0 .     # note the "." 3rd argument
@@ -242,7 +242,7 @@ $ curl http://matchbox.example.com:8080/assets/coreos/1353.7.0/
 <pre>...
 ```
 
-For large production environments, use a cache proxy or mirror suitable for your environment to serve CoreOS images. See [contrib/squid](../contrib/squid/README.md) for details.
+For large production environments, use a cache proxy or mirror suitable for your environment to serve Container Linux images. See [contrib/squid](../contrib/squid/README.md) for details.
 
 ## Network
 

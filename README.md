@@ -19,7 +19,7 @@
 ### Installation
 
 * Installation
-    * Installing on [CoreOS / Linux distros](Documentation/deployment.md)
+    * Installing on [Container Linux / other distros](Documentation/deployment.md)
     * Installing on [Kubernetes](Documentation/deployment.md#kubernetes)
     * Running with [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
 * [Network Setup](Documentation/network-setup.md)

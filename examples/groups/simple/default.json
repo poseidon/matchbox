@@ -1,5 +1,5 @@
 {
   "id": "default",
-  "name": "Simple CoreOS Alpha with RAM disk",
+  "name": "Simple CoreOS Container Linux Alpha with RAM disk",
   "profile": "simple"
 }

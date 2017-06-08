@@ -1,7 +1,7 @@
 
 # Getting started with Docker
 
-In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM CoreOS machines locally. You'll be able to create Kubernetes clusters, etcd3 clusters, and test network setups.
+In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM Container Linux machines locally. You'll be able to create Kubernetes clusters, etcd3 clusters, and test network setups.
 
 *Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
@@ -26,7 +26,7 @@ $ git clone https://github.com/coreos/matchbox.git
 $ cd matchbox
 ```
 
-Download CoreOS image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
+Download CoreOS Container Linux image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
 
 ```sh
 $ ./scripts/get-coreos stable 1353.7.0 ./examples/assets
