@@ -1,11 +1,16 @@
-# matchbox
+# Matchbox
 
 Notable changes between releases.
 
 ## Latest
 
+* Add gRPC API endpoints for managing generic (experimental) templates
 * Remove Profile `Cmdline` map (deprecated in v0.5.0), use `Args` slice instead
 * Remove pixiecore support (deprecated in v0.5.0)
+
+### Examples / Modules
+
+* Kubernetes examples clusters enable etcd TLS (unless experimental self-hosted etcd is enabled)
 
 ## v0.6.1 (2017-05-25)
 
