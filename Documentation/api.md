@@ -75,7 +75,7 @@ initrdefi "(http;matchbox.foo:8080)/assets/coreos/1353.7.0/coreos_production_pxe
 
 ## Cloud config
 
-Finds the profile matching the machine and renders the corresponding Cloud-Config with group metadata, selectors, and query params.
+DEPRECATED: Finds the profile matching the machine and renders the corresponding Cloud-Config with group metadata, selectors, and query params.
 
 ```
 GET http://matchbox.foo/cloud?label=value
@@ -101,7 +101,7 @@ coreos:
       command: start
 ```
 
-## Ignition Config
+## Container Linux Config / Ignition Config
 
 Finds the profile matching the machine and renders the corresponding Ignition Config with group metadata, selectors, and query params.
 

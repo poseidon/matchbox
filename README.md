@@ -2,7 +2,7 @@
 
 **Announcement**: Matchbox [v0.6.1](https://github.com/coreos/matchbox/releases) is released with a new [Matchbox Terraform Provider][terraform] and [tutorial](Documentation/getting-started.md).
 
-`matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles to PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], [Cloud-Config][cloud-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [terraform][terraform].
+`matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles to PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [terraform][terraform].
 
 * [Documentation][docs]
 * [matchbox Service](Documentation/matchbox.md)

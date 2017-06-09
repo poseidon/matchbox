@@ -21,6 +21,8 @@ type CloudConfig struct {
 
 // cloudHandler returns a handler that responds with the cloud config matching
 // the request.
+// DEPRECATED: Please migrate to using Container Linux configs.
+// https://github.com/coreos/matchbox/blob/master/Documentation/cloud-config.md
 func (s *Server) cloudHandler(core server.Server) ContextHandler {
 	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		group, err := groupFromContext(ctx)
@@ -61,6 +63,9 @@ func (s *Server) cloudHandler(core server.Server) ContextHandler {
 			"group":   group.Id,
 			"profile": profile.Id,
 		}).Debug("Matched a cloud-config template")
+
+		// Deprecation warning
+		s.logger.Warning("Cloud-Config support will be removed in the future")
 
 		// collect data for rendering
 		data, err := collectVariables(req, group)
