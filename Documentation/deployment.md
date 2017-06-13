@@ -302,7 +302,8 @@ Create an Ingress resource to expose the HTTP read-only and gRPC API endpoints. 
 $ kubectl create -f contrib/k8s/matchbox-ingress.yaml
 $ kubectl get ingress
 NAME      HOSTS                                          ADDRESS            PORTS     AGE
-matchbox  matchbox.example.com,matchbox-rpc.example.com  10.128.0.3,10...   80, 443   32m
+matchbox       matchbox.example.com                      10.128.0.3,10...   80        29m
+matchbox-rpc   matchbox-rpc.example.com                  10.128.0.3,10...   80, 443   29m
 ```
 
 Add DNS records `matchbox.example.com` and `matchbox-rpc.example.com` to route traffic to the Ingress Controller.

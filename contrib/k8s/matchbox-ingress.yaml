@@ -2,12 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: matchbox
-  annotations:
-    ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
-  tls:
-    - hosts:
-        - matchbox-rpc.example.com
   rules:
     - host: matchbox.example.com
       http:
@@ -16,6 +11,18 @@ spec:
             backend:
               serviceName: matchbox
               servicePort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: matchbox
+  annotations:
+    ingress.kubernetes.io/ssl-passthrough: "true"
+spec:
+  tls:
+    - hosts:
+        - matchbox-rpc.example.com
+  rules:
     - host: matchbox-rpc.example.com
       http:
         paths:
