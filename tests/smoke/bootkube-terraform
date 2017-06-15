@@ -2,14 +2,13 @@
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-TERRAFORM_PID=0
 source "${DIR}/common"
 
 main() {
   cleanup
   trap cleanup EXIT
-
-  ./scripts/get-kubectl
+  
+  ./scripts/dev/get-kubectl
   ./scripts/devnet create
   
   # Add fake_rsa to ssh-agent
@@ -17,25 +16,23 @@ main() {
   chmod 600 ${DIR}/fake_rsa
   ssh-add ${DIR}/fake_rsa
 
+  # Terraform apply to push resources to matchbox, don't wait for ssh
   pushd examples/terraform/bootkube-install
   terraform get
-  (until [[ "$(terraform apply -var-file ${DIR}/bootkube.tfvars)" == "0" ]]; do
-    echo "Wait and retry Terraform apply"
-    sleep 10
-  done) &
-  TERRAFORM_PID=$!
+  # Terraform should properly shutdown with a SIGINT
+  timeout 15 -s SIGINT --kill-after=20 /usr/local/bin/terraform apply -var-file ${DIR}/bootkube.tfvars || true
   popd
   
-  sleep 10
+  # PXE boot QEMU/KVM VMs
   ./scripts/libvirt create
 
-  until kubelet "node1.example.com" \
-    && kubelet "node2.example.com" \
-    && kubelet "node3.example.com"
-  do
+  # Terraform apply and loop until it copies assets and bootstrapping succeeds
+  pushd examples/terraform/bootkube-install
+  until terraform apply -var-file ${DIR}/bootkube.tfvars; do
+    echo "Wait and retry terraform apply (copy-kubeconfig is expected to error loop)"
     sleep 10
-    echo "Waiting for Kubelets to start..."
   done
+  popd
 
   until [[ "$(readyNodes)" == "3" ]]; do
     sleep 5
@@ -65,14 +62,11 @@ readyNodes() {
 }
 
 cleanup() {
+  popd || true
   ./scripts/libvirt destroy || true
   ./scripts/devnet destroy || true
   rkt gc --grace-period=0
-  if [[ -z "$TERRAFORM_PID" ]]; then
-    kill $TERRAFORM_PID
-  fi
   pushd examples/terraform/bootkube-install
-  echo "yes" | terraform destroy || true
   rm -f *.tfstate*
   rm -rf assets
   popd

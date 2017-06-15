@@ -23,7 +23,7 @@ pipeline {
           },
           bootkube: {
             node('fedora && bare-metal') {
-              timeout(time:12, unit:'MINUTES') {
+              timeout(time:15, unit:'MINUTES') {
                 checkout scm          
                 sh '''#!/bin/bash -e
                 chmod 600 ./tests/smoke/fake_rsa
@@ -39,6 +39,18 @@ pipeline {
                 checkout scm
                 sh '''#!/bin/bash -e
                 export ASSETS_DIR=~/assets; export CONFIG_DIR=~/matchbox/examples/etc/matchbox; ./tests/smoke/etcd3-terraform
+                '''
+                deleteDir()
+              }
+            }
+          },
+          "bootkube-terraform": {
+            node('fedora && bare-metal') {
+              timeout(time:15, unit:'MINUTES') {
+                checkout scm          
+                sh '''#!/bin/bash -e
+                chmod 600 ./tests/smoke/fake_rsa
+                export ASSETS_DIR=~/assets; export CONFIG_DIR=~/matchbox/examples/etc/matchbox; ./tests/smoke/bootkube-terraform
                 '''
                 deleteDir()
               }
