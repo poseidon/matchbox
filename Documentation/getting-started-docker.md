@@ -1,4 +1,3 @@
-
 # Getting started with Docker
 
 In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM Container Linux machines locally. You'll be able to create Kubernetes clusters, etcd3 clusters, and test network setups.
@@ -26,13 +25,13 @@ $ git clone https://github.com/coreos/matchbox.git
 $ cd matchbox
 ```
 
-Download CoreOS Container Linux image assets referenced by the `etcd-docker` [example](../examples) to `examples/assets`.
+Download CoreOS Container Linux image assets referenced by the `etcd3` [example](../examples) to `examples/assets`.
 
 ```sh
 $ ./scripts/get-coreos stable 1353.7.0 ./examples/assets
 ```
 
-For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name as you would in production.
+For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name.
 
 ```sh
 # /etc/hosts
@@ -44,11 +43,19 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
 
 ## Containers
 
-Run the latest `matchbox` Docker image from `quay.io/coreos/matchbox` with the `etcd-docker` example. The container should receive the IP address 172.17.0.2 on the `docker0` bridge.
+Run the `matchbox` and `dnsmasq` services on the `docker0` bridge. `dnsmasq` will run DHCP, DNS and TFTP services to create a suitable network boot environment. `matchbox` will serve configs to machines as they PXE boot.
+
+The `devnet` convenience script can start these services and accepts the name of any example cluster in [examples](../examples).
 
 ```sh
-$ sudo docker pull quay.io/coreos/matchbox:latest
-$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd3:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+$ export CONTAINER_RUNTIME=docker
+$ sudo -E ./scripts/devnet create etcd3
+```
+
+Inspect the logs.
+
+```
+$ sudo -E ./scripts/devnet status
 ```
 
 Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
@@ -57,19 +64,18 @@ Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of ho
 * Ignition [http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae)
 * Metadata [http://127.0.0.1:8080/metadata?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/metadata?mac=52:54:00:a1:9c:ae)
 
-## Network
+### Manual
 
-Since the virtual network has no network boot services, use the `dnsmasq` image to create an iPXE network boot environment which runs DHCP, DNS, and TFTP.
+If you prefer to start the containers yourself, instead of using `devnet`,
 
 ```sh
+$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd3:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 $ sudo docker run --name dnsmasq --cap-add=NET_ADMIN -v $PWD/contrib/dnsmasq/docker0.conf:/etc/dnsmasq.conf:Z quay.io/coreos/dnsmasq -d
 ```
 
-In this case, dnsmasq runs a DHCP server allocating IPs to VMs between 172.17.0.43 and 172.17.0.99, resolves `matchbox.foo` to 172.17.0.2 (the IP where `matchbox` runs), and points iPXE clients to `http://matchbox.foo:8080/boot.ipxe`.
-
 ## Client VMs
 
-Create QEMU/KVM VMs which have known hardware attributes. The nodes will be attached to the `docker0` bridge, where Docker's containers run.
+Create QEMU/KVM VMs which have known hardware attributes. The nodes will be attached to the `docker0` bridge, where Docker containers run.
 
 ```sh
 $ sudo ./scripts/libvirt create-docker
@@ -110,8 +116,7 @@ $ etcdctl get /message
 Clean up the containers and VM machines.
 
 ```sh
-$ sudo docker rm -f dnsmasq
-$ sudo ./scripts/libvirt poweroff
+$ sudo -E ./scripts/devnet destroy
 $ sudo ./scripts/libvirt destroy
 ```
 

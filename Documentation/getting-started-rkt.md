@@ -27,7 +27,7 @@ $ git clone https://github.com/coreos/matchbox.git
 $ cd matchbox
 ```
 
-Download CoreOS Container Linux image assets referenced by the `etcd` [example](../examples) to `examples/assets`.
+Download CoreOS Container Linux image assets referenced by the `etcd3` [example](../examples) to `examples/assets`.
 
 ```sh
 $ ./scripts/get-coreos stable 1353.7.0 ./examples/assets
@@ -74,18 +74,19 @@ For development convenience, you may wish to add `/etc/hosts` entries for nodes 
 
 ## Containers
 
-Run the `matchbox` and `dnsmasq` services on the `metal0` bridge. `dnsmasq` will run DHCP, DNS, and TFTP services to create a suitable network boot environment. `matchbox` will serve provisioning configs to machines on the network which attempt to PXE boot.
+Run the `matchbox` and `dnsmasq` services on the `metal0` bridge. `dnsmasq` will run DHCP, DNS, and TFTP services to create a suitable network boot environment. `matchbox` will serve configs to machinesas they PXE boot.
 
-The `devnet` wrapper script rkt runs `matchbox` and `dnsmasq` in systemd transient units. Create can take the name of any example cluster in [examples](../examples).
+The `devnet` convenience script can rkt run these services in systemd transient units and accepts the name of any example cluster in [examples](../examples).
 
 ```sh
-$ sudo ./scripts/devnet create etcd3
+$ export CONTAINER_RUNTIME=rkt
+$ sudo -E ./scripts/devnet create etcd3
 ```
 
-Inspect the journal logs or check the status of the systemd services.
+Inspect the journal logs.
 
 ```
-$ sudo ./scripts/devnet status
+$ sudo -E ./scripts/devnet status
 $ journalctl -f -u dev-matchbox
 $ journalctl -f -u dev-dnsmasq
 ```
@@ -167,7 +168,7 @@ $ etcdctl get /message
 Clean up the systemd units running `matchbox` and `dnsmasq`.
 
 ```sh
-$ sudo ./scripts/devnet destroy
+$ sudo -E ./scripts/devnet destroy
 ```
 
 Clean up VM machines.

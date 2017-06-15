@@ -8,13 +8,15 @@ set -u
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 EXAMPLE=${2:-}
+# Local Container Runtime (docker or rkt)
+CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-rkt}"
 BRIDGE=metal0
+ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
+CONFIG_DIR="${CONFIG_DIR:-$PWD/examples/etc/matchbox}"
+
 COREOS_CHANNEL=stable
 COREOS_VERSION=1353.7.0
 MATCHBOX_ARGS=""
-
-ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
-CONFIG_DIR="${CONFIG_DIR:-$PWD/examples/etc/matchbox}"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -41,11 +43,35 @@ function usage {
   echo "USAGE: ${0##*/} <command>"
   echo "Commands:"
   echo -e "\tcreate\tcreate matchbox and PXE services on the bridge"
-  echo -e "\tstatus\tshow the systemctl status of matchbox and dnsmasq"
+  echo -e "\tstatus\tshow the status of matchbox and dnsmasq"
   echo -e "\tdestroy\tdestroy the services on the bridge"
 }
 
-function check {
+function create {
+  case "$CONTAINER_RUNTIME" in
+    "rkt") rkt_create;;
+    "docker") docker_create;;
+    *) docker_create;;
+  esac
+}
+
+function status {
+  case "$CONTAINER_RUNTIME" in
+    "rkt") rkt_status;;
+    "docker") docker_status;;
+    *) docker_status;;
+  esac
+}
+
+function destroy {
+  case "$CONTAINER_RUNTIME" in
+    "rkt") rkt_destroy;;
+    "docker") docker_destroy;;
+    *) docker_destroy;;
+  esac
+}
+
+function rkt_check {
   # SELinux, if present, it cannot be in Enforcing mode
   if [ $(getenforce) == 'Enforcing' ]; then
     echo "SELinux must be in permissive mode: 'setenforce Permissive'"
@@ -57,8 +83,8 @@ function check {
   fi
 }
 
-function create {
-  check
+function rkt_create {
+  rkt_check
 
   if [ -z "$EXAMPLE" ]; then
     echo "Starting matchbox"
@@ -109,7 +135,7 @@ function create {
   status
 }
 
-function status {
+function rkt_status {
   echo ""
   systemctl status dev-matchbox --lines=0 --no-pager
   systemctl status dev-dnsmasq --lines=0 --no-pager
@@ -118,11 +144,55 @@ function status {
   echo "Use 'journalctl -f -u dev-matchbox', etc. to tail the logs."
 }
 
-function destroy {
+function rkt_destroy {
   rkt stop --uuid-file=/var/run/matchbox-pod.uuid
   rkt stop --uuid-file=/var/run/dnsmasq-pod.uuid
   systemctl reset-failed dev-matchbox > /dev/null 2>&1
   systemctl reset-failed dev-dnsmasq > /dev/null 2>&1
+}
+
+function docker_create {
+  if [ -z "$EXAMPLE" ]; then
+    echo "Starting matchbox"
+  else
+    echo "Starting matchbox configured to boot $EXAMPLE"
+  fi
+
+  if [ -z "$EXAMPLE" ]; then
+    # Mount a data volume with assets and enable gRPC
+    MATCHBOX_ARGS="-rpc-address=0.0.0.0:8081"
+    DATA_MOUNT=""
+  else
+    # Mount the given EXAMPLE
+    DATA_MOUNT="-v $PWD/examples:/var/lib/matchbox -v $DIR/../examples/groups/$EXAMPLE:/var/lib/matchbox/groups"
+  fi
+  
+  docker run --name matchbox \
+    -d \
+    -p 8080:8080 \
+    -v $CONFIG_DIR:/etc/matchbox:Z \
+    -v $ASSETS_DIR:/var/lib/matchbox/assets:Z \
+    $DATA_MOUNT \
+    quay.io/coreos/matchbox:v0.6.1 -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
+
+  echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
+  docker run --name dnsmasq \
+    -d \
+    --cap-add=NET_ADMIN \
+    -v $PWD/contrib/dnsmasq/docker0.conf:/etc/dnsmasq.conf:Z \
+    quay.io/coreos/dnsmasq:v0.4.0 -d
+}
+
+function docker_status {
+  docker logs matchbox
+  docker logs dnsmasq
+}
+
+function docker_destroy {
+  docker stop matchbox
+  docker stop dnsmasq
+  docker rm matchbox
+  docker rm dnsmasq
 }
 
 main $@
