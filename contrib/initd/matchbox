@@ -1,0 +1,52 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:		matchbox
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		
+# Short-Description:	Matchbox (coreos) server - https://github.com/coreos/matchbox
+### END INIT INFO
+
+set -e
+
+test -x /usr/local/bin/matchbox || exit 0
+
+umask 022
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting matchbox server" "matchbox" || true
+	if start-stop-daemon --background --start --quiet --oknodo --make-pidfile --pidfile /var/run/matchbox.pid --exec /usr/local/bin/matchbox -- -address 0.0.0.0:8080 ; then
+	    log_end_msg 0 || true
+	else
+	    log_end_msg 1 || true
+	fi
+	;;
+  stop)
+	log_daemon_msg "Stopping matchbox server" "matchbox" || true
+	if start-stop-daemon --stop --quiet --oknodo --pidfile /var/run/matchbox.pid; then
+            rm -f /var/run/matchbox.pid
+	    log_end_msg 0 || true
+	else
+	    log_end_msg 1 || true
+	fi
+	;;
+
+  restart)
+        $0 stop; $0 start
+	;;
+
+  status)
+	status_of_proc -p /var/run/matchbox.pid /usr/local/bin/matchbox matchbox && exit 0 || exit $?
+	;;
+
+  *)
+	log_action_msg "Usage: /etc/init.d/matchbox {start|stop|restart|status}" || true
+	exit 1
+esac
+
+exit 0
