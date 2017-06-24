@@ -1,6 +1,6 @@
 # Self-hosted Kubernetes
 
-The self-hosted Kubernetes example shows how to use matchbox to network boot and provision a 3 node "self-hosted" Kubernetes v1.6.4 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting.
+The self-hosted Kubernetes example shows how to use matchbox to network boot and provision a 3 node "self-hosted" Kubernetes v1.6.6 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Self-hosted Kubernetes
 
-The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.4 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes and coordinate Container Linux auto-updates (enabled for disk installs).
+The self-hosted Kubernetes example provisions a 3 node "self-hosted" Kubernetes v1.6.6 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes and coordinate Container Linux auto-updates (enabled for disk installs).
 
 ## Requirements
 
@@ -11,11 +11,11 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com` (or pass custom names to `k8s-certgen`)
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.4 and add it somewhere on your PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.4.5 and add it on your $PATH.
 
 ```sh
 $ bootkube version
-Version: v0.4.4
+Version: v0.4.5
 ```
 
 ## Examples
@@ -78,7 +78,7 @@ for node in 'node1' 'node2' 'node3'; do
 done
 ```
 
-Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start`.
+Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start` (takes ~10 minutes).
 
 ```sh
 scp -r assets core@node1.example.com:/home/core
@@ -105,27 +105,27 @@ You may cleanup the `bootkube` assets on the node, but you should keep the copy 
 ```sh
 $ KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
-NAME                STATUS    AGE
-node1.example.com   Ready     3m
-node2.example.com   Ready     3m
-node3.example.com   Ready     3m
+NAME                STATUS    AGE       VERSION
+node1.example.com   Ready     7m        v1.6.6+coreos.1
+node2.example.com   Ready     7m        v1.6.6+coreos.1
+node3.example.com   Ready     7m        v1.6.6+coreos.1
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
-kube-system   checkpoint-installer-p8g8r                 1/1       Running   1          13m
-kube-system   kube-apiserver-s5gnx                       1/1       Running   1          41s
-kube-system   kube-controller-manager-3438979800-jrlnd   1/1       Running   1          13m
-kube-system   kube-controller-manager-3438979800-tkjx7   1/1       Running   1          13m
-kube-system   kube-dns-4101612645-xt55f                  4/4       Running   4          13m
-kube-system   kube-flannel-pl5c2                         2/2       Running   0          13m
-kube-system   kube-flannel-r9t5r                         2/2       Running   3          13m
-kube-system   kube-flannel-vfb0s                         2/2       Running   4          13m
-kube-system   kube-proxy-cvhmj                           1/1       Running   0          13m
-kube-system   kube-proxy-hf9mh                           1/1       Running   1          13m
-kube-system   kube-proxy-kpl73                           1/1       Running   1          13m
-kube-system   kube-scheduler-694795526-1l23b             1/1       Running   1          13m
-kube-system   kube-scheduler-694795526-fks0b             1/1       Running   1          13m
-kube-system   pod-checkpointer-node1.example.com         1/1       Running   2          10m
+kube-system   kube-apiserver-zd1k3                       1/1       Running   0          7m
+kube-system   kube-controller-manager-762207937-2ztxb    1/1       Running   0          7m
+kube-system   kube-controller-manager-762207937-vf6bk    1/1       Running   1          7m
+kube-system   kube-dns-2431531914-qc752                  3/3       Running   0          7m
+kube-system   kube-flannel-180mz                         2/2       Running   1          7m
+kube-system   kube-flannel-jjr0x                         2/2       Running   0          7m
+kube-system   kube-flannel-mlr9w                         2/2       Running   0          7m
+kube-system   kube-proxy-0jlq7                           1/1       Running   0          7m
+kube-system   kube-proxy-k4mjl                           1/1       Running   0          7m
+kube-system   kube-proxy-l4xrd                           1/1       Running   0          7m
+kube-system   kube-scheduler-1873228005-5d2mk            1/1       Running   0          7m
+kube-system   kube-scheduler-1873228005-s4w27            1/1       Running   0          7m
+kube-system   pod-checkpointer-hb960                     1/1       Running   0          7m
+kube-system   pod-checkpointer-hb960-node1.example.com   1/1       Running   0          6m
 ```
 
 Try deleting pods to see that the cluster is resilient to failures and machine restarts (Container Linux auto-updates).

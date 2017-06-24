@@ -10,6 +10,7 @@ Notable changes between releases.
 
 ### Examples / Modules
 
+* Upgrade Kubernetes v1.6.6 example clusters
 * Kubernetes examples clusters enable etcd TLS (unless experimental self-hosted etcd is enabled)
 
 ## v0.6.1 (2017-05-25)
