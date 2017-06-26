@@ -32,12 +32,12 @@ systemd:
           contents: |
             [Service]
             Environment="REBOOT_STRATEGY=etcd-lock"
-            {{ if eq .etcd_on_host "false" -}}
-            Environment="LOCKSMITHD_ENDPOINT=http://{{.k8s_etcd_service_ip}}:2379"
-            {{ else }}
             Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-ca.crt"
             Environment="LOCKSMITHD_ETCD_CERTFILE=/etc/ssl/etcd/etcd-client.crt"
             Environment="LOCKSMITHD_ETCD_KEYFILE=/etc/ssl/etcd/etcd-client.key"
+            {{ if eq .etcd_on_host "false" -}}
+            Environment="LOCKSMITHD_ENDPOINT=http://{{.k8s_etcd_service_ip}}:2379"
+            {{ else }}
             Environment="LOCKSMITHD_ENDPOINT={{.etcd_endpoints}}"
             {{ end }}
     - name: kubelet.path
