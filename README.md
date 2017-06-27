@@ -1,8 +1,6 @@
 # matchbox [![Build Status](https://travis-ci.org/coreos/matchbox.svg?branch=master)](https://travis-ci.org/coreos/matchbox) [![GoDoc](https://godoc.org/github.com/coreos/matchbox?status.png)](https://godoc.org/github.com/coreos/matchbox) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
 
-**Announcement**: Matchbox [v0.6.1](https://github.com/coreos/matchbox/releases) is released with a new [Matchbox Terraform Provider][terraform] and [tutorial](Documentation/getting-started.md).
-
-`matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles to PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [terraform][terraform].
+`matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles that PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [Terraform][terraform].
 
 * [Documentation][docs]
 * [matchbox Service](Documentation/matchbox.md)
@@ -27,11 +25,9 @@
 ### Tutorials
 
 * [Getting Started](Documentation/getting-started.md)
-
-Local QEMU/KVM
-
-* [matchbox with rkt](Documentation/getting-started-rkt.md)
-* [matchbox with Docker](Documentation/getting-started-docker.md)
+* Local QEMU/KVM
+    * [matchbox with rkt](Documentation/getting-started-rkt.md)
+    * [matchbox with Docker](Documentation/getting-started-docker.md)
 
 ### Example Clusters
 
@@ -54,16 +50,6 @@ Create [example](examples) clusters on-premise or locally with [QEMU/KVM](script
 * [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services with docker or rkt
 * [squid](contrib/squid/README.md) - Run a transparent cache proxy
 * [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) - Terraform plugin which supports "matchbox" provider
-
-## Enterprise
-
-[Tectonic](https://coreos.com/tectonic/) is the enterprise-ready Kubernetes offering from CoreOS (free for 10 nodes!). The [Tectonic Installer](https://coreos.com/tectonic/docs/latest/install/bare-metal/#4-tectonic-installer) app integrates directly with `matchbox` through its gRPC API to provide a rich graphical client for populating `matchbox` with machine configs.
-
-Learn more from our [docs](https://coreos.com/tectonic/docs/latest/) or [blog](https://coreos.com/blog/announcing-tectonic-1.6).
-
-![Tectonic Installer](Documentation/img/tectonic-installer.png)
-
-![Tectonic Console](Documentation/img/tectonic-console.png)
 
 [docs]: https://coreos.com/matchbox/docs/latest
 [terraform]: https://github.com/coreos/terraform-provider-matchbox
