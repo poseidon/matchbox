@@ -170,6 +170,7 @@ function docker_create {
   docker run --name matchbox \
     -d \
     -p 8080:8080 \
+    -p 8081:8081 \
     -v $CONFIG_DIR:/etc/matchbox:Z \
     -v $ASSETS_DIR:/var/lib/matchbox/assets:Z \
     $DATA_MOUNT \
