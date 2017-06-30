@@ -20,7 +20,7 @@ storage:
       contents:
         inline: |
           #!/bin/bash -ex
-          curl "${ignition_endpoint}?{{.request.raw_query}}&os=installed" -o ignition.json
+          curl --retry 10 "${ignition_endpoint}?{{.request.raw_query}}&os=installed" -o ignition.json
           coreos-install \
             -d ${install_disk} \
             -C ${container_linux_channel} \
