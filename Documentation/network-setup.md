@@ -219,10 +219,17 @@ Grub can be used to delegate as well.
 
 /var/lib/tftpboot/boot/grub/grub.cfg:
 ```ini
-insmod i386-pc/http.mod
-set root=http,matchbox.foo:8080
+insmod http
+set root=http,matchbox.foo
 configfile /grub
 ```
+or, if you want to send the system's MAC address to matchbox for use in a profile selector:
+```ini
+insmod http
+set root=http,matchbox.foo
+configfile /grub?mac=$net_default_mac
+```
+*Note: Grub2's http module does not accept a port specification, so ensure that matchbox is running on port 80 instead of 8080 in this case*
 
 Make sure to replace variables in the example config files; instead of iPXE variables, use GRUB variables. Check the [GRUB2 manual](https://www.gnu.org/software/grub/manual/grub.html#Network).
 
