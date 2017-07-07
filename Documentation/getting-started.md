@@ -122,7 +122,7 @@ resource "matchbox_profile" "coreos-install" {
 
 #### Groups
 
-Matcher groups match machines based on labels like MAC, UUID, etc. to different profiles and template in machine-specific values. This group does not have a `selector` block, so any machines which network boot from matchbox will match this group and be provisioned using the `coreos-install` profile. Machines are matched to the most specific matching group.
+Matcher groups match machines based on labels like MAC, UUID, etc. to different profiles and templates in machine-specific values. This group does not have a `selector` block, so any machines which network boot from matchbox will match this group and be provisioned using the `coreos-install` profile. Machines are matched to the most specific matching group.
 
 ```
 resource "matchbox_group" "default" {
