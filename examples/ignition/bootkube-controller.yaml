@@ -16,11 +16,13 @@ systemd:
             Environment="ETCD_INITIAL_CLUSTER={{.etcd_initial_cluster}}"
             Environment="ETCD_STRICT_RECONFIG_CHECK=true"
             Environment="ETCD_SSL_DIR=/etc/ssl/etcd"
-            Environment="ETCD_CERT_FILE=/etc/ssl/certs/etcd-client.crt"
-            Environment="ETCD_KEY_FILE=/etc/ssl/certs/etcd-client.key"
-            Environment="ETCD_PEER_CERT_FILE=/etc/ssl/certs/etcd-peer.crt"
-            Environment="ETCD_PEER_KEY_FILE=/etc/ssl/certs/etcd-peer.key"
-            Environment="ETCD_PEER_TRUSTED_CA_FILE=/etc/ssl/certs/etcd-ca.crt"
+            Environment="ETCD_TRUSTED_CA_FILE=/etc/ssl/certs/etcd/server-ca.crt"
+            Environment="ETCD_CERT_FILE=/etc/ssl/certs/etcd/server.crt"
+            Environment="ETCD_KEY_FILE=/etc/ssl/certs/etcd/server.key"
+            Environment="ETCD_CLIENT_CERT_AUTH=true"
+            Environment="ETCD_PEER_TRUSTED_CA_FILE=/etc/ssl/certs/etcd/peer-ca.crt"
+            Environment="ETCD_PEER_CERT_FILE=/etc/ssl/certs/etcd/peer.crt"
+            Environment="ETCD_PEER_KEY_FILE=/etc/ssl/certs/etcd/peer.key"
             Environment="ETCD_PEER_CLIENT_CERT_AUTH=true"
     - name: docker.service
       enable: true
@@ -30,7 +32,7 @@ systemd:
           contents: |
             [Service]
             Environment="REBOOT_STRATEGY=etcd-lock"
-            Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-ca.crt"
+            Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-client-ca.crt"
             Environment="LOCKSMITHD_ETCD_CERTFILE=/etc/ssl/etcd/etcd-client.crt"
             Environment="LOCKSMITHD_ETCD_KEYFILE=/etc/ssl/etcd/etcd-client.key"
             Environment="LOCKSMITHD_ENDPOINT={{.etcd_endpoints}}"
@@ -160,7 +162,7 @@ storage:
           # Wrapper for bootkube start
           set -e
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
-          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.4.5}"
+          BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.5.0}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"
           exec /usr/bin/rkt run \
             --trust-keys-from-https \
