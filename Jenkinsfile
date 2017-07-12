@@ -23,7 +23,7 @@ pipeline {
           },
           bootkube: {
             node('fedora && bare-metal') {
-              timeout(time:15, unit:'MINUTES') {
+              timeout(time:60, unit:'MINUTES') {
                 checkout scm          
                 sh '''#!/bin/bash -e
                 chmod 600 ./tests/smoke/fake_rsa
@@ -46,7 +46,7 @@ pipeline {
           },
           "bootkube-terraform": {
             node('fedora && bare-metal') {
-              timeout(time:15, unit:'MINUTES') {
+              timeout(time:60, unit:'MINUTES') {
                 checkout scm          
                 sh '''#!/bin/bash -e
                 chmod 600 ./tests/smoke/fake_rsa
