@@ -9,7 +9,7 @@ systemd:
           contents: |
             [Service]
             Environment="REBOOT_STRATEGY=etcd-lock"
-            Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-ca.crt"
+            Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-client-ca.crt"
             Environment="LOCKSMITHD_ETCD_CERTFILE=/etc/ssl/etcd/etcd-client.crt"
             Environment="LOCKSMITHD_ETCD_KEYFILE=/etc/ssl/etcd/etcd-client.key"
             {{ if eq .etcd_on_host "false" -}}
