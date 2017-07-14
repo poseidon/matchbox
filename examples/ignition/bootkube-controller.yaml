@@ -27,15 +27,7 @@ systemd:
     - name: docker.service
       enable: true
     - name: locksmithd.service
-      dropins:
-        - name: 40-etcd-lock.conf
-          contents: |
-            [Service]
-            Environment="REBOOT_STRATEGY=etcd-lock"
-            Environment="LOCKSMITHD_ETCD_CAFILE=/etc/ssl/etcd/etcd-client-ca.crt"
-            Environment="LOCKSMITHD_ETCD_CERTFILE=/etc/ssl/etcd/etcd-client.crt"
-            Environment="LOCKSMITHD_ETCD_KEYFILE=/etc/ssl/etcd/etcd-client.key"
-            Environment="LOCKSMITHD_ENDPOINT={{.etcd_endpoints}}"
+      mask: true
     - name: kubelet.path
       enable: true
       contents: |
