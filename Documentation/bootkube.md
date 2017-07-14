@@ -96,7 +96,7 @@ $ ssh core@node1.example.com 'journalctl -f -u bootkube'
 [  299.311743] bootkube[5]: All self-hosted control plane components successfully started
 ```
 
-The Kubernetes cluster should be accessible once complete. [Verify](#verify) functionality and then install **important** cluster [addons](#addons). You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. It contains a `kubeconfig` used to access the cluster.
+[Verify](#verify) the Kubernetes cluster is accessible once complete. Then install **important** cluster [addons](cluster-addons.md). You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. It contains a `kubeconfig` used to access the cluster.
 
 ## Verify
 
@@ -130,18 +130,7 @@ kube-system   pod-checkpointer-hb960-node1.example.com   1/1       Running   0  
 
 ## Addons
 
-Several cluster components run as Kubernetes components.
-
-### CLUO
-
-Create the [container-linux-update-operator](https://github.com/coreos/container-linux-update-operator) (i.e. CLUO) `update-operator` deployment and `update-agent` DaemonSet. CLUO coordinates reboots of auto-updating Container Linux nodes so that one node reboots at a time and nodes are drained before reboot.
-
-```
-kubectl apply -f examples/addons/cluo/update-operator.yaml
-kubectl apply -f examples/addons/cluo/update-agent.yaml
-```
-
-Note that CLUO replaces `locksmithd` reboot coordination. The `update_engine` systemd unit on hosts still performs the Container Linux update check, download, and install to the inactive partition.
+Install **important** cluster [addons](cluster-addons.md).
 
 ## Going further
 
