@@ -3,7 +3,7 @@
 # USAGE: ./scripts/devnet create [example]
 # USAGE: ./scripts/devnet status
 # USAGE: ./scripts/devnet destroy
-set -u
+set -eu
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
