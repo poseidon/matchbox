@@ -124,7 +124,7 @@ $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 [Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster. Verify that the cluster is accessible and that the apiserver, scheduler, and controller-manager are running as pods.
 
 ```sh
-$ KUBECONFIG=assets/auth/kubeconfig
+$ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE
 node1.example.com   Ready     3m
