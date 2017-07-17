@@ -24,9 +24,9 @@ main() {
   done
 
   echo "Add etcd certs to nodes"
-  for node in 'node1' 'node2' 'node3'; do
-    scp -r assets/tls/etcd-* core@$node.example.com:/home/core/
-    ssh core@$node.example.com 'sudo mkdir -p /etc/ssl/etcd && sudo mv etcd-* /etc/ssl/etcd/ && sudo chown -R etcd:etcd /etc/ssl/etcd && sudo chmod -R 500 /etc/ssl/etcd/'
+  for node in 'node1'; do
+    scp -r assets/tls/etcd-* assets/tls/etcd core@$node.example.com:/home/core/
+    ssh core@$node.example.com 'sudo mkdir -p /etc/ssl/etcd && sudo mv etcd-* etcd /etc/ssl/etcd/ && sudo chown -R etcd:etcd /etc/ssl/etcd && sudo chmod -R 500 /etc/ssl/etcd/'
   done
 
   echo "Add kubeconfig to nodes"
