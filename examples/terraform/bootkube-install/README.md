@@ -64,9 +64,11 @@ Note: The `cached-container-linux-install` profile will PXE boot and install Con
 You may set certain optional variables to override defaults. Set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly.
 
 ```hcl
+# Optional (defaults)
+# cached_install = "false"
 # install_disk = "/dev/sda"
 # container_linux_oem = ""
-# experimental_self_hosted_etcd = "true"
+# experimental_self_hosted_etcd = "false"
 ```
 
 The default is to create a Kubernetes cluster with 1 controller and 2 workers as an example, but check `multi-controller.tfvars.example` for an example which defines 3 controllers and 1 worker.
@@ -101,7 +103,7 @@ module.cluster.null_resource.bootkube-start: Still creating... (8m40s elapsed)
 Apply complete! Resources: 37 added, 0 changed, 0 destroyed.
 ```
 
-You can now move on to the "Machines" section. Apply will loop until it can successfully copy the kubeconfig to each node and start the one-time Kubernetes bootstrapping process on a controller. In practice, you may see `apply` fail if it connects before the disk install has completed. Run terraform apply until it reconciles successfully.
+You can now move on to the "Machines" section. Apply will loop until it can successfully copy the kubeconfig and etcd TLS assets to each node and start the one-time Kubernetes bootstrapping process on a controller. In practice, you may see `apply` fail if it connects before the disk install has completed. Run terraform apply until it reconciles successfully.
 
 ## Machines
 
@@ -149,7 +151,9 @@ kube-system   kube-scheduler-694795526-fks0b             1/1       Running   1  
 kube-system   pod-checkpointer-node1.example.com         1/1       Running   2          10m
 ```
 
-Try restarting machines or deleting pods to see that the cluster is resilient to failures.
+## Addons
+
+Install **important** cluster [addons](../../../Documentation/cluster-addons.md).
 
 ## Going Further
 

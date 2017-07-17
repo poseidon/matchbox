@@ -11,7 +11,10 @@ Notable changes between releases.
 ### Examples / Modules
 
 * Upgrade Kubernetes v1.6.6 example clusters
-* Kubernetes examples clusters enable etcd TLS (unless experimental self-hosted etcd is enabled)
+* Kubernetes examples clusters enable etcd TLS
+* Deploy the Container Linux Update Operator (CLUO) to coordinate reboots of Container Linux nodes in Kubernetes clusters. See the cluster [addon docs](Documentation/cluster-addons.md).
+* Kubernetes examples (terraform and non-terraform) mask locksmithd
+* Terraform modules `bootkube` and `profiles` (Kubernetes) mask locksmithd
 
 ## v0.6.1 (2017-05-25)
 

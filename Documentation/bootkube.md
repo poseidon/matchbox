@@ -60,32 +60,32 @@ Client machines should boot and provision themselves. Local client VMs should ne
 
 We're ready to use bootkube to create a temporary control plane and bootstrap a self-hosted Kubernetes cluster.
 
-Secure copy the etcd TLS assets to `/etc/ssl/etcd/*` on **every** node.
+Secure copy the etcd TLS assets to `/etc/ssl/etcd/*` on **every controller** node.
 
-```bash
-for node in 'node1' 'node2' 'node3'; do
+```sh
+for node in 'node1'; do
     scp -r assets/tls/etcd-* assets/tls/etcd core@$node.example.com:/home/core/
     ssh core@$node.example.com 'sudo mkdir -p /etc/ssl/etcd && sudo mv etcd-* etcd /etc/ssl/etcd/ && sudo chown -R etcd:etcd /etc/ssl/etcd && sudo chmod -R 500 /etc/ssl/etcd/'
 done
 ```
 
-Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every** node which will path activate the `kubelet.service`.
+Secure copy the `kubeconfig` to `/etc/kubernetes/kubeconfig` on **every node** to path activate the `kubelet.service`.
 
-```bash
+```sh
 for node in 'node1' 'node2' 'node3'; do
     scp assets/auth/kubeconfig core@$node.example.com:/home/core/kubeconfig
     ssh core@$node.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
 done
 ```
 
-Secure copy the `bootkube` generated assets to any controller node and run `bootkube-start` (takes ~10 minutes).
+Secure copy the `bootkube` generated assets to **any controller** node and run `bootkube-start` (takes ~10 minutes).
 
 ```sh
 scp -r assets core@node1.example.com:/home/core
 ssh core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
 ```
 
-Optionally watch the Kubernetes control plane bootstrapping with the bootkube temporary api-server. You will see quite a bit of output.
+Watch the Kubernetes control plane bootstrapping with the bootkube temporary api-server. You will see quite a bit of output.
 
 ```sh
 $ ssh core@node1.example.com 'journalctl -f -u bootkube'
@@ -96,11 +96,11 @@ $ ssh core@node1.example.com 'journalctl -f -u bootkube'
 [  299.311743] bootkube[5]: All self-hosted control plane components successfully started
 ```
 
-You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. It contains a `kubeconfig` used to access the cluster.
+[Verify](#verify) the Kubernetes cluster is accessible once complete. Then install **important** cluster [addons](cluster-addons.md). You may cleanup the `bootkube` assets on the node, but you should keep the copy on your laptop. It contains a `kubeconfig` used to access the cluster.
 
 ## Verify
 
-[Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster. Verify that the cluster is accessible and that the kubelet, apiserver, scheduler, and controller-manager are running as pods.
+[Install kubectl](https://coreos.com/kubernetes/docs/latest/configure-kubectl.html) on your laptop. Use the generated kubeconfig to access the Kubernetes cluster. Verify that the cluster is accessible and that the apiserver, scheduler, and controller-manager are running as pods.
 
 ```sh
 $ KUBECONFIG=assets/auth/kubeconfig
@@ -128,7 +128,9 @@ kube-system   pod-checkpointer-hb960                     1/1       Running   0  
 kube-system   pod-checkpointer-hb960-node1.example.com   1/1       Running   0          6m
 ```
 
-Try deleting pods to see that the cluster is resilient to failures and machine restarts (Container Linux auto-updates).
+## Addons
+
+Install **important** cluster [addons](cluster-addons.md).
 
 ## Going further
 
