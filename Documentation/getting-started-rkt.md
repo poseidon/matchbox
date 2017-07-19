@@ -158,7 +158,7 @@ The example profile added autologin so you can verify that etcd3 works between n
 
 ```sh
 $ systemctl status etcd-member
-$ ETCDCTL_API=3
+$ export ETCDCTL_API=3
 $ etcdctl set /message hello
 $ etcdctl get /message
 ```
