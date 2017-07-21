@@ -109,3 +109,9 @@ passwd:
     - name: core
       ssh_authorized_keys:
         - {{.ssh_authorized_key}}
+{{ if index . "ignition_append" }}
+ignition:
+  config:
+    append:
+      - source: {{.ignition_append}}
+{{end}}
