@@ -1,9 +1,16 @@
-
 # Upgrading self-hosted Kubernetes
 
-[Self-hosted](bootkube.md) Kubernetes clusters schedule Kubernetes components such as the apiserver, kubelet, scheduler, and controller-manager as pods like other applications (except with node selectors). This allows Kubernetes level operations to be performed to upgrade clusters in place, rather than by re-provisioning.
+CoreOS Kubernetes clusters "self-host" the apiserver, scheduler, controller-manager, flannel, kube-dns, and kube-proxy as Kubernetes pods, like ordinary applications (except with taint tolerations). This allows upgrades to be performed in-place using (mostly) `kubectl` as an alternative to re-provisioning.
 
-Let's upgrade a self-hosted Kubernetes v1.4.1 cluster to v1.4.3 as an example.
+Let's upgrade a Kubernetes v1.6.6 cluster to v1.6.7 as an example.
+
+## Stability
+
+This guide shows how to attempt a in-place upgrade of a Kubernetes cluster setup via the [examples](../examples). It does not provide exact diffs, migrations between breaking changes, the stability of a fresh re-provision, or any guarantees. Evaluate whether in-place updates are appropriate for your Kubernetes cluster and be prepared to perform a fresh re-provision if something goes wrong, especially between Kubernetes minor releases (e.g. 1.6 to 1.7).
+
+Matchbox Kubernetes examples provide a vanilla Kubernetes cluster with only free (as in freedom and cost) software components. If you require currated updates, migrations, or guarantees for production, consider [Tectonic](https://coreos.com/tectonic/) by CoreOS.
+
+**Note: Tectonic users should NOT manually upgrade. Follow the [Tectonic docs](https://coreos.com/tectonic/docs/latest/admin/upgrade.html)**
 
 ## Inspect
 
@@ -11,193 +18,130 @@ Show the control plane daemonsets and deployments which will need to be updated.
 
 ```sh
 $ kubectl get daemonsets -n=kube-system
-NAME             DESIRED   CURRENT   NODE-SELECTOR   AGE
-kube-apiserver   1         1         master=true     5m
-kube-proxy       3         3         <none>          5m
-kubelet          3         3         <none>          5m
+NAME                             DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE-SELECTOR                     AGE
+kube-apiserver                   1         1         1         1            1           node-role.kubernetes.io/master=   21d
+kube-etcd-network-checkpointer   1         1         1         1            1           node-role.kubernetes.io/master=   21d
+kube-flannel                     4         4         4         4            4           <none>                            21d
+kube-proxy                       4         4         4         4            4           <none>                            21d
+pod-checkpointer                 1         1         1         1            1           node-role.kubernetes.io/master=   21d
 
 $ kubectl get deployments -n=kube-system
-NAME                      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-kube-controller-manager   1         1         1            1           5m
-kube-dns-v20              1         1         1            1           5m
-kube-scheduler            1         1         1            1           5m
+kube-controller-manager           2         2         2            2           21d
+kube-dns                          1         1         1            1           21d
+kube-scheduler                    2         2         2            2           21d
 ```
 
 Check the current Kubernetes version.
 
 ```sh
 $ kubectl version
-Client Version: version.Info{Major:"1", Minor:"4", GitVersion:"v1.4.0", GitCommit:"a16c0a7f71a6f93c7e0f222d961f4675cd97a46b", GitTreeState:"clean", BuildDate:"2016-09-26T18:16:57Z", GoVersion:"go1.6.3", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"4", GitVersion:"v1.4.1+coreos.0", GitCommit:"b7a02f46b972c5211e5c04fdb1d5b86ac16c00eb", GitTreeState:"clean", BuildDate:"2016-10-11T20:13:55Z", GoVersion:"go1.6.3", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.2", GitCommit:"477efc3cbe6a7effca06bd1452fa356e2201e1ee", GitTreeState:"clean", BuildDate:"2017-04-19T20:33:11Z", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.6+coreos.1", GitCommit:"42a5c8b99c994a51d9ceaed5d0254f177e97d419", GitTreeState:"clean", BuildDate:"2017-06-21T01:10:07Z", GoVersion:"go1.7.6", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
-In this case, Kubernetes is `v1.4.1+coreos.0` and our goal is to upgrade to `v1.4.3+coreos.0`. First, update the control plane pods. Then the kubelets and proxies on all nodes.
+```sh
+$ kubectl get nodes
+NAME                               STATUS    AGE       VERSION
+node1.example.com                  Ready     21d       v1.6.6+coreos.1
+node2.example.com                  Ready     21d       v1.6.6+coreos.1
+node3.example.com                  Ready     21d       v1.6.6+coreos.1
+node4.example.com                  Ready     21d       v1.6.6+coreos.1
+```
 
-**Tip**: Follow along with a QEMU/KVM self-hosted Kubernetes cluster the first time, before upgrading your production bare-metal clusters ([tutorial](bootkube.md)).
+## Strategy
+
+Update control plane components with `kubectl`. Then update the `kubelet` systemd unit on each host.
+
+Prepare the changes to the Kubernetes manifests by generating assets for a target Kubernetes cluster (e.g. bootkube `v0.5.0` produces Kubernetes 1.6.6 and bootkube `v0.5.1` produces Kubernetes 1.6.7). Choose the tool used during creation of the cluster:
+
+* [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) - install the `bootkube` binary for the target version and render assets
+* [dghubble/bootkube-terraform](https://github.com/dghubble/bootkube-terraform) - checkout the tag for the target version and `terraform apply` to render assets
+
+Diff the generated assets against the assets used when originally creating the cluster. In simple cases, you may only need to bump the hyperkube image. In more complex cases, some manifests may have new flags or configuration.
 
 ## Control Plane
 
 ### kube-apiserver
 
-Edit the kube-apiserver daemonset. Change the container image name to `quay.io/coreos/hyperkube:v1.4.3_coreos.0`.
+Edit the `kube-apiserver` daemonset to rolling update the apiserver.
 
 ```sh
 $ kubectl edit daemonset kube-apiserver -n=kube-system
 ```
 
-Since daemonsets don't yet support rolling, manually delete each apiserver one by one and wait for each to be re-scheduled.
-
-```sh
-$ kubectl get pods -n=kube-system
-# WARNING: Self-hosted Kubernetes is still new and this may fail
-$ kubectl delete pod kube-apiserver-s62kb -n=kube-system
-```
-
-If you only have one, your cluster will be temporarily unavailable. Remember the Hyperkube image is quite large and this can take a minute.
-
-```sh
-$ kubectl get pods -n=kube-system
-NAME                                       READY     STATUS    RESTARTS   AGE
-kube-api-checkpoint-node1.example.com      1/1       Running   0          12m
-kube-apiserver-vyg3t                       2/2       Running   0          2m
-kube-controller-manager-1510822774-qebia   1/1       Running   2          12m
-kube-dns-v20-3531996453-0tlv9              3/3       Running   0          12m
-kube-proxy-8jthl                           1/1       Running   0          12m
-kube-proxy-bnvgy                           1/1       Running   0          12m
-kube-proxy-gkyx8                           1/1       Running   0          12m
-kube-scheduler-2099299605-67ezp            1/1       Running   2          12m
-kubelet-exe5k                              1/1       Running   0          12m
-kubelet-p3g98                              1/1       Running   0          12m
-kubelet-quhhg                              1/1       Running   0          12m
-```
+If you only have one apiserver, the cluster may be momentarily unavailable.
 
 ### kube-scheduler
 
-Edit the scheduler deployment to rolling update the scheduler. Change the container image name for the hyperkube.
+Edit the `kube-scheduler` deployment to rolling update the scheduler.
 
 ```sh
 $ kubectl edit deployments kube-scheduler -n=kube-system
 ```
 
-Wait for the schduler to be deployed.
-
 ### kube-controller-manager
 
-Edit the controller-manager deployment to rolling update the controller manager. Change the container image name for the hyperkube.
+Edit the `kube-controller-manager` deployment to rolling update the controller manager.
 
 ```sh
 $ kubectl edit deployments kube-controller-manager -n=kube-system
 ```
 
-Wait for the controller manager to be deployed.
+### kube-proxy
+
+Edit the `kube-proxy` daemonset to rolling update the proxy.
 
 ```sh
-$ kubectl get pods -n=kube-system
-NAME                                       READY     STATUS    RESTARTS   AGE
-kube-api-checkpoint-node1.example.com      1/1       Running   0          28m
-kube-apiserver-vyg3t                       2/2       Running   0          18m
-kube-controller-manager-1709527928-zj8c4   1/1       Running   0          4m
-kube-dns-v20-3531996453-0tlv9              3/3       Running   0          28m
-kube-proxy-8jthl                           1/1       Running   0          28m
-kube-proxy-bnvgy                           1/1       Running   0          28m
-kube-proxy-gkyx8                           1/1       Running   0          28m
-kube-scheduler-2255275287-hti6w            1/1       Running   0          6m
-kubelet-exe5k                              1/1       Running   0          28m
-kubelet-p3g98                              1/1       Running   0          28m
-kubelet-quhhg                              1/1       Running   0          28m
+$ kubectl edit daemonset kube-proxy -n=kube-system
+```
+
+### Others
+
+If there are changes between the prior version and target version manifests, update the `kube-dns` deployment, `kube-flannel` daemonset, or `pod-checkpointer` daemonset.
+
+### Verify
+
+Verify the control plane components updated.
+
+```sh
+$ kubectl version
+Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.2", GitCommit:"477efc3cbe6a7effca06bd1452fa356e2201e1ee", GitTreeState:"clean", BuildDate:"2017-04-19T20:33:11Z", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.7+coreos.0", GitCommit:"c8c505ee26ac3ab4d1dff506c46bc5538bc66733", GitTreeState:"clean", BuildDate:"2017-07-06T17:38:33Z", GoVersion:"go1.7.6", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+```sh
+$ kubectl get nodes
+NAME                               STATUS    AGE       VERSION
+node1.example.com                  Ready     21d       v1.6.7+coreos.0
+node2.example.com                  Ready     21d       v1.6.7+coreos.0
+node3.example.com                  Ready     21d       v1.6.7+coreos.0
+node4.example.com                  Ready     21d       v1.6.7+coreos.0
+```
+
+## kubelet
+
+SSH to each node and update `/etc/kubernetes/kubelet.env`. Restart the `kubelet.service`.
+
+```sh
+ssh core@node1.example.com
+sudo vim /etc/kubernetes/kubelet.env
+sudo systemctl restart kubelet
 ```
 
 ### Verify
 
-At this point, the control plane components have been upgraded to v1.4.3.
-
-```sh
-$ kubectl version
-Client Version: version.Info{Major:"1", Minor:"4", GitVersion:"v1.4.0", GitCommit:"a16c0a7f71a6f93c7e0f222d961f4675cd97a46b", GitTreeState:"clean", BuildDate:"2016-09-26T18:16:57Z", GoVersion:"go1.6.3", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"4", GitVersion:"v1.4.3+coreos.0", GitCommit:"7819c84f25e8c661321ee80d6b9fa5f4ff06676f", GitTreeState:"clean", BuildDate:"2016-10-17T21:19:17Z", GoVersion:"go1.6.3", Compiler:"gc", Platform:"linux/amd64"}
-```
-
-Finally, upgrade the kubelets and kube-proxies.
-
-## kubelet and kube-proxy
-
-Show the current kubelet and kube-proxy version on each node.
+Verify the kubelet and kube-proxy of each node updated.
 
 ```sh
 $ kubectl get nodes -o yaml | grep 'kubeletVersion\|kubeProxyVersion'
-    kubeProxyVersion: v1.4.1+coreos.0
-    kubeletVersion: v1.4.1+coreos.0
-    kubeProxyVersion: v1.4.1+coreos.0
-    kubeletVersion: v1.4.1+coreos.0
-    kubeProxyVersion: v1.4.1+coreos.0
-    kubeletVersion: v1.4.1+coreos.0
+      kubeProxyVersion: v1.6.7+coreos.0
+      kubeletVersion: v1.6.7+coreos.0
+      kubeProxyVersion: v1.6.7+coreos.0
+      kubeletVersion: v1.6.7+coreos.0
+      kubeProxyVersion: v1.6.7+coreos.0
+      kubeletVersion: v1.6.7+coreos.0
+      kubeProxyVersion: v1.6.7+coreos.0
+      kubeletVersion: v1.6.7+coreos.0
 ```
 
-Edit the kubelet and kube-proxy daemonsets. Change the container image name for the hyperkube.
-
-```sh
-$ kubectl edit daemonset kubelet -n=kube-system
-$ kubectl edit daemonset kube-proxy -n=kube-system
-```
-
-Since daemonsets don't yet support rolling, manually delete each kubelet and each kube-proxy. The daemonset controller will create new (upgraded) replics.
-
-```sh
-$ kubectl get pods -n=kube-system
-$ kubectl delete pod kubelet-quhhg
-...repeat
-$ kubectl delete pod kube-proxy-8jthl -n=kube-system
-...repeat
-
-$ kubectl get pods -n=kube-system
-NAME                                       READY     STATUS    RESTARTS   AGE
-kube-api-checkpoint-node1.example.com      1/1       Running   0          1h
-kube-apiserver-vyg3t                       2/2       Running   0          1h
-kube-controller-manager-1709527928-zj8c4   1/1       Running   0          47m
-kube-dns-v20-3531996453-0tlv9              3/3       Running   0          1h
-kube-proxy-6dbne                           1/1       Running   0          1s
-kube-proxy-sm4jv                           1/1       Running   0          8s
-kube-proxy-xmuao                           1/1       Running   0          14s
-kube-scheduler-2255275287-hti6w            1/1       Running   0          49m
-kubelet-hfdwr                              1/1       Running   0          38s
-kubelet-oia47                              1/1       Running   0          52s
-kubelet-s6dab                              1/1       Running   0          59s
-```
-
-## Verify
-
-Verify that the kubelet and kube-proxy on each node have been upgraded.
-
-```sh
-$ kubectl get nodes -o yaml | grep 'kubeletVersion\|kubeProxyVersion'
-      kubeProxyVersion: v1.4.3+coreos.0
-      kubeletVersion: v1.4.3+coreos.0
-      kubeProxyVersion: v1.4.3+coreos.0
-      kubeletVersion: v1.4.3+coreos.0
-      kubeProxyVersion: v1.4.3+coreos.0
-      kubeletVersion: v1.4.3+coreos.0
-```
-
-Now, Kubernetes components have been upgraded to a new version of Kubernetes!
-
-## Going further
-
-Bare-metal or virtualized self-hosted Kubernetes clusters can be upgraded in place in 5-10 minutes. Here is a bare-metal example:
-
-```sh
-$ kubectl -n=kube-system get pods
-NAME                                       READY     STATUS    RESTARTS   AGE
-kube-api-checkpoint-ibm0.lab.dghubble.io   1/1       Running   0          2d
-kube-apiserver-j6atn                       2/2       Running   0          5m
-kube-controller-manager-1709527928-y05n5   1/1       Running   0          1m
-kube-dns-v20-3531996453-zwbl8              3/3       Running   0          2d
-kube-proxy-e49p5                           1/1       Running   0          14s
-kube-proxy-eu5dc                           1/1       Running   0          8s
-kube-proxy-gjrzq                           1/1       Running   0          3s
-kube-scheduler-2255275287-96n56            1/1       Running   0          2m
-kubelet-9ob0e                              1/1       Running   0          19s
-kubelet-bvwp0                              1/1       Running   0          14s
-kubelet-xlrql                              1/1       Running   0          24s
-```
-
-Check upstream for updates to addons like `kube-dns` or `kube-dashboard` and update them like any other applications. Some kube-system components use version labels and you may wish to clean those up as well.
+Kubernetes control plane components have been successfully updated!
