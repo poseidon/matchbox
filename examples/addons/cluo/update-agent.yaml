@@ -4,17 +4,18 @@ metadata:
   name: container-linux-update-agent
   namespace: kube-system
 spec:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
         app: container-linux-update-agent
-        container-linux-update.v1.coreos.com/agent-version: v0.2.1
-      annotations:
-        container-linux-update.v1.coreos.com/agent-version: v0.2.1
     spec:
       containers:
       - name: update-agent
-        image: quay.io/coreos/container-linux-update-operator:v0.2.1
+        image: quay.io/coreos/container-linux-update-operator:v0.2.2
         command:
         - "/bin/update-agent"
         volumeMounts:
