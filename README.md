@@ -37,13 +37,13 @@ Create [example](examples) clusters on-premise or locally with [QEMU/KVM](script
 
 * [simple-install](Documentation/getting-started.md) - Install Container Linux with an SSH key on all machines (beginner)
 * [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
-* [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node self-hosted Kubernetes v1.6.7 cluster
+* [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node self-hosted Kubernetes v1.7.1 cluster
 * Terraform [Modules](examples/terraform/modules) - Re-usable Terraform Modules
 
 **Manual**
 
 * [etcd3](Documentation/getting-started-rkt.md) - Install a 3-node etcd3 cluster
-* [Kubernetes](Documentation/bootkube.md) - Install a 3-node self-hosted Kubernetes v1.6.7 cluster
+* [Kubernetes](Documentation/bootkube.md) - Install a 3-node self-hosted Kubernetes v1.7.1 cluster
 
 ## Contrib
 
