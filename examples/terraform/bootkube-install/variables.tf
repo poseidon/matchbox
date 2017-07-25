@@ -107,3 +107,9 @@ variable "experimental_self_hosted_etcd" {
   default     = "false"
   description = "Create self-hosted etcd cluster as pods on Kubernetes, instead of on-hosts"
 }
+
+variable "ignition_append" {
+  type        = "string"
+  default     = ""
+  description = "URL of additional ignition configuration"
+}

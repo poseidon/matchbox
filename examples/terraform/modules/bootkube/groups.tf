@@ -31,6 +31,7 @@ resource "matchbox_group" "controller" {
     etcd_on_host         = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip   = "${module.bootkube.kube_dns_service_ip}"
     ssh_authorized_key   = "${var.ssh_authorized_key}"
+    ignition_append      = "${var.ignition_append}"
   }
 }
 
@@ -49,5 +50,6 @@ resource "matchbox_group" "worker" {
     etcd_on_host        = "${var.experimental_self_hosted_etcd ? "false" : "true"}"
     k8s_dns_service_ip  = "${module.bootkube.kube_dns_service_ip}"
     ssh_authorized_key  = "${var.ssh_authorized_key}"
+    ignition_append     = "${var.ignition_append}"
   }
 }
