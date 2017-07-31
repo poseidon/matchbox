@@ -1,4 +1,4 @@
-VERSION=v0.4.0
+VERSION=v0.4.1
 
 IMAGE_REPO=coreos/dnsmasq
 QUAY_REPO=quay.io/coreos/dnsmasq
