@@ -129,7 +129,7 @@ function rkt_create {
     --dns=host \
     --mount volume=config,target=/etc/dnsmasq.conf \
     --volume config,kind=host,source=$DIR/../contrib/dnsmasq/metal0.conf \
-    quay.io/coreos/dnsmasq:v0.4.0 \
+    quay.io/coreos/dnsmasq:v0.4.1 \
     --caps-retain="CAP_NET_ADMIN,CAP_NET_BIND_SERVICE"
 
   status
@@ -181,7 +181,7 @@ function docker_create {
     -d \
     --cap-add=NET_ADMIN \
     -v $PWD/contrib/dnsmasq/docker0.conf:/etc/dnsmasq.conf:Z \
-    quay.io/coreos/dnsmasq:v0.4.0 -d
+    quay.io/coreos/dnsmasq:v0.4.1 -d
 }
 
 function docker_status {
