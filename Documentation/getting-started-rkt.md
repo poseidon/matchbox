@@ -114,7 +114,7 @@ sudo rkt run --net=metal0:IP=172.18.0.3 \
   --dns=host \
   --mount volume=config,target=/etc/dnsmasq.conf \
   --volume config,kind=host,source=$PWD/contrib/dnsmasq/metal0.conf \
-  quay.io/coreos/dnsmasq:v0.4.0 \
+  quay.io/coreos/dnsmasq:v0.4.1 \
   --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW
 ```
 
