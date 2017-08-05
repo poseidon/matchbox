@@ -227,6 +227,7 @@ func TestIgnition_BrokenStore(t *testing.T) {
 	_, err = srv.IgnitionGet(context.Background(), &pb.IgnitionGetRequest{Name: fake.IgnitionYAMLName})
 	assert.Error(t, err)
 	err = srv.IgnitionDelete(context.Background(), &pb.IgnitionDeleteRequest{Name: fake.IgnitionYAMLName})
+	assert.Error(t, err)
 }
 
 func TestGenericCRUD(t *testing.T) {
@@ -262,4 +263,6 @@ func TestGeneric_BrokenStore(t *testing.T) {
 	_, err = srv.GenericGet(context.Background(), &pb.GenericGetRequest{Name: fake.GenericName})
 	assert.Error(t, err)
 	err = srv.GenericDelete(context.Background(), &pb.GenericDeleteRequest{Name: fake.GenericName})
+
+	assert.Error(t, err)
 }
