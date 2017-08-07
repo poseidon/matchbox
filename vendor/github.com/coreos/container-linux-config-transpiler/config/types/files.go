@@ -17,7 +17,10 @@ package types
 import (
 	"net/url"
 
+	"github.com/coreos/container-linux-config-transpiler/config/astyaml"
+
 	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"github.com/coreos/ignition/config/validate"
 	"github.com/coreos/ignition/config/validate/report"
 	"github.com/vincent-petithory/dataurl"
 )
@@ -51,8 +54,11 @@ type FileGroup struct {
 }
 
 func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
-		for _, file := range in.Storage.Files {
+	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
+		r := report.Report{}
+		files_node, _ := getNodeChildPath(ast, "storage", "files")
+		for i, file := range in.Storage.Files {
+			file_node, _ := getNodeChild(files_node, i)
 			newFile := ignTypes.File{
 				Filesystem: file.Filesystem,
 				Path:       ignTypes.Path(file.Path),
@@ -73,10 +79,29 @@ func init() {
 			if file.Contents.Remote.Url != "" {
 				source, err := url.Parse(file.Contents.Remote.Url)
 				if err != nil {
-					return out, report.ReportFromError(err, report.EntryError)
+					// if invalid, record error and continue
+					convertReport := report.ReportFromError(err, report.EntryError)
+					if n, err := getNodeChildPath(file_node, "contents", "remote", "url"); err != nil {
+						line, col, _ := n.ValueLineCol(nil)
+						convertReport.AddPosition(line, col, "")
+					}
+					continue
+				}
+
+				// patch the yaml tree to look like the ignition tree by making contents
+				// the remote section and changing the name from url -> source
+				asYamlNode, ok := file_node.(astyaml.YamlNode)
+				if ok {
+					newContents, _ := getNodeChildPath(file_node, "contents", "remote")
+					newContentsAsYaml := newContents.(astyaml.YamlNode)
+					asYamlNode.ChangeKey("contents", "contents", newContentsAsYaml)
+
+					url, _ := getNodeChild(newContents.(astyaml.YamlNode), "url")
+					newContentsAsYaml.ChangeKey("url", "source", url.(astyaml.YamlNode))
 				}
 
 				newFile.Contents = ignTypes.FileContents{Source: ignTypes.Url(*source)}
+
 			}
 
 			if newFile.Contents == (ignTypes.FileContents{}) {
@@ -93,6 +118,6 @@ func init() {
 
 			out.Storage.Files = append(out.Storage.Files, newFile)
 		}
-		return out, report.Report{}
+		return out, r, ast
 	})
 }

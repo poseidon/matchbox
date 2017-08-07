@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"github.com/coreos/ignition/config/validate"
 	"github.com/coreos/ignition/config/validate/report"
 	"github.com/vincent-petithory/dataurl"
 )
@@ -58,7 +59,7 @@ func (s UpdateServer) Validate() report.Report {
 }
 
 func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
+	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
 		var contents string
 		if in.Update != nil {
 			if in.Update.Group != "" {
@@ -69,8 +70,9 @@ func init() {
 			}
 		}
 		if in.Locksmith != nil {
-			if in.Locksmith.RebootStrategy != "" {
-				contents += fmt.Sprintf("\nREBOOT_STRATEGY=%s", strings.ToLower(string(in.Locksmith.RebootStrategy)))
+			lines := in.Locksmith.configLines()
+			if len(lines) > 0 {
+				contents += "\n" + strings.Join(lines, "\n")
 			}
 		}
 		if contents != "" {
@@ -86,6 +88,6 @@ func init() {
 				},
 			})
 		}
-		return out, report.Report{}
+		return out, report.Report{}, ast
 	})
 }

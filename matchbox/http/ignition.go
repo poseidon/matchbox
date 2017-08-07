@@ -89,7 +89,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 		}
 
 		// Parse bytes into a Container Linux Config
-		config, report := ct.Parse(buf.Bytes())
+		config, ast, report := ct.Parse(buf.Bytes())
 		if report.IsFatal() {
 			s.logger.Errorf("error parsing Container Linux config: %s", report.String())
 			http.NotFound(w, req)
@@ -97,7 +97,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 		}
 
 		// Convert Container Linux Config into an Ignition Config
-		ign, report := ct.ConvertAs2_0(config, "")
+		ign, report := ct.ConvertAs2_0(config, "", ast)
 		if report.IsFatal() {
 			s.logger.Errorf("error converting Container Linux config: %s", report.String())
 			http.NotFound(w, req)

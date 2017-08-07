@@ -17,7 +17,6 @@ package types
 import (
 	"crypto"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"strings"
 
@@ -30,44 +29,55 @@ var (
 	ErrHashUnrecognized = errors.New("unrecognized hash function")
 )
 
-type Hash struct {
-	Function string
-	Sum      string
-}
-
-func (h *Hash) UnmarshalJSON(data []byte) error {
-	var th string
-	if err := json.Unmarshal(data, &th); err != nil {
-		return err
+// HashParts will return the sum and function (in that order) of the hash stored
+// in this Verification, or an error if there is an issue during parsing.
+func (v Verification) HashParts() (string, string, error) {
+	if v.Hash == nil {
+		// The hash can be nil
+		return "", "", nil
 	}
-
-	parts := strings.SplitN(th, "-", 2)
+	parts := strings.SplitN(*v.Hash, "-", 2)
 	if len(parts) != 2 {
-		return ErrHashMalformed
+		return "", "", ErrHashMalformed
 	}
 
-	h.Function = parts[0]
-	h.Sum = parts[1]
-
-	return nil
+	return parts[0], parts[1], nil
 }
 
-func (h Hash) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + h.Function + "-" + h.Sum + `"`), nil
-}
+func (v Verification) Validate() report.Report {
+	r := report.Report{}
 
-func (h Hash) Validate() report.Report {
+	if v.Hash == nil {
+		// The hash can be nil
+		return r
+	}
+
+	function, sum, err := v.HashParts()
+	if err != nil {
+		r.Add(report.Entry{
+			Message: err.Error(),
+			Kind:    report.EntryError,
+		})
+		return r
+	}
 	var hash crypto.Hash
-	switch h.Function {
+	switch function {
 	case "sha512":
 		hash = crypto.SHA512
 	default:
-		return report.ReportFromError(ErrHashUnrecognized, report.EntryError)
+		r.Add(report.Entry{
+			Message: ErrHashUnrecognized.Error(),
+			Kind:    report.EntryError,
+		})
+		return r
 	}
 
-	if len(h.Sum) != hex.EncodedLen(hash.Size()) {
-		return report.ReportFromError(ErrHashWrongSize, report.EntryError)
+	if len(sum) != hex.EncodedLen(hash.Size()) {
+		r.Add(report.Entry{
+			Message: ErrHashWrongSize.Error(),
+			Kind:    report.EntryError,
+		})
 	}
 
-	return report.Report{}
+	return r
 }

@@ -19,13 +19,13 @@ import:
   - transport
 # Container Linux Config Transpiler and Ignition
 - package: github.com/coreos/container-linux-config-transpiler
-  version: v0.2.2
+  version: v0.4.2
   subpackages:
   - config
   - config/types
   - config/templating
 - package: github.com/coreos/ignition
-  version: d75d0aa3bf307f0954ce4ea8cac56dacec8d16ce
+  version: v0.17.2
   subpackages:
   - config
   - config/types
