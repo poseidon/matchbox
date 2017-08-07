@@ -93,7 +93,6 @@ $ systemctl status etcd-member
 Verify that etcd3 peers are healthy and communicating.
 
 ```sh
-$ export ETCDCTL_API=3
 $ etcdctl cluster-health
 $ etcdctl set /message hello
 $ etcdctl get /message
