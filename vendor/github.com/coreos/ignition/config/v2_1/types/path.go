@@ -14,7 +14,18 @@
 
 package types
 
-type Timeouts struct {
-	HttpResponseHeaders *int `json:"httpResponseHeaders,omitempty"`
-	HttpTotal           *int `json:"httpTotal,omitempty"`
+import (
+	"errors"
+	"path"
+)
+
+var (
+	ErrPathRelative = errors.New("path not absolute")
+)
+
+func validatePath(p string) error {
+	if !path.IsAbs(p) {
+		return ErrPathRelative
+	}
+	return nil
 }

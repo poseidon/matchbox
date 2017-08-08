@@ -18,21 +18,27 @@ import (
 	"reflect"
 
 	yaml "github.com/ajeddeloh/yaml"
+	"github.com/coreos/container-linux-config-transpiler/config/astyaml"
+	"github.com/coreos/container-linux-config-transpiler/config/platform"
 	"github.com/coreos/container-linux-config-transpiler/config/types"
 	ignTypes "github.com/coreos/ignition/config/v2_0/types"
 	"github.com/coreos/ignition/config/validate"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
-func Parse(data []byte) (types.Config, report.Report) {
+// Parse will convert a byte slice containing a Container Linux Config into a
+// golang struct representing the config, the parse tree from parsing the yaml
+// and a report of any warnings or errors that occurred during the parsing.
+func Parse(data []byte) (types.Config, validate.AstNode, report.Report) {
 	var cfg types.Config
 	var r report.Report
 
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return types.Config{}, report.ReportFromError(err, report.EntryError)
+		return types.Config{}, nil, report.ReportFromError(err, report.EntryError)
 	}
 
 	nodes := yaml.UnmarshalToNode(data)
+	var root validate.AstNode
 	if nodes == nil {
 		r.Add(report.Entry{
 			Kind:    report.EntryWarning,
@@ -40,20 +46,35 @@ func Parse(data []byte) (types.Config, report.Report) {
 		})
 		r.Merge(validate.ValidateWithoutSource(reflect.ValueOf(cfg)))
 	} else {
-		root, err := fromYamlDocumentNode(*nodes)
+		var err error
+		root, err = astyaml.FromYamlDocumentNode(*nodes)
 		if err != nil {
-			return types.Config{}, report.ReportFromError(err, report.EntryError)
+			return types.Config{}, nil, report.ReportFromError(err, report.EntryError)
 		}
 
-		r.Merge(validate.Validate(reflect.ValueOf(cfg), root, nil))
+		r.Merge(validate.Validate(reflect.ValueOf(cfg), root, nil, true))
 	}
 
 	if r.IsFatal() {
-		return types.Config{}, r
+		return types.Config{}, nil, r
 	}
-	return cfg, r
+	return cfg, root, r
 }
 
-func ConvertAs2_0(in types.Config, platform string) (ignTypes.Config, report.Report) {
-	return types.ConvertAs2_0(in, platform)
+// ConvertAs2_0 will convert a golang struct representing a Container Linux
+// Config into an Ignition Config, and a report of any warnings or errors. It
+// takes the parse tree from parsing the Container Linux config as well.
+// ConvertAs2_0 also accepts a platform string, which can either be one of the
+// platform strings defined in config/templating/templating.go or an empty
+// string if [dynamic data](doc/dynamic-data.md) isn't used.
+func ConvertAs2_0(in types.Config, p string, ast validate.AstNode) (ignTypes.Config, report.Report) {
+	if !platform.IsSupportedPlatform(p) {
+		r := report.Report{}
+		r.Add(report.Entry{
+			Kind:    report.EntryError,
+			Message: "unsupported platform",
+		})
+		return ignTypes.Config{}, r
+	}
+	return types.ConvertAs2_0(in, p, ast)
 }

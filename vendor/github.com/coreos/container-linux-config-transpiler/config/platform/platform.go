@@ -1,4 +1,4 @@
-// Copyright 2016 CoreOS, Inc.
+// Copyright 2017 CoreOS, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package types
+package platform
 
-import (
-	"errors"
-
-	"github.com/coreos/ignition/config/validate/report"
+const (
+	Azure             = "azure"
+	DO                = "digitalocean"
+	EC2               = "ec2"
+	GCE               = "gce"
+	Packet            = "packet"
+	OpenStackMetadata = "openstack-metadata"
+	VagrantVirtualbox = "vagrant-virtualbox"
 )
 
-var (
-	ErrCompressionInvalid = errors.New("invalid compression method")
-)
+var Platforms = []string{
+	Azure,
+	DO,
+	EC2,
+	GCE,
+	Packet,
+	OpenStackMetadata,
+	VagrantVirtualbox,
+}
 
-type Compression string
-
-func (c Compression) Validate() report.Report {
-	switch c {
-	case "", "gzip":
-	default:
-		return report.ReportFromError(ErrCompressionInvalid, report.EntryError)
+func IsSupportedPlatform(platform string) bool {
+	for _, supportedPlatform := range Platforms {
+		if supportedPlatform == platform {
+			return true
+		}
 	}
-	return report.Report{}
+	return platform == ""
 }

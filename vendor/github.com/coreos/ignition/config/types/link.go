@@ -1,4 +1,4 @@
-// Copyright 2016 CoreOS, Inc.
+// Copyright 2017 CoreOS, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,22 @@
 
 package types
 
-type Systemd struct {
-	Units []SystemdUnit `json:"units,omitempty"`
+import (
+	"fmt"
+
+	"github.com/coreos/ignition/config/validate/report"
+)
+
+func (s Link) Validate() report.Report {
+	r := report.Report{}
+	if !s.Hard {
+		err := validatePath(s.Target)
+		if err != nil {
+			r.Add(report.Entry{
+				Message: fmt.Sprintf("problem with target path %q: %v", s.Target, err),
+				Kind:    report.EntryError,
+			})
+		}
+	}
+	return r
 }

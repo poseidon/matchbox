@@ -14,6 +14,70 @@
 
 package types
 
-type Verification struct {
-	Hash *Hash `json:"hash,omitempty"`
+import (
+	"crypto"
+	"encoding/hex"
+	"errors"
+	"strings"
+
+	"github.com/coreos/ignition/config/validate/report"
+)
+
+var (
+	ErrHashMalformed    = errors.New("malformed hash specifier")
+	ErrHashWrongSize    = errors.New("incorrect size for hash sum")
+	ErrHashUnrecognized = errors.New("unrecognized hash function")
+)
+
+// HashParts will return the sum and function (in that order) of the hash stored
+// in this Verification, or an error if there is an issue during parsing.
+func (v Verification) HashParts() (string, string, error) {
+	if v.Hash == nil {
+		// The hash can be nil
+		return "", "", nil
+	}
+	parts := strings.SplitN(*v.Hash, "-", 2)
+	if len(parts) != 2 {
+		return "", "", ErrHashMalformed
+	}
+
+	return parts[0], parts[1], nil
+}
+
+func (v Verification) Validate() report.Report {
+	r := report.Report{}
+
+	if v.Hash == nil {
+		// The hash can be nil
+		return r
+	}
+
+	function, sum, err := v.HashParts()
+	if err != nil {
+		r.Add(report.Entry{
+			Message: err.Error(),
+			Kind:    report.EntryError,
+		})
+		return r
+	}
+	var hash crypto.Hash
+	switch function {
+	case "sha512":
+		hash = crypto.SHA512
+	default:
+		r.Add(report.Entry{
+			Message: ErrHashUnrecognized.Error(),
+			Kind:    report.EntryError,
+		})
+		return r
+	}
+
+	if len(sum) != hex.EncodedLen(hash.Size()) {
+		r.Add(report.Entry{
+			Message: ErrHashWrongSize.Error(),
+			Kind:    report.EntryError,
+		})
+	}
+
+	return r
 }

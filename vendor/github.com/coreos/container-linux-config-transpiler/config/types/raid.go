@@ -16,6 +16,7 @@ package types
 
 import (
 	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"github.com/coreos/ignition/config/validate"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
@@ -27,7 +28,7 @@ type Raid struct {
 }
 
 func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
+	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
 		for _, array := range in.Storage.Arrays {
 			newArray := ignTypes.Raid{
 				Name:   array.Name,
@@ -41,6 +42,6 @@ func init() {
 
 			out.Storage.Arrays = append(out.Storage.Arrays, newArray)
 		}
-		return out, report.Report{}
+		return out, report.Report{}, ast
 	})
 }

@@ -1,5 +1,5 @@
-hash: 7de5ab95677974311285feaa83e24f127bbb4c64a68740bab24d71f491e8b689
-updated: 2017-05-24T15:28:05.291154327-07:00
+hash: 9c2d24d482e4b591552c20d251b4620bdc2a12256564f8f18d7cb30b797bfd33
+updated: 2017-08-08T13:27:35.465951914-07:00
 imports:
 - name: github.com/ajeddeloh/go-json
   version: 73d058cf8437a1989030afe571eeab9f90eebbbd
@@ -10,11 +10,14 @@ imports:
 - name: github.com/camlistore/camlistore
   version: 9106ce829629773474c689b34aacd7d3aaa99426
 - name: github.com/coreos/container-linux-config-transpiler
-  version: 12554ca0a5ce8ea4a6c594242ccb23d8b9bff493
+  version: d42f09a1374bc318d853b53e5a31148db68a4e2a
   subpackages:
   - config
+  - config/astyaml
+  - config/platform
   - config/templating
   - config/types
+  - config/types/util
 - name: github.com/coreos/coreos-cloudinit
   version: 5be99bf577f2768193c7fb587ef5a8806c1503cf
   subpackages:
@@ -29,7 +32,7 @@ imports:
   - journal
   - unit
 - name: github.com/coreos/ignition
-  version: d75d0aa3bf307f0954ce4ea8cac56dacec8d16ce
+  version: 11813c57bc05f30644bbae7891ae30a4a62e0b33
   subpackages:
   - config
   - config/types
@@ -37,6 +40,8 @@ imports:
   - config/v1/types
   - config/v2_0
   - config/v2_0/types
+  - config/v2_1
+  - config/v2_1/types
   - config/validate
   - config/validate/astjson
   - config/validate/report
@@ -98,7 +103,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
+  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
   subpackages:
   - unix
 - name: google.golang.org/grpc

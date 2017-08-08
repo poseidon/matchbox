@@ -56,6 +56,11 @@ func (h Hash) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + h.Function + "-" + h.Sum + `"`), nil
 }
 
+func (h Hash) String() string {
+	bytes, _ := h.MarshalJSON()
+	return string(bytes)
+}
+
 func (h Hash) Validate() report.Report {
 	var hash crypto.Hash
 	switch h.Function {

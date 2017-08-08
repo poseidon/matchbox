@@ -19,6 +19,7 @@ import (
 
 	"github.com/alecthomas/units"
 	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"github.com/coreos/ignition/config/validate"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
@@ -41,35 +42,49 @@ type Partition struct {
 }
 
 func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
-		for _, disk := range in.Storage.Disks {
+	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
+		r := report.Report{}
+		for disk_idx, disk := range in.Storage.Disks {
 			newDisk := ignTypes.Disk{
 				Device:    ignTypes.Path(disk.Device),
 				WipeTable: disk.WipeTable,
 			}
 
-			for _, partition := range disk.Partitions {
+			for part_idx, partition := range disk.Partitions {
 				size, err := convertPartitionDimension(partition.Size)
 				if err != nil {
-					return out, report.ReportFromError(err, report.EntryError)
+					convertReport := report.ReportFromError(err, report.EntryError)
+					if sub_node, err := getNodeChildPath(ast, "storage", "disks", disk_idx, "partitions", part_idx, "size"); err == nil {
+						convertReport.AddPosition(sub_node.ValueLineCol(nil))
+					}
+					r.Merge(convertReport)
+					// dont add invalid partitions
+					continue
 				}
 				start, err := convertPartitionDimension(partition.Start)
 				if err != nil {
-					return out, report.ReportFromError(err, report.EntryError)
+					convertReport := report.ReportFromError(err, report.EntryError)
+					if sub_node, err := getNodeChildPath(ast, "storage", "disks", disk_idx, "partitions", part_idx, "start"); err == nil {
+						convertReport.AddPosition(sub_node.ValueLineCol(nil))
+					}
+					r.Merge(convertReport)
+					// dont add invalid partitions
+					continue
 				}
 
-				newDisk.Partitions = append(newDisk.Partitions, ignTypes.Partition{
+				newPart := ignTypes.Partition{
 					Label:    ignTypes.PartitionLabel(partition.Label),
 					Number:   partition.Number,
 					Size:     size,
 					Start:    start,
 					TypeGUID: ignTypes.PartitionTypeGUID(partition.TypeGUID),
-				})
+				}
+				newDisk.Partitions = append(newDisk.Partitions, newPart)
 			}
 
 			out.Storage.Disks = append(out.Storage.Disks, newDisk)
 		}
-		return out, report.Report{}
+		return out, r, ast
 	})
 }
 

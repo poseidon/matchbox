@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	"github.com/coreos/ignition/config/validate"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
@@ -27,7 +28,7 @@ type Docker struct {
 }
 
 func init() {
-	register2_0(func(in Config, out ignTypes.Config, platform string) (ignTypes.Config, report.Report) {
+	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
 		if in.Docker != nil {
 			contents := fmt.Sprintf("[Service]\nEnvironment=\"DOCKER_OPTS=%s\"", strings.Join(in.Docker.Flags, " "))
 			out.Systemd.Units = append(out.Systemd.Units, ignTypes.SystemdUnit{
@@ -39,6 +40,6 @@ func init() {
 				}},
 			})
 		}
-		return out, report.Report{}
+		return out, report.Report{}, ast
 	})
 }

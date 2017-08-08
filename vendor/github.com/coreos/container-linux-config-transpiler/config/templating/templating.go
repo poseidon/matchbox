@@ -17,30 +17,14 @@ package templating
 import (
 	"fmt"
 	"strings"
+
+	"github.com/coreos/container-linux-config-transpiler/config/platform"
 )
 
 var (
 	ErrUnknownPlatform = fmt.Errorf("unsupported platform")
 	ErrUnknownField    = fmt.Errorf("unknown field")
 )
-
-const (
-	PlatformAzure             = "azure"
-	PlatformDO                = "digitalocean"
-	PlatformEC2               = "ec2"
-	PlatformGCE               = "gce"
-	PlatformPacket            = "packet"
-	PlatformOpenStackMetadata = "openstack-metadata"
-)
-
-var Platforms = []string{
-	PlatformAzure,
-	PlatformDO,
-	PlatformEC2,
-	PlatformGCE,
-	PlatformPacket,
-	PlatformOpenStackMetadata,
-}
 
 const (
 	fieldHostname  = "HOSTNAME"
@@ -51,12 +35,12 @@ const (
 )
 
 var platformTemplatingMap = map[string]map[string]string{
-	PlatformAzure: {
+	platform.Azure: {
 		// TODO: is this right?
 		fieldV4Private: "COREOS_AZURE_IPV4_DYNAMIC",
 		fieldV4Public:  "COREOS_AZURE_IPV4_VIRTUAL",
 	},
-	PlatformDO: {
+	platform.DO: {
 		// TODO: unused: COREOS_DIGITALOCEAN_IPV4_ANCHOR_0
 		fieldHostname:  "COREOS_DIGITALOCEAN_HOSTNAME",
 		fieldV4Private: "COREOS_DIGITALOCEAN_IPV4_PRIVATE_0",
@@ -64,26 +48,30 @@ var platformTemplatingMap = map[string]map[string]string{
 		fieldV6Private: "COREOS_DIGITALOCEAN_IPV6_PRIVATE_0",
 		fieldV6Public:  "COREOS_DIGITALOCEAN_IPV6_PUBLIC_0",
 	},
-	PlatformEC2: {
+	platform.EC2: {
 		fieldHostname:  "COREOS_EC2_HOSTNAME",
 		fieldV4Private: "COREOS_EC2_IPV4_LOCAL",
 		fieldV4Public:  "COREOS_EC2_IPV4_PUBLIC",
 	},
-	PlatformGCE: {
+	platform.GCE: {
 		fieldHostname:  "COREOS_GCE_HOSTNAME",
-		fieldV4Private: "COREOS_GCE_IP_EXTERNAL_0",
-		fieldV4Public:  "COREOS_GCE_IP_LOCAL_0",
+		fieldV4Private: "COREOS_GCE_IP_LOCAL_0",
+		fieldV4Public:  "COREOS_GCE_IP_EXTERNAL_0",
 	},
-	PlatformPacket: {
+	platform.Packet: {
 		fieldHostname:  "COREOS_PACKET_HOSTNAME",
 		fieldV4Private: "COREOS_PACKET_IPV4_PRIVATE_0",
 		fieldV4Public:  "COREOS_PACKET_IPV4_PUBLIC_0",
 		fieldV6Public:  "COREOS_PACKET_IPV6_PUBLIC_0",
 	},
-	PlatformOpenStackMetadata: {
+	platform.OpenStackMetadata: {
 		fieldHostname:  "COREOS_OPENSTACK_HOSTNAME",
 		fieldV4Private: "COREOS_OPENSTACK_IPV4_LOCAL",
 		fieldV4Public:  "COREOS_OPENSTACK_IPV4_PUBLIC",
+	},
+	platform.VagrantVirtualbox: {
+		fieldHostname:  "COREOS_VAGRANT_VIRTUALBOX_HOSTNAME",
+		fieldV4Private: "COREOS_VAGRANT_VIRTUALBOX_PRIVATE_IPV4",
 	},
 }
 
