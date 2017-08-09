@@ -3,6 +3,8 @@ package client
 import (
 	"crypto/tls"
 	"errors"
+	"fmt"
+	"net"
 	"time"
 
 	"google.golang.org/grpc"
@@ -39,6 +41,11 @@ type Client struct {
 func New(config *Config) (*Client, error) {
 	if len(config.Endpoints) == 0 {
 		return nil, errNoEndpoints
+	}
+	for _, endpoint := range config.Endpoints {
+		if _, _, err := net.SplitHostPort(endpoint); err != nil {
+			return nil, fmt.Errorf("client: invalid host:port endpoint: %v", err)
+		}
 	}
 	return newClient(config)
 }
