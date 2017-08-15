@@ -88,7 +88,7 @@ $ terraform plan
 Plan: 37 to add, 0 to change, 0 to destroy.
 ```
 
-Terraform will configure matchbox with profiles (e.g. `cached-container-linux-install`, `bootkube-controller`, `bootkube-worker`) and add groups to match machines by MAC address to a profile. These resources declare that each machine should PXE boot and install Container Linux to disk. `node1` will provision itself as a controller, while `node2` and `noe3` provision themselves as workers.
+Terraform will configure matchbox with profiles (e.g. `cached-container-linux-install`, `bootkube-controller`, `bootkube-worker`) and add groups to match machines by MAC address to a profile. These resources declare that each machine should PXE boot and install Container Linux to disk. `node1` will provision itself as a controller, while `node2` and `node3` provision themselves as workers.
 
 The module referenced in `cluster.tf` will also generate bootkube assets to `assets_dir` (exactly like the [bootkube](https://github.com/kubernetes-incubator/bootkube) binary would). These assets include Kubernetes bootstrapping and control plane manifests as well as a kubeconfig you can use to access the cluster. 
 
