@@ -55,7 +55,7 @@ Update control plane components with `kubectl`. Then update the `kubelet` system
 Prepare the changes to the Kubernetes manifests by generating assets for a target Kubernetes cluster (e.g. bootkube `v0.5.0` produces Kubernetes 1.6.6 and bootkube `v0.5.1` produces Kubernetes 1.6.7). Choose the tool used during creation of the cluster:
 
 * [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) - install the `bootkube` binary for the target version and render assets
-* [purenetes/bootkube-terraform](https://github.com/purenetes/bootkube-terraform) - checkout the tag for the target version and `terraform apply` to render assets
+* [poseidon/bootkube-terraform](https://github.com/poseidon/bootkube-terraform) - checkout the tag for the target version and `terraform apply` to render assets
 
 Diff the generated assets against the assets used when originally creating the cluster. In simple cases, you may only need to bump the hyperkube image. In more complex cases, some manifests may have new flags or configuration.
 
