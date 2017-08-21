@@ -24,32 +24,22 @@
 
 ### Tutorials
 
-* [Getting Started](Documentation/getting-started.md)
+* [Getting Started](Documentation/getting-started.md) - provision Container Linux machines (beginner)
 * Local QEMU/KVM
     * [matchbox with rkt](Documentation/getting-started-rkt.md)
     * [matchbox with Docker](Documentation/getting-started-docker.md)
-
-### Example Clusters
-
-Create [example](examples) clusters on-premise or locally with [QEMU/KVM](scripts/README.md#libvirt).
-
-**Terraform-based**
-
-* [simple-install](Documentation/getting-started.md) - Install Container Linux with an SSH key on all machines (beginner)
-* [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
-* [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node self-hosted Kubernetes v1.7.1 cluster
-* Terraform [Modules](examples/terraform/modules) - Re-usable Terraform Modules
-
-**Manual**
-
-* [etcd3](Documentation/getting-started-rkt.md) - Install a 3-node etcd3 cluster
-* [Kubernetes](Documentation/bootkube.md) - Install a 3-node self-hosted Kubernetes v1.7.1 cluster
+* Clusters
+  * [etcd3](Documentation/getting-started-rkt.md) - Install a 3-node etcd3 cluster
+  * [Kubernetes](Documentation/bootkube.md) - Install a 3-node self-hosted Kubernetes v1.7.3 cluster
+* Clusters (Terraform-based)
+  * [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
+  * [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node self-hosted Kubernetes v1.7.3 cluster
 
 ## Contrib
 
 * [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services with docker or rkt
 * [squid](contrib/squid/README.md) - Run a transparent cache proxy
-* [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) - Terraform plugin which supports "matchbox" provider
+* [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) - Terraform provider plugin for Matchbox
 
 [docs]: https://coreos.com/matchbox/docs/latest
 [terraform]: https://github.com/coreos/terraform-provider-matchbox

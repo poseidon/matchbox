@@ -10,7 +10,7 @@ These examples use [Terraform](https://www.terraform.io/intro/) as a client to M
 |-------------------------------|-------------------------------|
 | [simple-install](terraform/simple-install) | Install Container Linux with an SSH key |
 | [etcd3-install](terraform/etcd3-install) | Install a 3-node etcd3 cluster |
-| [bootkube-install](terraform/bootkube-install) | Install a 3-node self-hosted Kubernetes v1.7.1 cluster |
+| [bootkube-install](terraform/bootkube-install) | Install a 3-node self-hosted Kubernetes v1.7.3 cluster |
 
 ### Customization
 
@@ -27,8 +27,8 @@ These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/mat
 | grub | CoreOS Container Linux via GRUB2 Netboot | stable/1409.7.0 | RAM | NA |
 | etcd3 | PXE boot a 3 node etcd3 cluster with proxies | stable/1409.7.0 | RAM | None |
 | etcd3-install | Install a 3 node etcd3 cluster to disk | stable/1409.7.0 | Disk | None |
-| bootkube | PXE boot a self-hosted Kubernetes v1.7.1 cluster | stable/1409.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
-| bootkube-install | Install a self-hosted Kubernetes v1.7.1 cluster | stable/1409.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube | PXE boot a self-hosted Kubernetes v1.7.3 cluster | stable/1409.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
+| bootkube-install | Install a self-hosted Kubernetes v1.7.3 cluster | stable/1409.7.0 | Disk | [tutorial](../Documentation/bootkube.md) |
 
 ### Customization
 
