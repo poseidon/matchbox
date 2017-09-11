@@ -35,6 +35,11 @@
   * [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
   * [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node self-hosted Kubernetes v1.7.3 cluster
 
+### Projects
+
+* [Tectonic](https://coreos.com/tectonic/docs/latest/index.html) - enterprise-ready Kubernetes
+* [Typhoon](https://typhoon.psdn.io/) - minimal and free Kubernetes
+
 ## Contrib
 
 * [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services with docker or rkt
