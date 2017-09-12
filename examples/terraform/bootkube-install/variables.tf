@@ -62,6 +62,12 @@ variable "k8s_domain_name" {
   type        = "string"
 }
 
+variable "networking" {
+  description = "Choice of networking provider (flannel or calico)"
+  type        = "string"
+  default     = "flannel"
+}
+
 variable "asset_dir" {
   description = "Path to a directory where generated assets should be placed (contains secrets)"
   type        = "string"

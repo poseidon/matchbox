@@ -1,6 +1,6 @@
-# Self-hosted Kubernetes
+# Kubernetes
 
-The self-hosted Kubernetes example shows how to use matchbox to network boot and provision a 3 node "self-hosted" Kubernetes v1.7.3 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting.
+The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.7.5 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
 
 ## Requirements
 
@@ -61,7 +61,7 @@ Note: The `cached-container-linux-install` profile will PXE boot and install Con
 
 ### Optional
 
-You may set certain optional variables to override defaults. Set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly.
+You may set certain optional variables to override defaults. Set `networking` to either "flannel" or "calico" to set the networking provider. [Check upstream](https://typhoon.psdn.io/bare-metal/) for the full list of options.
 
 ```hcl
 # Optional (defaults)
@@ -69,16 +69,17 @@ You may set certain optional variables to override defaults. Set `experimental_s
 # install_disk = "/dev/sda"
 # container_linux_oem = ""
 # experimental_self_hosted_etcd = "false"
+# networking = "flannel"
 ```
 
 The default is to create a Kubernetes cluster with 1 controller and 2 workers as an example, but check `multi-controller.tfvars.example` for an example which defines 3 controllers and 1 worker.
 
 ## Apply
 
-Fetch the [bootkube](../README.md#modules) Terraform [module](https://www.terraform.io/docs/modules/index.html) for bare-metal, which is maintained in the in the matchbox repo.
+Fetch the `source` Terraform [module](https://www.terraform.io/docs/modules/index.html).
 
 ```sh
-$ terraform get
+$ terraform get --update
 ```
 
 Plan and apply to create the resources on Matchbox.
@@ -94,9 +95,9 @@ The module referenced in `cluster.tf` will also generate bootkube assets to `ass
 
 ```sh
 $ terraform apply
-module.cluster.null_resource.copy-kubeconfig.0: Still creating... (5m0s elapsed)
-module.cluster.null_resource.copy-kubeconfig.1: Still creating... (5m0s elapsed)
-module.cluster.null_resource.copy-kubeconfig.2: Still creating... (5m0s elapsed)
+module.cluster.null_resource.copy-secrets.0: Still creating... (5m0s elapsed)
+module.cluster.null_resource.copy-secrets.1: Still creating... (5m0s elapsed)
+module.cluster.null_resource.copy-secrets.2: Still creating... (5m0s elapsed)
 ...
 module.cluster.null_resource.bootkube-start: Still creating... (8m40s elapsed)
 ...
@@ -129,9 +130,9 @@ $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 $ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE       VERSION
-node1.example.com   Ready     11m       v1.7.3+coreos.0
-node2.example.com   Ready     11m       v1.7.3+coreos.0
-node3.example.com   Ready     11m       v1.7.3+coreos.0
+node1.example.com   Ready     11m       v1.7.5+coreos.0
+node2.example.com   Ready     11m       v1.7.5+coreos.0
+node3.example.com   Ready     11m       v1.7.5+coreos.0
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
