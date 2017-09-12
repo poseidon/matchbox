@@ -2,7 +2,7 @@
 module "profiles" {
   source                  = "../modules/profiles"
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
-  container_linux_version = "1409.7.0"
+  container_linux_version = "1465.7.0"
   container_linux_channel = "stable"
   install_disk            = "${var.install_disk}"
   container_linux_oem     = "${var.container_linux_oem}"

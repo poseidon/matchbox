@@ -4,7 +4,7 @@
   "profile": "simple-install",
   "metadata": {
     "coreos_channel": "stable",
-    "coreos_version": "1409.7.0",
+    "coreos_version": "1465.7.0",
     "ignition_endpoint": "http://matchbox.foo:8080/ignition",
     "baseurl": "http://matchbox.foo:8080/assets/coreos"
   }

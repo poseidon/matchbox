@@ -28,7 +28,7 @@ $ cd matchbox
 Download CoreOS Container Linux image assets referenced by the `etcd3` [example](../examples) to `examples/assets`.
 
 ```sh
-$ ./scripts/get-coreos stable 1409.7.0 ./examples/assets
+$ ./scripts/get-coreos stable 1465.7.0 ./examples/assets
 ```
 
 For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name.

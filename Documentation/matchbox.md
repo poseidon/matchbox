@@ -64,8 +64,8 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
   "ignition_id": "etcd.yaml",
   "generic_id": "some-service.cfg",
   "boot": {
-    "kernel": "/assets/coreos/1409.7.0/coreos_production_pxe.vmlinuz",
-    "initrd": ["/assets/coreos/1409.7.0/coreos_production_pxe_image.cpio.gz"],
+    "kernel": "/assets/coreos/1465.7.0/coreos_production_pxe.vmlinuz",
+    "initrd": ["/assets/coreos/1465.7.0/coreos_production_pxe_image.cpio.gz"],
     "args": [
       "coreos.config.url=http://matchbox.foo:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
       "coreos.first_boot=yes",
