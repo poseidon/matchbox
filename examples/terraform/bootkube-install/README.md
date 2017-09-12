@@ -61,13 +61,14 @@ Note: The `cached-container-linux-install` profile will PXE boot and install Con
 
 ### Optional
 
-You may set certain optional variables to override defaults. Set `experimental_self_hosted_etcd = "true"` to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly.
+You may set certain optional variables to override defaults. Set `networking` to "calico" to use Calico for networking instead of flannel. Set `experimental_self_hosted_etcd` true to deploy "self-hosted" etcd atop Kubernetes instead of running etcd on hosts directly.
 
 ```hcl
 # Optional (defaults)
 # cached_install = "false"
 # install_disk = "/dev/sda"
 # container_linux_oem = ""
+# networking = "flannel"
 # experimental_self_hosted_etcd = "false"
 ```
 
