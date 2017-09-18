@@ -15,7 +15,7 @@ ASSETS_DIR="${ASSETS_DIR:-$PWD/examples/assets}"
 CONFIG_DIR="${CONFIG_DIR:-$PWD/examples/etc/matchbox}"
 
 COREOS_CHANNEL=stable
-COREOS_VERSION=1409.7.0
+COREOS_VERSION=1465.7.0
 MATCHBOX_ARGS=""
 
 if [ "$EUID" -ne 0 ]

@@ -9,7 +9,7 @@ set -eou pipefail
 GPG=${GPG:-/usr/bin/gpg}
 
 CHANNEL=${1:-"stable"}
-VERSION=${2:-"1409.7.0"}
+VERSION=${2:-"1465.7.0"}
 DEST_DIR=${3:-"$PWD/examples/assets"}
 OEM_ID=${OEM_ID:-""}
 DEST=$DEST_DIR/coreos/$VERSION
