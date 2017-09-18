@@ -155,6 +155,7 @@ storage:
           # Move experimental manifests
           [ -d /opt/bootkube/assets/experimental/manifests ] && mv /opt/bootkube/assets/experimental/manifests/* /opt/bootkube/assets/manifests && rm -r /opt/bootkube/assets/experimental/manifests
           [ -d /opt/bootkube/assets/experimental/bootstrap-manifests ] && mv /opt/bootkube/assets/experimental/bootstrap-manifests/* /opt/bootkube/assets/bootstrap-manifests && rm -r /opt/bootkube/assets/experimental/bootstrap-manifests
+          [ -d /opt/bootkube/assets/manifests-networking ] && mv /opt/bootkube/assets/manifests-networking/* /opt/bootkube/assets/manifests && rm -r /opt/bootkube/assets/manifests-networking
           BOOTKUBE_ACI="${BOOTKUBE_ACI:-quay.io/coreos/bootkube}"
           BOOTKUBE_VERSION="${BOOTKUBE_VERSION:-v0.6.1}"
           BOOTKUBE_ASSETS="${BOOTKUBE_ASSETS:-/opt/bootkube/assets}"
