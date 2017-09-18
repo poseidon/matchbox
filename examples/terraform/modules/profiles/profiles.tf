@@ -78,15 +78,3 @@ resource "matchbox_profile" "etcd3-gateway" {
   name                   = "etcd3-gateway"
   container_linux_config = "${file("${path.module}/cl/etcd3-gateway.yaml.tmpl")}"
 }
-
-// Self-hosted Kubernetes (bootkube) Controller profile
-resource "matchbox_profile" "bootkube-controller" {
-  name                   = "bootkube-controller"
-  container_linux_config = "${file("${path.module}/cl/bootkube-controller.yaml.tmpl")}"
-}
-
-// Self-hosted Kubernetes (bootkube) Worker profile
-resource "matchbox_profile" "bootkube-worker" {
-  name                   = "bootkube-worker"
-  container_linux_config = "${file("${path.module}/cl/bootkube-worker.yaml.tmpl")}"
-}
