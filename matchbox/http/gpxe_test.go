@@ -13,7 +13,7 @@ import (
 	fake "github.com/coreos/matchbox/matchbox/storage/testfakes"
 )
 
-func TestgPXEInspect(t *testing.T) {
+func TestGPXEInspect(t *testing.T) {
 	h := gpxeInspect()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -22,7 +22,7 @@ func TestgPXEInspect(t *testing.T) {
 	assert.Equal(t, gpxeBootstrap, w.Body.String())
 }
 
-func TestgPXEHandler(t *testing.T) {
+func TestGPXEHandler(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
 	h := srv.gpxeHandler()
@@ -41,7 +41,7 @@ boot
 	assert.Equal(t, expectedScript, w.Body.String())
 }
 
-func TestgPXEHandler_MissingCtxProfile(t *testing.T) {
+func TestGPXEHandler_MissingCtxProfile(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
 	h := srv.gpxeHandler()
@@ -51,7 +51,7 @@ func TestgPXEHandler_MissingCtxProfile(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
-func TestgPXEHandler_RenderTemplateError(t *testing.T) {
+func TestGPXEHandler_RenderTemplateError(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
 	h := srv.gpxeHandler()
@@ -63,7 +63,7 @@ func TestgPXEHandler_RenderTemplateError(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
-func TestgPXEHandler_WriteError(t *testing.T) {
+func TestGPXEHandler_WriteError(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
 	h := srv.gpxeHandler()
