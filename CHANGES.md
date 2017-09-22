@@ -7,6 +7,7 @@ Notable changes between releases.
 * Add gRPC API endpoints for managing generic (experimental) templates
 * Remove Profile `Cmdline` map (deprecated in v0.5.0), use `Args` slice instead
 * Remove pixiecore support (deprecated in v0.5.0)
+* Remove `ContextHandler`, `ContextHandlerFunc`, and `NewHandler` from the `matchbox/http` package.
 
 ### Examples / Modules
 

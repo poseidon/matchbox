@@ -26,7 +26,7 @@ func TestMetadataHandler(t *testing.T) {
 	ctx := withGroup(context.Background(), group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/?mac=52-54-00-a1-9c-ae&foo=bar&count=3&gate=true", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - Group selectors, metadata, and query variables are formatted
 	// - nested metadata are namespaced
@@ -69,7 +69,7 @@ func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
 		ctx := withGroup(context.Background(), c.group)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", "/", nil)
-		h.ServeHTTP(ctx, w, req)
+		h.ServeHTTP(w, req.WithContext(ctx))
 		// assert that:
 		// - Group metadata key names are upper case
 		// - key/value pairs are newline separated
@@ -85,7 +85,7 @@ func TestMetadataHandler_MissingCtxGroup(t *testing.T) {
 	h := srv.metadataHandler()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(context.Background(), w, req)
+	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 

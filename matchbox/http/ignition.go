@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"context"
 	"github.com/Sirupsen/logrus"
 	ct "github.com/coreos/container-linux-config-transpiler/config"
 	ignition "github.com/coreos/ignition/config"
@@ -19,8 +18,9 @@ import (
 // as raw Ignition (for .ign/.ignition) or rendered from a Container Linux
 // Config (YAML) and converted to Ignition. Ignition configs are served as HTTP
 // JSON responses.
-func (s *Server) ignitionHandler(core server.Server) ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) ignitionHandler(core server.Server) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		group, err := groupFromContext(ctx)
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
@@ -107,7 +107,7 @@ func (s *Server) ignitionHandler(core server.Server) ContextHandler {
 		s.renderJSON(w, ign)
 		return
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }
 
 // isIgnition returns true if the file should be treated as plain Ignition.

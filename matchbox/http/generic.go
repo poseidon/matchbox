@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"context"
 	"github.com/Sirupsen/logrus"
 
 	"github.com/coreos/matchbox/matchbox/server"
@@ -15,8 +14,9 @@ import (
 
 // genericHandler returns a handler that responds with the generic config
 // matching the request.
-func (s *Server) genericHandler(core server.Server) ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) genericHandler(core server.Server) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		group, err := groupFromContext(ctx)
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
@@ -73,5 +73,5 @@ func (s *Server) genericHandler(core server.Server) ContextHandler {
 		config := buf.String()
 		http.ServeContent(w, req, "", time.Time{}, strings.NewReader(config))
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }

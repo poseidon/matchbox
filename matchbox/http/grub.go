@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"text/template"
 
-	"context"
 	"github.com/Sirupsen/logrus"
 )
 
@@ -28,8 +27,9 @@ initrd {{ range $element := .Initrd }} "{{$element}}"{{end}}
 
 // grubHandler returns a handler which renders a GRUB2 config for the
 // requester.
-func (s *Server) grubHandler() ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) grubHandler() http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		profile, err := profileFromContext(ctx)
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
@@ -57,5 +57,5 @@ func (s *Server) grubHandler() ContextHandler {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }
