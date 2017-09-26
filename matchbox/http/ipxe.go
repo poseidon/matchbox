@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"text/template"
 
-	"context"
 	"github.com/Sirupsen/logrus"
 )
 
@@ -22,17 +21,18 @@ boot
 
 // ipxeInspect returns a handler that responds with the iPXE script to gather
 // client machine data and chainload to the ipxeHandler.
-func ipxeInspect() ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func ipxeInspect() http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, ipxeBootstrap)
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }
 
 // ipxeBoot returns a handler which renders the iPXE boot script for the
 // requester.
-func (s *Server) ipxeHandler() ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) ipxeHandler() http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		profile, err := profileFromContext(ctx)
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
@@ -60,5 +60,5 @@ func (s *Server) ipxeHandler() ContextHandler {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }

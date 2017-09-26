@@ -36,7 +36,7 @@ FOO=some-param
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/?foo=some-param", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - Generic config is rendered with Group selectors, metadata, and query variables
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -50,7 +50,7 @@ func TestGenericHandler_MissingCtxProfile(t *testing.T) {
 	h := srv.genericHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(context.Background(), w, req)
+	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
@@ -62,7 +62,7 @@ func TestGenericHandler_MissingCloudConfig(t *testing.T) {
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
@@ -81,7 +81,7 @@ KEY={{.missing_key}}
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - Generic template rendering errors because "missing_key" is not
 	// present in the template variables

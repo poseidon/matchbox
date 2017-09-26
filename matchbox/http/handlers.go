@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"context"
-
 	"github.com/coreos/matchbox/matchbox/server"
 	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
 )
@@ -35,8 +33,9 @@ func (s *Server) logRequest(next http.Handler) http.Handler {
 // selectGroup selects the Group whose selectors match the query parameters,
 // adds the Group to the ctx, and calls the next handler. The next handler
 // should handle a missing Group.
-func (s *Server) selectGroup(core server.Server, next ContextHandler) ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) selectGroup(core server.Server, next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		attrs := labelsFromRequest(s.logger, req)
 		// match machine request
 		group, err := core.SelectGroup(ctx, &pb.SelectGroupRequest{Labels: attrs})
@@ -44,16 +43,17 @@ func (s *Server) selectGroup(core server.Server, next ContextHandler) ContextHan
 			// add the Group to the ctx for next handler
 			ctx = withGroup(ctx, group)
 		}
-		next.ServeHTTP(ctx, w, req)
+		next.ServeHTTP(w, req.WithContext(ctx))
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }
 
 // selectProfile selects the Profile for the given query parameters, adds the
 // Profile to the ctx, and calls the next handler. The next handler should
 // handle a missing profile.
-func (s *Server) selectProfile(core server.Server, next ContextHandler) ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) selectProfile(core server.Server, next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		attrs := labelsFromRequest(s.logger, req)
 		// match machine request
 		profile, err := core.SelectProfile(ctx, &pb.SelectProfileRequest{Labels: attrs})
@@ -61,7 +61,7 @@ func (s *Server) selectProfile(core server.Server, next ContextHandler) ContextH
 			// add the Profile to the ctx for the next handler
 			ctx = withProfile(ctx, profile)
 		}
-		next.ServeHTTP(ctx, w, req)
+		next.ServeHTTP(w, req.WithContext(ctx))
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }

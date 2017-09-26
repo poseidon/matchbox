@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"context"
 	"github.com/Sirupsen/logrus"
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
 
@@ -23,8 +22,9 @@ type CloudConfig struct {
 // the request.
 // DEPRECATED: Please migrate to using Container Linux configs.
 // https://github.com/coreos/matchbox/blob/master/Documentation/cloud-config.md
-func (s *Server) cloudHandler(core server.Server) ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) cloudHandler(core server.Server) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		group, err := groupFromContext(ctx)
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
@@ -99,5 +99,5 @@ func (s *Server) cloudHandler(core server.Server) ContextHandler {
 		}
 		http.ServeContent(w, req, "", time.Time{}, strings.NewReader(config))
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }

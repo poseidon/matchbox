@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"context"
 	"github.com/Sirupsen/logrus"
 )
 
@@ -14,8 +13,9 @@ const plainContentType = "plain/text"
 
 // genericHandler returns a handler that responds with the metadata env file
 // matching the request.
-func (s *Server) metadataHandler() ContextHandler {
-	fn := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+func (s *Server) metadataHandler() http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		group, err := groupFromContext(ctx)
 		if err != nil {
 			s.logger.WithFields(logrus.Fields{
@@ -42,7 +42,7 @@ func (s *Server) metadataHandler() ContextHandler {
 		w.Header().Set(contentType, plainContentType)
 		renderAsEnvFile(w, "", data)
 	}
-	return ContextHandlerFunc(fn)
+	return http.HandlerFunc(fn)
 }
 
 // renderAsEnvFile writes map data into a KEY=value\n "env file" format,

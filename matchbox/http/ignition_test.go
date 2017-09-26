@@ -31,7 +31,7 @@ func TestIgnitionHandler_V2JSON(t *testing.T) {
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - raw Ignition config served directly
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -64,7 +64,7 @@ systemd:
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/?foo=some-param&bar=b", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - Container Linux Config template rendered with Group selectors, metadata, and query variables
 	// - Transformed to an Ignition config (JSON)
@@ -80,7 +80,7 @@ func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 	h := srv.ignitionHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(context.Background(), w, req)
+	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
@@ -92,7 +92,7 @@ func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
@@ -115,7 +115,7 @@ systemd:
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - Ignition template rendering errors because "missing_key" is not
 	// present in the template variables

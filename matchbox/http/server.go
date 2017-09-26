@@ -44,8 +44,8 @@ func NewServer(config *Config) *Server {
 func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 
-	chain := func(next ContextHandler) http.Handler {
-		return s.logRequest(NewHandler(next))
+	chain := func(next http.Handler) http.Handler {
+		return s.logRequest(next)
 	}
 	// matchbox version
 	mux.Handle("/", s.logRequest(homeHandler()))
@@ -66,8 +66,8 @@ func (s *Server) HTTPHandler() http.Handler {
 
 	// Signatures
 	if s.signer != nil {
-		signerChain := func(next ContextHandler) http.Handler {
-			return s.logRequest(sign.SignatureHandler(s.signer, NewHandler(next)))
+		signerChain := func(next http.Handler) http.Handler {
+			return s.logRequest(sign.SignatureHandler(s.signer, next))
 		}
 		mux.Handle("/grub.sig", signerChain(s.selectProfile(s.core, s.grubHandler())))
 		mux.Handle("/boot.ipxe.sig", signerChain(ipxeInspect()))
@@ -79,8 +79,8 @@ func (s *Server) HTTPHandler() http.Handler {
 		mux.Handle("/metadata.sig", signerChain(s.selectGroup(s.core, s.metadataHandler())))
 	}
 	if s.armoredSigner != nil {
-		signerChain := func(next ContextHandler) http.Handler {
-			return s.logRequest(sign.SignatureHandler(s.armoredSigner, NewHandler(next)))
+		signerChain := func(next http.Handler) http.Handler {
+			return s.logRequest(sign.SignatureHandler(s.armoredSigner, next))
 		}
 		mux.Handle("/grub.asc", signerChain(s.selectProfile(s.core, s.grubHandler())))
 		mux.Handle("/boot.ipxe.asc", signerChain(ipxeInspect()))

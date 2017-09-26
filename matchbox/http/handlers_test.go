@@ -6,7 +6,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"context"
 	logtest "github.com/Sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
@@ -22,7 +21,8 @@ func TestSelectGroup(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
-	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+	next := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		group, err := groupFromContext(ctx)
 		assert.Nil(t, err)
 		assert.Equal(t, fake.Group, group)
@@ -32,10 +32,10 @@ func TestSelectGroup(t *testing.T) {
 	// - query params are used to match uuid=a1b2c3d4 to fake.Group
 	// - the fake.Group is added to the context
 	// - next handler is called
-	h := srv.selectGroup(c, ContextHandlerFunc(next))
+	h := srv.selectGroup(c, http.HandlerFunc(next))
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
-	h.ServeHTTP(context.Background(), w, req)
+	h.ServeHTTP(w, req)
 	assert.Equal(t, "next handler called", w.Body.String())
 }
 
@@ -47,7 +47,8 @@ func TestSelectProfile(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
-	next := func(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+	next := func(w http.ResponseWriter, req *http.Request) {
+		ctx := req.Context()
 		profile, err := profileFromContext(ctx)
 		assert.Nil(t, err)
 		assert.Equal(t, fake.Profile, profile)
@@ -57,9 +58,9 @@ func TestSelectProfile(t *testing.T) {
 	// - query params are used to match uuid=a1b2c3d4 to fake.Group's fakeProfile
 	// - the fake.Profile is added to the context
 	// - next handler is called
-	h := srv.selectProfile(c, ContextHandlerFunc(next))
+	h := srv.selectProfile(c, http.HandlerFunc(next))
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "?uuid=a1b2c3d4", nil)
-	h.ServeHTTP(context.Background(), w, req)
+	h.ServeHTTP(w, req)
 	assert.Equal(t, "next handler called", w.Body.String())
 }

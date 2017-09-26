@@ -19,7 +19,7 @@ func TestGrubHandler(t *testing.T) {
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - the Profile's NetBoot config is rendered as a GRUB2 config
 	expectedScript := `default=0

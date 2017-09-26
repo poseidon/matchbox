@@ -42,7 +42,7 @@ coreos:
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/?foo=some-param", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - Cloud config is rendered with Group selectors, metadata, and query variables
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -56,7 +56,7 @@ func TestCloudHandler_MissingCtxProfile(t *testing.T) {
 	h := srv.cloudHandler(c)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(context.Background(), w, req)
+	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
@@ -68,7 +68,7 @@ func TestCloudHandler_MissingCloudConfig(t *testing.T) {
 	ctx := withProfile(context.Background(), fake.Profile)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
@@ -89,7 +89,7 @@ coreos:
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(ctx, w, req)
+	h.ServeHTTP(w, req.WithContext(ctx))
 	// assert that:
 	// - Cloud-config template rendering errors because "missing_key" is not
 	// present in the template variables
