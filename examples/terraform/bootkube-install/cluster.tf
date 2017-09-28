@@ -1,6 +1,6 @@
 // Kubernetes cluster
 module "cluster" {
-  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=0d6410505d8d65cef94a1a3f2f921327e88adfd2"
+  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=f7dd959e9c444ce1b2759a214b99990b89705ac4"
 
   # install
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
@@ -28,5 +28,4 @@ module "cluster" {
   cached_install                = "${var.cached_install}"
   install_disk                  = "${var.install_disk}"
   container_linux_oem           = "${var.container_linux_oem}"
-  experimental_self_hosted_etcd = "${var.experimental_self_hosted_etcd}"
 }

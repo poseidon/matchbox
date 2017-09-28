@@ -68,7 +68,6 @@ You may set certain optional variables to override defaults. Set `networking` to
 # cached_install = "false"
 # install_disk = "/dev/sda"
 # container_linux_oem = ""
-# experimental_self_hosted_etcd = "false"
 # networking = "flannel"
 ```
 
