@@ -1,7 +1,7 @@
 #!/bin/bash
 # Manage VM nodes which have a specific set of hardware attributes.
 
-VM_MEMORY=${VM_MEMORY:-1024}
+VM_MEMORY=${VM_MEMORY:-1536}
 VM_DISK=${VM_DISK:-10}
 
 if [ "$EUID" -ne 0 ]
