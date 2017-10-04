@@ -27,9 +27,6 @@ Available modules:
 |          | cached-container-linux-install | Install Container Linux to disk from matchbox assets cache |
 |          | etcd3    | Provision an etcd3 peer node |
 |          | etcd3-gateway | Provision an etcd3 gateway node |
-|          | bootkube-controller | Provision a self-hosted Kubernetes controller/master node |
-|          | bootkube-worker | Provisioner a self-hosted Kubernetes worker node |
-| bootkube |            | Creates a multi-controller, multi-worker self-hosted Kubernetes cluster |
 
 ## Customization
 
