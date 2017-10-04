@@ -1,6 +1,6 @@
 # Kubernetes
 
-The Kubernetes example provisions a 3 node Kubernetes v1.7.7 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes.
+The Kubernetes example provisions a 3 node Kubernetes v1.8.1 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes.
 
 ## Requirements
 
@@ -11,11 +11,11 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com`
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.7.0 and add it on your $PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.8.0 and add it on your $PATH.
 
 ```sh
 $ bootkube version
-Version: v0.7.0
+Version: v0.8.0
 ```
 
 ## Examples
@@ -44,11 +44,13 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 }
 ```
 
-Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Later, `bootkube` will schedule these manifests during bootstrapping and the credentials will be used to access your cluster.
+Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Set the `--network-provider` to `flannel` (default) or `experimental-calico` if desired.
 
 ```sh
 bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=https://node1.example.com:2379
 ```
+
+Later, a controller will use `bootkube` to bootstrap these manifests and the credentials will be used to access your cluster.
 
 ## Containers
 
@@ -106,9 +108,9 @@ $ ssh core@node1.example.com 'journalctl -f -u bootkube'
 $ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE       VERSION
-node1.example.com   Ready     11m       v1.7.7+coreos.0
-node2.example.com   Ready     11m       v1.7.7+coreos.0
-node3.example.com   Ready     11m       v1.7.7+coreos.0
+node1.example.com   Ready     11m       v1.8.1+coreos.0
+node2.example.com   Ready     11m       v1.8.1+coreos.0
+node3.example.com   Ready     11m       v1.8.1+coreos.0
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE

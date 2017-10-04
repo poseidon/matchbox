@@ -1,6 +1,6 @@
 # Kubernetes
 
-The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.7.7 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
+The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.8.1 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
 
 ## Requirements
 
@@ -129,9 +129,9 @@ $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 $ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE       VERSION
-node1.example.com   Ready     11m       v1.7.7+coreos.0
-node2.example.com   Ready     11m       v1.7.7+coreos.0
-node3.example.com   Ready     11m       v1.7.7+coreos.0
+node1.example.com   Ready     11m       v1.8.1+coreos.0
+node2.example.com   Ready     11m       v1.8.1+coreos.0
+node3.example.com   Ready     11m       v1.8.1+coreos.0
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
