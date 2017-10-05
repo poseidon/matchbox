@@ -174,7 +174,7 @@ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
   --dhcp-userclass=set:ipxe,iPXE \
   --dhcp-boot=tag:#ipxe,undionly.kpxe \
   --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
-  --address=/matchbox.example/192.168.1.2 \
+  --address=/matchbox.example.com/192.168.1.2 \
   --log-queries \
   --log-dhcp
 ```
