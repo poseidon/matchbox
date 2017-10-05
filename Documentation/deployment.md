@@ -163,6 +163,11 @@ $ sudo cp ca.crt server.crt server.key /etc/matchbox
 
 Save `client.crt`, `client.key`, and `ca.crt` for later use (e.g. `~/.matchbox`).
 
+```sh
+$ mkdir -p ~/.matchbox
+$ cp client.crt client.key ca.crt ~/.matchbox/
+```
+
 ## Start matchbox
 
 Start the `matchbox` service and enable it if you'd like it to start on every boot.
