@@ -148,7 +148,7 @@ Add ipxe.lkrn to `/var/lib/tftpboot` (see [iPXE docs](http://ipxe.org/embed)).
 
 ## coreos/dnsmasq
 
-The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `undionly.kpxe` and `grub.efi` for convenience. See [contrib/dnsmasq](contrib/dnsmasq) for details.
+The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `undionly.kpxe` and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
 
 Run DHCP, TFTP, and DNS on the host's network:
 
