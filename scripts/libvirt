@@ -11,7 +11,7 @@ fi
 
 function main {
   case "$1" in
-    "create") create_rkt;;
+    "create") create_docker;;
     "create-docker") create_docker;;
     "create-rkt") create_rkt;;
     "create-uefi") create_uefi;;

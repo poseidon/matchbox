@@ -129,13 +129,14 @@ $ sudo rkt gc --grace-period=0
 Create QEMU/KVM VMs which have known hardware attributes. The nodes will be attached to the `metal0` bridge, where your pods run.
 
 ```sh
-$ sudo ./scripts/libvirt create
+$ sudo ./scripts/libvirt create-rkt
 ```
 
-You can connect to the serial console of any node. If you provisioned nodes with an SSH key, you can SSH after bring-up.
+You can connect to the serial console of any node (ctrl+] to exit). If you provisioned nodes with an SSH key, you can SSH after bring-up.
 
 ```sh
 $ sudo virsh console node1
+$ ssh core@node1.example.com
 ```
 
 You can also use `virt-manager` to watch the console.
