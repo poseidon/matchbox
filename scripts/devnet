@@ -117,7 +117,7 @@ function rkt_create {
     --volume config,kind=host,source=$CONFIG_DIR,readOnly=true \
     --mount volume=data,target=/var/lib/matchbox \
     $DATA_MOUNT \
-    quay.io/coreos/matchbox:23f23c1dcb78b123754ffb4e64f21cd8269093ce -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
+    quay.io/coreos/matchbox:v0.6.1 -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   rkt rm --uuid-file=/var/run/dnsmasq-pod.uuid > /dev/null 2>&1
