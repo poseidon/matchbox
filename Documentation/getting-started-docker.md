@@ -48,14 +48,13 @@ Run the `matchbox` and `dnsmasq` services on the `docker0` bridge. `dnsmasq` wil
 The `devnet` convenience script can start these services and accepts the name of any example cluster in [examples](../examples).
 
 ```sh
-$ export CONTAINER_RUNTIME=docker
-$ sudo -E ./scripts/devnet create etcd3
+$ sudo ./scripts/devnet create etcd3
 ```
 
 Inspect the logs.
 
 ```
-$ sudo -E ./scripts/devnet status
+$ sudo ./scripts/devnet status
 ```
 
 Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
@@ -78,13 +77,14 @@ $ sudo docker run --name dnsmasq --cap-add=NET_ADMIN -v $PWD/contrib/dnsmasq/doc
 Create QEMU/KVM VMs which have known hardware attributes. The nodes will be attached to the `docker0` bridge, where Docker containers run.
 
 ```sh
-$ sudo ./scripts/libvirt create-docker
+$ sudo ./scripts/libvirt create
 ```
 
-You can connect to the serial console of any node. If you provisioned nodes with an SSH key, you can SSH after bring-up.
+You can connect to the serial console of any node (ctrl+] to exit). If you provisioned nodes with an SSH key, you can SSH after bring-up.
 
 ```sh
 $ sudo virsh console node1
+$ ssh core@node1.example.com
 ```
 
 You can also use `virt-manager` to watch the console.
@@ -115,7 +115,7 @@ $ etcdctl get /message
 Clean up the containers and VM machines.
 
 ```sh
-$ sudo -E ./scripts/devnet destroy
+$ sudo ./scripts/devnet destroy
 $ sudo ./scripts/libvirt destroy
 ```
 

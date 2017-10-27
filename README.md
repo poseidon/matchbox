@@ -7,8 +7,8 @@
 * [Profiles](Documentation/matchbox.md#profiles)
 * [Groups](Documentation/matchbox.md#groups)
 * Config Templates
-    * [Container Linux Config][cl-config]
-    * [Cloud-Config][cloud-config]
+  * [Container Linux Config][cl-config]
+  * [Cloud-Config][cloud-config]
 * [Configuration](Documentation/config.md)
 * [HTTP API](Documentation/api.md) / [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
 * [Background: Machine Lifecycle](Documentation/machine-lifecycle.md)
@@ -17,17 +17,17 @@
 ### Installation
 
 * Installation
-    * Installing on [Container Linux / other distros](Documentation/deployment.md)
-    * Installing on [Kubernetes](Documentation/deployment.md#kubernetes)
-    * Running with [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
+  * Installing on [Container Linux / other distros](Documentation/deployment.md)
+  * Installing on [Kubernetes](Documentation/deployment.md#kubernetes)
+  * Running with [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
 * [Network Setup](Documentation/network-setup.md)
 
 ### Tutorials
 
-* [Getting Started](Documentation/getting-started.md) - provision Container Linux machines (beginner)
+* [Getting Started](Documentation/getting-started.md) - provision physical machines with Container Linux
 * Local QEMU/KVM
-    * [matchbox with rkt](Documentation/getting-started-rkt.md)
-    * [matchbox with Docker](Documentation/getting-started-docker.md)
+  * [matchbox with Docker](Documentation/getting-started-docker.md)
+  * [matchbox with rkt](Documentation/getting-started-rkt.md)
 * Clusters
   * [etcd3](Documentation/getting-started-rkt.md) - Install a 3-node etcd3 cluster
   * [Kubernetes](Documentation/bootkube.md) - Install a 3-node Kubernetes v1.8.1 cluster
