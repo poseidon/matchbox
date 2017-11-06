@@ -33,23 +33,19 @@ var (
 )
 
 type Locksmith struct {
-	RebootStrategy RebootStrategy `yaml:"reboot_strategy" locksmith:"REBOOT_STRATEGY"`
-	WindowStart    WindowStart    `yaml:"window_start"    locksmith:"LOCKSMITHD_REBOOT_WINDOW_START"`
-	WindowLength   WindowLength   `yaml:"window_length"   locksmith:"LOCKSMITHD_REBOOT_WINDOW_LENGTH"`
-	Group          string         `yaml:"group"           locksmith:"LOCKSMITHD_GROUP"`
-	EtcdEndpoints  string         `yaml:"etcd_endpoints"  locksmith:"LOCKSMITHD_ENDPOINT"`
-	EtcdCAFile     string         `yaml:"etcd_cafile"     locksmith:"LOCKSMITHD_ETCD_CAFILE"`
-	EtcdCertFile   string         `yaml:"etcd_certfile"   locksmith:"LOCKSMITHD_ETCD_CERTFILE"`
-	EtcdKeyFile    string         `yaml:"etcd_keyfile"    locksmith:"LOCKSMITHD_ETCD_KEYFILE"`
+	RebootStrategy string `yaml:"reboot_strategy" locksmith:"REBOOT_STRATEGY"`
+	WindowStart    string `yaml:"window_start"    locksmith:"LOCKSMITHD_REBOOT_WINDOW_START"`
+	WindowLength   string `yaml:"window_length"   locksmith:"LOCKSMITHD_REBOOT_WINDOW_LENGTH"`
+	Group          string `yaml:"group"           locksmith:"LOCKSMITHD_GROUP"`
+	EtcdEndpoints  string `yaml:"etcd_endpoints"  locksmith:"LOCKSMITHD_ENDPOINT"`
+	EtcdCAFile     string `yaml:"etcd_cafile"     locksmith:"LOCKSMITHD_ETCD_CAFILE"`
+	EtcdCertFile   string `yaml:"etcd_certfile"   locksmith:"LOCKSMITHD_ETCD_CERTFILE"`
+	EtcdKeyFile    string `yaml:"etcd_keyfile"    locksmith:"LOCKSMITHD_ETCD_KEYFILE"`
 }
 
 func (l Locksmith) configLines() []string {
-	return getArgs("%s=%q", "locksmith", l)
+	return getArgs("%s=%v", "locksmith", l)
 }
-
-type RebootStrategy string
-type WindowStart string
-type WindowLength string
 
 func (l Locksmith) Validate() report.Report {
 	if (l.WindowStart != "" && l.WindowLength == "") || (l.WindowStart == "" && l.WindowLength != "") {
@@ -58,8 +54,8 @@ func (l Locksmith) Validate() report.Report {
 	return report.Report{}
 }
 
-func (r RebootStrategy) Validate() report.Report {
-	switch strings.ToLower(string(r)) {
+func (l Locksmith) ValidateRebootStrategy() report.Report {
+	switch strings.ToLower(l.RebootStrategy) {
 	case "reboot", "etcd-lock", "off":
 		return report.Report{}
 	default:
@@ -67,17 +63,17 @@ func (r RebootStrategy) Validate() report.Report {
 	}
 }
 
-func (s WindowStart) Validate() report.Report {
-	if s == "" {
+func (l Locksmith) ValidateWindowStart() report.Report {
+	if l.WindowStart == "" {
 		return report.Report{}
 	}
 	var day string
 	var t string
 
-	_, err := fmt.Sscanf(string(s), "%s %s", &day, &t)
+	_, err := fmt.Sscanf(l.WindowStart, "%s %s", &day, &t)
 	if err != nil {
 		day = "not-present"
-		t = string(s)
+		t = l.WindowStart
 	}
 
 	switch strings.ToLower(day) {
@@ -95,11 +91,11 @@ func (s WindowStart) Validate() report.Report {
 	return report.Report{}
 }
 
-func (l WindowLength) Validate() report.Report {
-	if l == "" {
+func (l Locksmith) ValidateWindowLength() report.Report {
+	if l.WindowLength == "" {
 		return report.Report{}
 	}
-	_, err := time.ParseDuration(string(l))
+	_, err := time.ParseDuration(l.WindowLength)
 	if err != nil {
 		return report.ReportFromError(ErrParsingLength, report.EntryError)
 	}

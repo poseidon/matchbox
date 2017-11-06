@@ -15,13 +15,14 @@
 package platform
 
 const (
-	Azure             = "azure"
-	DO                = "digitalocean"
-	EC2               = "ec2"
-	GCE               = "gce"
-	Packet            = "packet"
-	OpenStackMetadata = "openstack-metadata"
-	VagrantVirtualbox = "vagrant-virtualbox"
+	Azure                 = "azure"
+	DO                    = "digitalocean"
+	EC2                   = "ec2"
+	GCE                   = "gce"
+	Packet                = "packet"
+	OpenStackMetadata     = "openstack-metadata"
+	VagrantVirtualbox     = "vagrant-virtualbox"
+	CloudStackConfigDrive = "cloudstack-configdrive"
 )
 
 var Platforms = []string{
@@ -32,6 +33,7 @@ var Platforms = []string{
 	Packet,
 	OpenStackMetadata,
 	VagrantVirtualbox,
+	CloudStackConfigDrive,
 }
 
 func IsSupportedPlatform(platform string) bool {

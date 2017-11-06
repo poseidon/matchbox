@@ -20,8 +20,8 @@ import (
 	"net/url"
 	"strings"
 
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
-	"github.com/coreos/ignition/config/validate"
+	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 	"github.com/vincent-petithory/dataurl"
 )
@@ -59,7 +59,7 @@ func (s UpdateServer) Validate() report.Report {
 }
 
 func init() {
-	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
+	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		var contents string
 		if in.Update != nil {
 			if in.Update.Group != "" {
@@ -77,13 +77,17 @@ func init() {
 		}
 		if contents != "" {
 			out.Storage.Files = append(out.Storage.Files, ignTypes.File{
-				Filesystem: "root",
-				Path:       "/etc/coreos/update.conf",
-				Mode:       0644,
-				Contents: ignTypes.FileContents{
-					Source: ignTypes.Url{
-						Scheme: "data",
-						Opaque: "," + dataurl.EscapeString(contents),
+				Node: ignTypes.Node{
+					Filesystem: "root",
+					Path:       "/etc/coreos/update.conf",
+				},
+				FileEmbedded1: ignTypes.FileEmbedded1{
+					Mode: 0644,
+					Contents: ignTypes.FileContents{
+						Source: (&url.URL{
+							Scheme: "data",
+							Opaque: "," + dataurl.EscapeString(contents),
+						}).String(),
 					},
 				},
 			})

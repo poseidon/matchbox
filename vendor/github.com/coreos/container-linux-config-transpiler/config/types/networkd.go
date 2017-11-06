@@ -15,8 +15,8 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
-	"github.com/coreos/ignition/config/validate"
+	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
@@ -30,10 +30,10 @@ type NetworkdUnit struct {
 }
 
 func init() {
-	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
+	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		for _, unit := range in.Networkd.Units {
-			out.Networkd.Units = append(out.Networkd.Units, ignTypes.NetworkdUnit{
-				Name:     ignTypes.NetworkdUnitName(unit.Name),
+			out.Networkd.Units = append(out.Networkd.Units, ignTypes.Networkdunit{
+				Name:     unit.Name,
 				Contents: unit.Contents,
 			})
 		}

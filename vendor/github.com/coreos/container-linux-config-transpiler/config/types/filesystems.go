@@ -15,21 +15,25 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
-	"github.com/coreos/ignition/config/validate"
+	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
 type Filesystem struct {
-	Name  string `yaml:"name"`
-	Mount *Mount `yaml:"mount"`
-	Path  string `yaml:"path"`
+	Name  string  `yaml:"name"`
+	Mount *Mount  `yaml:"mount"`
+	Path  *string `yaml:"path"`
 }
 
 type Mount struct {
-	Device string  `yaml:"device"`
-	Format string  `yaml:"format"`
-	Create *Create `yaml:"create"`
+	Device         string   `yaml:"device"`
+	Format         string   `yaml:"format"`
+	Create         *Create  `yaml:"create"`
+	WipeFilesystem bool     `yaml:"wipe_filesystem"`
+	Label          *string  `yaml:"label"`
+	UUID           *string  `yaml:"uuid"`
+	Options        []string `yaml:"options"`
 }
 
 type Create struct {
@@ -38,35 +42,52 @@ type Create struct {
 }
 
 func init() {
-	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
+	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
+		r := report.Report{}
 		for _, filesystem := range in.Storage.Filesystems {
 			newFilesystem := ignTypes.Filesystem{
 				Name: filesystem.Name,
-				Path: func(p ignTypes.Path) *ignTypes.Path {
-					if p == "" {
-						return nil
-					}
-
-					return &p
-				}(ignTypes.Path(filesystem.Path)),
+				Path: filesystem.Path,
 			}
 
 			if filesystem.Mount != nil {
-				newFilesystem.Mount = &ignTypes.FilesystemMount{
-					Device: ignTypes.Path(filesystem.Mount.Device),
-					Format: ignTypes.FilesystemFormat(filesystem.Mount.Format),
+				newFilesystem.Mount = &ignTypes.Mount{
+					Device:         filesystem.Mount.Device,
+					Format:         filesystem.Mount.Format,
+					WipeFilesystem: filesystem.Mount.WipeFilesystem,
+					Label:          filesystem.Mount.Label,
+					UUID:           filesystem.Mount.UUID,
+					Options:        convertStringSliceToTypesMountOptionSlice(filesystem.Mount.Options),
 				}
 
 				if filesystem.Mount.Create != nil {
-					newFilesystem.Mount.Create = &ignTypes.FilesystemCreate{
+					newFilesystem.Mount.Create = &ignTypes.Create{
 						Force:   filesystem.Mount.Create.Force,
-						Options: ignTypes.MkfsOptions(filesystem.Mount.Create.Options),
+						Options: convertStringSliceToTypesCreateOptionSlice(filesystem.Mount.Create.Options),
 					}
 				}
 			}
 
 			out.Storage.Filesystems = append(out.Storage.Filesystems, newFilesystem)
 		}
-		return out, report.Report{}, ast
+		return out, r, ast
 	})
+}
+
+// golang--
+func convertStringSliceToTypesCreateOptionSlice(ss []string) []ignTypes.CreateOption {
+	var res []ignTypes.CreateOption
+	for _, s := range ss {
+		res = append(res, ignTypes.CreateOption(s))
+	}
+	return res
+}
+
+// golang--
+func convertStringSliceToTypesMountOptionSlice(ss []string) []ignTypes.MountOption {
+	var res []ignTypes.MountOption
+	for _, s := range ss {
+		res = append(res, ignTypes.MountOption(s))
+	}
+	return res
 }
