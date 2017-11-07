@@ -5,6 +5,9 @@ Notable changes between releases.
 ## Latest
 
 * Add gRPC API endpoints for managing generic (experimental) templates
+* Update Container Linux config transpiler to v0.5.0
+* Update Ignition to v0.19.0, render v2.1.0 Ignition configs
+* Drop support for Container Linux versions below 1465.0.0 (breaking)
 * Remove Profile `Cmdline` map (deprecated in v0.5.0), use `Args` slice instead
 * Remove pixiecore support (deprecated in v0.5.0)
 * Remove `ContextHandler`, `ContextHandlerFunc`, and `NewHandler` from the `matchbox/http` package.
