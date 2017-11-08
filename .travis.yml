@@ -20,6 +20,6 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    go: '1.8.3'
+    go: '1.8.x'
 notifications:
   email: change
