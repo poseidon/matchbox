@@ -5,6 +5,7 @@ services:
 go:
   - 1.7.x
   - 1.8.x
+  - 1.8.5
   - 1.9.x
   - tip
 matrix:
@@ -20,6 +21,6 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    go: '1.8.x'
+    go: '1.8.5'
 notifications:
   email: change
