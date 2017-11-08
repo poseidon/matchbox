@@ -21,15 +21,16 @@ import (
 	"github.com/coreos/container-linux-config-transpiler/config/astyaml"
 	"github.com/coreos/container-linux-config-transpiler/config/platform"
 	"github.com/coreos/container-linux-config-transpiler/config/types"
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
+	ignTypes "github.com/coreos/ignition/config/v2_1/types"
 	"github.com/coreos/ignition/config/validate"
+	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
 // Parse will convert a byte slice containing a Container Linux Config into a
 // golang struct representing the config, the parse tree from parsing the yaml
 // and a report of any warnings or errors that occurred during the parsing.
-func Parse(data []byte) (types.Config, validate.AstNode, report.Report) {
+func Parse(data []byte) (types.Config, astnode.AstNode, report.Report) {
 	var cfg types.Config
 	var r report.Report
 
@@ -38,7 +39,7 @@ func Parse(data []byte) (types.Config, validate.AstNode, report.Report) {
 	}
 
 	nodes := yaml.UnmarshalToNode(data)
-	var root validate.AstNode
+	var root astnode.AstNode
 	if nodes == nil {
 		r.Add(report.Entry{
 			Kind:    report.EntryWarning,
@@ -67,7 +68,7 @@ func Parse(data []byte) (types.Config, validate.AstNode, report.Report) {
 // ConvertAs2_0 also accepts a platform string, which can either be one of the
 // platform strings defined in config/templating/templating.go or an empty
 // string if [dynamic data](doc/dynamic-data.md) isn't used.
-func ConvertAs2_0(in types.Config, p string, ast validate.AstNode) (ignTypes.Config, report.Report) {
+func ConvertAs2_0(in types.Config, p string, ast astnode.AstNode) (ignTypes.Config, report.Report) {
 	if !platform.IsSupportedPlatform(p) {
 		r := report.Report{}
 		r.Add(report.Entry{

@@ -15,8 +15,8 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
-	"github.com/coreos/ignition/config/validate"
+	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
@@ -27,9 +27,10 @@ type Systemd struct {
 type SystemdUnit struct {
 	Name     string              `yaml:"name"`
 	Enable   bool                `yaml:"enable"`
+	Enabled  *bool               `yaml:"enabled"`
 	Mask     bool                `yaml:"mask"`
 	Contents string              `yaml:"contents"`
-	DropIns  []SystemdUnitDropIn `yaml:"dropins"`
+	Dropins  []SystemdUnitDropIn `yaml:"dropins"`
 }
 
 type SystemdUnitDropIn struct {
@@ -38,18 +39,19 @@ type SystemdUnitDropIn struct {
 }
 
 func init() {
-	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
+	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		for _, unit := range in.Systemd.Units {
-			newUnit := ignTypes.SystemdUnit{
-				Name:     ignTypes.SystemdUnitName(unit.Name),
+			newUnit := ignTypes.Unit{
+				Name:     unit.Name,
 				Enable:   unit.Enable,
+				Enabled:  unit.Enabled,
 				Mask:     unit.Mask,
 				Contents: unit.Contents,
 			}
 
-			for _, dropIn := range unit.DropIns {
-				newUnit.DropIns = append(newUnit.DropIns, ignTypes.SystemdUnitDropIn{
-					Name:     ignTypes.SystemdUnitDropInName(dropIn.Name),
+			for _, dropIn := range unit.Dropins {
+				newUnit.Dropins = append(newUnit.Dropins, ignTypes.Dropin{
+					Name:     dropIn.Name,
 					Contents: dropIn.Contents,
 				})
 			}

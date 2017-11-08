@@ -15,8 +15,8 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_0/types"
-	"github.com/coreos/ignition/config/validate"
+	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
@@ -28,20 +28,26 @@ type Raid struct {
 }
 
 func init() {
-	register2_0(func(in Config, ast validate.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, validate.AstNode) {
+	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		for _, array := range in.Storage.Arrays {
 			newArray := ignTypes.Raid{
-				Name:   array.Name,
-				Level:  array.Level,
-				Spares: array.Spares,
+				Name:    array.Name,
+				Level:   array.Level,
+				Spares:  array.Spares,
+				Devices: convertStringSliceToTypesDeviceSlice(array.Devices),
 			}
 
-			for _, device := range array.Devices {
-				newArray.Devices = append(newArray.Devices, ignTypes.Path(device))
-			}
-
-			out.Storage.Arrays = append(out.Storage.Arrays, newArray)
+			out.Storage.Raid = append(out.Storage.Raid, newArray)
 		}
 		return out, report.Report{}, ast
 	})
+}
+
+// golang--
+func convertStringSliceToTypesDeviceSlice(ss []string) []ignTypes.Device {
+	var res []ignTypes.Device
+	for _, s := range ss {
+		res = append(res, ignTypes.Device(s))
+	}
+	return res
 }

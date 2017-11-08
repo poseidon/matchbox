@@ -1,16 +1,16 @@
-hash: 9c2d24d482e4b591552c20d251b4620bdc2a12256564f8f18d7cb30b797bfd33
-updated: 2017-08-08T13:27:35.465951914-07:00
+hash: b404b094b7ff5d83fac658393148a51f2b3f74ce1026502524be71772c30e9b2
+updated: 2017-11-06T13:24:02.819805752-08:00
 imports:
 - name: github.com/ajeddeloh/go-json
   version: 73d058cf8437a1989030afe571eeab9f90eebbbd
 - name: github.com/ajeddeloh/yaml
-  version: 1072abfea31191db507785e2e0c1b8d1440d35a5
+  version: 6b94386aeefd8c4b8470aee72bfca084c2f91da9
 - name: github.com/alecthomas/units
   version: 6b4e7dc5e3143b85ea77909c72caf89416fc2915
 - name: github.com/camlistore/camlistore
   version: 9106ce829629773474c689b34aacd7d3aaa99426
 - name: github.com/coreos/container-linux-config-transpiler
-  version: d42f09a1374bc318d853b53e5a31148db68a4e2a
+  version: be4cb16b0aaf0f6b4fdf63b8b2a081397276bf0f
   subpackages:
   - config
   - config/astyaml
@@ -32,7 +32,7 @@ imports:
   - journal
   - unit
 - name: github.com/coreos/ignition
-  version: 11813c57bc05f30644bbae7891ae30a4a62e0b33
+  version: 01c039a5ce59acd39e5741713e59abfcb74d0782
   subpackages:
   - config
   - config/types
@@ -44,6 +44,7 @@ imports:
   - config/v2_1/types
   - config/validate
   - config/validate/astjson
+  - config/validate/astnode
   - config/validate/report
 - name: github.com/coreos/pkg
   version: 66fe44ad037ccb80329115cb4db0dbe8e9beb03a

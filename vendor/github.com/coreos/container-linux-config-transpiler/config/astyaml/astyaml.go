@@ -20,7 +20,7 @@ import (
 	"strings"
 
 	yaml "github.com/ajeddeloh/yaml"
-	"github.com/coreos/ignition/config/validate"
+	"github.com/coreos/ignition/config/validate/astnode"
 )
 
 var (
@@ -59,7 +59,7 @@ func (n YamlNode) LiteralValue() interface{} {
 	return n.Value
 }
 
-func (n YamlNode) SliceChild(index int) (validate.AstNode, bool) {
+func (n YamlNode) SliceChild(index int) (astnode.AstNode, bool) {
 	if n.Kind != yaml.SequenceNode {
 		return nil, false
 	}
@@ -74,12 +74,12 @@ func (n YamlNode) SliceChild(index int) (validate.AstNode, bool) {
 	}, true
 }
 
-func (n YamlNode) KeyValueMap() (map[string]validate.AstNode, bool) {
+func (n YamlNode) KeyValueMap() (map[string]astnode.AstNode, bool) {
 	if n.Kind != yaml.MappingNode {
 		return nil, false
 	}
 
-	kvmap := map[string]validate.AstNode{}
+	kvmap := map[string]astnode.AstNode{}
 	for i := 0; i < len(n.Children); i += 2 {
 		key := *n.Children[i]
 		if n.tag == "json" {

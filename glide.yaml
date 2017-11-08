@@ -19,13 +19,13 @@ import:
   - transport
 # Container Linux Config Transpiler and Ignition
 - package: github.com/coreos/container-linux-config-transpiler
-  version: v0.4.2
+  version: v0.5.0
   subpackages:
   - config
   - config/types
   - config/templating
 - package: github.com/coreos/ignition
-  version: v0.17.2
+  version: v0.19.0
   subpackages:
   - config
   - config/types
@@ -35,7 +35,7 @@ import:
   - config/validate/astjson
   - config/validate/report
 - package: github.com/ajeddeloh/yaml
-  version: 1072abfea31191db507785e2e0c1b8d1440d35a5
+  version: 6b94386aeefd8c4b8470aee72bfca084c2f91da9
 - package: github.com/vincent-petithory/dataurl
   version: 9a301d65acbb728fcc3ace14f45f511a4cfeea9c
 - package: github.com/alecthomas/units

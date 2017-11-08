@@ -45,11 +45,19 @@ var (
 // Parse parses the raw config into a types.Config struct and generates a report of any
 // errors, warnings, info, and deprecations it encountered
 func Parse(rawConfig []byte) (types.Config, report.Report, error) {
+	if isEmpty(rawConfig) {
+		return types.Config{}, report.Report{}, ErrEmpty
+	} else if isCloudConfig(rawConfig) {
+		return types.Config{}, report.Report{}, ErrCloudConfig
+	} else if isScript(rawConfig) {
+		return types.Config{}, report.Report{}, ErrScript
+	}
+
 	version, err := Version(rawConfig)
 	if err != nil && err != ErrVersionIndeterminable {
-		// If we can't determine the version, ignore this error so that in the
-		// default case of the switch statement we can check for empty configs,
-		// cloud configs, and other such things.
+		// If we can't determine the version, its probably invalid json and we want to fall through
+		// to handle that in ParseFromLatest, since it will generate the highlight string and report
+		// line and column.
 		return types.Config{}, report.ReportFromError(err, report.EntryError), err
 	}
 	switch version {
@@ -67,13 +75,18 @@ func Parse(rawConfig []byte) (types.Config, report.Report, error) {
 	case semver.Version{Major: 2, Minor: 0}:
 		return ParseFromV2_0(rawConfig)
 	default:
-		if isEmpty(rawConfig) {
-			return types.Config{}, report.Report{}, ErrEmpty
-		} else if isCloudConfig(rawConfig) {
-			return types.Config{}, report.Report{}, ErrCloudConfig
-		} else if isScript(rawConfig) {
-			return types.Config{}, report.Report{}, ErrScript
+		// It's not empty, it's not a cloud config, and it's not a script, but
+		// we can't determine the version of it (or it's 0.0.0, hooray golang
+		// zero values). We know it's not valid, but try to parse it anyway with
+		// ParseFromLatest to generate any parse errors.
+		config, rep, err := ParseFromLatest(rawConfig)
+		if err != nil || rep.IsFatal() {
+			return config, rep, err
 		}
+		// Somehow parsing succeeded without any errors or fatal reports. This
+		// should be an impossible state, but since we're in this part of the
+		// switch statement we know at the very least the version is invalid, so
+		// return that.
 		return types.Config{}, report.Report{}, ErrUnknownVersion
 	}
 }

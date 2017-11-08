@@ -15,7 +15,7 @@ import (
 )
 
 func TestIgnitionHandler_V2JSON(t *testing.T) {
-	content := `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
+	content := `{"ignition":{"version":"2.1.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
 	profile := &storagepb.Profile{
 		Id:         fake.Group.Profile,
 		IgnitionId: "file.ign",
@@ -52,7 +52,7 @@ systemd:
       enable: true
       contents: {{.request.raw_query}}
 `
-	expectedIgnitionV2 := `{"ignition":{"version":"2.0.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true},{"name":"a1b2c3d4.service","enable":true},{"name":"some-param.service","enable":true,"contents":"foo=some-param\u0026bar=b"}]},"networkd":{},"passwd":{}}`
+	expectedIgnitionV2 := `{"ignition":{"config":{},"timeouts":{},"version":"2.1.0"},"networkd":{},"passwd":{},"storage":{},"systemd":{"units":[{"enable":true,"name":"etcd2.service"},{"enable":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enable":true,"name":"some-param.service"}]}}`
 	store := &fake.FixedStore{
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},

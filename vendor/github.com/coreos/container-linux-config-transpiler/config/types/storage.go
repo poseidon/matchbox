@@ -19,4 +19,6 @@ type Storage struct {
 	Arrays      []Raid       `yaml:"raid"`
 	Filesystems []Filesystem `yaml:"filesystems"`
 	Files       []File       `yaml:"files"`
+	Directories []Directory  `yaml:"directories"`
+	Links       []Link       `yaml:"links"`
 }

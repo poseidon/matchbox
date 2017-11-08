@@ -22,3 +22,7 @@ type Hash struct {
 	Function string `yaml:"function"`
 	Sum      string `yaml:"sum"`
 }
+
+func (h Hash) String() string {
+	return h.Function + "-" + h.Sum
+}
