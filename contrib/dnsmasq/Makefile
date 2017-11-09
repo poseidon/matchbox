@@ -1,4 +1,4 @@
-VERSION=v0.4.1
+VERSION=v0.5.0
 
 IMAGE_REPO=coreos/dnsmasq
 QUAY_REPO=quay.io/coreos/dnsmasq
@@ -6,12 +6,12 @@ QUAY_REPO=quay.io/coreos/dnsmasq
 .PHONY: all
 all: docker-image
 
-.PHONY: undionly
-undionly:
+.PHONY: tftp
+tftp:
 	@./get-tftp-files
 
 .PHONY: docker-image
-docker-image: undionly
+docker-image: tftp
 	@sudo docker build --rm=true -t $(IMAGE_REPO):$(VERSION) .
 	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(IMAGE_REPO):latest
 

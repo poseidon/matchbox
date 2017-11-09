@@ -1,8 +1,8 @@
 # Network setup
 
-This guide shows how to create a DHCP/TFTP/DNS network boot environment to work with `matchbox` to boot and provision PXE, iPXE, or GRUB2 client machines.
+This guide shows how to create a DHCP/TFTP/DNS network boot environment to boot and provision BIOS/PXE, iPXE, or UEFI client machines.
 
-`matchbox` serves iPXE scripts or GRUB configs over HTTP to serve as the entrypoint for CoreOS Container Linux cluster bring-up. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, you can configure your own network services to point to `matchbox` or use the convenient [coreos/dnsmasq](../contrib/dnsmasq) container image (used in libvirt demos).
+Matchbox serves iPXE scripts over HTTP to serve as the entrypoint for provisioning clusters. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, configure your network environment to point to Matchbox or use the convenient [coreos/dnsmasq](../contrib/dnsmasq) container image (used in local QEMU/KVM setup).
 
 *Note*: These are just suggestions. Your network administrator or system administrator should choose the right network setup for your company.
 
@@ -13,13 +13,14 @@ Client hardware must have a network interface which supports PXE or iPXE.
 ## Goals
 
 * Add a DNS name which resolves to a `matchbox` deploy.
-* Chainload PXE firmware to iPXE or GRUB2
-* Point iPXE clients to `http://matchbox.foo:port/boot.ipxe`
-* Point GRUB clients to `http://matchbox.foo:port/grub`
+* Chainload BIOS clients (legacy PXE) to iPXE (undionly.kpxe)
+* Chainload UEFI clients to iPXE (ipxe.efi)
+* Point iPXE clients to `http://matchbox.example.com:port/boot.ipxe`
+* Point GRUB clients to `http://matchbox.example.com:port/grub`
 
 ## Setup
 
-Many companies already have DHCP/TFTP configured to "PXE-boot" PXE/iPXE clients. In this case, machines (or a subset of machines) can be made to chainload from `chain http://matchbox.foo:port/boot.ipxe`. Older PXE clients can be made to chainload into iPXE or GRUB to be able to fetch subsequent configs via HTTP.
+Many companies already have DHCP/TFTP configured to "PXE-boot" PXE/iPXE clients. In this case, machines (or a subset of machines) can be made to chainload from `chain http://matchbox.example.com:port/boot.ipxe`. Older PXE clients can be made to chainload into iPXE to be able to fetch subsequent configs via HTTP.
 
 On simpler networks, such as what a developer might have at home, a relatively inflexible DHCP server may be in place, with no TFTP server. In this case, a proxy DHCP server can be run alongside a non-PXE capable DHCP server.
 
@@ -31,17 +32,17 @@ The setup of DHCP, TFTP, and DNS services on a network varies greatly. If you wi
 
 ## DNS
 
-Add a DNS entry (e.g. `matchbox.foo`, `provisoner.mycompany-internal`) that resolves to a deployment of the CoreOS `matchbox` service from machines you intend to boot and provision.
+Add a DNS entry (e.g. `matchbox.example.com`, `provisoner.mycompany-internal`) that resolves to a deployment of the CoreOS `matchbox` service from machines you intend to boot and provision.
 
 ```sh
-$ dig matchbox.foo
+$ dig matchbox.example.com
 ```
 
 If you deployed `matchbox` to a known IP address (e.g. dedicated host, load balanced endpoint, Kubernetes NodePort) and use `dnsmasq`, a domain name to IPv4/IPv6 address mapping could be added to the `/etc/dnsmasq.conf`.
 
 ```
 # dnsmasq.conf
-address=/matchbox.foo/172.18.0.2
+address=/matchbox.example.com/172.18.0.2
 ```
 
 ## iPXE
@@ -50,7 +51,7 @@ Networks which already run DHCP and TFTP services to network boot PXE/iPXE clien
 
 ```
 # /var/www/html/ipxe/default.ipxe
-chain http://matchbox.foo:8080/boot.ipxe
+chain http://matchbox.example.com:8080/boot.ipxe
 ```
 
 You can chainload from a menu entry or use other [iPXE commands](http://ipxe.org/cmd) if you need to do more than simple delegation.
@@ -67,26 +68,35 @@ dhcp-range=192.168.1.1,192.168.1.254,30m
 enable-tftp
 tftp-root=/var/lib/tftpboot
 
-# if request comes from older PXE ROM, chainload to iPXE (via TFTP)
-dhcp-boot=tag:!ipxe,undionly.kpxe
-# if request comes from iPXE user class, set tag "ipxe"
+# Legacy PXE
+dhcp-match=set:bios,option:client-arch,0
+dhcp-boot=tag:bios,undionly.kpxe
+
+# UEFI
+dhcp-match=set:efi32,option:client-arch,6
+dhcp-boot=tag:efi32,ipxe.efi
+dhcp-match=set:efibc,option:client-arch,7
+dhcp-boot=tag:efibc,ipxe.efi
+dhcp-match=set:efi64,option:client-arch,9
+dhcp-boot=tag:efi64,ipxe.efi
+
+# iPXE - chainload to matchbox ipxe boot script
 dhcp-userclass=set:ipxe,iPXE
-# point ipxe tagged requests to the matchbox iPXE boot script (via HTTP)
-dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe
+dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe
 
 # verbose
 log-queries
 log-dhcp
 
 # static DNS assignements
-address=/matchbox.foo/192.168.1.100
+address=/matchbox.example.com/192.168.1.100
 
 # (optional) disable DNS and specify alternate
 # port=0
 # dhcp-option=6,192.168.1.100
 ```
 
-Add [unidonly.kpxe](http://boot.ipxe.org/undionly.kpxe) (and undionly.kpxe.0 if using dnsmasq) to your tftp-root (e.g. `/var/lib/tftpboot`).
+Add [ipxe.efi](http://boot.ipxe.org/ipxe.efi) and [unidonly.kpxe](http://boot.ipxe.org/undionly.kpxe) to your tftp-root (e.g. `/var/lib/tftpboot`).
 
 ```sh
 $ sudo systemctl start dnsmasq
@@ -113,7 +123,7 @@ pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe
 # if request comes from iPXE user class, set tag "ipxe"
 dhcp-userclass=set:ipxe,iPXE
 # point ipxe tagged requests to the matchbox iPXE boot script (via HTTP)
-pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.foo:8080/boot.ipxe
+pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.example.com:8080/boot.ipxe
 
 # verbose
 log-queries
@@ -141,14 +151,14 @@ timeout 10
 default iPXE
 LABEL iPXE
 KERNEL ipxe.lkrn
-APPEND dhcp && chain http://matchbox.foo:8080/boot.ipxe
+APPEND dhcp && chain http://matchbox.example.com:8080/boot.ipxe
 ```
 
 Add ipxe.lkrn to `/var/lib/tftpboot` (see [iPXE docs](http://ipxe.org/embed)).
 
 ## coreos/dnsmasq
 
-The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `undionly.kpxe` and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
+The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `ipxe.efi`, `undionly.kpxe`, and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
 
 Run DHCP, TFTP, and DNS on the host's network:
 
@@ -159,9 +169,16 @@ sudo rkt run --net=host quay.io/coreos/dnsmasq \
   --dhcp-range=192.168.1.3,192.168.1.254 \
   --enable-tftp \
   --tftp-root=/var/lib/tftpboot \
+  --dhcp-match=set:bios,option:client-arch,0 \
+  --dhcp-boot=tag:bios,undionly.kpxe \
+  --dhcp-match=set:efi32,option:client-arch,6 \
+  --dhcp-boot=tag:efi32,ipxe.efi \
+  --dhcp-match=set:efibc,option:client-arch,7 \
+  --dhcp-boot=tag:efibc,ipxe.efi \
+  --dhcp-match=set:efi64,option:client-arch,9 \
+  --dhcp-boot=tag:efi64,ipxe.efi \
   --dhcp-userclass=set:ipxe,iPXE \
-  --dhcp-boot=tag:#ipxe,undionly.kpxe \
-  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
+  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \ 
   --address=/matchbox.example.com/192.168.1.2 \
   --log-queries \
   --log-dhcp
@@ -171,8 +188,15 @@ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
   -d -q \
   --dhcp-range=192.168.1.3,192.168.1.254 \
   --enable-tftp --tftp-root=/var/lib/tftpboot \
+  --dhcp-match=set:bios,option:client-arch,0 \
+  --dhcp-boot=tag:bios,undionly.kpxe \
+  --dhcp-match=set:efi32,option:client-arch,6 \
+  --dhcp-boot=tag:efi32,ipxe.efi \
+  --dhcp-match=set:efibc,option:client-arch,7 \
+  --dhcp-boot=tag:efibc,ipxe.efi \
+  --dhcp-match=set:efi64,option:client-arch,9 \
+  --dhcp-boot=tag:efi64,ipxe.efi \
   --dhcp-userclass=set:ipxe,iPXE \
-  --dhcp-boot=tag:#ipxe,undionly.kpxe \
   --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
   --address=/matchbox.example.com/192.168.1.2 \
   --log-queries \
@@ -211,20 +235,19 @@ Be sure to allow enabled services in your firewall configuration.
 $ sudo firewall-cmd --add-service=dhcp --add-service=tftp --add-service=dns
 ```
 
-## GRUB
+## UEFI
 
-Grub can be used to delegate as well.
+### Development
 
-`grub-mknetdir --net-directory=/var/lib/tftpboot`
+Install the dependencies for [QEMU with UEFI](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU). Walk through the [getting-started-with-docker](getting-started-with-docker.md) tutorial. Launch client VMs using `create-uefi`.
 
-/var/lib/tftpboot/boot/grub/grub.cfg:
-```ini
-insmod i386-pc/http.mod
-set root=http,matchbox.foo:8080
-configfile /grub
+Create UEFI QEMU/KVM VMs attached to the `docker0` bridge.
+
+```sh
+$ sudo ./scripts/libvirt create-uefi
 ```
 
-Make sure to replace variables in the example config files; instead of iPXE variables, use GRUB variables. Check the [GRUB2 manual](https://www.gnu.org/software/grub/manual/grub.html#Network).
+UEFI clients should chainload `ipxe.efi`, load iPXE and Ignition configs from Matchbox, and Container Linux should boot as usual.
 
 ## Troubleshooting
 
