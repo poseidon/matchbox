@@ -1,6 +1,6 @@
 # Kubernetes
 
-The Kubernetes example provisions a 3 node Kubernetes v1.8.2 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes.
+The Kubernetes example provisions a 3 node Kubernetes v1.8.3 cluster. [bootkube](https://github.com/kubernetes-incubator/bootkube) is run once on a controller node to bootstrap Kubernetes control plane components as pods before exiting. An etcd3 cluster across controllers is used to back Kubernetes.
 
 ## Requirements
 
@@ -11,11 +11,11 @@ Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) 
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com`
 
-Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.8.1 and add it on your $PATH.
+Install [bootkube](https://github.com/kubernetes-incubator/bootkube/releases) v0.8.2 and add it on your $PATH.
 
 ```sh
 $ bootkube version
-Version: v0.8.1
+Version: v0.8.2
 ```
 
 ## Examples
@@ -108,9 +108,9 @@ $ ssh core@node1.example.com 'journalctl -f -u bootkube'
 $ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE       VERSION
-node1.example.com   Ready     11m       v1.8.2
-node2.example.com   Ready     11m       v1.8.2
-node3.example.com   Ready     11m       v1.8.2
+node1.example.com   Ready     11m       v1.8.3
+node2.example.com   Ready     11m       v1.8.3
+node3.example.com   Ready     11m       v1.8.3
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
