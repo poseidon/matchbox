@@ -34,7 +34,8 @@ func TestIPXEHandler(t *testing.T) {
 	// - the Profile's NetBoot config is rendered as an iPXE script
 	expectedScript := `#!ipxe
 kernel /image/kernel a=b c
-initrd /image/initrd_a /image/initrd_b 
+initrd /image/initrd_a
+initrd /image/initrd_b
 boot
 `
 	assert.Equal(t, http.StatusOK, w.Code)
