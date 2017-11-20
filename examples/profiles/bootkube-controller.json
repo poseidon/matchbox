@@ -7,7 +7,7 @@
     "args": [
       "initrd=coreos_production_pxe_image.cpio.gz",
       "root=/dev/sda1",
-      "coreos.config.url=http://matchbox.foo:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
+      "coreos.config.url=http://matchbox.example.com:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
       "coreos.first_boot=yes",
       "console=tty0",
       "console=ttyS0",
