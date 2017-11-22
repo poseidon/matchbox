@@ -15,7 +15,9 @@ chain ipxe?uuid=${uuid}&mac=${mac:hexhyp}&domain=${domain}&hostname=${hostname}&
 
 var ipxeTemplate = template.Must(template.New("iPXE config").Parse(`#!ipxe
 kernel {{.Kernel}}{{range $arg := .Args}} {{$arg}}{{end}}
-initrd {{ range $element := .Initrd }}{{$element}} {{end}}
+{{- range $element := .Initrd }}
+initrd {{$element}}
+{{- end}}
 boot
 `))
 
