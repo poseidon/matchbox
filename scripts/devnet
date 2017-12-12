@@ -117,7 +117,7 @@ function rkt_create {
     --volume config,kind=host,source=$CONFIG_DIR,readOnly=true \
     --mount volume=data,target=/var/lib/matchbox \
     $DATA_MOUNT \
-    quay.io/coreos/matchbox:f26224c57dbea02adff0200037b14310ccdd2ebc -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
+    quay.io/coreos/matchbox:v0.7.0 -- -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   rkt rm --uuid-file=/var/run/dnsmasq-pod.uuid > /dev/null 2>&1
@@ -174,7 +174,7 @@ function docker_create {
     -v $CONFIG_DIR:/etc/matchbox:Z \
     -v $ASSETS_DIR:/var/lib/matchbox/assets:Z \
     $DATA_MOUNT \
-    quay.io/coreos/matchbox:f26224c57dbea02adff0200037b14310ccdd2ebc -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
+    quay.io/coreos/matchbox:v0.7.0 -address=0.0.0.0:8080 -log-level=debug $MATCHBOX_ARGS
 
   echo "Starting dnsmasq to provide DHCP/TFTP/DNS services"
   docker run --name dnsmasq \
