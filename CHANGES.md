@@ -15,7 +15,7 @@ Notable changes between releases.
 
 ### Examples / Modules
 
-* Upgrade Kubernetes example clusters to v1.8.3
+* Upgrade Kubernetes example clusters to v1.8.4
 * Kubernetes examples clusters enable etcd TLS
 * Deploy the Container Linux Update Operator (CLUO) to coordinate reboots of Container Linux nodes in Kubernetes clusters. See the cluster [addon docs](Documentation/cluster-addons.md).
 * Kubernetes examples (terraform and non-terraform) mask locksmithd

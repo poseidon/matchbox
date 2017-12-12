@@ -1,6 +1,6 @@
 // Kubernetes cluster
 module "cluster" {
-  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=07d257aa7bcfba1ced569308ae64183def9efe81"
+  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.8.4"
 
   # install
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
