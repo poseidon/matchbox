@@ -2,6 +2,13 @@
 module "cluster" {
   source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.8.4"
 
+  providers = {
+    local = "local.default"
+    null = "null.default"
+    template = "template.default"
+    tls = "tls.default"
+  }
+
   # install
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
   container_linux_channel = "${var.container_linux_channel}"
