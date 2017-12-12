@@ -9,7 +9,7 @@ Follow the getting started [tutorial](../../../Documentation/getting-started.md)
 * Matchbox v0.6+ [installation](../../../Documentation/deployment.md) with gRPC API enabled
 * Matchbox provider credentials `client.crt`, `client.key`, and `ca.crt`
 * PXE [network boot](../../../Documentation/network-setup.md) environment
-* Terraform v0.9+ and [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) installed locally on your system
+* Terraform v0.10.x or v0.11.x and [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) installed locally on your system
 * Machines with known DNS names and MAC addresses
 
 If you prefer to provision QEMU/KVM VMs on your local Linux machine, set up the matchbox [development environment](../../../Documentation/getting-started-rkt.md).
