@@ -17,7 +17,7 @@ kind: Ingress
 metadata:
   name: matchbox
   annotations:
-    ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   tls:
     - hosts:
