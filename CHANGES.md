@@ -4,6 +4,8 @@ Notable changes between releases.
 
 ## Latest
 
+## v0.7.0 (2017-12-12)
+
 * Add gRPC API endpoints for managing generic (experimental) templates
 * Update Container Linux config transpiler to v0.5.0
 * Update Ignition to v0.19.0, render v2.1.0 Ignition configs
