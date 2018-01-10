@@ -1,5 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 # USAGE: ./release-files DEST
+set -e
 
 DEST=$1
 

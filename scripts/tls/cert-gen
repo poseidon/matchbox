@@ -1,5 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 # note: Script uses -batch and -subj, instead of interactive prompts.
+set -e
 
 rm -f ca.key ca.crt server.key server.csr server.crt client.key client.csr client.crt index.* serial*
 rm -rf certs crl newcerts

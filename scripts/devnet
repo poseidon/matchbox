@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Create a virtual bridge with PXE services and matchbox
 # USAGE: ./scripts/devnet create [example]
 # USAGE: ./scripts/devnet status

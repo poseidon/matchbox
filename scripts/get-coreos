@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # USAGE: ./scripts/get-coreos
 # USAGE: ./scripts/get-coreos channel version dest
 #

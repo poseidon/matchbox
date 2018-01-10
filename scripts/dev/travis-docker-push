@@ -1,5 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 # Travis Deploy Docker Push
+set -e
 
 docker info
 GOOS=linux make build
