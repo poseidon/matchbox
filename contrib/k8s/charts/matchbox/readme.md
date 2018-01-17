@@ -12,8 +12,10 @@ Network boot and provision Container Linux clusters (e.g. etcd3, Kubernetes, mor
 * matchbox.ssl.ca: default CA for matchbox.example.com, matchbox-rpc.example.com
 * matchbox.ssl.crt: default CRT for matchbox.example.com, matchbox-rpc.example.com
 * matchbox.ssl.key: default KEY for matchbox.example.com, matchbox-rpc.example.com
-* matchbox.pvc.size: Size of the volume claim (8Gi)
-* matchbox.pvc.annotations: Annotation for the volume claim
+* matchbox.pvc.data.size: Size of the volume claim for data directory (2Gi)
+* matchbox.pvc.data.annotations: Additional annotations for the volume claim data
+* matchbox.pvc.assets.size: Size of the volume claim for data directory (8Gi)
+* matchbox.pvc.assets.annotations: Additional annotations for the volume claim assets 
 
 # SSL certificate
 ```
