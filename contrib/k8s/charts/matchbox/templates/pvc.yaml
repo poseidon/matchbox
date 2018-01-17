@@ -1,0 +1,41 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-data
+  labels:
+    app: {{ template "fullname" . }}
+    stage: {{ .Values.matchbox.stage }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  {{- if .Values.matchbox.pvc.data.annotations }}
+  annotations:
+{{ toYaml .Values.matchbox.pvc.data.annotations | indent 4}}
+  {{- end }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.matchbox.pvc.data.size }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-assets
+  labels:
+    app: {{ template "fullname" . }}
+    stage: {{ .Values.matchbox.stage }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  {{- if .Values.matchbox.pvc.assets.annotations }}
+  annotations:
+{{ toYaml .Values.matchbox.pvc.assets.annotations | indent 4}}
+  {{- end }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.matchbox.pvc.assets.size }}

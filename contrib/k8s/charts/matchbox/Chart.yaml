@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for the matchbox service 
+name: matchbox
+version: 0.1.0

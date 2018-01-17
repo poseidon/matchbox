@@ -1,0 +1,67 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+    stage: {{ .Values.matchbox.stage }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        stage: {{ .Values.matchbox.stage }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+        - name: {{ template "fullname" . }} 
+          image: quay.io/coreos/matchbox:{{ .Values.matchbox.tag }}
+          env:
+            - name: MATCHBOX_ADDRESS
+              value: "0.0.0.0:8080"
+            - name: MATCHBOX_RPC_ADDRESS
+              value: "0.0.0.0:8081"
+            - name: MATCHBOX_LOG_LEVEL
+              value: "{{ .Values.matchbox.log_level }}"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8081
+          resources:
+            requests:
+              cpu: "{{ .Values.matchbox.resources.cpu_limit }}"
+              memory: "{{ .Values.matchbox.resources.mem_limit }}"
+            limits:
+              cpu: "{{ .Values.matchbox.resources.cpu_limit }}"
+              memory: "{{ .Values.matchbox.resources.mem_limit }}"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/matchbox
+            - name: data
+              mountPath: /var/lib/matchbox
+            - name: assets
+              mountPath: /var/lib/matchbox/assets
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ template "fullname" . }} 
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}-data
+        - name: assets 
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}-assets
