@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  rules:
+    - host: {{ .Values.matchbox.ingress_name }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "fullname" . }}
+              servicePort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}-rpc
+  namespace: {{ .Values.namespace }}
+  annotations:
+    ingress.kubernetes.io/ssl-passthrough: "true"
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.matchbox.ingress_rpc_name }}
+  rules:
+    - host: {{ .Values.matchbox.ingress_rpc_name }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "fullname" . }} 
+              servicePort: 8081
