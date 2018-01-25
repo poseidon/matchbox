@@ -8,9 +8,9 @@ These examples use [Terraform](https://www.terraform.io/intro/) as a client to M
 
 | Name                          | Description                   |
 |-------------------------------|-------------------------------|
-| [simple-install](terraform/simple-install) | Install Container Linux with an SSH key |
-| [etcd3-install](terraform/etcd3-install) | Install a 3-node etcd3 cluster |
-| [bootkube-install](terraform/bootkube-install) | Install a 3-node Kubernetes v1.8.5 cluster |
+| [simple-install](terraform/simple-install/) | Install Container Linux with an SSH key |
+| [etcd3-install](terraform/etcd3-install/) | Install a 3-node etcd3 cluster |
+| [bootkube-install](terraform/bootkube-install/) | Install a 3-node Kubernetes v1.8.5 cluster |
 
 ### Customization
 
@@ -20,7 +20,7 @@ You are encouraged to look through the examples and Terraform modules. Implement
 
 These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/matchbox/` directory.
 
-| Name       | Description | CoreOS Container Linux Version | FS | Docs | 
+| Name       | Description | CoreOS Container Linux Version | FS | Docs |
 |------------|-------------|----------------|----|-----------|
 | simple | CoreOS Container Linux with autologin, using iPXE | stable/1576.5.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
 | simple-install | CoreOS Container Linux Install, using iPXE | stable/1576.5.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
