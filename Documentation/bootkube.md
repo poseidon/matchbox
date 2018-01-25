@@ -47,7 +47,7 @@ Add your SSH public key to each machine group definition [as shown](../examples/
 Use the `bootkube` tool to render Kubernetes manifests and credentials into an `--asset-dir`. Set the `--network-provider` to `flannel` (default) or `experimental-calico` if desired.
 
 ```sh
-bootkube render --asset-dir=assets --api-servers=https://node1.example.com:443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=https://node1.example.com:2379
+bootkube render --asset-dir=assets --api-servers=https://node1.example.com:6443 --api-server-alt-names=DNS=node1.example.com --etcd-servers=https://node1.example.com:2379
 ```
 
 Later, a controller will use `bootkube` to bootstrap these manifests and the credentials will be used to access your cluster.
