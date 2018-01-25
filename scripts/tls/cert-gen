@@ -15,6 +15,7 @@ echo "Creating example CA, server cert/key, and client cert/key..."
 # basic files/directories
 mkdir -p {certs,crl,newcerts}
 touch index.txt
+touch index.txt.attr
 echo 1000 > serial
 
 # CA private key (unencrypted)
