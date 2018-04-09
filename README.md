@@ -33,7 +33,7 @@
   * [Kubernetes](Documentation/bootkube.md) - Install a 3-node Kubernetes v1.8.5 cluster
 * Clusters (Terraform-based)
   * [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
-  * [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node Kubernetes v1.8.5 cluster
+  * [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node Kubernetes v1.10.0 cluster
 
 ### Projects
 

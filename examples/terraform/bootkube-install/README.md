@@ -1,6 +1,6 @@
 # Kubernetes
 
-The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.9.3 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
+The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.10.0 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
 
 ## Requirements
 
@@ -87,7 +87,7 @@ Get or update Terraform modules.
 $ terraform get            # downloads missing modules
 $ terraform get --update   # updates all modules
 Get: git::https://github.com/poseidon/typhoon (update)
-Get: git::https://github.com/poseidon/bootkube-terraform.git?ref=v0.10.0 (update)
+Get: git::https://github.com/poseidon/bootkube-terraform.git?ref=v0.11.0 (update)
 ```
 
 Plan the resources to be created.
@@ -149,9 +149,9 @@ $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 $ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE       VERSION
-node1.example.com   Ready     11m       v1.9.3
-node2.example.com   Ready     11m       v1.9.3
-node3.example.com   Ready     11m       v1.9.3
+node1.example.com   Ready     11m       v1.10.0
+node2.example.com   Ready     11m       v1.10.0
+node3.example.com   Ready     11m       v1.10.0
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE

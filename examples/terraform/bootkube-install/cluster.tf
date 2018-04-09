@@ -1,6 +1,6 @@
 // Kubernetes cluster
 module "cluster" {
-  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.9.3"
+  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.10.0"
 
   providers = {
     local = "local.default"
@@ -9,15 +9,16 @@ module "cluster" {
     tls = "tls.default"
   }
 
-  # install
+  # bare-metal
+  cluster_name            = "${var.cluster_name}"
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
   container_linux_channel = "${var.container_linux_channel}"
   container_linux_version = "${var.container_linux_version}"
-  ssh_authorized_key      = "${var.ssh_authorized_key}"
 
-  # cluster
-  cluster_name    = "${var.cluster_name}"
-  k8s_domain_name = "${var.k8s_domain_name}"
+  # configuration
+  k8s_domain_name    = "${var.k8s_domain_name}"
+  ssh_authorized_key = "${var.ssh_authorized_key}"
+  asset_dir          = "${var.asset_dir}"
 
   # machines
   controller_names   = "${var.controller_names}"
@@ -27,12 +28,9 @@ module "cluster" {
   worker_macs        = "${var.worker_macs}"
   worker_domains     = "${var.worker_domains}"
 
-  # bootkube assets
-  asset_dir = "${var.asset_dir}"
-
-  # Optional
-  networking                    = "${var.networking}"
-  cached_install                = "${var.cached_install}"
-  install_disk                  = "${var.install_disk}"
-  container_linux_oem           = "${var.container_linux_oem}"
+  # optional
+  networking          = "${var.networking}"
+  cached_install      = "${var.cached_install}"
+  install_disk        = "${var.install_disk}"
+  container_linux_oem = "${var.container_linux_oem}"
 }
