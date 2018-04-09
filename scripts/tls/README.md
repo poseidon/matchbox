@@ -41,7 +41,7 @@ Save `client.crt`, `client.key`, and `ca.crt` for later use (e.g. `~/.matchbox`)
 
 *If you are using the local Matchbox [development environment](../../Documentation/getting-started-rkt.md), move server credentials to `examples/etc/matchbox`.*
 
-## Inpsect
+## Inspect
 
 Inspect the generated certificates if desired.
 
