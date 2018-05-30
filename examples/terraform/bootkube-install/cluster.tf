@@ -1,6 +1,6 @@
 // Kubernetes cluster
 module "cluster" {
-  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.10.0"
+  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.10.3"
 
   providers = {
     local = "local.default"
@@ -12,8 +12,8 @@ module "cluster" {
   # bare-metal
   cluster_name            = "${var.cluster_name}"
   matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
-  container_linux_channel = "${var.container_linux_channel}"
-  container_linux_version = "${var.container_linux_version}"
+  os_channel              = "${var.os_channel}"
+  os_version              = "${var.os_version}"
 
   # configuration
   k8s_domain_name    = "${var.k8s_domain_name}"

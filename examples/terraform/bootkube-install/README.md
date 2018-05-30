@@ -1,6 +1,6 @@
 # Kubernetes
 
-The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.10.0 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
+The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.10.3 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
 
 ## Requirements
 
@@ -35,8 +35,8 @@ matchbox_rpc_endpoint = "matchbox.example.com:8081"
 ssh_authorized_key = "ADD ME"
 
 cluster_name = "demo"
-container_linux_version = "1576.5.0"
-container_linux_channel = "stable"
+os_channel   = "coreos-stable"
+os_version   = "1576.5.0"
 ```
 
 Provide an ordered list of controller names, MAC addresses, and domain names. Provide an ordered list of worker names, MAC addresses, and domain names.

@@ -8,14 +8,14 @@ variable "matchbox_rpc_endpoint" {
   description = "Matchbox gRPC API endpoint, without the protocol (e.g. matchbox.example.com:8081)"
 }
 
-variable "container_linux_channel" {
+variable "os_channel" {
   type        = "string"
-  description = "Container Linux channel corresponding to the container_linux_version"
+  description = "Channel for a Container Linux derivative"
 }
 
-variable "container_linux_version" {
+variable "os_version" {
   type        = "string"
-  description = "Container Linux version of the kernel/initrd to PXE or the image to install"
+  description = "Version for a Container Linux to PXE and install"
 }
 
 variable "cluster_name" {
@@ -94,7 +94,7 @@ EOD
 variable "cached_install" {
   type        = "string"
   default     = "false"
-  description = "Whether Container Linux should PXE boot and install from matchbox /assets cache. Note that the admin must have downloaded the container_linux_version into matchbox assets."
+  description = "Whether Container Linux should PXE boot and install from matchbox /assets cache. Note that the admin must have downloaded the os_version into matchbox assets."
 }
 
 variable "install_disk" {
