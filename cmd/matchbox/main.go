@@ -8,8 +8,6 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/coreos/pkg/flagutil"
-
 	web "github.com/coreos/matchbox/matchbox/http"
 	"github.com/coreos/matchbox/matchbox/rpc"
 	"github.com/coreos/matchbox/matchbox/server"
@@ -17,6 +15,7 @@ import (
 	"github.com/coreos/matchbox/matchbox/storage"
 	"github.com/coreos/matchbox/matchbox/tlsutil"
 	"github.com/coreos/matchbox/matchbox/version"
+	"github.com/coreos/pkg/flagutil"
 )
 
 var (
@@ -26,17 +25,20 @@ var (
 
 func main() {
 	flags := struct {
-		address     string
-		rpcAddress  string
-		dataPath    string
-		assetsPath  string
-		logLevel    string
-		certFile    string
-		keyFile     string
-		caFile      string
-		keyRingPath string
-		version     bool
-		help        bool
+		address      string
+		rpcAddress   string
+		dataPath     string
+		assetsPath   string
+		logLevel     string
+		grpcCAFile   string
+		grpcCertFile string
+		grpcKeyFile  string
+		tlsCertFile  string
+		tlsKeyFile   string
+		tlsEnabled   bool
+		keyRingPath  string
+		version      bool
+		help         bool
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
 	flag.StringVar(&flags.rpcAddress, "rpc-address", "", "RPC listen address")
@@ -47,13 +49,19 @@ func main() {
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
 
 	// gRPC Server TLS
-	flag.StringVar(&flags.certFile, "cert-file", "/etc/matchbox/server.crt", "Path to the server TLS certificate file")
-	flag.StringVar(&flags.keyFile, "key-file", "/etc/matchbox/server.key", "Path to the server TLS key file")
-	// TLS Client Authentication
-	flag.StringVar(&flags.caFile, "ca-file", "/etc/matchbox/ca.crt", "Path to the CA verify and authenticate client certificates")
+	flag.StringVar(&flags.grpcCertFile, "cert-file", "/etc/matchbox/server.crt", "Path to the server TLS certificate file")
+	flag.StringVar(&flags.grpcKeyFile, "key-file", "/etc/matchbox/server.key", "Path to the server TLS key file")
+
+	// gRPC TLS Client Authentication
+	flag.StringVar(&flags.grpcCAFile, "ca-file", "/etc/matchbox/ca.crt", "Path to the CA verify and authenticate client certificates")
 
 	// Signing
 	flag.StringVar(&flags.keyRingPath, "key-ring-path", "", "Path to a private keyring file")
+
+	// SSL flags
+	flag.StringVar(&flags.tlsCertFile, "web-cert-file", "/etc/matchbox/ssl/server.crt", "Path to the server TLS certificate file")
+	flag.StringVar(&flags.tlsKeyFile, "web-key-file", "/etc/matchbox/ssl/server.key", "Path to the server TLS key file")
+	flag.BoolVar(&flags.tlsEnabled, "web-ssl", false, "True to enable HTTPS")
 
 	// subcommands
 	flag.BoolVar(&flags.version, "version", false, "print version and exit")
@@ -87,14 +95,22 @@ func main() {
 		}
 	}
 	if flags.rpcAddress != "" {
-		if _, err := os.Stat(flags.certFile); err != nil {
+		if _, err := os.Stat(flags.grpcCertFile); err != nil {
 			log.Fatalf("Provide a valid TLS server certificate with -cert-file: %v", err)
 		}
-		if _, err := os.Stat(flags.keyFile); err != nil {
+		if _, err := os.Stat(flags.grpcKeyFile); err != nil {
 			log.Fatalf("Provide a valid TLS server key with -key-file: %v", err)
 		}
-		if _, err := os.Stat(flags.caFile); err != nil {
+		if _, err := os.Stat(flags.grpcCAFile); err != nil {
 			log.Fatalf("Provide a valid TLS certificate authority for authorizing client certificates: %v", err)
+		}
+	}
+	if flags.tlsEnabled {
+		if _, err := os.Stat(flags.tlsCertFile); err != nil {
+			log.Fatalf("Provide a valid SSL server certificate with -web-cert-file: %v", err)
+		}
+		if _, err := os.Stat(flags.tlsKeyFile); err != nil {
+			log.Fatalf("Provide a valid SSL server key with -web-key-file: %v", err)
 		}
 	}
 
@@ -130,17 +146,17 @@ func main() {
 	// gRPC Server (feature disabled by default)
 	if flags.rpcAddress != "" {
 		log.Infof("Starting matchbox gRPC server on %s", flags.rpcAddress)
-		log.Infof("Using TLS server certificate: %s", flags.certFile)
-		log.Infof("Using TLS server key: %s", flags.keyFile)
-		log.Infof("Using CA certificate: %s to authenticate client certificates", flags.caFile)
+		log.Infof("Using TLS server certificate: %s", flags.grpcCertFile)
+		log.Infof("Using TLS server key: %s", flags.grpcKeyFile)
+		log.Infof("Using CA certificate: %s to authenticate client certificates", flags.grpcCAFile)
 		lis, err := net.Listen("tcp", flags.rpcAddress)
 		if err != nil {
 			log.Fatalf("failed to start listening: %v", err)
 		}
 		tlsinfo := tlsutil.TLSInfo{
-			CertFile: flags.certFile,
-			KeyFile:  flags.keyFile,
-			CAFile:   flags.caFile,
+			CertFile: flags.grpcCertFile,
+			KeyFile:  flags.grpcKeyFile,
+			CAFile:   flags.grpcCAFile,
 		}
 		tlscfg, err := tlsinfo.ServerConfig()
 		if err != nil {
@@ -151,7 +167,6 @@ func main() {
 		defer grpcServer.Stop()
 	}
 
-	// HTTP Server
 	config := &web.Config{
 		Core:          server,
 		Logger:        log,
@@ -160,9 +175,23 @@ func main() {
 		ArmoredSigner: armoredSigner,
 	}
 	httpServer := web.NewServer(config)
-	log.Infof("Starting matchbox HTTP server on %s", flags.address)
-	err = http.ListenAndServe(flags.address, httpServer.HTTPHandler())
-	if err != nil {
-		log.Fatalf("failed to start listening: %v", err)
+
+	if flags.tlsEnabled {
+		// HTTPS Server
+		log.Infof("Starting matchbox HTTPS server on %s", flags.address)
+		log.Infof("Using SSL server certificate: %s", flags.tlsCertFile)
+		log.Infof("Using SSL server key: %s", flags.tlsKeyFile)
+		err = http.ListenAndServeTLS(flags.address, flags.tlsCertFile, flags.tlsKeyFile, httpServer.HTTPHandler())
+		if err != nil {
+			log.Fatalf("failed to start listening: %v", err)
+		}
+	} else {
+		// HTTP Server
+		log.Infof("Starting matchbox HTTP server on %s", flags.address)
+		err = http.ListenAndServe(flags.address, httpServer.HTTPHandler())
+		if err != nil {
+			log.Fatalf("failed to start listening: %v", err)
+		}
 	}
+
 }
