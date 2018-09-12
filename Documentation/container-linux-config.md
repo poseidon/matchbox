@@ -1,6 +1,6 @@
 # Container Linux Configs
 
-A Container Linux Config is a YAML document which declares how Container Linux instances' disks should be provisioned on network boot and first-boot from disk. Configs can declare disk paritions, write files (regular files, systemd units, networkd units, etc.), and configure users. See the Container Linux Config [spec](https://coreos.com/os/docs/latest/configuration.html).
+A Container Linux Config is a YAML document which declares how Container Linux instances' disks should be provisioned on network boot and first-boot from disk. Configs can declare disk partitions, write files (regular files, systemd units, networkd units, etc.), and configure users. See the Container Linux Config [spec](https://coreos.com/os/docs/latest/configuration.html).
 
 ### Ignition
 
