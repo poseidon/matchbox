@@ -110,5 +110,7 @@ variable "container_linux_oem" {
 }
 
 variable "kernel_args" {
+  description = "Additional kernel arguments to provide at PXE boot."
   type        = "list"
+  default     = []
 }
