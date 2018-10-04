@@ -320,6 +320,16 @@ $ curl http://matchbox.example.com
 $ openssl s_client -connect matchbox-rpc.example.com:443 -CAfile ca.crt -cert client.crt -key client.key
 ```
 
+# HTTPS - The read-only Matchbox API is also available with HTTPS
+
+To start matchbox in this mode you will need the following flags set:
+
+| Name           | Type   | Description                                                   |
+|----------------|--------|---------------------------------------------------------------|
+| -web-ssl       | bool   | true/false                                                    |
+| -web-cert-file | string | Path to the server TLS certificate file                       |
+| -web-key-file  | string | Path to the server TLS key file                               |
+
 ### Operational notes
 
 * Secrets: Matchbox **can** be run as a public facing service. However, you **must** follow best practices and avoid writing secret material into machine user-data. Instead, load secret materials from an internal secret store.
