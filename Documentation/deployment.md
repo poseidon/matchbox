@@ -159,7 +159,7 @@ Move TLS credentials to the matchbox server's default location.
 ```sh
 $ sudo mkdir -p /etc/matchbox
 $ sudo cp ca.crt server.crt server.key /etc/matchbox
-$ sudo chown -R matchbox /etc/matchbox
+$ sudo chown -R matchbox.matchbox /etc/matchbox
 ```
 
 Save `client.crt`, `client.key`, and `ca.crt` for later use (e.g. `~/.matchbox`).
