@@ -4,7 +4,7 @@ Matchbox provides Terraform [modules](https://www.terraform.io/docs/modules/usag
 
 ```hcl
 module "profiles" {
-  source = "git::https://github.com/coreos/matchbox.git//examples/terraform/modules/profiles?ref=4451425db8f230012c36de6e6628c72aa34e1c10"
+  source = "git::https://github.com/coreos/matchbox.git//examples/terraform/modules/profiles?ref=08f4e9908b167fba608e60169ec6a803df9db37f"
   matchbox_http_endpoint = "${var.matchbox_http_endpoint}"
   container_linux_version = "${var.container_linux_version}"
   container_linux_channel = "${var.container_linux_channel}"
