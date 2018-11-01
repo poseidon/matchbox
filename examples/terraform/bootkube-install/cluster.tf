@@ -33,4 +33,5 @@ module "cluster" {
   cached_install      = "${var.cached_install}"
   install_disk        = "${var.install_disk}"
   container_linux_oem = "${var.container_linux_oem}"
+  kernel_args         = "${var.kernel_args}"
 }
