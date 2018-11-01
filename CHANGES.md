@@ -4,6 +4,15 @@ Notable changes between releases.
 
 ## Latest
 
+## v0.7.1 (2018-11-01)
+
+* Add `kernel_args` variable to the terraform bootkube-install cluster definition
+* Add `get-flatcar` helper script
+* Add optional TLS support to read-only HTTP API
+* Build Matchbox with Go 1.11.1 for images and binaries
+
+### Examples
+
 * Upgrade Kubernetes example clusters to v1.10.0 (Terraform-based)
 * Upgrade Kubernetes example clusters to v1.8.5
 
