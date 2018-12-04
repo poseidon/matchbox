@@ -1,6 +1,6 @@
 # Kubernetes
 
-The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.10.3 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
+The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.12.3 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
 
 ## Requirements
 
@@ -81,15 +81,6 @@ Initialize Terraform from the `bootkube-install` directory.
 terraform init
 ```
 
-Get or update Terraform modules.
-
-```sh
-$ terraform get            # downloads missing modules
-$ terraform get --update   # updates all modules
-Get: git::https://github.com/poseidon/typhoon (update)
-Get: git::https://github.com/poseidon/bootkube-terraform.git?ref=v0.11.0 (update)
-```
-
 Plan the resources to be created.
 
 ```sh
@@ -149,19 +140,20 @@ $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 $ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE       VERSION
-node1.example.com   Ready     11m       v1.10.0
-node2.example.com   Ready     11m       v1.10.0
-node3.example.com   Ready     11m       v1.10.0
+node1.example.com   Ready     11m       v1.12.3
+node2.example.com   Ready     11m       v1.12.3
+node3.example.com   Ready     11m       v1.12.3
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
-kube-system   kube-flannel-fqp7f                         2/2       Running   1          11m
-kube-system   kube-flannel-gnjrm                         2/2       Running   0          11m
-kube-system   kube-flannel-llbgt                         2/2       Running   0          11m
+kube-system   coredns-1187388186-mx9rt                   3/3       Running   0          11m
+kube-system   coredns-1187388186-dsfk3                   3/3       Running   0          11m
+kube-system   flannel-fqp7f                              2/2       Running   1          11m
+kube-system   flannel-gnjrm                              2/2       Running   0          11m
+kube-system   flannel-llbgt                              2/2       Running   0          11m
 kube-system   kube-apiserver-7336w                       1/1       Running   0          11m
 kube-system   kube-controller-manager-3271970485-b9chx   1/1       Running   0          11m
 kube-system   kube-controller-manager-3271970485-v30js   1/1       Running   1          11m
-kube-system   kube-dns-1187388186-mx9rt                  3/3       Running   0          11m
 kube-system   kube-proxy-50sd4                           1/1       Running   0          11m
 kube-system   kube-proxy-bczhp                           1/1       Running   0          11m
 kube-system   kube-proxy-mp2fw                           1/1       Running   0          11m

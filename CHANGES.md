@@ -4,6 +4,10 @@ Notable changes between releases.
 
 ## Latest
 
+### Examples
+
+* Upgrade Kubernetes example clusters to v1.12.3 (Terraform-based)
+
 ## v0.7.1 (2018-11-01)
 
 * Add `kernel_args` variable to the terraform bootkube-install cluster definition
