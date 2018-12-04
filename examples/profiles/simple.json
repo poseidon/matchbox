@@ -2,9 +2,9 @@
   "id": "simple",
   "name": "Simple CoreOS Container Linux Alpha",
   "boot": {
-    "kernel": "/assets/coreos/1576.5.0/coreos_production_pxe.vmlinuz",
+    "kernel": "/assets/coreos/1911.4.0/coreos_production_pxe.vmlinuz",
     "initrd": [
-      "/assets/coreos/1576.5.0/coreos_production_pxe_image.cpio.gz"
+      "/assets/coreos/1911.4.0/coreos_production_pxe_image.cpio.gz"
     ],
     "args": [
       "initrd=coreos_production_pxe_image.cpio.gz",
