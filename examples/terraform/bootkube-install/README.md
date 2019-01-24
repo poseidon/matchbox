@@ -36,7 +36,7 @@ ssh_authorized_key = "ADD ME"
 
 cluster_name = "demo"
 os_channel   = "coreos-stable"
-os_version   = "1911.4.0"
+os_version   = "1967.3.0"
 ```
 
 Provide an ordered list of controller names, MAC addresses, and domain names. Provide an ordered list of worker names, MAC addresses, and domain names.

@@ -4,7 +4,7 @@ matchbox_rpc_endpoint = "matchbox.example.com:8081"
 
 cluster_name = "example"
 os_channel   = "coreos-stable"
-os_version   = "1911.4.0"
+os_version   = "1967.3.0"
 
 # Machines
 controller_names = ["node1", "node2", "node3"]
