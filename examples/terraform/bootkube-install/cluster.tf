@@ -1,37 +1,43 @@
 // Kubernetes cluster
 module "cluster" {
-  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.12.3"
+  source = "git::https://github.com/poseidon/typhoon//bare-metal/container-linux/kubernetes?ref=v1.13.2"
 
   providers = {
-    local = "local.default"
-    null = "null.default"
+    local    = "local.default"
+    null     = "null.default"
     template = "template.default"
-    tls = "tls.default"
+    tls      = "tls.default"
   }
 
   # bare-metal
-  cluster_name            = "${var.cluster_name}"
-  matchbox_http_endpoint  = "${var.matchbox_http_endpoint}"
-  os_channel              = "${var.os_channel}"
-  os_version              = "${var.os_version}"
+  cluster_name           = "example"
+  matchbox_http_endpoint = "${var.matchbox_http_endpoint}"
+  os_channel             = "coreos-stable"
+  os_version             = "1967.3.0"
 
   # configuration
-  k8s_domain_name    = "${var.k8s_domain_name}"
+  k8s_domain_name    = "cluster.example.com"
   ssh_authorized_key = "${var.ssh_authorized_key}"
-  asset_dir          = "${var.asset_dir}"
+  asset_dir          = "assets"
+  cached_install     = "true"
 
   # machines
-  controller_names   = "${var.controller_names}"
-  controller_macs    = "${var.controller_macs}"
-  controller_domains = "${var.controller_domains}"
-  worker_names       = "${var.worker_names}"
-  worker_macs        = "${var.worker_macs}"
-  worker_domains     = "${var.worker_domains}"
+  controller_names   = ["node1"]
+  controller_macs    = ["52:54:00:a1:9c:ae"]
+  controller_domains = ["node1.example.com"]
 
-  # optional
-  networking          = "${var.networking}"
-  cached_install      = "${var.cached_install}"
-  install_disk        = "${var.install_disk}"
-  container_linux_oem = "${var.container_linux_oem}"
-  kernel_args         = "${var.kernel_args}"
+  worker_names = [
+    "node2",
+    "node3",
+  ]
+
+  worker_macs = [
+    "52:54:00:b2:2f:86",
+    "52:54:00:c3:61:77",
+  ]
+
+  worker_domains = [
+    "node2.example.com",
+    "node3.example.com",
+  ]
 }

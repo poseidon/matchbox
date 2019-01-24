@@ -10,7 +10,7 @@ These examples use [Terraform](https://www.terraform.io/intro/) as a client to M
 |-------------------------------|-------------------------------|
 | [simple-install](terraform/simple-install/) | Install Container Linux with an SSH key |
 | [etcd3-install](terraform/etcd3-install/) | Install a 3-node etcd3 cluster |
-| [bootkube-install](terraform/bootkube-install/) | Install a 3-node Kubernetes v1.12.3 cluster |
+| [bootkube-install](terraform/bootkube-install/) | Install a 3-node Kubernetes v1.13.2 cluster |
 
 ### Customization
 
