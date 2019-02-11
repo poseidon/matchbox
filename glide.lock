@@ -1,5 +1,5 @@
-hash: b404b094b7ff5d83fac658393148a51f2b3f74ce1026502524be71772c30e9b2
-updated: 2017-11-06T13:24:02.819805752-08:00
+hash: 8da01d703127486ba705a46fbff842d7076812b491879b1a584ac77aba10aada
+updated: 2019-02-10T21:45:25.389744853-08:00
 imports:
 - name: github.com/ajeddeloh/go-json
   version: 73d058cf8437a1989030afe571eeab9f90eebbbd
@@ -63,12 +63,14 @@ imports:
   - protoc-gen-go
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/konsorten/go-windows-terminal-sequences
+  version: 5c8c8bd35d3832f5d134ae1e1e375b69a4d25242
 - name: github.com/pmezard/go-difflib
   version: 792786c7400a136282c1664665ae0a8db921c6c2
   subpackages:
   - difflib
-- name: github.com/Sirupsen/logrus
-  version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
+- name: github.com/sirupsen/logrus
+  version: e1e72e9de974bd926e5c56f83753fba2df402ce5
   subpackages:
   - hooks/test
 - name: github.com/spf13/cobra
@@ -95,6 +97,7 @@ imports:
   - openpgp/errors
   - openpgp/packet
   - openpgp/s2k
+  - ssh/terminal
 - name: golang.org/x/net
   version: fb93926129b8ec0056f2f458b1f519654814edf0
   subpackages:
@@ -104,7 +107,7 @@ imports:
   - internal/timeseries
   - trace
 - name: golang.org/x/sys
-  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  version: 3b5209105503162ded1863c307ac66fec31120dd
   subpackages:
   - unix
 - name: google.golang.org/grpc
