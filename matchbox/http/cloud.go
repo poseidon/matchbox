@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	cloudinit "github.com/coreos/coreos-cloudinit/config"
+	"github.com/sirupsen/logrus"
 
 	"github.com/coreos/matchbox/matchbox/server"
 	pb "github.com/coreos/matchbox/matchbox/server/serverpb"

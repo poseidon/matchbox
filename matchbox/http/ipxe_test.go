@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"context"
-	logtest "github.com/Sirupsen/logrus/hooks/test"
+	logtest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/coreos/matchbox/matchbox/storage/storagepb"

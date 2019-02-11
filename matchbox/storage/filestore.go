@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	"github.com/sirupsen/logrus"
 )
 
 // Config initializes a fileStore.

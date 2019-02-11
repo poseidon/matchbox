@@ -52,8 +52,8 @@ import:
   version: 66fe44ad037ccb80329115cb4db0dbe8e9beb03a
   subpackages:
   - flagutil
-- package: github.com/Sirupsen/logrus
-  version: v0.10.0
+- package: github.com/sirupsen/logrus
+  version: v1.3.0
   subpackages:
   - hooks/test
 - package: github.com/spf13/cobra

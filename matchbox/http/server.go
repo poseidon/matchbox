@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/coreos/matchbox/matchbox/server"
 	"github.com/coreos/matchbox/matchbox/sign"

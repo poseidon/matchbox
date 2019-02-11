@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/coreos/matchbox/matchbox/server"
 	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
