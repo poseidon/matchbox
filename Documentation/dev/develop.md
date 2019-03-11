@@ -28,7 +28,6 @@ $ make docker-image
 
 ```sh
 $ ./bin/matchbox -version
-$ sudo rkt --insecure-options=image run matchbox.aci -- -version
 $ sudo docker run coreos/matchbox:latest -version
 ```
 ## Run
@@ -61,10 +60,11 @@ $ ./bin/bootcmd profile list --endpoints 172.18.0.2:8081 --cacert examples/etc/m
 
 ## Vendor
 
-Use `glide` and `glide-vc` to manage dependencies committed to the `vendor` directory.
+Add or update dependencies in `go.mod` and vendor.
 
-```sh
-$ make vendor
+```
+make update
+make vendor
 ```
 
 ## Codegen

@@ -1,4 +1,6 @@
 export CGO_ENABLED:=0
+export GO111MODULE=on
+export GOFLAGS=-mod=vendor
 
 VERSION=$(shell git describe --tags --match=v* --always --dirty)
 LD_FLAGS="-w -X github.com/coreos/matchbox/matchbox/version.Version=$(VERSION)"
@@ -14,7 +16,7 @@ all: build test vet lint fmt
 build: clean bin/matchbox
 
 bin/%:
-	@go build -o bin/$* -v -ldflags $(LD_FLAGS) $(REPO)/cmd/$*
+	@go build -o bin/$* -ldflags $(LD_FLAGS) $(REPO)/cmd/$*
 
 .PHONY: test
 test:
@@ -44,10 +46,14 @@ docker-push: docker-image
 	@sudo docker push $(IMAGE_REPO):latest
 	@sudo docker push $(IMAGE_REPO):$(VERSION)
 
+.PHONY: update
+update:
+	@GOFLAGS="" go get -u
+	@go mod tidy
+
 .PHONY: vendor
 vendor:
-	@glide update --strip-vendor
-	@glide-vc --use-lock-file --no-tests --only-code
+	@go mod vendor
 
 .PHONY: codegen
 codegen: tools
