@@ -50,7 +50,7 @@ Verify the reported version.
 
 ## Signing
 
-Sign the release tarballs and ACI with a [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) subkey.
+Sign the release tarballs with a [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) subkey.
 
 ```sh
 cd _output

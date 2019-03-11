@@ -32,10 +32,6 @@ lint:
 fmt:
 	@test -z $$(go fmt ./...)
 
-.PHONY: aci
-aci: clean build
-	@sudo ./scripts/dev/build-aci
-
 .PHONY: docker-image
 docker-image:
 	@sudo docker build --rm=true -t $(LOCAL_REPO):$(VERSION) .

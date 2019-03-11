@@ -8,7 +8,7 @@ For local development, install the dependencies for libvirt with UEFI.
 
 * [UEFI with QEMU](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU)
 
-Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) and [matchbox](matchbox.md) guides and understand the basics.
+Ensure that you've gone through the [matchbox with docker](getting-started-docker.md) and [matchbox](matchbox.md) guides and understand the basics.
 
 ## Containers
 

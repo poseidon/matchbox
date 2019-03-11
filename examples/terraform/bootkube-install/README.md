@@ -12,7 +12,7 @@ Follow the getting started [tutorial](../../../Documentation/getting-started.md)
 * Terraform v0.11.x, [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox), and [terraform-provider-ct](https://github.com/coreos/terraform-provider-ct) installed locally
 * Machines with known DNS names and MAC addresses
 
-If you prefer to provision QEMU/KVM VMs on your local Linux machine, set up the matchbox [development environment](../../../Documentation/getting-started-rkt.md).
+If you prefer to provision QEMU/KVM VMs on your local Linux machine, set up the matchbox [development environment](../../../Documentation/getting-started-docker.md).
 
 ```sh
 sudo ./scripts/devnet create

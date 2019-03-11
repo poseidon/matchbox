@@ -4,9 +4,9 @@ The Kubernetes example provisions a 3 node Kubernetes v1.8.5 cluster. [bootkube]
 
 ## Requirements
 
-Ensure that you've gone through the [matchbox with rkt](getting-started-rkt.md) or [matchbox with docker](getting-started-docker.md) guide and understand the basics. In particular, you should be able to:
+Ensure that you've gone through the [matchbox with docker](getting-started-docker.md) guide and understand the basics. In particular, you should be able to:
 
-* Use rkt or Docker to start `matchbox`
+* Use Docker to start `matchbox`
 * Create a network boot environment with `coreos/dnsmasq`
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com`
@@ -54,7 +54,7 @@ Later, a controller will use `bootkube` to bootstrap these manifests and the cre
 
 ## Containers
 
-Use rkt or docker to start `matchbox` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [matchbox with rkt](getting-started-rkt.md) or [matchbox with Docker](getting-started-docker.md) for help.
+Use docker to start `matchbox` and mount the desired example resources. Create a network boot environment and power-on your machines. Revisit [matchbox with Docker](getting-started-docker.md) for help.
 
 Client machines should boot and provision themselves. Local client VMs should network boot Container Linux and become available via SSH in about 1 minute. If you chose `bootkube-install`, notice that machines install Container Linux and then reboot (in libvirt, you must hit "power" again). Time to network boot and provision physical hardware depends on a number of factors (POST duration, boot device iteration, network speed, etc.).
 

@@ -39,7 +39,7 @@ $ sudo cp ca.crt server.crt server.key /etc/matchbox
 
 Save `client.crt`, `client.key`, and `ca.crt` for later use (e.g. `~/.matchbox`).
 
-*If you are using the local Matchbox [development environment](../../Documentation/getting-started-rkt.md), move server credentials to `examples/etc/matchbox`.*
+*If you are using the local Matchbox [development environment](../../Documentation/getting-started-docker.md), move server credentials to `examples/etc/matchbox`.*
 
 ## Inspect
 

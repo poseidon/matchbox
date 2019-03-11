@@ -18,13 +18,7 @@ $ make test
 
 ## Container image
 
-Build an ACI `matchbox.aci`.
-
-```sh
-$ make aci
-```
-
-Alternately, build a Docker image `coreos/matchbox:latest`.
+Build a container image `coreos/matchbox:latest`.
 
 ```sh
 $ make docker-image

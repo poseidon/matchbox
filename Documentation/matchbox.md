@@ -8,9 +8,8 @@ Network boot endpoints provide PXE, iPXE, GRUB support. `matchbox` can be deploy
 
 ## Getting started
 
-Get started running `matchbox` on your Linux machine, with rkt or Docker.
+Get started running `matchbox` on your Linux machine, with Docker.
 
-* [matchbox with rkt](getting-started-rkt.md)
 * [matchbox with Docker](getting-started-docker.md)
 
 ## Flags
