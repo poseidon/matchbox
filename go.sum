@@ -4,8 +4,8 @@ github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd h1:NlKlOv3aVJ5ODMC0
 github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd/go.mod h1:idhzw68Q7v4j+rQ2AGyq3OlZW2Jij9mdmGA4/Sk6J0E=
 github.com/alecthomas/units v0.0.0-20150109002421-6b4e7dc5e314 h1:NWdGjCRUTTqEqDwJRojRLiwXDW1ZJM2DSiyGfBWx874=
 github.com/alecthomas/units v0.0.0-20150109002421-6b4e7dc5e314/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
-github.com/coreos/container-linux-config-transpiler v0.5.0 h1:FttQu8sdawwx6FSOOf0USxn0h3IUz/MxewFOtiXCRH0=
-github.com/coreos/container-linux-config-transpiler v0.5.0/go.mod h1:SlcxXZQ2c42knj8pezMiQsM1f+ADxFMjGetuMKR/YSQ=
+github.com/coreos/container-linux-config-transpiler v0.9.0 h1:UBGpT8qWqzi48hNLrzMAgAUNJsR0LW8Gk5/dR/caI8U=
+github.com/coreos/container-linux-config-transpiler v0.9.0/go.mod h1:SlcxXZQ2c42knj8pezMiQsM1f+ADxFMjGetuMKR/YSQ=
 github.com/coreos/coreos-cloudinit v1.13.0 h1:NAJMy7cdj722Nm6+THzKx9fH/vCb39Z1JndsKS4TS6c=
 github.com/coreos/coreos-cloudinit v1.13.0/go.mod h1:hV3swhSwq+bRX5apuk57gG+3fsQacgbrZVxjPTqo0zo=
 github.com/coreos/go-semver v0.0.0-20170209201757-5e3acbb5668c h1:+wuUamXDDSjSegI1+8PkeQ0oY7azHxu0jlLJ9Cc/oLE=

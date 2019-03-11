@@ -97,7 +97,7 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 		}
 
 		// Convert Container Linux Config into an Ignition Config
-		ign, report := ct.ConvertAs2_0(config, "", ast)
+		ign, report := ct.Convert(config, "", ast)
 		if report.IsFatal() {
 			s.logger.Errorf("error converting Container Linux config: %s", report.String())
 			http.NotFound(w, req)

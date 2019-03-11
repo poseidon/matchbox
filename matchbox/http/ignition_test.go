@@ -64,7 +64,7 @@ func TestIgnitionHandler_V2_2_JSON(t *testing.T) {
 	assert.Equal(t, content, w.Body.String())
 }
 
-func TestIgnitionHandler_V2YAML(t *testing.T) {
+func TestIgnitionHandler_CL_YAML(t *testing.T) {
 	// exercise templating features, not a realistic Container Linux Config template
 	content := `
 systemd:
@@ -77,7 +77,7 @@ systemd:
       enable: true
       contents: {{.request.raw_query}}
 `
-	expectedIgnitionV2 := `{"ignition":{"config":{},"timeouts":{},"version":"2.1.0"},"networkd":{},"passwd":{},"storage":{},"systemd":{"units":[{"enable":true,"name":"etcd2.service"},{"enable":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enable":true,"name":"some-param.service"}]}}`
+	expectedIgnition := `{"ignition":{"config":{},"security":{"tls":{}},"timeouts":{},"version":"2.2.0"},"networkd":{},"passwd":{},"storage":{},"systemd":{"units":[{"enable":true,"name":"etcd2.service"},{"enable":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enable":true,"name":"some-param.service"}]}}`
 	store := &fake.FixedStore{
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
@@ -95,7 +95,7 @@ systemd:
 	// - Transformed to an Ignition config (JSON)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
-	assert.Equal(t, expectedIgnitionV2, w.Body.String())
+	assert.Equal(t, expectedIgnition, w.Body.String())
 }
 
 func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
