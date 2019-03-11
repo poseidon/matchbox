@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	ct "github.com/coreos/container-linux-config-transpiler/config"
-	ignition "github.com/coreos/ignition/config"
+	ignition "github.com/coreos/ignition/config/v2_2"
 	"github.com/sirupsen/logrus"
 
 	"github.com/coreos/matchbox/matchbox/server"

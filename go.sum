@@ -12,8 +12,8 @@ github.com/coreos/go-semver v0.0.0-20170209201757-5e3acbb5668c h1:+wuUamXDDSjSeg
 github.com/coreos/go-semver v0.0.0-20170209201757-5e3acbb5668c/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
 github.com/coreos/go-systemd v0.0.0-20160826104600-43e4800a6165 h1:vjIPZX2iMVczdBreXAY5t+nGoR4z3rb4M1W1F1aGwsE=
 github.com/coreos/go-systemd v0.0.0-20160826104600-43e4800a6165/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
-github.com/coreos/ignition v0.19.0 h1:+vu8Tkpe5P0PYKTxhVVU9WYz7LbFNAzsCQmM5MAnTHw=
-github.com/coreos/ignition v0.19.0/go.mod h1:WJQapxzEn9DE0ryxsGvm8QnBajm/XsS/PkrDqSpz+bA=
+github.com/coreos/ignition v0.31.0 h1:e6ktS2Flcxq6SIKc1JN9NV1gQxmH2gaVwpdgtJIGep4=
+github.com/coreos/ignition v0.31.0/go.mod h1:WJQapxzEn9DE0ryxsGvm8QnBajm/XsS/PkrDqSpz+bA=
 github.com/coreos/pkg v0.0.0-20160221035341-66fe44ad037c h1:YYKUGUx+21jb01m4f292UtXWBauM5oQH6tywwQNZxdU=
 github.com/coreos/pkg v0.0.0-20160221035341-66fe44ad037c/go.mod h1:E3G3o1h8I7cfcXa63jLwjI0eiQQMgzzUDFVpN/nH/eA=
 github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269 h1:/1sjrpK5Mb6IwyFOKd+u7321tXfNAsj0Ci8CivZmSlo=

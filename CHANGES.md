@@ -6,6 +6,8 @@ Notable changes between releases.
 
 * Build Matchbox with Go v1.11.5 for images and binaries
 * Update container image base from alpine:3.6 to alpine:3.9
+* Validate Ignition configs with the v2.2 spec (warn-only)
+  * Fix warnings that v2.2 configs are too new
 
 ### Examples
 

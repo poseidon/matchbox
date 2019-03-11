@@ -14,8 +14,33 @@ import (
 	fake "github.com/coreos/matchbox/matchbox/storage/testfakes"
 )
 
-func TestIgnitionHandler_V2JSON(t *testing.T) {
+func TestIgnitionHandler_V2_1_JSON(t *testing.T) {
 	content := `{"ignition":{"version":"2.1.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
+	profile := &storagepb.Profile{
+		Id:         fake.Group.Profile,
+		IgnitionId: "file.ign",
+	}
+	store := &fake.FixedStore{
+		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: profile},
+		IgnitionConfigs: map[string]string{"file.ign": content},
+	}
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(c)
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(w, req.WithContext(ctx))
+	// assert that:
+	// - raw Ignition config served directly
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, content, w.Body.String())
+}
+
+func TestIgnitionHandler_V2_2_JSON(t *testing.T) {
+	content := `{"ignition":{"version":"2.2.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
 	profile := &storagepb.Profile{
 		Id:         fake.Group.Profile,
 		IgnitionId: "file.ign",

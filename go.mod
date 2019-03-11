@@ -8,7 +8,7 @@ require (
 	github.com/coreos/coreos-cloudinit v1.13.0
 	github.com/coreos/go-semver v0.0.0-20170209201757-5e3acbb5668c // indirect
 	github.com/coreos/go-systemd v0.0.0-20160826104600-43e4800a6165 // indirect
-	github.com/coreos/ignition v0.19.0
+	github.com/coreos/ignition v0.31.0
 	github.com/coreos/pkg v0.0.0-20160221035341-66fe44ad037c
 	github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269 // indirect
 	github.com/golang/protobuf v0.0.0-20170331031902-2bba0603135d
