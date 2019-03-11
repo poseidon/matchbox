@@ -7,15 +7,30 @@ REPO=github.com/coreos/matchbox
 IMAGE_REPO=coreos/matchbox
 QUAY_REPO=quay.io/coreos/matchbox
 
-all: build
+.PHONY: all
+all: build test vet lint fmt
 
+.PHONY: build
 build: clean bin/matchbox
 
 bin/%:
 	@go build -o bin/$* -v -ldflags $(LD_FLAGS) $(REPO)/cmd/$*
 
+.PHONY: test
 test:
-	@./scripts/dev/test
+	@go test ./... -cover
+
+.PHONY: vet
+vet:
+	@go vet -all ./...
+
+.PHONY: lint
+lint:
+	@golint -set_exit_status `go list ./... | grep -v pb`
+
+.PHONY: fmt
+fmt:
+	@test -z $$(go fmt ./...)
 
 .PHONY: aci
 aci: clean build

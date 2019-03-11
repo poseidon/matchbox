@@ -3,17 +3,14 @@ sudo: required
 services:
   - docker
 go:
-  - 1.10.x
-  - 1.11.x
-  - 1.11.5
-  - tip
-matrix:
-  allow_failures:
-    - go: tip
+  - "1.10.x"
+  - "1.11.x"
+  - "1.11.5"
+  - "1.12.x"
 install:
   - go get golang.org/x/lint/golint
 script:
-  - make test
+  - make
 deploy:
   provider: script
   script: scripts/dev/travis-docker-push
