@@ -4,9 +4,12 @@ Notable changes between releases.
 
 ## Latest
 
+* Build Matchbox with Go v1.11.5 for images and binaries
+* Update container image base from alpine:3.6 to alpine:3.9
+
 ### Examples
 
-* Upgrade Kubernetes example clusters to v1.13.2 (Terraform-based)
+* Update Kubernetes example clusters to v1.13.2 (Terraform-based)
 
 ## v0.7.1 (2018-11-01)
 
