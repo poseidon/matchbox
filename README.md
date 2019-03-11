@@ -42,7 +42,6 @@
 ## Contrib
 
 * [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services with docker or rkt
-* [squid](contrib/squid/README.md) - Run a transparent cache proxy
 * [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) - Terraform provider plugin for Matchbox
 
 [docs]: https://coreos.com/matchbox/docs/latest

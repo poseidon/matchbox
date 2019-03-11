@@ -248,7 +248,7 @@ $ curl http://matchbox.example.com:8080/assets/coreos/1967.3.0/
 <pre>...
 ```
 
-For large production environments, use a cache proxy or mirror suitable for your environment to serve Container Linux images. See [contrib/squid](../contrib/squid/README.md) for details.
+For large production environments, use a cache proxy or mirror suitable for your environment to serve Container Linux images.
 
 ## Network
 
