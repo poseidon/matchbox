@@ -23,6 +23,7 @@ const (
 	OpenStackMetadata     = "openstack-metadata"
 	VagrantVirtualbox     = "vagrant-virtualbox"
 	CloudStackConfigDrive = "cloudstack-configdrive"
+	Custom                = "custom"
 )
 
 var Platforms = []string{
@@ -34,6 +35,7 @@ var Platforms = []string{
 	OpenStackMetadata,
 	VagrantVirtualbox,
 	CloudStackConfigDrive,
+	Custom,
 }
 
 func IsSupportedPlatform(platform string) bool {

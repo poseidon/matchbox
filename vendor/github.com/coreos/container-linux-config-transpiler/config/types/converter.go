@@ -18,21 +18,21 @@ import (
 	"reflect"
 
 	"github.com/coreos/container-linux-config-transpiler/config/astyaml"
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate"
 	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
 
-type converterFor2_0 func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode)
+type converter func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode)
 
-var convertersFor2_0 []converterFor2_0
+var converters []converter
 
-func register2_0(f converterFor2_0) {
-	convertersFor2_0 = append(convertersFor2_0, f)
+func register(f converter) {
+	converters = append(converters, f)
 }
 
-func ConvertAs2_0(in Config, platform string, ast astnode.AstNode) (ignTypes.Config, report.Report) {
+func Convert(in Config, platform string, ast astnode.AstNode) (ignTypes.Config, report.Report) {
 	// convert our tree from having yaml tags to having json tags, so when Validate() is
 	// called on the tree, it can find the keys in the ignition structs (which are denoted
 	// by `json` tags)
@@ -43,13 +43,13 @@ func ConvertAs2_0(in Config, platform string, ast astnode.AstNode) (ignTypes.Con
 
 	out := ignTypes.Config{
 		Ignition: ignTypes.Ignition{
-			Version: "2.1.0",
+			Version: "2.2.0",
 		},
 	}
 
 	r := report.Report{}
 
-	for _, convert := range convertersFor2_0 {
+	for _, convert := range converters {
 		var subReport report.Report
 		out, subReport, ast = convert(in, ast, out, platform)
 		r.Merge(subReport)

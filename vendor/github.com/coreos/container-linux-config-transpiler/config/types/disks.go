@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/alecthomas/units"
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
@@ -52,7 +52,7 @@ type Partition struct {
 }
 
 func init() {
-	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
+	register(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		r := report.Report{}
 		for disk_idx, disk := range in.Storage.Disks {
 			newDisk := ignTypes.Disk{

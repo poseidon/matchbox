@@ -15,7 +15,7 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
@@ -25,17 +25,30 @@ type Networkd struct {
 }
 
 type NetworkdUnit struct {
+	Name     string               `yaml:"name"`
+	Contents string               `yaml:"contents"`
+	Dropins  []NetworkdUnitDropIn `yaml:"dropins"`
+}
+
+type NetworkdUnitDropIn struct {
 	Name     string `yaml:"name"`
 	Contents string `yaml:"contents"`
 }
 
 func init() {
-	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
+	register(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		for _, unit := range in.Networkd.Units {
-			out.Networkd.Units = append(out.Networkd.Units, ignTypes.Networkdunit{
+			newUnit := ignTypes.Networkdunit{
 				Name:     unit.Name,
 				Contents: unit.Contents,
-			})
+			}
+			for _, dropIn := range unit.Dropins {
+				newUnit.Dropins = append(newUnit.Dropins, ignTypes.NetworkdDropin{
+					Name:     dropIn.Name,
+					Contents: dropIn.Contents,
+				})
+			}
+			out.Networkd.Units = append(out.Networkd.Units, newUnit)
 		}
 		return out, report.Report{}, ast
 	})

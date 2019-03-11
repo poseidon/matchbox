@@ -20,7 +20,9 @@ import (
 	"net/url"
 	"strings"
 
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	"github.com/coreos/container-linux-config-transpiler/internal/util"
+
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 	"github.com/vincent-petithory/dataurl"
@@ -59,7 +61,7 @@ func (s UpdateServer) Validate() report.Report {
 }
 
 func init() {
-	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
+	register(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		var contents string
 		if in.Update != nil {
 			if in.Update.Group != "" {
@@ -82,7 +84,7 @@ func init() {
 					Path:       "/etc/coreos/update.conf",
 				},
 				FileEmbedded1: ignTypes.FileEmbedded1{
-					Mode: 0644,
+					Mode: util.IntToPtr(0644),
 					Contents: ignTypes.FileContents{
 						Source: (&url.URL{
 							Scheme: "data",

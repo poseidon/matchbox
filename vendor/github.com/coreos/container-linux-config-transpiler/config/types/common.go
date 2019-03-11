@@ -19,12 +19,13 @@ import (
 	"fmt"
 	"reflect"
 
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate/report"
 
 	"github.com/coreos/container-linux-config-transpiler/config/platform"
 	"github.com/coreos/container-linux-config-transpiler/config/templating"
 	"github.com/coreos/container-linux-config-transpiler/config/types/util"
+	iutil "github.com/coreos/container-linux-config-transpiler/internal/util"
 	"github.com/coreos/ignition/config/validate/astnode"
 )
 
@@ -36,18 +37,19 @@ var (
 )
 
 func init() {
-	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, p string) (ignTypes.Config, report.Report, astnode.AstNode) {
+	register(func(in Config, ast astnode.AstNode, out ignTypes.Config, p string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		if p == platform.OpenStackMetadata || p == platform.CloudStackConfigDrive {
 			out.Systemd.Units = append(out.Systemd.Units, ignTypes.Unit{
 				Name: "coreos-metadata.service",
-				Dropins: []ignTypes.Dropin{{
+				Dropins: []ignTypes.SystemdDropin{{
 					Name:     "20-clct-provider-override.conf",
 					Contents: fmt.Sprintf("[Service]\nEnvironment=COREOS_METADATA_OPT_PROVIDER=--provider=%s", p),
 				}},
 			})
 			out.Systemd.Units = append(out.Systemd.Units, ignTypes.Unit{
-				Name: "coreos-metadata-sshkeys@.service",
-				Dropins: []ignTypes.Dropin{{
+				Name:    "coreos-metadata-sshkeys@.service",
+				Enabled: iutil.BoolToPtr(true),
+				Dropins: []ignTypes.SystemdDropin{{
 					Name:     "20-clct-provider-override.conf",
 					Contents: fmt.Sprintf("[Service]\nEnvironment=COREOS_METADATA_OPT_PROVIDER=--provider=%s", p),
 				}},
@@ -111,6 +113,9 @@ func getArgs(format, tagName string, e interface{}) []string {
 				vars = append(vars, getCliArgs(val)...)
 			} else {
 				key := et.Field(i).Tag.Get(tagName)
+				if ev.Field(i).Kind() == reflect.Ptr {
+					val = reflect.Indirect(ev.Field(i)).Interface()
+				}
 				if _, ok := val.(string); ok {
 					// to handle whitespace characters
 					val = fmt.Sprintf("%q", val)

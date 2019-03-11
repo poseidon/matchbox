@@ -15,12 +15,8 @@
 package types
 
 import (
-	"encoding/json"
-	"errors"
-)
-
-var (
-	ErrFilesystemInvalidFormat = errors.New("invalid filesystem format")
+	"github.com/coreos/ignition/config/shared/errors"
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 type Filesystem struct {
@@ -34,60 +30,16 @@ type FilesystemCreate struct {
 	Force   bool        `json:"force,omitempty"`
 	Options MkfsOptions `json:"options,omitempty"`
 }
-type filesystem Filesystem
-
-func (f *Filesystem) UnmarshalJSON(data []byte) error {
-	tf := filesystem(*f)
-	if err := json.Unmarshal(data, &tf); err != nil {
-		return err
-	}
-	*f = Filesystem(tf)
-	return f.AssertValid()
-}
-
-func (f Filesystem) AssertValid() error {
-	if err := f.Device.AssertValid(); err != nil {
-		return err
-	}
-	if err := f.Format.AssertValid(); err != nil {
-		return err
-	}
-	return nil
-}
 
 type FilesystemFormat string
-type filesystemFormat FilesystemFormat
 
-func (f *FilesystemFormat) UnmarshalJSON(data []byte) error {
-	tf := filesystemFormat(*f)
-	if err := json.Unmarshal(data, &tf); err != nil {
-		return err
-	}
-	*f = FilesystemFormat(tf)
-	return f.AssertValid()
-}
-
-func (f FilesystemFormat) AssertValid() error {
+func (f FilesystemFormat) Validate() report.Report {
 	switch f {
 	case "ext4", "btrfs", "xfs":
-		return nil
+		return report.Report{}
 	default:
-		return ErrFilesystemInvalidFormat
+		return report.ReportFromError(errors.ErrFilesystemInvalidFormat, report.EntryError)
 	}
 }
 
 type MkfsOptions []string
-type mkfsOptions MkfsOptions
-
-func (o *MkfsOptions) UnmarshalJSON(data []byte) error {
-	to := mkfsOptions(*o)
-	if err := json.Unmarshal(data, &to); err != nil {
-		return err
-	}
-	*o = MkfsOptions(to)
-	return o.AssertValid()
-}
-
-func (o MkfsOptions) AssertValid() error {
-	return nil
-}

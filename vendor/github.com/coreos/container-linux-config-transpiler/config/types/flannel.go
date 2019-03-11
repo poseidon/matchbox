@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/coreos/go-semver/semver"
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
@@ -71,7 +71,7 @@ func (fv FlannelVersion) String() string {
 func (f *Flannel) Validate() report.Report {
 	switch o := f.Options.(type) {
 	case Flannel0_7:
-		if o.KubeSubnetMgr && f.NetworkConfig != "" {
+		if o.KubeSubnetMgr != nil && *o.KubeSubnetMgr && f.NetworkConfig != "" {
 			return report.ReportFromError(ErrNetConfigProvidedAndKubeMgrSet, report.EntryError)
 		}
 	}
@@ -115,7 +115,7 @@ func (flannel *Flannel) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 func init() {
-	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
+	register(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		if in.Flannel != nil {
 			contents, err := flannelContents(*in.Flannel, platform)
 			if err != nil {
@@ -124,7 +124,7 @@ func init() {
 			out.Systemd.Units = append(out.Systemd.Units, ignTypes.Unit{
 				Name:   "flanneld.service",
 				Enable: true,
-				Dropins: []ignTypes.Dropin{{
+				Dropins: []ignTypes.SystemdDropin{{
 					Name:     "20-clct-flannel.conf",
 					Contents: contents,
 				}},
@@ -149,10 +149,10 @@ func flannelContents(flannel Flannel, platform string) (string, error) {
 
 	if flannel.NetworkConfig != "" {
 		pre := "ExecStartPre=/usr/bin/etcdctl"
-		var endpoints string
-		var etcdCAFile string
-		var etcdCertFile string
-		var etcdKeyFile string
+		var endpoints *string
+		var etcdCAFile *string
+		var etcdCertFile *string
+		var etcdKeyFile *string
 		switch o := flannel.Options.(type) {
 		case Flannel0_7:
 			endpoints = o.EtcdEndpoints
@@ -170,17 +170,17 @@ func flannelContents(flannel Flannel, platform string) (string, error) {
 			etcdCertFile = o.EtcdCertFile
 			etcdKeyFile = o.EtcdKeyFile
 		}
-		if endpoints != "" {
-			pre += fmt.Sprintf(" --endpoints=%q", endpoints)
+		if endpoints != nil {
+			pre += fmt.Sprintf(" --endpoints=%q", *endpoints)
 		}
-		if etcdCAFile != "" {
-			pre += fmt.Sprintf(" --ca-file=%q", etcdCAFile)
+		if etcdCAFile != nil {
+			pre += fmt.Sprintf(" --ca-file=%q", *etcdCAFile)
 		}
-		if etcdCertFile != "" {
-			pre += fmt.Sprintf(" --cert-file=%q", etcdCertFile)
+		if etcdCertFile != nil {
+			pre += fmt.Sprintf(" --cert-file=%q", *etcdCertFile)
 		}
-		if etcdKeyFile != "" {
-			pre += fmt.Sprintf(" --key-file=%q", etcdKeyFile)
+		if etcdKeyFile != nil {
+			pre += fmt.Sprintf(" --key-file=%q", *etcdKeyFile)
 		}
 		pre += fmt.Sprintf(" set /coreos.com/network/config %q", flannel.NetworkConfig)
 		unit.Service.Add(pre)
@@ -192,42 +192,42 @@ func flannelContents(flannel Flannel, platform string) (string, error) {
 // Flannel0_7 represents flannel options for version 0.7.x. Don't embed Flannel0_6 because
 // the yaml parser doesn't handle embedded structs
 type Flannel0_7 struct {
-	EtcdUsername  string `yaml:"etcd_username"   cli:"etcd-username"`
-	EtcdPassword  string `yaml:"etcd_password"   cli:"etcd-password"`
-	EtcdEndpoints string `yaml:"etcd_endpoints"  cli:"etcd-endpoints"`
-	EtcdCAFile    string `yaml:"etcd_cafile"     cli:"etcd-cafile"`
-	EtcdCertFile  string `yaml:"etcd_certfile"   cli:"etcd-certfile"`
-	EtcdKeyFile   string `yaml:"etcd_keyfile"    cli:"etcd-keyfile"`
-	EtcdPrefix    string `yaml:"etcd_prefix"     cli:"etcd-prefix"`
-	IPMasq        string `yaml:"ip_masq"         cli:"ip-masq"`
-	SubnetFile    string `yaml:"subnet_file"     cli:"subnet-file"`
-	Iface         string `yaml:"interface"       cli:"iface"`
-	PublicIP      string `yaml:"public_ip"       cli:"public-ip"`
-	KubeSubnetMgr bool   `yaml:"kube_subnet_mgr" cli:"kube-subnet-mgr"`
+	EtcdUsername  *string `yaml:"etcd_username"   cli:"etcd-username"`
+	EtcdPassword  *string `yaml:"etcd_password"   cli:"etcd-password"`
+	EtcdEndpoints *string `yaml:"etcd_endpoints"  cli:"etcd-endpoints"`
+	EtcdCAFile    *string `yaml:"etcd_cafile"     cli:"etcd-cafile"`
+	EtcdCertFile  *string `yaml:"etcd_certfile"   cli:"etcd-certfile"`
+	EtcdKeyFile   *string `yaml:"etcd_keyfile"    cli:"etcd-keyfile"`
+	EtcdPrefix    *string `yaml:"etcd_prefix"     cli:"etcd-prefix"`
+	IPMasq        *string `yaml:"ip_masq"         cli:"ip-masq"`
+	SubnetFile    *string `yaml:"subnet_file"     cli:"subnet-file"`
+	Iface         *string `yaml:"interface"       cli:"iface"`
+	PublicIP      *string `yaml:"public_ip"       cli:"public-ip"`
+	KubeSubnetMgr *bool   `yaml:"kube_subnet_mgr" cli:"kube-subnet-mgr"`
 }
 
 type Flannel0_6 struct {
-	EtcdUsername  string `yaml:"etcd_username"  cli:"etcd-username"`
-	EtcdPassword  string `yaml:"etcd_password"  cli:"etcd-password"`
-	EtcdEndpoints string `yaml:"etcd_endpoints" cli:"etcd-endpoints"`
-	EtcdCAFile    string `yaml:"etcd_cafile"    cli:"etcd-cafile"`
-	EtcdCertFile  string `yaml:"etcd_certfile"  cli:"etcd-certfile"`
-	EtcdKeyFile   string `yaml:"etcd_keyfile"   cli:"etcd-keyfile"`
-	EtcdPrefix    string `yaml:"etcd_prefix"    cli:"etcd-prefix"`
-	IPMasq        string `yaml:"ip_masq"        cli:"ip-masq"`
-	SubnetFile    string `yaml:"subnet_file"    cli:"subnet-file"`
-	Iface         string `yaml:"interface"      cli:"iface"`
-	PublicIP      string `yaml:"public_ip"      cli:"public-ip"`
+	EtcdUsername  *string `yaml:"etcd_username"  cli:"etcd-username"`
+	EtcdPassword  *string `yaml:"etcd_password"  cli:"etcd-password"`
+	EtcdEndpoints *string `yaml:"etcd_endpoints" cli:"etcd-endpoints"`
+	EtcdCAFile    *string `yaml:"etcd_cafile"    cli:"etcd-cafile"`
+	EtcdCertFile  *string `yaml:"etcd_certfile"  cli:"etcd-certfile"`
+	EtcdKeyFile   *string `yaml:"etcd_keyfile"   cli:"etcd-keyfile"`
+	EtcdPrefix    *string `yaml:"etcd_prefix"    cli:"etcd-prefix"`
+	IPMasq        *string `yaml:"ip_masq"        cli:"ip-masq"`
+	SubnetFile    *string `yaml:"subnet_file"    cli:"subnet-file"`
+	Iface         *string `yaml:"interface"      cli:"iface"`
+	PublicIP      *string `yaml:"public_ip"      cli:"public-ip"`
 }
 
 type Flannel0_5 struct {
-	EtcdEndpoints string `yaml:"etcd_endpoints" cli:"etcd-endpoints"`
-	EtcdCAFile    string `yaml:"etcd_cafile"    cli:"etcd-cafile"`
-	EtcdCertFile  string `yaml:"etcd_certfile"  cli:"etcd-certfile"`
-	EtcdKeyFile   string `yaml:"etcd_keyfile"   cli:"etcd-keyfile"`
-	EtcdPrefix    string `yaml:"etcd_prefix"    cli:"etcd-prefix"`
-	IPMasq        string `yaml:"ip_masq"        cli:"ip-masq"`
-	SubnetFile    string `yaml:"subnet_file"    cli:"subnet-file"`
-	Iface         string `yaml:"interface"      cli:"iface"`
-	PublicIP      string `yaml:"public_ip"      cli:"public-ip"`
+	EtcdEndpoints *string `yaml:"etcd_endpoints" cli:"etcd-endpoints"`
+	EtcdCAFile    *string `yaml:"etcd_cafile"    cli:"etcd-cafile"`
+	EtcdCertFile  *string `yaml:"etcd_certfile"  cli:"etcd-certfile"`
+	EtcdKeyFile   *string `yaml:"etcd_keyfile"   cli:"etcd-keyfile"`
+	EtcdPrefix    *string `yaml:"etcd_prefix"    cli:"etcd-prefix"`
+	IPMasq        *string `yaml:"ip_masq"        cli:"ip-masq"`
+	SubnetFile    *string `yaml:"subnet_file"    cli:"subnet-file"`
+	Iface         *string `yaml:"interface"      cli:"iface"`
+	PublicIP      *string `yaml:"public_ip"      cli:"public-ip"`
 }

@@ -15,7 +15,7 @@
 package types
 
 import (
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
@@ -39,7 +39,7 @@ type SystemdUnitDropIn struct {
 }
 
 func init() {
-	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
+	register(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		for _, unit := range in.Systemd.Units {
 			newUnit := ignTypes.Unit{
 				Name:     unit.Name,
@@ -50,7 +50,7 @@ func init() {
 			}
 
 			for _, dropIn := range unit.Dropins {
-				newUnit.Dropins = append(newUnit.Dropins, ignTypes.Dropin{
+				newUnit.Dropins = append(newUnit.Dropins, ignTypes.SystemdDropin{
 					Name:     dropIn.Name,
 					Contents: dropIn.Contents,
 				})

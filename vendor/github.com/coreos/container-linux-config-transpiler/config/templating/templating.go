@@ -76,6 +76,13 @@ var platformTemplatingMap = map[string]map[string]string{
 	platform.CloudStackConfigDrive: {
 		fieldHostname: "CLOUDSTACK_LOCAL_HOSTNAME",
 	},
+	platform.Custom: {
+		fieldHostname:  "COREOS_CUSTOM_HOSTNAME",
+		fieldV4Private: "COREOS_CUSTOM_PRIVATE_IPV4",
+		fieldV4Public:  "COREOS_CUSTOM_PUBLIC_IPV4",
+		fieldV6Private: "COREOS_CUSTOM_PRIVATE_IPV6",
+		fieldV6Public:  "COREOS_CUSTOM_PUBLIC_IPV6",
+	},
 }
 
 // HasTemplating returns whether or not any of the environment variables present

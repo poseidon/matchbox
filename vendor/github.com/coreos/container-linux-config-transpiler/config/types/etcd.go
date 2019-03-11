@@ -19,7 +19,7 @@ import (
 	"fmt"
 
 	"github.com/coreos/go-semver/semver"
-	ignTypes "github.com/coreos/ignition/config/v2_1/types"
+	ignTypes "github.com/coreos/ignition/config/v2_2/types"
 	"github.com/coreos/ignition/config/validate/astnode"
 	"github.com/coreos/ignition/config/validate/report"
 )
@@ -55,7 +55,7 @@ func (e EtcdVersion) Validate() report.Report {
 		return report.ReportFromError(EtcdVersionTooOld, report.EntryError)
 	case v.Major == 2 && v.Minor > 3:
 		fallthrough
-	case v.Major == 3 && v.Minor > 2:
+	case v.Major == 3 && v.Minor > 3:
 		return report.ReportFromError(EtcdMinorVersionTooNew, report.EntryWarning)
 	case v.Major > 3:
 		return report.ReportFromError(EtcdMajorVersionTooNew, report.EntryError)
@@ -108,18 +108,25 @@ func (etcd *Etcd) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			return err
 		}
 		etcd.Options = o
-	} else if version.Major == 3 && version.Minor >= 2 {
+	} else if version.Major == 3 && version.Minor == 2 {
 		o := Etcd3_2{}
 		if err := unmarshal(&o); err != nil {
 			return err
 		}
 		etcd.Options = o
+	} else if version.Major == 3 && version.Minor >= 3 {
+		o := Etcd3_3{}
+		if err := unmarshal(&o); err != nil {
+			return err
+		}
+		etcd.Options = o
 	}
+
 	return nil
 }
 
 func init() {
-	register2_0(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
+	register(func(in Config, ast astnode.AstNode, out ignTypes.Config, platform string) (ignTypes.Config, report.Report, astnode.AstNode) {
 		if in.Etcd != nil {
 			contents, err := etcdContents(*in.Etcd, platform)
 			if err != nil {
@@ -128,7 +135,7 @@ func init() {
 			out.Systemd.Units = append(out.Systemd.Units, ignTypes.Unit{
 				Name:   "etcd-member.service",
 				Enable: true,
-				Dropins: []ignTypes.Dropin{{
+				Dropins: []ignTypes.SystemdDropin{{
 					Name:     "20-clct-etcd-member.conf",
 					Contents: contents,
 				}},
@@ -155,192 +162,257 @@ func etcdContents(etcd Etcd, platform string) (string, error) {
 }
 
 type Etcd3_0 struct {
-	Name                     string `yaml:"name"                        cli:"name"`
-	DataDir                  string `yaml:"data_dir"                    cli:"data-dir"`
-	WalDir                   string `yaml:"wal_dir"                     cli:"wal-dir"`
-	SnapshotCount            int    `yaml:"snapshot_count"              cli:"snapshot-count"`
-	HeartbeatInterval        int    `yaml:"heartbeat_interval"          cli:"heartbeat-interval"`
-	ElectionTimeout          int    `yaml:"election_timeout"            cli:"election-timeout"`
-	EnablePprof              bool   `yaml:"enable_pprof"                cli:"enable-pprof"`
-	ListenPeerUrls           string `yaml:"listen_peer_urls"            cli:"listen-peer-urls"`
-	ListenClientUrls         string `yaml:"listen_client_urls"          cli:"listen-client-urls"`
-	MaxSnapshots             int    `yaml:"max_snapshots"               cli:"max-snapshots"`
-	MaxWals                  int    `yaml:"max_wals"                    cli:"max-wals"`
-	Cors                     string `yaml:"cors"                        cli:"cors"`
-	InitialAdvertisePeerUrls string `yaml:"initial_advertise_peer_urls" cli:"initial-advertise-peer-urls"`
-	InitialCluster           string `yaml:"initial_cluster"             cli:"initial-cluster"`
-	InitialClusterState      string `yaml:"initial_cluster_state"       cli:"initial-cluster-state"`
-	InitialClusterToken      string `yaml:"initial_cluster_token"       cli:"initial-cluster-token"`
-	AdvertiseClientUrls      string `yaml:"advertise_client_urls"       cli:"advertise-client-urls"`
-	Discovery                string `yaml:"discovery"                   cli:"discovery"`
-	DiscoverySrv             string `yaml:"discovery_srv"               cli:"discovery-srv"`
-	DiscoveryFallback        string `yaml:"discovery_fallback"          cli:"discovery-fallback"`
-	DiscoveryProxy           string `yaml:"discovery_proxy"             cli:"discovery-proxy"`
-	StrictReconfigCheck      bool   `yaml:"strict_reconfig_check"       cli:"strict-reconfig-check"`
-	AutoCompactionRetention  int    `yaml:"auto_compaction_retention"   cli:"auto-compaction-retention"`
-	Proxy                    string `yaml:"proxy"                       cli:"proxy"`
-	ProxyFailureWait         int    `yaml:"proxy_failure_wait"          cli:"proxy-failure-wait"`
-	ProxyRefreshInterval     int    `yaml:"proxy_refresh_interval"      cli:"proxy-refresh-interval"`
-	ProxyDialTimeout         int    `yaml:"proxy_dial_timeout"          cli:"proxy-dial-timeout"`
-	ProxyWriteTimeout        int    `yaml:"proxy_write_timeout"         cli:"proxy-write-timeout"`
-	ProxyReadTimeout         int    `yaml:"proxy_read_timeout"          cli:"proxy-read-timeout"`
-	CaFile                   string `yaml:"ca_file"                     cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
-	CertFile                 string `yaml:"cert_file"                   cli:"cert-file"`
-	KeyFile                  string `yaml:"key_file"                    cli:"key-file"`
-	ClientCertAuth           bool   `yaml:"client_cert_auth"            cli:"client-cert-auth"`
-	TrustedCaFile            string `yaml:"trusted_ca_file"             cli:"trusted-ca-file"`
-	AutoTls                  bool   `yaml:"auto_tls"                    cli:"auto-tls"`
-	PeerCaFile               string `yaml:"peer_ca_file"                cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
-	PeerCertFile             string `yaml:"peer_cert_file"              cli:"peer-cert-file"`
-	PeerKeyFile              string `yaml:"peer_key_file"               cli:"peer-key-file"`
-	PeerClientCertAuth       bool   `yaml:"peer_client_cert_auth"       cli:"peer-client-cert-auth"`
-	PeerTrustedCaFile        string `yaml:"peer_trusted_ca_file"        cli:"peer-trusted-ca-file"`
-	PeerAutoTls              bool   `yaml:"peer_auto_tls"               cli:"peer-auto-tls"`
-	Debug                    bool   `yaml:"debug"                       cli:"debug"`
-	LogPackageLevels         string `yaml:"log_package_levels"          cli:"log-package-levels"`
-	ForceNewCluster          bool   `yaml:"force_new_cluster"           cli:"force-new-cluster"`
+	Name                     *string `yaml:"name"                        cli:"name"`
+	DataDir                  *string `yaml:"data_dir"                    cli:"data-dir"`
+	WalDir                   *string `yaml:"wal_dir"                     cli:"wal-dir"`
+	SnapshotCount            *int    `yaml:"snapshot_count"              cli:"snapshot-count"`
+	HeartbeatInterval        *int    `yaml:"heartbeat_interval"          cli:"heartbeat-interval"`
+	ElectionTimeout          *int    `yaml:"election_timeout"            cli:"election-timeout"`
+	EnablePprof              *bool   `yaml:"enable_pprof"                cli:"enable-pprof"`
+	ListenPeerUrls           *string `yaml:"listen_peer_urls"            cli:"listen-peer-urls"`
+	ListenClientUrls         *string `yaml:"listen_client_urls"          cli:"listen-client-urls"`
+	MaxSnapshots             *int    `yaml:"max_snapshots"               cli:"max-snapshots"`
+	MaxWals                  *int    `yaml:"max_wals"                    cli:"max-wals"`
+	Cors                     *string `yaml:"cors"                        cli:"cors"`
+	InitialAdvertisePeerUrls *string `yaml:"initial_advertise_peer_urls" cli:"initial-advertise-peer-urls"`
+	InitialCluster           *string `yaml:"initial_cluster"             cli:"initial-cluster"`
+	InitialClusterState      *string `yaml:"initial_cluster_state"       cli:"initial-cluster-state"`
+	InitialClusterToken      *string `yaml:"initial_cluster_token"       cli:"initial-cluster-token"`
+	AdvertiseClientUrls      *string `yaml:"advertise_client_urls"       cli:"advertise-client-urls"`
+	Discovery                *string `yaml:"discovery"                   cli:"discovery"`
+	DiscoverySrv             *string `yaml:"discovery_srv"               cli:"discovery-srv"`
+	DiscoveryFallback        *string `yaml:"discovery_fallback"          cli:"discovery-fallback"`
+	DiscoveryProxy           *string `yaml:"discovery_proxy"             cli:"discovery-proxy"`
+	StrictReconfigCheck      *bool   `yaml:"strict_reconfig_check"       cli:"strict-reconfig-check"`
+	AutoCompactionRetention  *int    `yaml:"auto_compaction_retention"   cli:"auto-compaction-retention"`
+	Proxy                    *string `yaml:"proxy"                       cli:"proxy"`
+	ProxyFailureWait         *int    `yaml:"proxy_failure_wait"          cli:"proxy-failure-wait"`
+	ProxyRefreshInterval     *int    `yaml:"proxy_refresh_interval"      cli:"proxy-refresh-interval"`
+	ProxyDialTimeout         *int    `yaml:"proxy_dial_timeout"          cli:"proxy-dial-timeout"`
+	ProxyWriteTimeout        *int    `yaml:"proxy_write_timeout"         cli:"proxy-write-timeout"`
+	ProxyReadTimeout         *int    `yaml:"proxy_read_timeout"          cli:"proxy-read-timeout"`
+	CaFile                   *string `yaml:"ca_file"                     cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
+	CertFile                 *string `yaml:"cert_file"                   cli:"cert-file"`
+	KeyFile                  *string `yaml:"key_file"                    cli:"key-file"`
+	ClientCertAuth           *bool   `yaml:"client_cert_auth"            cli:"client-cert-auth"`
+	TrustedCaFile            *string `yaml:"trusted_ca_file"             cli:"trusted-ca-file"`
+	AutoTls                  *bool   `yaml:"auto_tls"                    cli:"auto-tls"`
+	PeerCaFile               *string `yaml:"peer_ca_file"                cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
+	PeerCertFile             *string `yaml:"peer_cert_file"              cli:"peer-cert-file"`
+	PeerKeyFile              *string `yaml:"peer_key_file"               cli:"peer-key-file"`
+	PeerClientCertAuth       *bool   `yaml:"peer_client_cert_auth"       cli:"peer-client-cert-auth"`
+	PeerTrustedCaFile        *string `yaml:"peer_trusted_ca_file"        cli:"peer-trusted-ca-file"`
+	PeerAutoTls              *bool   `yaml:"peer_auto_tls"               cli:"peer-auto-tls"`
+	Debug                    *bool   `yaml:"debug"                       cli:"debug"`
+	LogPackageLevels         *string `yaml:"log_package_levels"          cli:"log-package-levels"`
+	ForceNewCluster          *bool   `yaml:"force_new_cluster"           cli:"force-new-cluster"`
 }
 
 type Etcd3_1 struct {
-	Name                     string `yaml:"name"                        cli:"name"`
-	DataDir                  string `yaml:"data_dir"                    cli:"data-dir"`
-	WalDir                   string `yaml:"wal_dir"                     cli:"wal-dir"`
-	SnapshotCount            int    `yaml:"snapshot_count"              cli:"snapshot-count"`
-	HeartbeatInterval        int    `yaml:"heartbeat_interval"          cli:"heartbeat-interval"`
-	ElectionTimeout          int    `yaml:"election_timeout"            cli:"election-timeout"`
-	EnablePprof              bool   `yaml:"enable_pprof"                cli:"enable-pprof"`
-	ListenPeerUrls           string `yaml:"listen_peer_urls"            cli:"listen-peer-urls"`
-	ListenClientUrls         string `yaml:"listen_client_urls"          cli:"listen-client-urls"`
-	MaxSnapshots             int    `yaml:"max_snapshots"               cli:"max-snapshots"`
-	MaxWals                  int    `yaml:"max_wals"                    cli:"max-wals"`
-	Cors                     string `yaml:"cors"                        cli:"cors"`
-	InitialAdvertisePeerUrls string `yaml:"initial_advertise_peer_urls" cli:"initial-advertise-peer-urls"`
-	InitialCluster           string `yaml:"initial_cluster"             cli:"initial-cluster"`
-	InitialClusterState      string `yaml:"initial_cluster_state"       cli:"initial-cluster-state"`
-	InitialClusterToken      string `yaml:"initial_cluster_token"       cli:"initial-cluster-token"`
-	AdvertiseClientUrls      string `yaml:"advertise_client_urls"       cli:"advertise-client-urls"`
-	Discovery                string `yaml:"discovery"                   cli:"discovery"`
-	DiscoverySrv             string `yaml:"discovery_srv"               cli:"discovery-srv"`
-	DiscoveryFallback        string `yaml:"discovery_fallback"          cli:"discovery-fallback"`
-	DiscoveryProxy           string `yaml:"discovery_proxy"             cli:"discovery-proxy"`
-	StrictReconfigCheck      bool   `yaml:"strict_reconfig_check"       cli:"strict-reconfig-check"`
-	AutoCompactionRetention  int    `yaml:"auto_compaction_retention"   cli:"auto-compaction-retention"`
-	Proxy                    string `yaml:"proxy"                       cli:"proxy"`
-	ProxyFailureWait         int    `yaml:"proxy_failure_wait"          cli:"proxy-failure-wait"`
-	ProxyRefreshInterval     int    `yaml:"proxy_refresh_interval"      cli:"proxy-refresh-interval"`
-	ProxyDialTimeout         int    `yaml:"proxy_dial_timeout"          cli:"proxy-dial-timeout"`
-	ProxyWriteTimeout        int    `yaml:"proxy_write_timeout"         cli:"proxy-write-timeout"`
-	ProxyReadTimeout         int    `yaml:"proxy_read_timeout"          cli:"proxy-read-timeout"`
-	CaFile                   string `yaml:"ca_file"                     cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
-	CertFile                 string `yaml:"cert_file"                   cli:"cert-file"`
-	KeyFile                  string `yaml:"key_file"                    cli:"key-file"`
-	ClientCertAuth           bool   `yaml:"client_cert_auth"            cli:"client-cert-auth"`
-	TrustedCaFile            string `yaml:"trusted_ca_file"             cli:"trusted-ca-file"`
-	AutoTls                  bool   `yaml:"auto_tls"                    cli:"auto-tls"`
-	PeerCaFile               string `yaml:"peer_ca_file"                cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
-	PeerCertFile             string `yaml:"peer_cert_file"              cli:"peer-cert-file"`
-	PeerKeyFile              string `yaml:"peer_key_file"               cli:"peer-key-file"`
-	PeerClientCertAuth       bool   `yaml:"peer_client_cert_auth"       cli:"peer-client-cert-auth"`
-	PeerTrustedCaFile        string `yaml:"peer_trusted_ca_file"        cli:"peer-trusted-ca-file"`
-	PeerAutoTls              bool   `yaml:"peer_auto_tls"               cli:"peer-auto-tls"`
-	Debug                    bool   `yaml:"debug"                       cli:"debug"`
-	LogPackageLevels         string `yaml:"log_package_levels"          cli:"log-package-levels"`
-	ForceNewCluster          bool   `yaml:"force_new_cluster"           cli:"force-new-cluster"`
-	Metrics                  string `yaml:"metrics"                     cli:"metrics"`
-	LogOutput                string `yaml:"log_output"                  cli:"log-output"`
+	Name                     *string `yaml:"name"                        cli:"name"`
+	DataDir                  *string `yaml:"data_dir"                    cli:"data-dir"`
+	WalDir                   *string `yaml:"wal_dir"                     cli:"wal-dir"`
+	SnapshotCount            *int    `yaml:"snapshot_count"              cli:"snapshot-count"`
+	HeartbeatInterval        *int    `yaml:"heartbeat_interval"          cli:"heartbeat-interval"`
+	ElectionTimeout          *int    `yaml:"election_timeout"            cli:"election-timeout"`
+	EnablePprof              *bool   `yaml:"enable_pprof"                cli:"enable-pprof"`
+	ListenPeerUrls           *string `yaml:"listen_peer_urls"            cli:"listen-peer-urls"`
+	ListenClientUrls         *string `yaml:"listen_client_urls"          cli:"listen-client-urls"`
+	MaxSnapshots             *int    `yaml:"max_snapshots"               cli:"max-snapshots"`
+	MaxWals                  *int    `yaml:"max_wals"                    cli:"max-wals"`
+	Cors                     *string `yaml:"cors"                        cli:"cors"`
+	InitialAdvertisePeerUrls *string `yaml:"initial_advertise_peer_urls" cli:"initial-advertise-peer-urls"`
+	InitialCluster           *string `yaml:"initial_cluster"             cli:"initial-cluster"`
+	InitialClusterState      *string `yaml:"initial_cluster_state"       cli:"initial-cluster-state"`
+	InitialClusterToken      *string `yaml:"initial_cluster_token"       cli:"initial-cluster-token"`
+	AdvertiseClientUrls      *string `yaml:"advertise_client_urls"       cli:"advertise-client-urls"`
+	Discovery                *string `yaml:"discovery"                   cli:"discovery"`
+	DiscoverySrv             *string `yaml:"discovery_srv"               cli:"discovery-srv"`
+	DiscoveryFallback        *string `yaml:"discovery_fallback"          cli:"discovery-fallback"`
+	DiscoveryProxy           *string `yaml:"discovery_proxy"             cli:"discovery-proxy"`
+	StrictReconfigCheck      *bool   `yaml:"strict_reconfig_check"       cli:"strict-reconfig-check"`
+	AutoCompactionRetention  *int    `yaml:"auto_compaction_retention"   cli:"auto-compaction-retention"`
+	Proxy                    *string `yaml:"proxy"                       cli:"proxy"`
+	ProxyFailureWait         *int    `yaml:"proxy_failure_wait"          cli:"proxy-failure-wait"`
+	ProxyRefreshInterval     *int    `yaml:"proxy_refresh_interval"      cli:"proxy-refresh-interval"`
+	ProxyDialTimeout         *int    `yaml:"proxy_dial_timeout"          cli:"proxy-dial-timeout"`
+	ProxyWriteTimeout        *int    `yaml:"proxy_write_timeout"         cli:"proxy-write-timeout"`
+	ProxyReadTimeout         *int    `yaml:"proxy_read_timeout"          cli:"proxy-read-timeout"`
+	CaFile                   *string `yaml:"ca_file"                     cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
+	CertFile                 *string `yaml:"cert_file"                   cli:"cert-file"`
+	KeyFile                  *string `yaml:"key_file"                    cli:"key-file"`
+	ClientCertAuth           *bool   `yaml:"client_cert_auth"            cli:"client-cert-auth"`
+	TrustedCaFile            *string `yaml:"trusted_ca_file"             cli:"trusted-ca-file"`
+	AutoTls                  *bool   `yaml:"auto_tls"                    cli:"auto-tls"`
+	PeerCaFile               *string `yaml:"peer_ca_file"                cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
+	PeerCertFile             *string `yaml:"peer_cert_file"              cli:"peer-cert-file"`
+	PeerKeyFile              *string `yaml:"peer_key_file"               cli:"peer-key-file"`
+	PeerClientCertAuth       *bool   `yaml:"peer_client_cert_auth"       cli:"peer-client-cert-auth"`
+	PeerTrustedCaFile        *string `yaml:"peer_trusted_ca_file"        cli:"peer-trusted-ca-file"`
+	PeerAutoTls              *bool   `yaml:"peer_auto_tls"               cli:"peer-auto-tls"`
+	Debug                    *bool   `yaml:"debug"                       cli:"debug"`
+	LogPackageLevels         *string `yaml:"log_package_levels"          cli:"log-package-levels"`
+	ForceNewCluster          *bool   `yaml:"force_new_cluster"           cli:"force-new-cluster"`
+	Metrics                  *string `yaml:"metrics"                     cli:"metrics"`
+	LogOutput                *string `yaml:"log_output"                  cli:"log-output"`
 }
 
 type Etcd3_2 struct {
-	Name                     string `yaml:"name"                        cli:"name"`
-	DataDir                  string `yaml:"data_dir"                    cli:"data-dir"`
-	WalDir                   string `yaml:"wal_dir"                     cli:"wal-dir"`
-	SnapshotCount            int    `yaml:"snapshot_count"              cli:"snapshot-count"`
-	HeartbeatInterval        int    `yaml:"heartbeat_interval"          cli:"heartbeat-interval"`
-	ElectionTimeout          int    `yaml:"election_timeout"            cli:"election-timeout"`
-	EnablePprof              bool   `yaml:"enable_pprof"                cli:"enable-pprof"`
-	EnableV2                 bool   `yaml:"enable_v2"                   cli:"enable-v2"`
-	ListenPeerUrls           string `yaml:"listen_peer_urls"            cli:"listen-peer-urls"`
-	ListenClientUrls         string `yaml:"listen_client_urls"          cli:"listen-client-urls"`
-	MaxSnapshots             int    `yaml:"max_snapshots"               cli:"max-snapshots"`
-	MaxWals                  int    `yaml:"max_wals"                    cli:"max-wals"`
-	Cors                     string `yaml:"cors"                        cli:"cors"`
-	InitialAdvertisePeerUrls string `yaml:"initial_advertise_peer_urls" cli:"initial-advertise-peer-urls"`
-	InitialCluster           string `yaml:"initial_cluster"             cli:"initial-cluster"`
-	InitialClusterState      string `yaml:"initial_cluster_state"       cli:"initial-cluster-state"`
-	InitialClusterToken      string `yaml:"initial_cluster_token"       cli:"initial-cluster-token"`
-	AdvertiseClientUrls      string `yaml:"advertise_client_urls"       cli:"advertise-client-urls"`
-	Discovery                string `yaml:"discovery"                   cli:"discovery"`
-	DiscoverySrv             string `yaml:"discovery_srv"               cli:"discovery-srv"`
-	DiscoveryFallback        string `yaml:"discovery_fallback"          cli:"discovery-fallback"`
-	DiscoveryProxy           string `yaml:"discovery_proxy"             cli:"discovery-proxy"`
-	StrictReconfigCheck      bool   `yaml:"strict_reconfig_check"       cli:"strict-reconfig-check"`
-	AutoCompactionRetention  int    `yaml:"auto_compaction_retention"   cli:"auto-compaction-retention"`
-	Proxy                    string `yaml:"proxy"                       cli:"proxy"`
-	ProxyFailureWait         int    `yaml:"proxy_failure_wait"          cli:"proxy-failure-wait"`
-	ProxyRefreshInterval     int    `yaml:"proxy_refresh_interval"      cli:"proxy-refresh-interval"`
-	ProxyDialTimeout         int    `yaml:"proxy_dial_timeout"          cli:"proxy-dial-timeout"`
-	ProxyWriteTimeout        int    `yaml:"proxy_write_timeout"         cli:"proxy-write-timeout"`
-	ProxyReadTimeout         int    `yaml:"proxy_read_timeout"          cli:"proxy-read-timeout"`
-	CaFile                   string `yaml:"ca_file"                     cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
-	CertFile                 string `yaml:"cert_file"                   cli:"cert-file"`
-	KeyFile                  string `yaml:"key_file"                    cli:"key-file"`
-	ClientCertAuth           bool   `yaml:"client_cert_auth"            cli:"client-cert-auth"`
-	TrustedCaFile            string `yaml:"trusted_ca_file"             cli:"trusted-ca-file"`
-	AutoTls                  bool   `yaml:"auto_tls"                    cli:"auto-tls"`
-	PeerCaFile               string `yaml:"peer_ca_file"                cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
-	PeerCertFile             string `yaml:"peer_cert_file"              cli:"peer-cert-file"`
-	PeerKeyFile              string `yaml:"peer_key_file"               cli:"peer-key-file"`
-	PeerClientCertAuth       bool   `yaml:"peer_client_cert_auth"       cli:"peer-client-cert-auth"`
-	PeerTrustedCaFile        string `yaml:"peer_trusted_ca_file"        cli:"peer-trusted-ca-file"`
-	PeerAutoTls              bool   `yaml:"peer_auto_tls"               cli:"peer-auto-tls"`
-	AuthToken                string `yaml:"auth_token"                  cli:"auth-token"`
-	Debug                    bool   `yaml:"debug"                       cli:"debug"`
-	LogPackageLevels         string `yaml:"log_package_levels"          cli:"log-package-levels"`
-	ForceNewCluster          bool   `yaml:"force_new_cluster"           cli:"force-new-cluster"`
-	Metrics                  string `yaml:"metrics"                     cli:"metrics"`
-	LogOutput                string `yaml:"log_output"                  cli:"log-output"`
+	Name                     *string `yaml:"name"                        cli:"name"`
+	DataDir                  *string `yaml:"data_dir"                    cli:"data-dir"`
+	WalDir                   *string `yaml:"wal_dir"                     cli:"wal-dir"`
+	SnapshotCount            *int    `yaml:"snapshot_count"              cli:"snapshot-count"`
+	HeartbeatInterval        *int    `yaml:"heartbeat_interval"          cli:"heartbeat-interval"`
+	ElectionTimeout          *int    `yaml:"election_timeout"            cli:"election-timeout"`
+	EnablePprof              *bool   `yaml:"enable_pprof"                cli:"enable-pprof"`
+	EnableV2                 *bool   `yaml:"enable_v2"                   cli:"enable-v2"`
+	ListenPeerUrls           *string `yaml:"listen_peer_urls"            cli:"listen-peer-urls"`
+	ListenClientUrls         *string `yaml:"listen_client_urls"          cli:"listen-client-urls"`
+	MaxSnapshots             *int    `yaml:"max_snapshots"               cli:"max-snapshots"`
+	MaxWals                  *int    `yaml:"max_wals"                    cli:"max-wals"`
+	Cors                     *string `yaml:"cors"                        cli:"cors"`
+	InitialAdvertisePeerUrls *string `yaml:"initial_advertise_peer_urls" cli:"initial-advertise-peer-urls"`
+	InitialCluster           *string `yaml:"initial_cluster"             cli:"initial-cluster"`
+	InitialClusterState      *string `yaml:"initial_cluster_state"       cli:"initial-cluster-state"`
+	InitialClusterToken      *string `yaml:"initial_cluster_token"       cli:"initial-cluster-token"`
+	AdvertiseClientUrls      *string `yaml:"advertise_client_urls"       cli:"advertise-client-urls"`
+	Discovery                *string `yaml:"discovery"                   cli:"discovery"`
+	DiscoverySrv             *string `yaml:"discovery_srv"               cli:"discovery-srv"`
+	DiscoveryFallback        *string `yaml:"discovery_fallback"          cli:"discovery-fallback"`
+	DiscoveryProxy           *string `yaml:"discovery_proxy"             cli:"discovery-proxy"`
+	StrictReconfigCheck      *bool   `yaml:"strict_reconfig_check"       cli:"strict-reconfig-check"`
+	AutoCompactionRetention  *int    `yaml:"auto_compaction_retention"   cli:"auto-compaction-retention"`
+	Proxy                    *string `yaml:"proxy"                       cli:"proxy"`
+	ProxyFailureWait         *int    `yaml:"proxy_failure_wait"          cli:"proxy-failure-wait"`
+	ProxyRefreshInterval     *int    `yaml:"proxy_refresh_interval"      cli:"proxy-refresh-interval"`
+	ProxyDialTimeout         *int    `yaml:"proxy_dial_timeout"          cli:"proxy-dial-timeout"`
+	ProxyWriteTimeout        *int    `yaml:"proxy_write_timeout"         cli:"proxy-write-timeout"`
+	ProxyReadTimeout         *int    `yaml:"proxy_read_timeout"          cli:"proxy-read-timeout"`
+	CaFile                   *string `yaml:"ca_file"                     cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
+	CertFile                 *string `yaml:"cert_file"                   cli:"cert-file"`
+	KeyFile                  *string `yaml:"key_file"                    cli:"key-file"`
+	ClientCertAuth           *bool   `yaml:"client_cert_auth"            cli:"client-cert-auth"`
+	TrustedCaFile            *string `yaml:"trusted_ca_file"             cli:"trusted-ca-file"`
+	AutoTls                  *bool   `yaml:"auto_tls"                    cli:"auto-tls"`
+	PeerCaFile               *string `yaml:"peer_ca_file"                cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
+	PeerCertFile             *string `yaml:"peer_cert_file"              cli:"peer-cert-file"`
+	PeerKeyFile              *string `yaml:"peer_key_file"               cli:"peer-key-file"`
+	PeerClientCertAuth       *bool   `yaml:"peer_client_cert_auth"       cli:"peer-client-cert-auth"`
+	PeerTrustedCaFile        *string `yaml:"peer_trusted_ca_file"        cli:"peer-trusted-ca-file"`
+	PeerAutoTls              *bool   `yaml:"peer_auto_tls"               cli:"peer-auto-tls"`
+	AuthToken                *string `yaml:"auth_token"                  cli:"auth-token"`
+	Debug                    *bool   `yaml:"debug"                       cli:"debug"`
+	LogPackageLevels         *string `yaml:"log_package_levels"          cli:"log-package-levels"`
+	ForceNewCluster          *bool   `yaml:"force_new_cluster"           cli:"force-new-cluster"`
+	Metrics                  *string `yaml:"metrics"                     cli:"metrics"`
+	LogOutput                *string `yaml:"log_output"                  cli:"log-output"`
+}
+
+type Etcd3_3 struct {
+	Name                            *string `yaml:"name"                               cli:"name"`
+	DataDir                         *string `yaml:"data_dir"                           cli:"data-dir"`
+	WalDir                          *string `yaml:"wal_dir"                            cli:"wal-dir"`
+	SnapshotCount                   *int    `yaml:"snapshot_count"                     cli:"snapshot-count"`
+	HeartbeatInterval               *int    `yaml:"heartbeat_interval"                 cli:"heartbeat-interval"`
+	ElectionTimeout                 *int    `yaml:"election_timeout"                   cli:"election-timeout"`
+	EnablePprof                     *bool   `yaml:"enable_pprof"                       cli:"enable-pprof"`
+	EnableV2                        *bool   `yaml:"enable_v2"                          cli:"enable-v2"`
+	ListenPeerUrls                  *string `yaml:"listen_peer_urls"                   cli:"listen-peer-urls"`
+	ListenClientUrls                *string `yaml:"listen_client_urls"                 cli:"listen-client-urls"`
+	MaxSnapshots                    *int    `yaml:"max_snapshots"                      cli:"max-snapshots"`
+	MaxWals                         *int    `yaml:"max_wals"                           cli:"max-wals"`
+	Cors                            *string `yaml:"cors"                               cli:"cors"`
+	QuotaBackendBytes               *int    `yaml:"quota_backend_bytes"                cli:"quota-backend-bytes"`
+	MaxTxnOps                       *int    `yaml:"max_txn_ops"                        cli:"max-txn-ops"`
+	MaxRequestBytes                 *int    `yaml:"max_request_bytes"                  cli:"max-request-bytes"`
+	GrpcKeepaliveMinTime            *string `yaml:"grpc_keepalive_min_time"            cli:"grpc-keepalive-min-time"`
+	GrpcKeepaliveInterval           *string `yaml:"grpc_keepalive_interval"            cli:"grpc-keepalive-interval"`
+	GrpcKeepaliveTimeout            *string `yaml:"grpc_keepalive_timeout"             cli:"grpc-keepalive-timeout"`
+	InitialAdvertisePeerUrls        *string `yaml:"initial_advertise_peer_urls"        cli:"initial-advertise-peer-urls"`
+	InitialCluster                  *string `yaml:"initial_cluster"                    cli:"initial-cluster"`
+	InitialClusterState             *string `yaml:"initial_cluster_state"              cli:"initial-cluster-state"`
+	InitialClusterToken             *string `yaml:"initial_cluster_token"              cli:"initial-cluster-token"`
+	AdvertiseClientUrls             *string `yaml:"advertise_client_urls"              cli:"advertise-client-urls"`
+	Discovery                       *string `yaml:"discovery"                          cli:"discovery"`
+	DiscoverySrv                    *string `yaml:"discovery_srv"                      cli:"discovery-srv"`
+	DiscoveryFallback               *string `yaml:"discovery_fallback"                 cli:"discovery-fallback"`
+	DiscoveryProxy                  *string `yaml:"discovery_proxy"                    cli:"discovery-proxy"`
+	StrictReconfigCheck             *bool   `yaml:"strict_reconfig_check"              cli:"strict-reconfig-check"`
+	AutoCompactionRetention         *string `yaml:"auto_compaction_retention"          cli:"auto-compaction-retention"`
+	AutoCompactionMode              *string `yaml:"auto_compaction_mode"               cli:"auto-compaction-mode"`
+	Proxy                           *string `yaml:"proxy"                              cli:"proxy"`
+	ProxyFailureWait                *int    `yaml:"proxy_failure_wait"                 cli:"proxy-failure-wait"`
+	ProxyRefreshInterval            *int    `yaml:"proxy_refresh_interval"             cli:"proxy-refresh-interval"`
+	ProxyDialTimeout                *int    `yaml:"proxy_dial_timeout"                 cli:"proxy-dial-timeout"`
+	ProxyWriteTimeout               *int    `yaml:"proxy_write_timeout"                cli:"proxy-write-timeout"`
+	ProxyReadTimeout                *int    `yaml:"proxy_read_timeout"                 cli:"proxy-read-timeout"`
+	CaFile                          *string `yaml:"ca_file"                            cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
+	CertFile                        *string `yaml:"cert_file"                          cli:"cert-file"`
+	KeyFile                         *string `yaml:"key_file"                           cli:"key-file"`
+	ClientCertAuth                  *bool   `yaml:"client_cert_auth"                   cli:"client-cert-auth"`
+	ClientCrlFile                   *string `yaml:"client_crl_file"                    cli:"client-crl-file"`
+	TrustedCaFile                   *string `yaml:"trusted_ca_file"                    cli:"trusted-ca-file"`
+	AutoTls                         *bool   `yaml:"auto_tls"                           cli:"auto-tls"`
+	PeerCaFile                      *string `yaml:"peer_ca_file"                       cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
+	PeerCertFile                    *string `yaml:"peer_cert_file"                     cli:"peer-cert-file"`
+	PeerKeyFile                     *string `yaml:"peer_key_file"                      cli:"peer-key-file"`
+	PeerClientCertAuth              *bool   `yaml:"peer_client_cert_auth"              cli:"peer-client-cert-auth"`
+	PeerCrlFile                     *string `yaml:"peer_crl_file"                      cli:"peer-crl-file"`
+	PeerTrustedCaFile               *string `yaml:"peer_trusted_ca_file"               cli:"peer-trusted-ca-file"`
+	PeerAutoTls                     *bool   `yaml:"peer_auto_tls"                      cli:"peer-auto-tls"`
+	PeerCertAllowedCn               *string `yaml:"peer_cert_allowed_cn"               cli:"peer-cert-allowed-cn"`
+	AuthToken                       *string `yaml:"auth_token"                         cli:"auth-token"`
+	Debug                           *bool   `yaml:"debug"                              cli:"debug"`
+	LogPackageLevels                *string `yaml:"log_package_levels"                 cli:"log-package-levels"`
+	ForceNewCluster                 *bool   `yaml:"force_new_cluster"                  cli:"force-new-cluster"`
+	Metrics                         *string `yaml:"metrics"                            cli:"metrics"`
+	LogOutput                       *string `yaml:"log_output"                         cli:"log-output"`
+	ListenMetricsUrls               *string `yaml:"listen_metrics_urls"                cli:"listen-metrics-urls"`
+	ExperimentalInitialCorruptCheck *bool   `yaml:"experimental_initial_corrupt_check" cli:"experimental-initial-corrupt-check"`
+	ExperimentalCorruptCheckTime    *string `yaml:"experimental_corrupt_check_time"    cli:"experimental-corrupt-check-time"`
+	ExperimentalEnableV2V3          *string `yaml:"experimental_enable_v2v3"           cli:"experimental-enable-v2v3"`
 }
 
 type Etcd2 struct {
-	AdvertiseClientURLs      string `yaml:"advertise_client_urls"         cli:"advertise-client-urls"`
-	CAFile                   string `yaml:"ca_file"                       cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
-	CertFile                 string `yaml:"cert_file"                     cli:"cert-file"`
-	ClientCertAuth           bool   `yaml:"client_cert_auth"              cli:"client-cert-auth"`
-	CorsOrigins              string `yaml:"cors"                          cli:"cors"`
-	DataDir                  string `yaml:"data_dir"                      cli:"data-dir"`
-	Debug                    bool   `yaml:"debug"                         cli:"debug"`
-	Discovery                string `yaml:"discovery"                     cli:"discovery"`
-	DiscoveryFallback        string `yaml:"discovery_fallback"            cli:"discovery-fallback"`
-	DiscoverySRV             string `yaml:"discovery_srv"                 cli:"discovery-srv"`
-	DiscoveryProxy           string `yaml:"discovery_proxy"               cli:"discovery-proxy"`
-	ElectionTimeout          int    `yaml:"election_timeout"              cli:"election-timeout"`
-	EnablePprof              bool   `yaml:"enable_pprof"                  cli:"enable-pprof"`
-	ForceNewCluster          bool   `yaml:"force_new_cluster"             cli:"force-new-cluster"`
-	HeartbeatInterval        int    `yaml:"heartbeat_interval"            cli:"heartbeat-interval"`
-	InitialAdvertisePeerURLs string `yaml:"initial_advertise_peer_urls"   cli:"initial-advertise-peer-urls"`
-	InitialCluster           string `yaml:"initial_cluster"               cli:"initial-cluster"`
-	InitialClusterState      string `yaml:"initial_cluster_state"         cli:"initial-cluster-state"`
-	InitialClusterToken      string `yaml:"initial_cluster_token"         cli:"initial-cluster-token"`
-	KeyFile                  string `yaml:"key_file"                      cli:"key-file"`
-	ListenClientURLs         string `yaml:"listen_client_urls"            cli:"listen-client-urls"`
-	ListenPeerURLs           string `yaml:"listen_peer_urls"              cli:"listen-peer-urls"`
-	LogPackageLevels         string `yaml:"log_package_levels"            cli:"log-package-levels"`
-	MaxSnapshots             int    `yaml:"max_snapshots"                 cli:"max-snapshots"`
-	MaxWALs                  int    `yaml:"max_wals"                      cli:"max-wals"`
-	Name                     string `yaml:"name"                          cli:"name"`
-	PeerCAFile               string `yaml:"peer_ca_file"                  cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
-	PeerCertFile             string `yaml:"peer_cert_file"                cli:"peer-cert-file"`
-	PeerKeyFile              string `yaml:"peer_key_file"                 cli:"peer-key-file"`
-	PeerClientCertAuth       bool   `yaml:"peer_client_cert_auth"         cli:"peer-client-cert-auth"`
-	PeerTrustedCAFile        string `yaml:"peer_trusted_ca_file"          cli:"peer-trusted-ca-file"`
-	Proxy                    string `yaml:"proxy"                         cli:"proxy"                       valid:"^(on|off|readonly)$"`
-	ProxyDialTimeout         int    `yaml:"proxy_dial_timeout"            cli:"proxy-dial-timeout"`
-	ProxyFailureWait         int    `yaml:"proxy_failure_wait"            cli:"proxy-failure-wait"`
-	ProxyReadTimeout         int    `yaml:"proxy_read_timeout"            cli:"proxy-read-timeout"`
-	ProxyRefreshInterval     int    `yaml:"proxy_refresh_interval"        cli:"proxy-refresh-interval"`
-	ProxyWriteTimeout        int    `yaml:"proxy_write_timeout"           cli:"proxy-write-timeout"`
-	SnapshotCount            int    `yaml:"snapshot_count"                cli:"snapshot-count"`
-	StrictReconfigCheck      bool   `yaml:"strict_reconfig_check"         cli:"strict-reconfig-check"`
-	TrustedCAFile            string `yaml:"trusted_ca_file"               cli:"trusted-ca-file"`
-	WalDir                   string `yaml:"wal_dir"                       cli:"wal-dir"`
+	AdvertiseClientURLs      *string `yaml:"advertise_client_urls"         cli:"advertise-client-urls"`
+	CAFile                   *string `yaml:"ca_file"                       cli:"ca-file"                     deprecated:"ca_file obsoleted by trusted_ca_file and client_cert_auth"`
+	CertFile                 *string `yaml:"cert_file"                     cli:"cert-file"`
+	ClientCertAuth           *bool   `yaml:"client_cert_auth"              cli:"client-cert-auth"`
+	CorsOrigins              *string `yaml:"cors"                          cli:"cors"`
+	DataDir                  *string `yaml:"data_dir"                      cli:"data-dir"`
+	Debug                    *bool   `yaml:"debug"                         cli:"debug"`
+	Discovery                *string `yaml:"discovery"                     cli:"discovery"`
+	DiscoveryFallback        *string `yaml:"discovery_fallback"            cli:"discovery-fallback"`
+	DiscoverySRV             *string `yaml:"discovery_srv"                 cli:"discovery-srv"`
+	DiscoveryProxy           *string `yaml:"discovery_proxy"               cli:"discovery-proxy"`
+	ElectionTimeout          *int    `yaml:"election_timeout"              cli:"election-timeout"`
+	EnablePprof              *bool   `yaml:"enable_pprof"                  cli:"enable-pprof"`
+	ForceNewCluster          *bool   `yaml:"force_new_cluster"             cli:"force-new-cluster"`
+	HeartbeatInterval        *int    `yaml:"heartbeat_interval"            cli:"heartbeat-interval"`
+	InitialAdvertisePeerURLs *string `yaml:"initial_advertise_peer_urls"   cli:"initial-advertise-peer-urls"`
+	InitialCluster           *string `yaml:"initial_cluster"               cli:"initial-cluster"`
+	InitialClusterState      *string `yaml:"initial_cluster_state"         cli:"initial-cluster-state"`
+	InitialClusterToken      *string `yaml:"initial_cluster_token"         cli:"initial-cluster-token"`
+	KeyFile                  *string `yaml:"key_file"                      cli:"key-file"`
+	ListenClientURLs         *string `yaml:"listen_client_urls"            cli:"listen-client-urls"`
+	ListenPeerURLs           *string `yaml:"listen_peer_urls"              cli:"listen-peer-urls"`
+	LogPackageLevels         *string `yaml:"log_package_levels"            cli:"log-package-levels"`
+	MaxSnapshots             *int    `yaml:"max_snapshots"                 cli:"max-snapshots"`
+	MaxWALs                  *int    `yaml:"max_wals"                      cli:"max-wals"`
+	Name                     *string `yaml:"name"                          cli:"name"`
+	PeerCAFile               *string `yaml:"peer_ca_file"                  cli:"peer-ca-file"                deprecated:"peer_ca_file obsoleted peer_trusted_ca_file and peer_client_cert_auth"`
+	PeerCertFile             *string `yaml:"peer_cert_file"                cli:"peer-cert-file"`
+	PeerKeyFile              *string `yaml:"peer_key_file"                 cli:"peer-key-file"`
+	PeerClientCertAuth       *bool   `yaml:"peer_client_cert_auth"         cli:"peer-client-cert-auth"`
+	PeerTrustedCAFile        *string `yaml:"peer_trusted_ca_file"          cli:"peer-trusted-ca-file"`
+	Proxy                    *string `yaml:"proxy"                         cli:"proxy"                       valid:"^(on|off|readonly)$"`
+	ProxyDialTimeout         *int    `yaml:"proxy_dial_timeout"            cli:"proxy-dial-timeout"`
+	ProxyFailureWait         *int    `yaml:"proxy_failure_wait"            cli:"proxy-failure-wait"`
+	ProxyReadTimeout         *int    `yaml:"proxy_read_timeout"            cli:"proxy-read-timeout"`
+	ProxyRefreshInterval     *int    `yaml:"proxy_refresh_interval"        cli:"proxy-refresh-interval"`
+	ProxyWriteTimeout        *int    `yaml:"proxy_write_timeout"           cli:"proxy-write-timeout"`
+	SnapshotCount            *int    `yaml:"snapshot_count"                cli:"snapshot-count"`
+	StrictReconfigCheck      *bool   `yaml:"strict_reconfig_check"         cli:"strict-reconfig-check"`
+	TrustedCAFile            *string `yaml:"trusted_ca_file"               cli:"trusted-ca-file"`
+	WalDir                   *string `yaml:"wal_dir"                       cli:"wal-dir"`
 }

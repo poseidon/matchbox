@@ -15,13 +15,10 @@
 package types
 
 import (
-	"encoding/json"
-	"errors"
 	"os"
-)
 
-var (
-	ErrFileIllegalMode = errors.New("illegal file mode")
+	"github.com/coreos/ignition/config/shared/errors"
+	"github.com/coreos/ignition/config/validate/report"
 )
 
 type FileMode os.FileMode
@@ -33,20 +30,10 @@ type File struct {
 	Uid      int      `json:"uid,omitempty"`
 	Gid      int      `json:"gid,omitempty"`
 }
-type fileMode FileMode
 
-func (m *FileMode) UnmarshalJSON(data []byte) error {
-	tm := fileMode(*m)
-	if err := json.Unmarshal(data, &tm); err != nil {
-		return err
-	}
-	*m = FileMode(tm)
-	return m.AssertValid()
-}
-
-func (m FileMode) AssertValid() error {
+func (m FileMode) Validate() report.Report {
 	if (m &^ 07777) != 0 {
-		return ErrFileIllegalMode
+		return report.ReportFromError(errors.ErrFileIllegalMode, report.EntryError)
 	}
-	return nil
+	return report.Report{}
 }
