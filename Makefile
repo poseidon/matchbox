@@ -1,11 +1,11 @@
 export CGO_ENABLED:=0
 
-VERSION=$(shell ./scripts/dev/git-version)
+VERSION=$(shell git describe --tags --match=v* --always --dirty)
 LD_FLAGS="-w -X github.com/coreos/matchbox/matchbox/version.Version=$(VERSION)"
 
 REPO=github.com/coreos/matchbox
-IMAGE_REPO=coreos/matchbox
-QUAY_REPO=quay.io/coreos/matchbox
+LOCAL_REPO=coreos/matchbox
+IMAGE_REPO=quay.io/coreos/matchbox
 
 .PHONY: all
 all: build test vet lint fmt
@@ -38,15 +38,15 @@ aci: clean build
 
 .PHONY: docker-image
 docker-image:
-	@sudo docker build --rm=true -t $(IMAGE_REPO):$(VERSION) .
-	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(IMAGE_REPO):latest
+	@sudo docker build --rm=true -t $(LOCAL_REPO):$(VERSION) .
+	@sudo docker tag $(LOCAL_REPO):$(VERSION) $(LOCAL_REPO):latest
 
 .PHONY: docker-push
 docker-push: docker-image
-	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(QUAY_REPO):latest
-	@sudo docker tag $(IMAGE_REPO):$(VERSION) $(QUAY_REPO):$(VERSION)
-	@sudo docker push $(QUAY_REPO):latest
-	@sudo docker push $(QUAY_REPO):$(VERSION)
+	@sudo docker tag $(LOCAL_REPO):$(VERSION) $(IMAGE_REPO):latest
+	@sudo docker tag $(LOCAL_REPO):$(VERSION) $(IMAGE_REPO):$(VERSION)
+	@sudo docker push $(IMAGE_REPO):latest
+	@sudo docker push $(IMAGE_REPO):$(VERSION)
 
 .PHONY: vendor
 vendor:
