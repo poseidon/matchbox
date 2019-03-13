@@ -1,4 +1,5 @@
-VERSION=v0.5.0
+DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+VERSION=$(shell git describe --tags --match=v* --always --dirty)
 
 IMAGE_REPO=coreos/dnsmasq
 QUAY_REPO=quay.io/coreos/dnsmasq
@@ -8,7 +9,7 @@ all: docker-image
 
 .PHONY: tftp
 tftp:
-	@./get-tftp-files
+	@$(DIR)/get-tftp-files
 
 .PHONY: docker-image
 docker-image: tftp
