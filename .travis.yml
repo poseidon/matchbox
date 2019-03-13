@@ -12,11 +12,18 @@ install:
 script:
   - make
 deploy:
-  provider: script
-  script: scripts/dev/travis-docker-push
-  skip_cleanup: true
-  on:
-    branch: master
-    go: '1.11.5'
+  - provider: script
+    script: scripts/dev/travis-docker-push
+    skip_cleanup: true
+    on:
+      branch: master
+      go: '1.11.5'
+  - provider: script
+    script: contrib/dnsmasq/travis-deploy
+    skip_cleanup: true
+    on:
+      branch: dnsmasq
+      # pick one, so travis deploys once
+      go: '1.10.x'
 notifications:
   email: change

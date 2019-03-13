@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+# dirty hack
+cd "$(dirname $0)"
+
+docker info
+make docker-image
+docker login -u="$DOCKER_USERNAME" -p=$DOCKER_PASSWORD quay.io
+make docker-push
+
