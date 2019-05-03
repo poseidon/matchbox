@@ -1,4 +1,4 @@
-# matchbox [![Build Status](https://travis-ci.org/coreos/matchbox.svg?branch=master)](https://travis-ci.org/coreos/matchbox) [![GoDoc](https://godoc.org/github.com/poseidon/matchbox?status.svg)](https://godoc.org/github.com/poseidon/matchbox) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
+# matchbox [![Build Status](https://travis-ci.org/poseidon/matchbox.svg?branch=master)](https://travis-ci.org/poseidon/matchbox) [![GoDoc](https://godoc.org/github.com/poseidon/matchbox?status.svg)](https://godoc.org/github.com/poseidon/matchbox) [![Docker Repository on Quay](https://quay.io/repository/poseidon/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/poseidon/matchbox)
 
 `matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles that PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [Terraform][terraform].
 
@@ -33,11 +33,6 @@
 * Clusters (Terraform-based)
   * [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
   * [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node Kubernetes v1.13.2 cluster
-
-### Projects
-
-* [Tectonic](https://coreos.com/tectonic/docs/latest/index.html) - enterprise-ready Kubernetes
-* [Typhoon](https://typhoon.psdn.io/) - minimal and free Kubernetes
 
 ## Contrib
 
