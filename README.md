@@ -1,4 +1,4 @@
-# matchbox [![Build Status](https://travis-ci.org/coreos/matchbox.svg?branch=master)](https://travis-ci.org/coreos/matchbox) [![GoDoc](https://godoc.org/github.com/coreos/matchbox?status.svg)](https://godoc.org/github.com/coreos/matchbox) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
+# matchbox [![Build Status](https://travis-ci.org/coreos/matchbox.svg?branch=master)](https://travis-ci.org/coreos/matchbox) [![GoDoc](https://godoc.org/github.com/poseidon/matchbox?status.svg)](https://godoc.org/github.com/poseidon/matchbox) [![Docker Repository on Quay](https://quay.io/repository/coreos/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/coreos/matchbox) [![IRC](https://img.shields.io/badge/irc-%23coreos-449FD8.svg)](https://botbot.me/freenode/coreos)
 
 `matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles that PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [Terraform][terraform].
 
@@ -10,7 +10,7 @@
   * [Container Linux Config][cl-config]
   * [Cloud-Config][cloud-config]
 * [Configuration](Documentation/config.md)
-* [HTTP API](Documentation/api.md) / [gRPC API](https://godoc.org/github.com/coreos/matchbox/matchbox/client)
+* [HTTP API](Documentation/api.md) / [gRPC API](https://godoc.org/github.com/poseidon/matchbox/matchbox/client)
 * [Background: Machine Lifecycle](Documentation/machine-lifecycle.md)
 * [Background: PXE Booting](Documentation/network-booting.md)
 
@@ -42,9 +42,9 @@
 ## Contrib
 
 * [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services with docker or rkt
-* [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) - Terraform provider plugin for Matchbox
+* [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox) - Terraform provider plugin for Matchbox
 
 [docs]: https://coreos.com/matchbox/docs/latest
-[terraform]: https://github.com/coreos/terraform-provider-matchbox
+[terraform]: https://github.com/poseidon/terraform-provider-matchbox
 [cl-config]: Documentation/container-linux-config.md
 [cloud-config]: Documentation/cloud-config.md

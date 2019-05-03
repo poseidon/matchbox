@@ -26,8 +26,8 @@ $ git push origin master
 Travis CI will build the Docker image and push it to Quay.io when the tag is pushed to master. Verify the new image and version.
 
 ```sh
-$ sudo docker run quay.io/coreos/matchbox:$VERSION -version
-$ sudo rkt run --no-store quay.io/coreos/matchbox:$VERSION -- -version
+$ sudo docker run quay.io/poseidon/matchbox:$VERSION -version
+$ sudo rkt run --no-store quay.io/poseidon/matchbox:$VERSION -- -version
 ```
 
 ## Github release

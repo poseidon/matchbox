@@ -30,26 +30,24 @@ $ openssl s_client -connect matchbox.example.com:8081 \
 
 ## Terraform
 
-Install [Terraform][terraform-dl] v0.9+ on your system.
+Install [Terraform][terraform-dl] v0.11+ on your system.
 
 ```sh
 $ terraform version
-Terraform v0.9.4
+Terraform v0.11.13
 ```
 
-Add the `terraform-provider-matchbox` plugin binary on your system.
+Add the [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox) plugin binary for your system to `~/.terraform.d/plugins/`, noting the final name.
 
 ```sh
-$ wget https://github.com/coreos/terraform-provider-matchbox/releases/download/v0.1.0/terraform-provider-matchbox-v0.1.0-linux-amd64.tar.gz
-$ tar xzf terraform-provider-matchbox-v0.1.0-linux-amd64.tar.gz
+wget https://github.com/poseidon/terraform-provider-matchbox/releases/download/v0.2.3/terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
+tar xzf terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
+mv terraform-provider-matchbox-v0.2.3-linux-amd64/terraform-provider-matchbox ~/.terraform.d/plugins/terraform-provider-matchbox_v0.2.3
 ```
 
-Add the plugin to your `~/.terraformrc`.
-
-```hcl
-providers {
-  matchbox = "/path/to/terraform-provider-matchbox"
-}
+```sh
+$ wget https://github.com/poseidon/terraform-provider-matchbox/releases/download/v0.2.3/terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
+$ tar xzf terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
 ```
 
 ## First cluster
@@ -57,7 +55,7 @@ providers {
 Clone the matchbox source and take a look at the Terraform examples.
 
 ```sh
-$ git clone https://github.com/coreos/matchbox.git
+$ git clone https://github.com/poseidon/matchbox.git
 $ cd matchbox/examples/terraform
 ```
 
@@ -169,7 +167,7 @@ Read [network-setup.md](network-setup.md) for the complete range of options. Net
 * May configure subnets, architectures, or specific machines to delegate to matchbox
 * May place matchbox behind a menu entry (timeout and default to matchbox)
 
-If you've never setup a PXE-enabled network before or you're trying to setup a home lab, checkout the [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image [copy-paste examples](https://github.com/coreos/matchbox/blob/master/Documentation/network-setup.md#coreosdnsmasq) and see the section about [proxy-DHCP](https://github.com/coreos/matchbox/blob/master/Documentation/network-setup.md#proxy-dhcp).
+If you've never setup a PXE-enabled network before or you're trying to setup a home lab, checkout the [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image [copy-paste examples](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md#coreosdnsmasq) and see the section about [proxy-DHCP](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md#proxy-dhcp).
 
 ## Boot
 

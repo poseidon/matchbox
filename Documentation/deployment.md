@@ -17,11 +17,11 @@ Choose one of the supported installation options:
 
 ## Download
 
-Download the latest matchbox [release](https://github.com/coreos/matchbox/releases) to the provisioner host.
+Download the latest matchbox [release](https://github.com/poseidon/matchbox/releases) to the provisioner host.
 
 ```sh
-$ wget https://github.com/coreos/matchbox/releases/download/v0.7.1/matchbox-v0.7.1-linux-amd64.tar.gz
-$ wget https://github.com/coreos/matchbox/releases/download/v0.7.1/matchbox-v0.7.1-linux-amd64.tar.gz.asc
+$ wget https://github.com/poseidon/matchbox/releases/download/v0.7.1/matchbox-v0.7.1-linux-amd64.tar.gz
+$ wget https://github.com/poseidon/matchbox/releases/download/v0.7.1/matchbox-v0.7.1-linux-amd64.tar.gz.asc
 ```
 
 Verify the release has been signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
@@ -252,23 +252,23 @@ For large production environments, use a cache proxy or mirror suitable for your
 
 ## Network
 
-Review [network setup](https://github.com/coreos/matchbox/blob/master/Documentation/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network. At a high level, your goals are to:
+Review [network setup](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network. At a high level, your goals are to:
 
 * Chainload PXE firmwares to iPXE
 * Point iPXE client machines to the `matchbox` iPXE HTTP endpoint `http://matchbox.example.com:8080/boot.ipxe`
 * Ensure `matchbox.example.com` resolves to your `matchbox` deployment
 
-CoreOS provides [dnsmasq](https://github.com/coreos/matchbox/tree/master/contrib/dnsmasq) as `quay.io/coreos/dnsmasq`, if you wish to use rkt or Docker.
+CoreOS provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/coreos/dnsmasq`, if you wish to use rkt or Docker.
 
 ## rkt
 
 Run the container image with rkt.
 
-latest or most recent tagged `matchbox` [release](https://github.com/coreos/matchbox/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
+latest or most recent tagged `matchbox` [release](https://github.com/poseidon/matchbox/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
 
 ```sh
 $ mkdir -p /var/lib/matchbox/assets
-$ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/coreos/matchbox:latest --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+$ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/poseidon/matchbox:latest --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.
@@ -279,7 +279,7 @@ Run the container image with docker.
 
 ```sh
 $ mkdir -p /var/lib/matchbox/assets
-$ sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+$ sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.

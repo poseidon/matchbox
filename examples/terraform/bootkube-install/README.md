@@ -9,7 +9,7 @@ Follow the getting started [tutorial](../../../Documentation/getting-started.md)
 * Matchbox v0.6+ [installation](../../../Documentation/deployment.md) with gRPC API enabled
 * Matchbox provider credentials `client.crt`, `client.key`, and `ca.crt`
 * PXE [network boot](../../../Documentation/network-setup.md) environment
-* Terraform v0.11.x, [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox), and [terraform-provider-ct](https://github.com/coreos/terraform-provider-ct) installed locally
+* Terraform v0.11.x, [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox), and [terraform-provider-ct](https://github.com/poseidon/terraform-provider-ct) installed locally
 * Machines with known DNS names and MAC addresses
 
 If you prefer to provision QEMU/KVM VMs on your local Linux machine, set up the matchbox [development environment](../../../Documentation/getting-started-docker.md).
@@ -27,28 +27,28 @@ $ terraform version
 Terraform v0.11.7
 ```
 
-Add the [terraform-provider-matchbox](https://github.com/coreos/terraform-provider-matchbox) plugin binary for your system to `~/.terraform.d/plugins/`, noting the final name.
+Add the [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox) plugin binary for your system to `~/.terraform.d/plugins/`, noting the final name.
 
 ```sh
-wget https://github.com/coreos/terraform-provider-matchbox/releases/download/v0.2.2/terraform-provider-matchbox-v0.2.2-linux-amd64.tar.gz
-tar xzf terraform-provider-matchbox-v0.2.2-linux-amd64.tar.gz
-mv terraform-provider-matchbox-v0.2.2-linux-amd64/terraform-provider-matchbox ~/.terraform.d/plugins/terraform-provider-matchbox_v0.2.2
+wget https://github.com/poseidon/terraform-provider-matchbox/releases/download/v0.2.3/terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
+tar xzf terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
+mv terraform-provider-matchbox-v0.2.3-linux-amd64/terraform-provider-matchbox ~/.terraform.d/plugins/terraform-provider-matchbox_v0.2.3
 ```
 
-Add the [terraform-provider-ct](https://github.com/coreos/terraform-provider-ct) plugin binary for your system to `~/.terraform.d/plugins/`, noting the final name.
+Add the [terraform-provider-ct](https://github.com/poseidon/terraform-provider-ct) plugin binary for your system to `~/.terraform.d/plugins/`, noting the final name.
 
 ```sh
-wget https://github.com/coreos/terraform-provider-ct/releases/download/v0.3.0/terraform-provider-ct-v0.3.0-linux-amd64.tar.gz
-tar xzf terraform-provider-ct-v0.3.0-linux-amd64.tar.gz
-mv terraform-provider-ct-v0.3.0-linux-amd64/terraform-provider-ct ~/.terraform.d/plugins/terraform-provider-ct_v0.3.0
+wget https://github.com/poseidon/terraform-provider-ct/releases/download/v0.3.1/terraform-provider-ct-v0.3.1-linux-amd64.tar.gz
+tar xzf terraform-provider-ct-v0.3.1-linux-amd64.tar.gz
+mv terraform-provider-ct-v0.3.1-linux-amd64/terraform-provider-ct ~/.terraform.d/plugins/terraform-provider-ct_v0.3.1
 ```
 
 ## Usage
 
-Clone the [matchbox](https://github.com/coreos/matchbox) project and take a look at the cluster examples.
+Clone the [matchbox](https://github.com/poseidon/matchbox) project and take a look at the cluster examples.
 
 ```sh
-$ git clone https://github.com/coreos/matchbox.git
+$ git clone https://github.com/poseidon/matchbox.git
 $ cd matchbox/examples/terraform/bootkube-install
 ```
 
@@ -71,7 +71,7 @@ provider "ct" {
 
 Copy the `terraform.tfvars.example` file to `terraform.tfvars`. It defines a few variables needed for examples. Set your `ssh_authorized_key` to use in the cluster definition.
 
-Note: With `cached_install="true"`, machines will PXE boot and install Container Linux from matchbox [assets](https://github.com/coreos/matchbox/blob/master/Documentation/api.md#assets). For convenience, `scripts/get-coreos` can download needed images.
+Note: With `cached_install="true"`, machines will PXE boot and install Container Linux from matchbox [assets](https://github.com/poseidon/matchbox/blob/master/Documentation/api.md#assets). For convenience, `scripts/get-coreos` can download needed images.
 
 ## Terraform
 

@@ -18,10 +18,10 @@ $ # check Docker's docs to install Docker 1.8+ on Debian/Ubuntu
 $ sudo apt-get install virt-manager virtinst qemu-kvm
 ```
 
-Clone the [matchbox](https://github.com/coreos/matchbox) source which contains the examples and scripts.
+Clone the [matchbox](https://github.com/poseidon/matchbox) source which contains the examples and scripts.
 
 ```sh
-$ git clone https://github.com/coreos/matchbox.git
+$ git clone https://github.com/poseidon/matchbox.git
 $ cd matchbox
 ```
 
@@ -68,7 +68,7 @@ Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of ho
 If you prefer to start the containers yourself, instead of using `devnet`,
 
 ```sh
-$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd3:/var/lib/matchbox/groups:Z quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd3:/var/lib/matchbox/groups:Z quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 $ sudo docker run --name dnsmasq --cap-add=NET_ADMIN -v $PWD/contrib/dnsmasq/docker0.conf:/etc/dnsmasq.conf:Z quay.io/coreos/dnsmasq -d
 ```
 
