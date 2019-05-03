@@ -7,7 +7,7 @@ import (
 	"context"
 	"github.com/spf13/cobra"
 
-	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
+	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
 )
 
 // groupListCmd lists Groups.

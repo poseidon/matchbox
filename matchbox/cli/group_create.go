@@ -6,8 +6,8 @@ import (
 	"context"
 	"github.com/spf13/cobra"
 
-	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
-	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
+	"github.com/poseidon/matchbox/matchbox/storage/storagepb"
 )
 
 // groupPutCmd creates and updates Groups.

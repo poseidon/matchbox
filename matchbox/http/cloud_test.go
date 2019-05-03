@@ -9,9 +9,9 @@ import (
 	logtest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/coreos/matchbox/matchbox/server"
-	"github.com/coreos/matchbox/matchbox/storage/storagepb"
-	fake "github.com/coreos/matchbox/matchbox/storage/testfakes"
+	"github.com/poseidon/matchbox/matchbox/server"
+	"github.com/poseidon/matchbox/matchbox/storage/storagepb"
+	fake "github.com/poseidon/matchbox/matchbox/storage/testfakes"
 )
 
 func TestCloudHandler(t *testing.T) {

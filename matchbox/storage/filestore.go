@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	"github.com/poseidon/matchbox/matchbox/storage/storagepb"
 	"github.com/sirupsen/logrus"
 )
 

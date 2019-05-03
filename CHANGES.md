@@ -4,6 +4,8 @@ Notable changes between releases.
 
 ## Latest
 
+* Transfer Matchbox from coreos to poseidon GitHub Org
+* Publish container images at [quay.io/poseidon/matchbox](https://quay.io/repository/poseidon/matchbox)
 * Build Matchbox with Go v1.11.5 for images and binaries
 * Update container image base from alpine:3.6 to alpine:3.9
 * Render Container Linux Configs as Ignition v2.2.0

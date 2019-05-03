@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/coreos/matchbox/matchbox/rpc/rpcpb"
+	"github.com/poseidon/matchbox/matchbox/rpc/rpcpb"
 )
 
 var (

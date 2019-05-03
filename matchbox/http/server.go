@@ -5,8 +5,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/coreos/matchbox/matchbox/server"
-	"github.com/coreos/matchbox/matchbox/sign"
+	"github.com/poseidon/matchbox/matchbox/server"
+	"github.com/poseidon/matchbox/matchbox/sign"
 )
 
 // Config configures a Server.

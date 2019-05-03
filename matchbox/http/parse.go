@@ -8,7 +8,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	"github.com/poseidon/matchbox/matchbox/storage/storagepb"
 )
 
 // collectVariables collects group selectors, metadata, and request-scoped

@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/coreos/matchbox/matchbox/client"
-	"github.com/coreos/matchbox/matchbox/tlsutil"
+	"github.com/poseidon/matchbox/matchbox/client"
+	"github.com/poseidon/matchbox/matchbox/tlsutil"
 )
 
 var (

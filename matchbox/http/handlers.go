@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/coreos/matchbox/matchbox/server"
-	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
+	"github.com/poseidon/matchbox/matchbox/server"
+	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
 )
 
 // homeHandler shows the server name for rooted requests. Otherwise, a 404 is

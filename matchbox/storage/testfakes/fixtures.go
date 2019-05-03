@@ -1,7 +1,7 @@
 package testfakes
 
 import (
-	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	"github.com/poseidon/matchbox/matchbox/storage/storagepb"
 )
 
 var (

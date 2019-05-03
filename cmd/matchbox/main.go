@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"os"
 
-	web "github.com/coreos/matchbox/matchbox/http"
-	"github.com/coreos/matchbox/matchbox/rpc"
-	"github.com/coreos/matchbox/matchbox/server"
-	"github.com/coreos/matchbox/matchbox/sign"
-	"github.com/coreos/matchbox/matchbox/storage"
-	"github.com/coreos/matchbox/matchbox/tlsutil"
-	"github.com/coreos/matchbox/matchbox/version"
 	"github.com/coreos/pkg/flagutil"
+	web "github.com/poseidon/matchbox/matchbox/http"
+	"github.com/poseidon/matchbox/matchbox/rpc"
+	"github.com/poseidon/matchbox/matchbox/server"
+	"github.com/poseidon/matchbox/matchbox/sign"
+	"github.com/poseidon/matchbox/matchbox/storage"
+	"github.com/poseidon/matchbox/matchbox/tlsutil"
+	"github.com/poseidon/matchbox/matchbox/version"
 	"github.com/sirupsen/logrus"
 )
 

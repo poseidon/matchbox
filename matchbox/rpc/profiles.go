@@ -3,9 +3,9 @@ package rpc
 import (
 	"golang.org/x/net/context"
 
-	"github.com/coreos/matchbox/matchbox/rpc/rpcpb"
-	"github.com/coreos/matchbox/matchbox/server"
-	pb "github.com/coreos/matchbox/matchbox/server/serverpb"
+	"github.com/poseidon/matchbox/matchbox/rpc/rpcpb"
+	"github.com/poseidon/matchbox/matchbox/server"
+	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
 )
 
 // profileServer takes a matchbox Server and implements a gRPC ProfilesServer.

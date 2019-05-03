@@ -3,11 +3,11 @@ export GO111MODULE=on
 export GOFLAGS=-mod=vendor
 
 VERSION=$(shell git describe --tags --match=v* --always --dirty)
-LD_FLAGS="-w -X github.com/coreos/matchbox/matchbox/version.Version=$(VERSION)"
+LD_FLAGS="-w -X github.com/poseidon/matchbox/matchbox/version.Version=$(VERSION)"
 
-REPO=github.com/coreos/matchbox
-LOCAL_REPO=coreos/matchbox
-IMAGE_REPO=quay.io/coreos/matchbox
+REPO=github.com/poseidon/matchbox
+LOCAL_REPO=poseidon/matchbox
+IMAGE_REPO=quay.io/poseidon/matchbox
 
 .PHONY: all
 all: build test vet lint fmt

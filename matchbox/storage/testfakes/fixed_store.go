@@ -3,7 +3,7 @@ package testfakes
 import (
 	"fmt"
 
-	"github.com/coreos/matchbox/matchbox/storage/storagepb"
+	"github.com/poseidon/matchbox/matchbox/storage/storagepb"
 )
 
 // FixedStore is used for testing purposes.
