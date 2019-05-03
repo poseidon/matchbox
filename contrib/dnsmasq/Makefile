@@ -1,8 +1,8 @@
 DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-VERSION=$(shell git describe --tags --match=v* --always --dirty)
+VERSION=$(shell git rev-parse HEAD)
 
-IMAGE_REPO=coreos/dnsmasq
-QUAY_REPO=quay.io/coreos/dnsmasq
+IMAGE_REPO=poseidon/dnsmasq
+QUAY_REPO=quay.io/poseidon/dnsmasq
 
 .PHONY: all
 all: docker-image

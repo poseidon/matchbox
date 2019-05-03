@@ -1,4 +1,4 @@
-# dnsmasq [![Docker Repository on Quay](https://quay.io/repository/coreos/dnsmasq/status "Docker Repository on Quay")](https://quay.io/repository/coreos/dnsmasq)
+# dnsmasq [![Docker Repository on Quay](https://quay.io/repository/poseidon/dnsmasq/status "Docker Repository on Quay")](https://quay.io/repository/poseidon/dnsmasq)
 
 `dnsmasq` provides a container image for running DHCP, proxy DHCP, DNS, and/or TFTP with [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html). Use it to test different network setups with clusters of network bootable machines.
 
