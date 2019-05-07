@@ -1,6 +1,6 @@
 // Configure the matchbox provider
 provider "matchbox" {
-  version = "0.2.2"
+  version     = "0.2.3"
   endpoint    = "${var.matchbox_rpc_endpoint}"
   client_cert = "${file("~/.matchbox/client.crt")}"
   client_key  = "${file("~/.matchbox/client.key")}"
@@ -8,25 +8,25 @@ provider "matchbox" {
 }
 
 provider "ct" {
-  version = "0.3.0"
+  version = "0.3.1"
 }
 
 provider "local" {
   version = "~> 1.0"
-  alias = "default"
+  alias   = "default"
 }
 
 provider "null" {
   version = "~> 1.0"
-  alias = "default"
+  alias   = "default"
 }
 
 provider "template" {
   version = "~> 1.0"
-  alias = "default"
+  alias   = "default"
 }
 
 provider "tls" {
   version = "~> 1.0"
-  alias = "default"
+  alias   = "default"
 }

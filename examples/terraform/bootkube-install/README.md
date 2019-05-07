@@ -1,6 +1,6 @@
 # Kubernetes
 
-The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.13.2 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
+The Kubernetes example shows how to use Matchbox to network boot and provision a 3 node Kubernetes v1.14.1 cluster. This example uses [Terraform](https://www.terraform.io/intro/index.html) and a module provided by [Typhoon](https://github.com/poseidon/typhoon) to describe cluster resources. [kubernetes-incubator/bootkube](https://github.com/kubernetes-incubator/bootkube) is run once to bootstrap the Kubernetes control plane.
 
 ## Requirements
 
@@ -56,7 +56,7 @@ Configure the Matchbox provider to use your Matchbox API endpoint and client cer
 
 ```
 provider "matchbox" {
-  version = "0.2.2"
+  version = "0.2.3"
   endpoint    = "matchbox.example.com:8081"
   client_cert = "${file("~/.matchbox/client.crt")}"
   client_key  = "${file("~/.matchbox/client.key")}"
@@ -64,7 +64,7 @@ provider "matchbox" {
 }
 
 provider "ct" {
-  version = "0.3.0"
+  version = "0.3.1"
 }
 ...
 ```
@@ -141,9 +141,9 @@ $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 $ export KUBECONFIG=assets/auth/kubeconfig
 $ kubectl get nodes
 NAME                STATUS    AGE       VERSION
-node1.example.com   Ready     11m       v1.13.2
-node2.example.com   Ready     11m       v1.13.2
-node3.example.com   Ready     11m       v1.13.2
+node1.example.com   Ready     11m       v1.14.1
+node2.example.com   Ready     11m       v1.14.1
+node3.example.com   Ready     11m       v1.14.1
 
 $ kubectl get pods --all-namespaces
 NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE

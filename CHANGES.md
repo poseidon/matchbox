@@ -14,7 +14,7 @@ Notable changes between releases.
 
 ### Examples
 
-* Update Kubernetes example clusters to v1.13.2 (Terraform-based)
+* Update Kubernetes example clusters to v1.14.1 (Terraform-based)
 
 ## v0.7.1 (2018-11-01)
 
