@@ -24,12 +24,12 @@ $ wget https://github.com/poseidon/matchbox/releases/download/v0.7.1/matchbox-v0
 $ wget https://github.com/poseidon/matchbox/releases/download/v0.7.1/matchbox-v0.7.1-linux-amd64.tar.gz.asc
 ```
 
-Verify the release has been signed by the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/).
+Verify the release has been signed by Dalton Hubble's [GPG Key 8F515AD1602065C8](https://keyserver.ubuntu.com/pks/lookup?search=0x8F515AD1602065C8&op=vindex).
 
 ```sh
-$ gpg --keyserver pgp.mit.edu --recv-key 18AD5014C99EF7E3BA5F6CE950BDD3E0FC8A365E
+$ gpg --keyserver keyserver.ubuntu.com --recv-key 8F515AD1602065C8
 $ gpg --verify matchbox-v0.7.1-linux-amd64.tar.gz.asc matchbox-v0.7.1-linux-amd64.tar.gz
-# gpg: Good signature from "CoreOS Application Signing Key <security@coreos.com>"
+gpg: Good signature from "Dalton Hubble <dghubble@gmail.com>"
 ```
 
 Untar the release.
@@ -259,19 +259,6 @@ Review [network setup](https://github.com/poseidon/matchbox/blob/master/Document
 * Ensure `matchbox.example.com` resolves to your `matchbox` deployment
 
 CoreOS provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/coreos/dnsmasq`, if you wish to use rkt or Docker.
-
-## rkt
-
-Run the container image with rkt.
-
-latest or most recent tagged `matchbox` [release](https://github.com/poseidon/matchbox/releases) ACI. Trust the [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) for image signature verification.
-
-```sh
-$ mkdir -p /var/lib/matchbox/assets
-$ sudo rkt run --net=host --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=/var/lib/matchbox quay.io/poseidon/matchbox:latest --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=/etc/matchbox,readOnly=true -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
-```
-
-Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.
 
 ## Docker
 

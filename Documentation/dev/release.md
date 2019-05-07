@@ -50,14 +50,14 @@ Verify the reported version.
 
 ## Signing
 
-Sign the release tarballs with a [CoreOS App Signing Key](https://coreos.com/security/app-signing-key/) subkey.
+Release tarballs are signed by Dalton Hubble's [GPG Key 8F515AD1602065C8](https://keyserver.ubuntu.com/pks/lookup?search=0x8F515AD1602065C8&op=vindex)
 
 ```sh
 cd _output
-gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
-gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
-gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-linux-arm.tar.gz
-gpg2 --armor --local-user A6F71EE5BEDDBA18! --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
+gpg2 --armor --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
+gpg2 --armor --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
+gpg2 --armor --detach-sign matchbox-$VERSION-linux-arm.tar.gz
+gpg2 --armor --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
 ```
 
 Verify the signatures.

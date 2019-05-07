@@ -12,6 +12,8 @@ Notable changes between releases.
 * Validate raw Ignition configs with the v2.2 spec (warn-only)
   * Fix warnings that v2.2 configs are too new
 
+Note: Release signing key [has changed](https://github.com/poseidon/matchbox/blob/v0.8.0/Documentation/deployment.md) with the project move.
+
 ### Examples
 
 * Update Kubernetes example clusters to v1.14.1 (Terraform-based)
