@@ -24,10 +24,10 @@ $ wget https://github.com/poseidon/matchbox/releases/download/v0.8.0/matchbox-v0
 $ wget https://github.com/poseidon/matchbox/releases/download/v0.8.0/matchbox-v0.8.0-linux-amd64.tar.gz.asc
 ```
 
-Verify the release has been signed by Dalton Hubble's [GPG Key 8F515AD1602065C8](https://keyserver.ubuntu.com/pks/lookup?search=0x8F515AD1602065C8&op=vindex).
+Verify the release has been signed by Dalton Hubble's GPG [Key](https://keyserver.ubuntu.com/pks/lookup?search=0x8F515AD1602065C8&op=vindex)'s signing subkey.
 
 ```sh
-$ gpg --keyserver keyserver.ubuntu.com --recv-key 8F515AD1602065C8
+$ gpg --keyserver keyserver.ubuntu.com --recv-key 2E3D92BF07D9DDCCB3BAE4A48F515AD1602065C8
 $ gpg --verify matchbox-v0.8.0-linux-amd64.tar.gz.asc matchbox-v0.8.0-linux-amd64.tar.gz
 gpg: Good signature from "Dalton Hubble <dghubble@gmail.com>"
 ```

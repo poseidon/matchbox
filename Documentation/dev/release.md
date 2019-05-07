@@ -50,7 +50,7 @@ Verify the reported version.
 
 ## Signing
 
-Release tarballs are signed by Dalton Hubble's [GPG Key 8F515AD1602065C8](https://keyserver.ubuntu.com/pks/lookup?search=0x8F515AD1602065C8&op=vindex)
+Release tarballs are signed by Dalton Hubble's GPG [Key](Documentation/deployment.md#download)
 
 ```sh
 cd _output
