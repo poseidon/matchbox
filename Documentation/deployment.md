@@ -112,12 +112,6 @@ Environment="MATCHBOX_ADDRESS=0.0.0.0:8080"
 Environment="MATCHBOX_RPC_ADDRESS=0.0.0.0:8081"
 ```
 
-The Tectonic [Installer](https://tectonic.com/enterprise/docs/latest/install/bare-metal/index.html) uses this API. Tectonic users with a Container Linux provisioner can start with an example that enables it.
-
-```sh
-$ sudo cp contrib/systemd/matchbox-for-tectonic.service /etc/systemd/system/matchbox.service
-```
-
 Customize `matchbox` to suit your preferences.
 
 ## Firewall

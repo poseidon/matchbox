@@ -8,10 +8,6 @@ Let's upgrade a Kubernetes v1.6.6 cluster to v1.6.7 as an example.
 
 This guide shows how to attempt a in-place upgrade of a Kubernetes cluster setup via the [examples](../examples). It does not provide exact diffs, migrations between breaking changes, the stability of a fresh re-provision, or any guarantees. Evaluate whether in-place updates are appropriate for your Kubernetes cluster and be prepared to perform a fresh re-provision if something goes wrong, especially between Kubernetes minor releases (e.g. 1.6 to 1.7).
 
-Matchbox Kubernetes examples provide a vanilla Kubernetes cluster with only free (as in freedom and cost) software components. If you require currated updates, migrations, or guarantees for production, consider [Tectonic](https://coreos.com/tectonic/) by CoreOS.
-
-**Note: Tectonic users should NOT manually upgrade. Follow the [Tectonic docs](https://coreos.com/tectonic/docs/latest/admin/upgrade.html)**
-
 ## Inspect
 
 Show the control plane daemonsets and deployments which will need to be updated.
