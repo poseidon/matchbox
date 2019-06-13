@@ -25,20 +25,22 @@ var (
 
 func main() {
 	flags := struct {
-		address      string
-		rpcAddress   string
-		dataPath     string
-		assetsPath   string
-		logLevel     string
-		grpcCAFile   string
-		grpcCertFile string
-		grpcKeyFile  string
-		tlsCertFile  string
-		tlsKeyFile   string
-		tlsEnabled   bool
-		keyRingPath  string
-		version      bool
-		help         bool
+		address           string
+		rpcAddress        string
+		dataPath          string
+		assetsPath        string
+		logLevel          string
+		grpcCAFile        string
+		grpcCertFile      string
+		grpcKeyFile       string
+		tlsCertFile       string
+		tlsKeyFile        string
+		tlsEnabled        bool
+		keyRingPath       string
+		awsS3BucketName   string
+		awsS3BucketRegion string
+		version           bool
+		help              bool
 	}{}
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
 	flag.StringVar(&flags.rpcAddress, "rpc-address", "", "RPC listen address")
@@ -63,6 +65,10 @@ func main() {
 	flag.StringVar(&flags.tlsKeyFile, "web-key-file", "/etc/matchbox/ssl/server.key", "Path to the server TLS key file")
 	flag.BoolVar(&flags.tlsEnabled, "web-ssl", false, "True to enable HTTPS")
 
+	// aws s3 storage backend flags
+	flag.StringVar(&flags.awsS3BucketName, "aws-s3-bucket-name", "", "Name of s3 bucket to use as storage backend")
+	flag.StringVar(&flags.awsS3BucketRegion, "aws-s3-bucket-region", "", "Region of s3 bucket")
+
 	// subcommands
 	flag.BoolVar(&flags.version, "version", false, "print version and exit")
 	flag.BoolVar(&flags.help, "help", false, "print usage and exit")
@@ -86,7 +92,7 @@ func main() {
 	}
 
 	// validate arguments
-	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
+	if finfo, err := os.Stat(flags.dataPath); (err != nil || !finfo.IsDir()) && flags.awsS3BucketName == "" {
 		log.Fatal("A valid -data-path is required")
 	}
 	if flags.assetsPath != "" {
@@ -133,10 +139,24 @@ func main() {
 	}
 
 	// storage
-	store := storage.NewFileStore(&storage.Config{
-		Root:   flags.dataPath,
-		Logger: log,
-	})
+	var store storage.Store
+	if flags.awsS3BucketName != "" || flags.awsS3BucketRegion != "" {
+		if flags.awsS3BucketName == "" || flags.awsS3BucketRegion == "" {
+			log.Fatalf("Provide both -aws-s3-bucket-name and -aws-s3-bucket-name in order to use aws s3 as storage backend")
+		}
+		store = storage.NewS3BucketStore(&storage.S3BucketConfig{
+			BucketName: flags.awsS3BucketName,
+			Region:     flags.awsS3BucketRegion,
+			Logger:     log,
+		})
+
+	} else {
+		// use default dir storage
+		store = storage.NewFileStore(&storage.Config{
+			Root:   flags.dataPath,
+			Logger: log,
+		})
+	}
 
 	// core logic
 	server := server.NewServer(&server.Config{

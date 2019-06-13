@@ -4,6 +4,7 @@ require (
 	github.com/ajeddeloh/go-json v0.0.0-20160803184958-73d058cf8437 // indirect
 	github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd // indirect
 	github.com/alecthomas/units v0.0.0-20150109002421-6b4e7dc5e314 // indirect
+	github.com/aws/aws-sdk-go v1.19.49
 	github.com/coreos/container-linux-config-transpiler v0.9.0
 	github.com/coreos/coreos-cloudinit v1.13.0
 	github.com/coreos/go-semver v0.0.0-20170209201757-5e3acbb5668c // indirect

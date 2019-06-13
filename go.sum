@@ -4,6 +4,8 @@ github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd h1:NlKlOv3aVJ5ODMC0
 github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd/go.mod h1:idhzw68Q7v4j+rQ2AGyq3OlZW2Jij9mdmGA4/Sk6J0E=
 github.com/alecthomas/units v0.0.0-20150109002421-6b4e7dc5e314 h1:NWdGjCRUTTqEqDwJRojRLiwXDW1ZJM2DSiyGfBWx874=
 github.com/alecthomas/units v0.0.0-20150109002421-6b4e7dc5e314/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
+github.com/aws/aws-sdk-go v1.19.49 h1:GUlenK625g5iKrIiRcqRS/CvPMLc8kZRtMxXuXBhFx4=
+github.com/aws/aws-sdk-go v1.19.49/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/coreos/container-linux-config-transpiler v0.9.0 h1:UBGpT8qWqzi48hNLrzMAgAUNJsR0LW8Gk5/dR/caI8U=
 github.com/coreos/container-linux-config-transpiler v0.9.0/go.mod h1:SlcxXZQ2c42knj8pezMiQsM1f+ADxFMjGetuMKR/YSQ=
 github.com/coreos/coreos-cloudinit v1.13.0 h1:NAJMy7cdj722Nm6+THzKx9fH/vCb39Z1JndsKS4TS6c=
@@ -25,6 +27,8 @@ github.com/golang/protobuf v0.0.0-20170331031902-2bba0603135d h1:KmiEmEGA5sqizMp
 github.com/golang/protobuf v0.0.0-20170331031902-2bba0603135d/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
+github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af h1:pmfjZENx5imkbgOkpRUYLnmbU7UEFbjtDA2hxJ1ichM=
+github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1 h1:mweAR1A6xJ3oS2pRaGiHgQ4OO8tzTaLawm8vnODuwDk=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
