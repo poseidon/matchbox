@@ -10,29 +10,33 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
 
-type s3Client struct {
+// S3Client simple s3 client to interact with a bucket.
+type S3Client struct {
 	svc    s3iface.S3API
 	bucket string
 }
 
-type s3ClientIface interface {
+// S3ClientIface implements functions to list, read, write and delete objects
+// from an s3 bucket respecting a certain prefix.
+type S3ClientIface interface {
 	listPrefix(prefix string) ([]s3.Object, error)
 	readObject(prefix, name string) ([]byte, error)
 	writeObject(prefix, name string, data []byte) error
 	deleteObject(prefix, name string) error
 }
 
-func NewS3Client(region, bucket string) (*s3Client, error) {
+// NewS3Client returns a new s3 client for the given region and bucket.
+func NewS3Client(region, bucket string) (*S3Client, error) {
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(region)},
 	)
 	if err != nil {
-		return &s3Client{}, err
+		return &S3Client{}, err
 	}
 	// Create S3 service client
 	svc := s3.New(sess)
 
-	return &s3Client{
+	return &S3Client{
 		svc:    svc,
 		bucket: bucket,
 	}, nil
@@ -40,7 +44,7 @@ func NewS3Client(region, bucket string) (*s3Client, error) {
 
 // listPrefix get a prefix and returns a list of objects that are
 // named under that. Errors if the request fails.
-func (s *s3Client) listPrefix(prefix string) ([]*s3.Object, error) {
+func (s *S3Client) listPrefix(prefix string) ([]*s3.Object, error) {
 
 	resp, err := s.svc.ListObjectsV2(&s3.ListObjectsV2Input{
 		Bucket: aws.String(s.bucket),
@@ -56,7 +60,7 @@ func (s *s3Client) listPrefix(prefix string) ([]*s3.Object, error) {
 
 // readObject reads data from an object with the given name, restricted under
 // a specific prefix.
-func (s *s3Client) readObject(prefix, name string) ([]byte, error) {
+func (s *S3Client) readObject(prefix, name string) ([]byte, error) {
 
 	res, err := s.svc.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(s.bucket),
@@ -73,7 +77,7 @@ func (s *s3Client) readObject(prefix, name string) ([]byte, error) {
 }
 
 // writeObject pushes a data object to s3 under the given prefix and name.
-func (s *s3Client) writeObject(prefix, name string, data []byte) error {
+func (s *S3Client) writeObject(prefix, name string, data []byte) error {
 
 	_, err := s.svc.PutObject(&s3.PutObjectInput{
 		Bucket: aws.String(s.bucket),
@@ -87,7 +91,7 @@ func (s *s3Client) writeObject(prefix, name string, data []byte) error {
 }
 
 // deletObject deletes an object from the s3 bucket.
-func (s *s3Client) deleteObject(prefix, name string) error {
+func (s *S3Client) deleteObject(prefix, name string) error {
 
 	_, err := s.svc.DeleteObject(&s3.DeleteObjectInput{
 		Bucket: aws.String(s.bucket),

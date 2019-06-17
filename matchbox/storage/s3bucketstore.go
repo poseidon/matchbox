@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Config initializes a fileStore.
+// S3BucketConfig initializes a fileStore.
 type S3BucketConfig struct {
 	BucketName string
 	Region     string
@@ -18,7 +18,7 @@ type S3BucketConfig struct {
 // s3Store implements ths Store interface. Queries to the s3 bucket
 // are restricted to the specified directory tree.
 type s3BucketStore struct {
-	client *s3Client
+	client *S3Client
 	logger *logrus.Logger
 }
 

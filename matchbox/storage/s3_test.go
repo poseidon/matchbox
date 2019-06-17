@@ -11,7 +11,7 @@ import (
 func TestReadObject(t *testing.T) {
 
 	// Test no error when object exists
-	s3Client := &s3Client{
+	s3Client := &S3Client{
 		svc:    fake.WorkingS3Client,
 		bucket: "test-bucket",
 	}
@@ -23,13 +23,13 @@ func TestReadObject(t *testing.T) {
 	s3Client.svc = fake.ErrorS3Client
 	_, err = s3Client.readObject("groups/", "blah.json")
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientGetError)
+		assert.Error(t, err, fake.ErrMockClientGet)
 	}
 }
 
 func TestWriteObject(t *testing.T) {
 	// Test no error is returned when s3 client request succeeds
-	s3Client := &s3Client{
+	s3Client := &S3Client{
 		svc:    fake.NoErrorEmptyS3Client,
 		bucket: "test-bucket",
 	}
@@ -43,12 +43,12 @@ func TestWriteObject(t *testing.T) {
 	s3Client.svc = fake.ErrorS3Client
 	err = s3Client.writeObject("groups/", "test.json", data)
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientPutError)
+		assert.Error(t, err, fake.ErrMockClientPut)
 	}
 }
 
 func TestDeleteObject(t *testing.T) {
-	s3Client := &s3Client{
+	s3Client := &S3Client{
 		svc:    fake.NoErrorEmptyS3Client,
 		bucket: "test-bucket",
 	}
@@ -61,19 +61,19 @@ func TestDeleteObject(t *testing.T) {
 	s3Client.svc = fake.ErrorS3Client
 	err = s3Client.deleteObject("groups/", "blah.json")
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientDeleteError)
+		assert.Error(t, err, fake.ErrMockClientDelete)
 	}
 }
 
 func TestListPrefix(t *testing.T) {
 	// Test error piped when client returns error
-	s3Client := &s3Client{
+	s3Client := &S3Client{
 		svc:    fake.ErrorS3Client,
 		bucket: "test-bucket",
 	}
 	_, err := s3Client.listPrefix("groups/")
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientListError)
+		assert.Error(t, err, fake.ErrMockClientList)
 	}
 
 	// Test empty list

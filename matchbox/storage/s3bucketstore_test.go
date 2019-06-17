@@ -11,7 +11,7 @@ import (
 
 func TestS3GroupGet(t *testing.T) {
 
-	testClient := &s3Client{
+	testClient := &S3Client{
 		svc:    fake.ErrorS3Client,
 		bucket: "test-bucket",
 	}
@@ -23,7 +23,7 @@ func TestS3GroupGet(t *testing.T) {
 	// Test error response
 	_, err := store.GroupGet("blah")
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientGetError)
+		assert.Error(t, err, fake.ErrMockClientGet)
 	}
 
 	// Test Groups can be retrieved from bucket
@@ -39,7 +39,7 @@ func TestS3GroupGet(t *testing.T) {
 
 func TestS3GroupList(t *testing.T) {
 
-	testClient := &s3Client{
+	testClient := &S3Client{
 		svc:    fake.ErrorS3Client,
 		bucket: "test-bucket",
 	}
@@ -49,7 +49,7 @@ func TestS3GroupList(t *testing.T) {
 	}
 	_, err := store.GroupList()
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientListError)
+		assert.Error(t, err, fake.ErrMockClientList)
 	}
 
 	testClient.svc = fake.WorkingS3Client
@@ -64,7 +64,7 @@ func TestS3GroupList(t *testing.T) {
 
 func TestS3ProfileGet(t *testing.T) {
 
-	testClient := &s3Client{
+	testClient := &S3Client{
 		svc:    fake.ErrorS3Client,
 		bucket: "test-bucket",
 	}
@@ -74,7 +74,7 @@ func TestS3ProfileGet(t *testing.T) {
 	}
 	_, err := store.ProfileGet("blah")
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientGetError)
+		assert.Error(t, err, fake.ErrMockClientGet)
 	}
 
 	testClient.svc = fake.WorkingS3Client
@@ -84,7 +84,7 @@ func TestS3ProfileGet(t *testing.T) {
 }
 
 func TestS3ProfileList(t *testing.T) {
-	testClient := &s3Client{
+	testClient := &S3Client{
 		svc:    fake.ErrorS3Client,
 		bucket: "test-bucket",
 	}
@@ -94,7 +94,7 @@ func TestS3ProfileList(t *testing.T) {
 	}
 	_, err := store.ProfileList()
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientListError)
+		assert.Error(t, err, fake.ErrMockClientList)
 	}
 
 	testClient.svc = fake.WorkingS3Client
@@ -106,7 +106,7 @@ func TestS3ProfileList(t *testing.T) {
 }
 
 func TestS3IgnitionGet(t *testing.T) {
-	testClient := &s3Client{
+	testClient := &S3Client{
 		svc:    fake.ErrorS3Client,
 		bucket: "test-bucket",
 	}
@@ -116,7 +116,7 @@ func TestS3IgnitionGet(t *testing.T) {
 	}
 	_, err := store.IgnitionGet("myignition.json")
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientGetError)
+		assert.Error(t, err, fake.ErrMockClientGet)
 	}
 
 	testClient.svc = fake.WorkingS3Client
@@ -126,7 +126,7 @@ func TestS3IgnitionGet(t *testing.T) {
 }
 
 func TestS3GenericGet(t *testing.T) {
-	testClient := &s3Client{
+	testClient := &S3Client{
 		svc:    fake.ErrorS3Client,
 		bucket: "test-bucket",
 	}
@@ -136,7 +136,7 @@ func TestS3GenericGet(t *testing.T) {
 	}
 	_, err := store.GenericGet("generic.json")
 	if assert.Error(t, err) {
-		assert.Error(t, err, fake.MockClientGetError)
+		assert.Error(t, err, fake.ErrMockClientGet)
 	}
 
 	testClient.svc = fake.WorkingS3Client

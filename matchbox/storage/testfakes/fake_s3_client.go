@@ -16,16 +16,21 @@ import (
 var (
 	s3MockBucket = "s3MockBucket"
 
-	MockClientGetError        = errors.New("MockClientGetError")
-	MockClientPutError        = errors.New("MockClientPutError")
-	MockClientDeleteError     = errors.New("MockClientDeleteError")
-	MockClientWaitDeleteError = errors.New("MockClientWaitDeleteError")
-	MockClientListError       = errors.New("MockClientListError")
+	// ErrMockClientGet to fake s3 client get errors
+	ErrMockClientGet = errors.New("ErrClientGet")
+	// ErrMockClientPut to fake s3 client put errors
+	ErrMockClientPut = errors.New("ErrClientPut")
+	// ErrMockClientDelete to fake s3 client delete errors
+	ErrMockClientDelete = errors.New("ErrClientDelete")
+	// ErrMockClientWaitDelete to fake s3 client wait on deletion errors
+	ErrMockClientWaitDelete = errors.New("ErrClientWaitDelete")
+	// ErrMockClientList to fake s3 client list errors
+	ErrMockClientList = errors.New("ErrClientList")
 
-	EmptyGetObjectOutput    = &s3.GetObjectOutput{Body: ioutil.NopCloser(bytes.NewReader([]byte{}))}
-	EmptyPutObjectOutput    = &s3.PutObjectOutput{}
-	EmptyDeleteObjectOutput = &s3.DeleteObjectOutput{}
-	EmptyListObjectsOutput  = &s3.ListObjectsV2Output{}
+	emptyGetObjectOutput    = &s3.GetObjectOutput{Body: ioutil.NopCloser(bytes.NewReader([]byte{}))}
+	emptyPutObjectOutput    = &s3.PutObjectOutput{}
+	emptyDeleteObjectOutput = &s3.DeleteObjectOutput{}
+	emptyListObjectsOutput  = &s3.ListObjectsV2Output{}
 )
 
 type mockS3Client struct {
@@ -57,39 +62,42 @@ func (m mockS3Client) ListObjectsV2(input *s3.ListObjectsV2Input) (*s3.ListObjec
 	return m.listObjectsV2Mock(input)
 }
 
+// ErrorS3Client s3 clients that always return an error
 var ErrorS3Client = mockS3Client{
 	getObjectMock: func(input *s3.GetObjectInput) (*s3.GetObjectOutput, error) {
-		return EmptyGetObjectOutput, MockClientGetError
+		return emptyGetObjectOutput, ErrMockClientGet
 	},
 	putObjectMock: func(input *s3.PutObjectInput) (*s3.PutObjectOutput, error) {
-		return EmptyPutObjectOutput, MockClientPutError
+		return emptyPutObjectOutput, ErrMockClientPut
 	},
 	deleteObjectMock: func(input *s3.DeleteObjectInput) (*s3.DeleteObjectOutput, error) {
-		return EmptyDeleteObjectOutput, MockClientDeleteError
+		return emptyDeleteObjectOutput, ErrMockClientDelete
 	},
 	waitUntilObjectNotExistsMock: func(*s3.HeadObjectInput) error {
-		return MockClientWaitDeleteError
+		return ErrMockClientWaitDelete
 	},
 	listObjectsV2Mock: func(*s3.ListObjectsV2Input) (*s3.ListObjectsV2Output, error) {
-		return EmptyListObjectsOutput, MockClientListError
+		return emptyListObjectsOutput, ErrMockClientList
 	},
 }
 
+// NoErrorEmptyS3Client mocks successful responses with empty content
 var NoErrorEmptyS3Client = mockS3Client{
 	putObjectMock: func(input *s3.PutObjectInput) (*s3.PutObjectOutput, error) {
-		return EmptyPutObjectOutput, nil
+		return emptyPutObjectOutput, nil
 	},
 	deleteObjectMock: func(input *s3.DeleteObjectInput) (*s3.DeleteObjectOutput, error) {
-		return EmptyDeleteObjectOutput, nil
+		return emptyDeleteObjectOutput, nil
 	},
 	waitUntilObjectNotExistsMock: func(*s3.HeadObjectInput) error {
 		return nil
 	},
 	listObjectsV2Mock: func(*s3.ListObjectsV2Input) (*s3.ListObjectsV2Output, error) {
-		return EmptyListObjectsOutput, nil
+		return emptyListObjectsOutput, nil
 	},
 }
 
+// WorkingS3Client mocks a working S3client
 var WorkingS3Client = mockS3Client{
 	getObjectMock: func(input *s3.GetObjectInput) (*s3.GetObjectOutput, error) {
 		if strings.HasPrefix(*input.Key, "groups") {
@@ -104,16 +112,16 @@ var WorkingS3Client = mockS3Client{
 		if strings.HasPrefix(*input.Key, "generic") {
 			return &s3.GetObjectOutput{Body: ioutil.NopCloser(bytes.NewBufferString(Generic))}, nil
 		}
-		return EmptyGetObjectOutput, MockClientGetError
+		return emptyGetObjectOutput, ErrMockClientGet
 	},
 	putObjectMock: func(input *s3.PutObjectInput) (*s3.PutObjectOutput, error) {
-		return EmptyPutObjectOutput, MockClientPutError
+		return emptyPutObjectOutput, ErrMockClientPut
 	},
 	deleteObjectMock: func(input *s3.DeleteObjectInput) (*s3.DeleteObjectOutput, error) {
-		return EmptyDeleteObjectOutput, MockClientDeleteError
+		return emptyDeleteObjectOutput, ErrMockClientDelete
 	},
 	waitUntilObjectNotExistsMock: func(*s3.HeadObjectInput) error {
-		return MockClientWaitDeleteError
+		return ErrMockClientWaitDelete
 	},
 	listObjectsV2Mock: func(input *s3.ListObjectsV2Input) (*s3.ListObjectsV2Output, error) {
 		if *input.Prefix == "groups/" {
@@ -129,13 +137,13 @@ var WorkingS3Client = mockS3Client{
 			}
 			return &s3.ListObjectsV2Output{Contents: list}, nil
 		}
-		return EmptyListObjectsOutput, MockClientListError
+		return emptyListObjectsOutput, ErrMockClientList
 	},
 }
 
-func returnGroup(gId string) (*s3.GetObjectOutput, error) {
+func returnGroup(gID string) (*s3.GetObjectOutput, error) {
 
-	if gId == *aws.String("groups/" + Group.Id + ".json") {
+	if gID == *aws.String("groups/" + Group.Id + ".json") {
 		//json marshal will give base64 encoding for matadata
 		raw := []byte(`
 {
@@ -153,23 +161,23 @@ func returnGroup(gId string) (*s3.GetObjectOutput, error) {
 `)
 		return &s3.GetObjectOutput{Body: ioutil.NopCloser(bytes.NewReader(raw))}, nil
 	}
-	if gId == *aws.String("groups/" + GroupNoMetadata.Id + ".json") {
+	if gID == *aws.String("groups/" + GroupNoMetadata.Id + ".json") {
 		data, err := json.MarshalIndent(GroupNoMetadata, "", "\t")
 		if err != nil {
-			return EmptyGetObjectOutput, err
+			return emptyGetObjectOutput, err
 		}
 		return &s3.GetObjectOutput{Body: ioutil.NopCloser(bytes.NewReader(data))}, nil
 	}
-	return EmptyGetObjectOutput, MockClientGetError
+	return emptyGetObjectOutput, ErrMockClientGet
 }
 
-func returnProfile(pId string) (*s3.GetObjectOutput, error) {
-	if pId == *aws.String("profiles/" + Profile.Id + ".json") {
+func returnProfile(pID string) (*s3.GetObjectOutput, error) {
+	if pID == *aws.String("profiles/" + Profile.Id + ".json") {
 		data, err := json.MarshalIndent(Profile, "", "\t")
 		if err != nil {
-			return EmptyGetObjectOutput, err
+			return emptyGetObjectOutput, err
 		}
 		return &s3.GetObjectOutput{Body: ioutil.NopCloser(bytes.NewReader(data))}, nil
 	}
-	return EmptyGetObjectOutput, MockClientGetError
+	return emptyGetObjectOutput, ErrMockClientGet
 }
