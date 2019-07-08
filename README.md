@@ -29,10 +29,8 @@
   * [matchbox with Docker](Documentation/getting-started-docker.md)
 * Clusters
   * [etcd3](Documentation/getting-started-docker.md) - Install a 3-node etcd3 cluster
-  * [Kubernetes](Documentation/bootkube.md) - Install a 3-node Kubernetes v1.8.5 cluster
 * Clusters (Terraform-based)
   * [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
-  * [Kubernetes](examples/terraform/bootkube-install/README.md) - Install a 3-node Kubernetes v1.14.1 cluster
 
 ## Contrib
 
