@@ -176,7 +176,7 @@ See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download
 
 ## Network
 
-`matchbox` does not implement or exec a DHCP/TFTP server. Read [network setup](network-setup.md) or use the [coreos/dnsmasq](../contrib/dnsmasq) image if you need a quick DHCP, proxyDHCP, TFTP, or DNS setup.
+`matchbox` does not implement or exec a DHCP/TFTP server. Read [network setup](network-setup.md) or use the [poseidon/dnsmasq](../contrib/dnsmasq) image if you need a quick DHCP, proxyDHCP, TFTP, or DNS setup.
 
 ## Going further
 

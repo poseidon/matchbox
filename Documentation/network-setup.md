@@ -2,7 +2,7 @@
 
 This guide shows how to create a DHCP/TFTP/DNS network boot environment to boot and provision BIOS/PXE, iPXE, or UEFI client machines.
 
-Matchbox serves iPXE scripts over HTTP to serve as the entrypoint for provisioning clusters. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, configure your network environment to point to Matchbox or use the convenient [coreos/dnsmasq](../contrib/dnsmasq) container image (used in local QEMU/KVM setup).
+Matchbox serves iPXE scripts over HTTP to serve as the entrypoint for provisioning clusters. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, configure your network environment to point to Matchbox or use the convenient [poseidon/dnsmasq](../contrib/dnsmasq) container image (used in local QEMU/KVM setup).
 
 *Note*: These are just suggestions. Your network administrator or system administrator should choose the right network setup for your company.
 
@@ -28,7 +28,7 @@ This diagram can point you to the **right section(s)** of this document.
 
 ![Network Setup](img/network-setup-flow.png)
 
-The setup of DHCP, TFTP, and DNS services on a network varies greatly. If you wish to use rkt or Docker to quickly run DHCP, proxyDHCP TFTP, or DNS services, use [coreos/dnsmasq](#coreosdnsmasq).
+The setup of DHCP, TFTP, and DNS services on a network varies greatly. If you wish to use rkt or Docker to quickly run DHCP, proxyDHCP TFTP, or DNS services, use [poseidon/dnsmasq](#poseidondnsmasq).
 
 ## DNS
 
@@ -156,14 +156,14 @@ APPEND dhcp && chain http://matchbox.example.com:8080/boot.ipxe
 
 Add ipxe.lkrn to `/var/lib/tftpboot` (see [iPXE docs](http://ipxe.org/embed)).
 
-## coreos/dnsmasq
+## poseidon/dnsmasq
 
-The [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `ipxe.efi`, `undionly.kpxe`, and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
+The [quay.io/poseidon/dnsmasq](https://quay.io/repository/poseidon/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `ipxe.efi`, `undionly.kpxe`, and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
 
 Run DHCP, TFTP, and DNS on the host's network:
 
 ```sh
-sudo rkt run --net=host quay.io/coreos/dnsmasq \
+sudo rkt run --net=host quay.io/poseidon/dnsmasq \
   --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
   -- -d -q \
   --dhcp-range=192.168.1.3,192.168.1.254 \
@@ -184,7 +184,7 @@ sudo rkt run --net=host quay.io/coreos/dnsmasq \
   --log-dhcp
 ```
 ```sh
-sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
+sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
   -d -q \
   --dhcp-range=192.168.1.3,192.168.1.254 \
   --enable-tftp --tftp-root=/var/lib/tftpboot \
@@ -206,7 +206,7 @@ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
 Run a proxy-DHCP and TFTP service on the host's network:
 
 ```sh
-sudo rkt run --net=host quay.io/coreos/dnsmasq \
+sudo rkt run --net=host quay.io/poseidon/dnsmasq \
   --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
   -- -d -q \
   --dhcp-range=192.168.1.1,proxy,255.255.255.0 \
@@ -218,7 +218,7 @@ sudo rkt run --net=host quay.io/coreos/dnsmasq \
   --log-dhcp
 ```
 ```sh
-sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
+sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
   -d -q \
   --dhcp-range=192.168.1.1,proxy,255.255.255.0 \
   --enable-tftp --tftp-root=/var/lib/tftpboot \

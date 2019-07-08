@@ -7,7 +7,7 @@ The Kubernetes example provisions a 3 node Kubernetes v1.8.5 cluster. [bootkube]
 Ensure that you've gone through the [matchbox with docker](getting-started-docker.md) guide and understand the basics. In particular, you should be able to:
 
 * Use Docker to start `matchbox`
-* Create a network boot environment with `coreos/dnsmasq`
+* Create a network boot environment with `poseidon/dnsmasq`
 * Create the example libvirt client VMs
 * `/etc/hosts` entries for `node[1-3].example.com`
 

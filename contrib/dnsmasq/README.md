@@ -9,7 +9,7 @@ The image bundles `undionly.kpxe`, `ipxe.efi`, and `grub.efi` (experimental) for
 Run the container image as a DHCP, DNS, and TFTP service.
 
 ```sh
-sudo rkt run --net=host quay.io/coreos/dnsmasq \
+sudo rkt run --net=host quay.io/poseidon/dnsmasq \
   --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
   -- -d -q \
   --dhcp-range=192.168.1.3,192.168.1.254 \
@@ -31,7 +31,7 @@ sudo rkt run --net=host quay.io/coreos/dnsmasq \
 ```
 
 ```sh
-sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/coreos/dnsmasq \
+sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
   -d -q \
   --dhcp-range=192.168.1.3,192.168.1.254 \
   --enable-tftp --tftp-root=/var/lib/tftpboot \
@@ -74,6 +74,6 @@ make docker-image
 Run the image with Docker on the `docker0` bridge (default).
 
 ```
-sudo docker run --rm --cap-add=NET_ADMIN coreos/dnsmasq -d -q
+sudo docker run --rm --cap-add=NET_ADMIN poseidon/dnsmasq -d -q
 ```
 

@@ -167,7 +167,7 @@ Read [network-setup.md](network-setup.md) for the complete range of options. Net
 * May configure subnets, architectures, or specific machines to delegate to matchbox
 * May place matchbox behind a menu entry (timeout and default to matchbox)
 
-If you've never setup a PXE-enabled network before or you're trying to setup a home lab, checkout the [quay.io/coreos/dnsmasq](https://quay.io/repository/coreos/dnsmasq) container image [copy-paste examples](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md#coreosdnsmasq) and see the section about [proxy-DHCP](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md#proxy-dhcp).
+If you've never setup a PXE-enabled network before or you're trying to setup a home lab, checkout the [quay.io/poseidon/dnsmasq](https://quay.io/repository/poseidon/dnsmasq) container image [copy-paste examples](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md#poseidondnsmasq) and see the section about [proxy-DHCP](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md#proxy-dhcp).
 
 ## Boot
 

@@ -22,10 +22,10 @@ On Fedora, add the `metal0` interface to the trusted zone in your firewall confi
 $ sudo firewall-cmd --add-interface=metal0 --zone=trusted
 ```
 
-Run the `quay.io/coreos/dnsmasq` container image with rkt or docker.
+Run the `quay.io/poseidon/dnsmasq` container image with rkt or docker.
 
 ```sh
-sudo rkt run --net=metal0:IP=172.18.0.3 quay.io/coreos/dnsmasq \
+sudo rkt run --net=metal0:IP=172.18.0.3 quay.io/poseidon/dnsmasq \
   --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
   -- -d -q \
   --dhcp-range=172.18.0.50,172.18.0.99 \
@@ -53,10 +53,10 @@ $ sudo ./scripts/libvirt create-uefi
 
 ## Docker
 
-If you use Docker, run `matchbox` according to [matchbox with Docker](getting-started-docker.md), but mount the [grub](../examples/groups/grub) group example. Then start the `coreos/dnsmasq` Docker image, which bundles a `grub.efi`.
+If you use Docker, run `matchbox` according to [matchbox with Docker](getting-started-docker.md), but mount the [grub](../examples/groups/grub) group example. Then start the `poseidon/dnsmasq` Docker image, which bundles a `grub.efi`.
 
 ```sh
-$ sudo docker run --rm --cap-add=NET_ADMIN quay.io/coreos/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-match=set:efi-bc,option:client-arch,7 --dhcp-boot=tag:efi-bc,grub.efi --dhcp-userclass=set:grub,GRUB2 --dhcp-boot=tag:grub,"(http;matchbox.foo:8080)/grub","172.17.0.2" --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:pxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/172.17.0.2
+$ sudo docker run --rm --cap-add=NET_ADMIN quay.io/poseidon/dnsmasq -d -q --dhcp-range=172.17.0.43,172.17.0.99 --enable-tftp --tftp-root=/var/lib/tftpboot --dhcp-match=set:efi-bc,option:client-arch,7 --dhcp-boot=tag:efi-bc,grub.efi --dhcp-userclass=set:grub,GRUB2 --dhcp-boot=tag:grub,"(http;matchbox.foo:8080)/grub","172.17.0.2" --log-queries --log-dhcp --dhcp-option=3,172.17.0.1 --dhcp-userclass=set:ipxe,iPXE --dhcp-boot=tag:pxe,undionly.kpxe --dhcp-boot=tag:ipxe,http://matchbox.foo:8080/boot.ipxe --address=/matchbox.foo/172.17.0.2
 ```
 
 Create a VM to verify the machine network boots.

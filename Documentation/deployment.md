@@ -252,7 +252,7 @@ Review [network setup](https://github.com/poseidon/matchbox/blob/master/Document
 * Point iPXE client machines to the `matchbox` iPXE HTTP endpoint `http://matchbox.example.com:8080/boot.ipxe`
 * Ensure `matchbox.example.com` resolves to your `matchbox` deployment
 
-CoreOS provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/coreos/dnsmasq`, if you wish to use rkt or Docker.
+Poseidon provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/poseidon/dnsmasq`, if you wish to use rkt or Docker.
 
 ## Docker
 

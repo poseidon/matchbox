@@ -2,7 +2,7 @@
 
 ## About boot environment
 
-Physical machines [network boot](network-booting.md) in an network boot environment with DHCP/TFTP/DNS services or with [coreos/dnsmasq](../contrib/dnsmasq).
+Physical machines [network boot](network-booting.md) in an network boot environment with DHCP/TFTP/DNS services or with [poseidon/dnsmasq](../contrib/dnsmasq).
 
 `matchbox` serves iPXE or GRUB configs via HTTP to machines based on Group selectors (e.g. UUID, MAC, region, etc.) and machine Profiles. Kernel and initrd images are fetched and booted with Ignition to install CoreOS Container Linux. The "first boot" Ignition config if fetched and Container Linux is installed.
 
