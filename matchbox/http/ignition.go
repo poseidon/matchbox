@@ -2,11 +2,12 @@ package http
 
 import (
 	"bytes"
+	"github.com/coreos/fcct/config/common"
 	"net/http"
 	"strings"
 
-	ct "github.com/coreos/container-linux-config-transpiler/config"
-	ignition "github.com/coreos/ignition/config/v2_2"
+	ct "github.com/coreos/fcct/config"
+	ignition "github.com/coreos/ignition/v2/config/v3_0"
 	"github.com/sirupsen/logrus"
 
 	"github.com/poseidon/matchbox/matchbox/server"
@@ -88,18 +89,12 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 			return
 		}
 
-		// Parse bytes into a Container Linux Config
-		config, ast, report := ct.Parse(buf.Bytes())
-		if report.IsFatal() {
-			s.logger.Errorf("error parsing Container Linux config: %s", report.String())
-			http.NotFound(w, req)
-			return
-		}
+		options := common.TranslateOptions{Strict: false, Pretty: false}
 
 		// Convert Container Linux Config into an Ignition Config
-		ign, report := ct.Convert(config, "", ast)
-		if report.IsFatal() {
-			s.logger.Errorf("error converting Container Linux config: %s", report.String())
+		ign, error := ct.Translate(buf.Bytes(), options)
+		if error != nil {
+			s.logger.Errorf("error converting Container Linux config: %s", error)
 			http.NotFound(w, req)
 			return
 		}
