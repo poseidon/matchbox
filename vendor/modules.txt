@@ -1,5 +1,17 @@
 # github.com/ajeddeloh/go-json v0.0.0-20170920214419-6a2fe990e083
 github.com/ajeddeloh/go-json
+# github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd
+github.com/ajeddeloh/yaml
+# github.com/alecthomas/units v0.0.0-20150109002421-6b4e7dc5e314
+github.com/alecthomas/units
+# github.com/coreos/container-linux-config-transpiler v0.9.0
+github.com/coreos/container-linux-config-transpiler/config
+github.com/coreos/container-linux-config-transpiler/config/astyaml
+github.com/coreos/container-linux-config-transpiler/config/platform
+github.com/coreos/container-linux-config-transpiler/config/types
+github.com/coreos/container-linux-config-transpiler/config/templating
+github.com/coreos/container-linux-config-transpiler/config/types/util
+github.com/coreos/container-linux-config-transpiler/internal/util
 # github.com/coreos/coreos-cloudinit v1.13.0
 github.com/coreos/coreos-cloudinit/config
 # github.com/coreos/fcct v0.2.0
@@ -12,22 +24,39 @@ github.com/coreos/fcct/distro/fcos/v0_1
 github.com/coreos/go-semver/semver
 # github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e
 github.com/coreos/go-systemd/unit
+# github.com/coreos/ignition v0.31.0
+github.com/coreos/ignition/config/v2_2
+github.com/coreos/ignition/config/v2_2/types
+github.com/coreos/ignition/config/validate
+github.com/coreos/ignition/config/validate/astnode
+github.com/coreos/ignition/config/validate/report
+github.com/coreos/ignition/config/shared/errors
+github.com/coreos/ignition/config/util
+github.com/coreos/ignition/config/v2_1
+github.com/coreos/ignition/config/v2_1/types
+github.com/coreos/ignition/config/shared/validations
+github.com/coreos/ignition/config/validate/astjson
+github.com/coreos/ignition/config/v2_4_experimental/types
+github.com/coreos/ignition/config/v2_0
+github.com/coreos/ignition/config/v2_0/types
+github.com/coreos/ignition/config/v1
+github.com/coreos/ignition/config/v1/types
 # github.com/coreos/ignition/v2 v2.0.1
 github.com/coreos/ignition/v2/config/v3_0
-github.com/coreos/ignition/v2/config/v3_0/types
-github.com/coreos/ignition/v2/config/validate
-github.com/coreos/ignition/v2/config/translate
 github.com/coreos/ignition/v2/config/merge
 github.com/coreos/ignition/v2/config/shared/errors
 github.com/coreos/ignition/v2/config/util
+github.com/coreos/ignition/v2/config/v3_0/types
+github.com/coreos/ignition/v2/config/validate
 github.com/coreos/ignition/v2/config/shared/validations
+github.com/coreos/ignition/v2/config/translate
 # github.com/coreos/pkg v0.0.0-20160221035341-66fe44ad037c
 github.com/coreos/pkg/flagutil
 # github.com/coreos/vcontext v0.0.0-20190605182717-e9c4ffaa1f6a
 github.com/coreos/vcontext/tree
 github.com/coreos/vcontext/yaml
-github.com/coreos/vcontext/path
 github.com/coreos/vcontext/report
+github.com/coreos/vcontext/path
 github.com/coreos/vcontext/validate
 github.com/coreos/vcontext/json
 # github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269
@@ -53,7 +82,9 @@ github.com/spf13/pflag
 github.com/stretchr/testify/assert
 # github.com/vincent-petithory/dataurl v0.0.0-20160330182126-9a301d65acbb
 github.com/vincent-petithory/dataurl
-# golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+# go4.org v0.0.0-20160314031811-03efcb870d84
+go4.org/errorutil
+# golang.org/x/crypto v0.0.0-20180904163835-0709b304e793
 golang.org/x/crypto/openpgp
 golang.org/x/crypto/ssh/terminal
 golang.org/x/crypto/openpgp/armor
@@ -62,7 +93,7 @@ golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
 golang.org/x/crypto/cast5
 golang.org/x/crypto/openpgp/elgamal
-# golang.org/x/net v0.0.0-20190311183353-d8887717615a
+# golang.org/x/net v0.0.0-20190228165749-92fc7df08ae7
 golang.org/x/net/context
 golang.org/x/net/http2
 golang.org/x/net/trace
@@ -70,7 +101,7 @@ golang.org/x/net/http/httpguts
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
-# golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a
+# golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/text v0.3.0

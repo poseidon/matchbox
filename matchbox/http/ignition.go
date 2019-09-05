@@ -2,12 +2,16 @@ package http
 
 import (
 	"bytes"
+	"encoding/json"
 	"github.com/coreos/fcct/config/common"
 	"net/http"
 	"strings"
 
-	ct "github.com/coreos/fcct/config"
-	ignition "github.com/coreos/ignition/v2/config/v3_0"
+	ct "github.com/coreos/container-linux-config-transpiler/config"
+	fcct "github.com/coreos/fcct/config"
+
+	ignition "github.com/coreos/ignition/config/v2_2"
+	ignitionV2 "github.com/coreos/ignition/v2/config/v3_0"
 	"github.com/sirupsen/logrus"
 
 	"github.com/poseidon/matchbox/matchbox/server"
@@ -64,8 +68,14 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 		// Skip rendering if raw Ignition JSON is provided
 		if isIgnition(profile.IgnitionId) {
 			_, report, err := ignition.Parse([]byte(contents))
-			if err != nil {
-				s.logger.Warningf("warning parsing Ignition JSON: %s", report.String())
+			_, reportV2, errV2 := ignitionV2.Parse([]byte(contents))
+			if err != nil || errV2 != nil {
+				if err != nil {
+					s.logger.Warningf("warning parsing Ignition JSON: %s", report.String())
+				}
+				if errV2 != nil {
+					s.logger.Warningf("warning parsing Ignition JSON: %s", reportV2.String())
+				}
 			}
 			s.writeJSON(w, []byte(contents))
 			return
@@ -89,20 +99,46 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 			return
 		}
 
-		options := common.TranslateOptions{Strict: false, Pretty: false}
+		ignJson := transpileConfig(s, buf.Bytes())
 
-		// Convert Container Linux Config into an Ignition Config
-		ign, error := ct.Translate(buf.Bytes(), options)
-		if error != nil {
-			s.logger.Errorf("error converting Container Linux config: %s", error)
+		if ignJson == nil {
 			http.NotFound(w, req)
 			return
 		}
 
-		s.renderJSON(w, ign)
+		s.writeJSON(w, ignJson)
 		return
 	}
 	return http.HandlerFunc(fn)
+}
+func transpileConfig(s *Server, input []byte) []byte {
+	fcctOptions := common.TranslateOptions{Strict: false, Pretty: false}
+
+	// Convert fcc config into an Ignition Config
+	ignV2json, errorFcct := fcct.Translate(input, fcctOptions)
+	if errorFcct != nil {
+		s.logger.Errorf("Parsing Container Linux with v3 schema failed, with try with v2.2: %s", errorFcct)
+		// Parse bytes into a Container Linux Config
+		config, ast, report := ct.Parse(input)
+		if report.IsFatal() {
+			s.logger.Errorf("error parsing Container Linux config: %s", report.String())
+			return nil
+		}
+
+		// Convert Container Linux Config into an Ignition Config
+		ign, report := ct.Convert(config, "", ast)
+		if report.IsFatal() {
+			s.logger.Errorf("error converting Container Linux config: %s", report.String())
+			return nil
+		}
+		ignJson, error := json.Marshal(ign)
+		if error != nil {
+			s.logger.Errorf("error JSON encoding: %v", error)
+			return nil
+		}
+		return ignJson
+	}
+	return ignV2json
 }
 
 // isIgnition returns true if the file should be treated as plain Ignition.
