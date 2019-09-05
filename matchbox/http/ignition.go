@@ -99,14 +99,14 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 			return
 		}
 
-		ignJson := transpileConfig(s, buf.Bytes())
+		ignJSON := transpileConfig(s, buf.Bytes())
 
-		if ignJson == nil {
+		if ignJSON == nil {
 			http.NotFound(w, req)
 			return
 		}
 
-		s.writeJSON(w, ignJson)
+		s.writeJSON(w, ignJSON)
 		return
 	}
 	return http.HandlerFunc(fn)
@@ -131,12 +131,12 @@ func transpileConfig(s *Server, input []byte) []byte {
 			s.logger.Errorf("error converting Container Linux config: %s", report.String())
 			return nil
 		}
-		ignJson, error := json.Marshal(ign)
-		if error != nil {
-			s.logger.Errorf("error JSON encoding: %v", error)
+		ignJSON, err := json.Marshal(ign)
+		if err != nil {
+			s.logger.Errorf("error JSON encoding: %v", err)
 			return nil
 		}
-		return ignJson
+		return ignJSON
 	}
 	return ignV2json
 }
