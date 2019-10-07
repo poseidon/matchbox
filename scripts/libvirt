@@ -52,31 +52,25 @@ NODE2_MAC=52:54:00:b2:2f:86
 NODE3_NAME=node3
 NODE3_MAC=52:54:00:c3:61:77
 
-NODE4_NAME=node4
-NODE4_MAC=52:54:00:d7:99:c7
-
 function create_docker {
   virt-install --name $NODE1_NAME --network=bridge:docker0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE2_NAME --network=bridge:docker0,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE3_NAME --network=bridge:docker0,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,network
-  virt-install --name $NODE4_NAME --network=bridge:docker0,mac=$NODE4_MAC $COMMON_VIRT_OPTS --boot=hd,network
 }
 
 function create_rkt {
   virt-install --name $NODE1_NAME --network=bridge:metal0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE2_NAME --network=bridge:metal0,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE3_NAME --network=bridge:metal0,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,network
-  virt-install --name $NODE4_NAME --network=bridge:metal0,mac=$NODE4_MAC $COMMON_VIRT_OPTS --boot=hd,network
 }
 
 function create_uefi {
   virt-install --name $NODE1_NAME --network=bridge=docker0,model=e1000,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,uefi,network
   virt-install --name $NODE2_NAME --network=bridge=docker0,model=e1000,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,uefi,network
   virt-install --name $NODE3_NAME --network=bridge=docker0,model=e1000,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,uefi,network
-  virt-install --name $NODE4_NAME --network=bridge=docker0,model=e1000,mac=$NODE4_MAC $COMMON_VIRT_OPTS --boot=hd,uefi,network
 }
 
-nodes=(node1 node2 node3 node4)
+nodes=(node1 node2 node3)
 
 function start {
   for node in ${nodes[@]}; do
