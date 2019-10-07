@@ -27,7 +27,6 @@ Travis CI will build the Docker image and push it to Quay.io when the tag is pus
 
 ```sh
 $ sudo docker run quay.io/poseidon/matchbox:$VERSION -version
-$ sudo rkt run --no-store quay.io/poseidon/matchbox:$VERSION -- -version
 ```
 
 ## Github release

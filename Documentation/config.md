@@ -35,7 +35,6 @@ Configuration arguments can be provided as flags or as environment variables.
 
 ```sh
 $ ./bin/matchbox -version
-$ sudo rkt run quay.io/poseidon/matchbox:latest -- -version
 $ sudo docker run quay.io/poseidon/matchbox:latest -version
 ```
 
@@ -47,12 +46,6 @@ Run the binary.
 $ ./bin/matchbox -address=0.0.0.0:8080 -log-level=debug -data-path=examples -assets-path=examples/assets
 ```
 
-Run the latest ACI with rkt.
-
-```sh
-$ sudo rkt run --mount volume=assets,target=/var/lib/matchbox/assets --volume assets,kind=host,source=$PWD/examples/assets quay.io/poseidon/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
-```
-
 Run the latest Docker image.
 
 ```sh
@@ -61,13 +54,7 @@ $ sudo docker run -p 8080:8080 --rm -v $PWD/examples/assets:/var/lib/matchbox/as
 
 ### With examples
 
-Mount `examples` to pre-load the [example](../examples/README.md) machine groups and profiles. Run the container with rkt,
-
-```sh
-$ sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/poseidon/matchbox:latest -- -address=0.0.0.0:8080 -log-level=debug
-```
-
-or with Docker.
+Mount `examples` to pre-load the [example](../examples/README.md) machine groups and profiles. Run the container.
 
 ```sh
 $ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
@@ -87,20 +74,6 @@ Clients, such as `bootcmd`, verify the server's certificate with a CA bundle pas
 
 ```sh
 $ ./bin/bootcmd profile list --endpoints 127.0.0.1:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
-```
-
-### With rkt
-
-Run the ACI with rkt and TLS credentials from `examples/etc/matchbox`.
-
-```sh
-$ sudo rkt run --net=metal0:IP=172.18.0.2 --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples,readOnly=true --mount volume=config,target=/etc/matchbox --volume config,kind=host,source=$PWD/examples/etc/matchbox --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/poseidon/matchbox:latest -- -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
-```
-
-A `bootcmd` client can call the gRPC API running at the IP used in the rkt example.
-
-```sh
-$ ./bin/bootcmd profile list --endpoints 172.18.0.2:8081 --ca-file examples/etc/matchbox/ca.crt --cert-file examples/etc/matchbox/client.crt --key-file examples/etc/matchbox/client.key
 ```
 
 ### With docker
@@ -126,13 +99,7 @@ $ export MATCHBOX_PASSPHRASE=test
 $ ./bin/matchbox -address=0.0.0.0:8080 -key-ring-path matchbox/sign/fixtures/secring.gpg -data-path=examples -assets-path=examples/assets
 ```
 
-Run the ACI with a test key.
-
-```sh
-$ sudo rkt run --net=metal0:IP=172.18.0.2 --set-env=MATCHBOX_PASSPHRASE=test --mount volume=secrets,target=/secrets --volume secrets,kind=host,source=$PWD/matchbox/sign/fixtures --mount volume=data,target=/var/lib/matchbox --volume data,kind=host,source=$PWD/examples --mount volume=groups,target=/var/lib/matchbox/groups --volume groups,kind=host,source=$PWD/examples/groups/etcd quay.io/poseidon/matchbox:latest -- -address=0.0.0.0:8080 -key-ring-path secrets/secring.gpg
-```
-
-Run the Docker image with a test key.
+Run the container image with a test key.
 
 ```sh
 $ sudo docker run -p 8080:8080 --rm --env MATCHBOX_PASSPHRASE=test -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z -v $PWD/matchbox/sign/fixtures:/secrets:Z quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -log-level=debug -key-ring-path secrets/secring.gpg

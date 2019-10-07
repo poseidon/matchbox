@@ -19,7 +19,7 @@
 * Installation
   * Installing on [Container Linux / other distros](Documentation/deployment.md)
   * Installing on [Kubernetes](Documentation/deployment.md#kubernetes)
-  * Running with [rkt](Documentation/deployment.md#rkt) / [docker](Documentation/deployment.md#docker)
+  * Running with [docker](Documentation/deployment.md#docker)
 * [Network Setup](Documentation/network-setup.md)
 
 ### Tutorials
@@ -34,7 +34,7 @@
 
 ## Contrib
 
-* [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services with docker or rkt
+* [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services as a container
 * [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox) - Terraform provider plugin for Matchbox
 
 [docs]: https://coreos.com/matchbox/docs/latest

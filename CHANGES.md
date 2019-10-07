@@ -4,6 +4,10 @@ Notable changes between releases.
 
 ## Latest
 
+* Add `get-fedora-coreos` script ([#763](https://github.com/poseidon/matchbox/pull/763))
+* Update container image base from `alpine:3.9` to `alpine:3.10` ([#761](https://github.com/poseidon/matchbox/pull/761))
+* Remove Kubernetes provisioning examples ([#759](https://github.com/poseidon/matchbox/pull/759))
+* Remove rkt tutorials and docs ([#765](https://github.com/poseidon/matchbox/pull/765))
 
 ## v0.8.0
 

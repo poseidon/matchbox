@@ -28,7 +28,7 @@ This diagram can point you to the **right section(s)** of this document.
 
 ![Network Setup](img/network-setup-flow.png)
 
-The setup of DHCP, TFTP, and DNS services on a network varies greatly. If you wish to use rkt or Docker to quickly run DHCP, proxyDHCP TFTP, or DNS services, use [poseidon/dnsmasq](#poseidondnsmasq).
+The setup of DHCP, TFTP, and DNS services on a network varies greatly. If you wish to use Docker to quickly run DHCP, proxyDHCP TFTP, or DNS services, use [poseidon/dnsmasq](#poseidondnsmasq).
 
 ## DNS
 
@@ -158,31 +158,10 @@ Add ipxe.lkrn to `/var/lib/tftpboot` (see [iPXE docs](http://ipxe.org/embed)).
 
 ## poseidon/dnsmasq
 
-The [quay.io/poseidon/dnsmasq](https://quay.io/repository/poseidon/dnsmasq) container image can run DHCP, TFTP, and DNS services via rkt or docker. The image bundles `ipxe.efi`, `undionly.kpxe`, and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
+The [quay.io/poseidon/dnsmasq](https://quay.io/repository/poseidon/dnsmasq) container image can run DHCP, TFTP, and DNS services via docker. The image bundles `ipxe.efi`, `undionly.kpxe`, and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
 
 Run DHCP, TFTP, and DNS on the host's network:
 
-```sh
-sudo rkt run --net=host quay.io/poseidon/dnsmasq \
-  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
-  -- -d -q \
-  --dhcp-range=192.168.1.3,192.168.1.254 \
-  --enable-tftp \
-  --tftp-root=/var/lib/tftpboot \
-  --dhcp-match=set:bios,option:client-arch,0 \
-  --dhcp-boot=tag:bios,undionly.kpxe \
-  --dhcp-match=set:efi32,option:client-arch,6 \
-  --dhcp-boot=tag:efi32,ipxe.efi \
-  --dhcp-match=set:efibc,option:client-arch,7 \
-  --dhcp-boot=tag:efibc,ipxe.efi \
-  --dhcp-match=set:efi64,option:client-arch,9 \
-  --dhcp-boot=tag:efi64,ipxe.efi \
-  --dhcp-userclass=set:ipxe,iPXE \
-  --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \ 
-  --address=/matchbox.example.com/192.168.1.2 \
-  --log-queries \
-  --log-dhcp
-```
 ```sh
 sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
   -d -q \
@@ -205,18 +184,6 @@ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
 
 Run a proxy-DHCP and TFTP service on the host's network:
 
-```sh
-sudo rkt run --net=host quay.io/poseidon/dnsmasq \
-  --caps-retain=CAP_NET_ADMIN,CAP_NET_BIND_SERVICE,CAP_SETGID,CAP_SETUID,CAP_NET_RAW \
-  -- -d -q \
-  --dhcp-range=192.168.1.1,proxy,255.255.255.0 \
-  --enable-tftp --tftp-root=/var/lib/tftpboot \
-  --dhcp-userclass=set:ipxe,iPXE \
-  --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe \
-  --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.example.com:8080/boot.ipxe \
-  --log-queries \
-  --log-dhcp
-```
 ```sh
 sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
   -d -q \

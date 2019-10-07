@@ -2,7 +2,7 @@
 
 `matchbox` is an HTTP and gRPC service that renders signed [Ignition configs](https://coreos.com/ignition/docs/latest/what-is-ignition.html), [cloud-configs](https://coreos.com/os/docs/latest/cloud-config.html), network boot configs, and metadata to machines to create CoreOS Container Linux clusters. `matchbox` maintains **Group** definitions which match machines to *profiles* based on labels (e.g. MAC address, UUID, stage, region). A **Profile** is a named set of config templates (e.g. iPXE, GRUB, Ignition config, Cloud-Config, generic configs). The aim is to use Container Linux's early-boot capabilities to provision Container Linux machines.
 
-Network boot endpoints provide PXE, iPXE, GRUB support. `matchbox` can be deployed as a binary, as an [appc](https://github.com/appc/spec) container with rkt, or as a Docker container.
+Network boot endpoints provide PXE, iPXE, GRUB support. `matchbox` can be run a binary or as a container.
 
 ![Bootcfg Overview](img/overview.png)
 

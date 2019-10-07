@@ -12,9 +12,6 @@ fi
 function main {
   case "$1" in
     "create") create_docker;;
-    "create-docker") create_docker;;
-    "create-rkt") create_rkt;;
-    "create-uefi") create_uefi;;
     "start") start;;
     "reboot") reboot;;
     "shutdown") shutdown;;
@@ -30,10 +27,7 @@ function main {
 function usage {
   echo "USAGE: ${0##*/} <command>"
   echo "Commands:"
-  echo -e "\tcreate\t\tcreate QEMU/KVM nodes on a rkt CNI metal0 bridge"
-  echo -e "\tcreate-rkt\tcreate QEMU/KVM nodes on a rkt CNI metal0 bridge"
-  echo -e "\tcreate-docker\tcreate QEMU/KVM nodes on the docker0 bridge"
-  echo -e "\tcreate-uefi\tcreate UEFI QEMU/KVM nodes on the docker0 bridge"
+  echo -e "\tcreate\t\tcreate QEMU/KVM nodes on the docker0 bridge"
   echo -e "\tstart\t\tstart the QEMU/KVM nodes"
   echo -e "\treboot\t\treboot the QEMU/KVM nodes"
   echo -e "\tshutdown\tshutdown the QEMU/KVM nodes"
@@ -56,18 +50,6 @@ function create_docker {
   virt-install --name $NODE1_NAME --network=bridge:docker0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE2_NAME --network=bridge:docker0,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE3_NAME --network=bridge:docker0,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,network
-}
-
-function create_rkt {
-  virt-install --name $NODE1_NAME --network=bridge:metal0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network
-  virt-install --name $NODE2_NAME --network=bridge:metal0,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,network
-  virt-install --name $NODE3_NAME --network=bridge:metal0,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,network
-}
-
-function create_uefi {
-  virt-install --name $NODE1_NAME --network=bridge=docker0,model=e1000,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,uefi,network
-  virt-install --name $NODE2_NAME --network=bridge=docker0,model=e1000,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,uefi,network
-  virt-install --name $NODE3_NAME --network=bridge=docker0,model=e1000,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,uefi,network
 }
 
 nodes=(node1 node2 node3)

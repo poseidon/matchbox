@@ -10,7 +10,7 @@ Install `matchbox` on a dedicated server or Kubernetes cluster. Generate TLS cre
 
 * Installing on [Container Linux / other distros](deployment.md)
 * Installing on [Kubernetes](deployment.md#kubernetes)
-* Running with [rkt](deployment.md#rkt) / [docker](deployment.md#docker)
+* Running with [docker](deployment.md#docker)
 
 Verify the matchbox read-only HTTP endpoints are accessible.
 

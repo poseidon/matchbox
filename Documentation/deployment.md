@@ -1,6 +1,6 @@
 # Installation
 
-This guide walks through deploying the `matchbox` service on a Linux host (via RPM, rkt, docker, or binary) or on a Kubernetes cluster.
+This guide walks through deploying the `matchbox` service on a Linux host (via RPM, docker, or binary) or on a Kubernetes cluster.
 
 ## Provisoner
 
@@ -8,10 +8,9 @@ This guide walks through deploying the `matchbox` service on a Linux host (via R
 
 Choose one of the supported installation options:
 
-* [CoreOS Container Linux (rkt)](#coreos-container-linux)
+* [CoreOS Container Linux](#coreos-container-linux)
 * [RPM-based](#rpm-based-distro)
 * [Generic Linux (binary)](#generic-linux)
-* [With rkt](#rkt)
 * [With docker](#docker)
 * [Kubernetes Service](#kubernetes)
 
@@ -51,14 +50,6 @@ dnf install matchbox
 ```
 
 RPMs are not currently available for CentOS and RHEL (due to Go version). CentOS and RHEL users should follow the Generic Linux section below.
-
-### CoreOS Container Linux
-
-On a Container Linux provisioner, rkt run `matchbox` image with the provided systemd unit.
-
-```sh
-$ sudo cp contrib/systemd/matchbox-on-coreos.service /etc/systemd/system/matchbox.service
-```
 
 ### Generic Linux
 
@@ -252,7 +243,7 @@ Review [network setup](https://github.com/poseidon/matchbox/blob/master/Document
 * Point iPXE client machines to the `matchbox` iPXE HTTP endpoint `http://matchbox.example.com:8080/boot.ipxe`
 * Ensure `matchbox.example.com` resolves to your `matchbox` deployment
 
-Poseidon provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/poseidon/dnsmasq`, if you wish to use rkt or Docker.
+Poseidon provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/poseidon/dnsmasq`.
 
 ## Docker
 

@@ -28,10 +28,7 @@ Create QEMU/KVM VMs which are configured to boot from the network. The `scripts/
     $ sudo ./scripts/libvirt
     USAGE: libvirt <command>
     Commands:
-        create      create QEMU/KVM nodes on a rkt CNI metal0 bridge
-        create-rkt  create QEMU/KVM nodes on a rkt CNI metal0 bridge
-        create-docker   create QEMU/KVM nodes on the docker0 bridge
-        create-uefi create UEFI QEMU/KVM nodes on the rkt CNI metal0 bridge
+        create      create QEMU/KVM nodes on the docker0 bridge
         start       start the QEMU/KVM nodes
         reboot      reboot the QEMU/KVM nodes
         shutdown    shutdown the QEMU/KVM nodes
