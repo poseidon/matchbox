@@ -192,6 +192,8 @@ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
   --dhcp-userclass=set:ipxe,iPXE \
   --pxe-service=tag:#ipxe,x86PC,"PXE chainload to iPXE",undionly.kpxe \
   --pxe-service=tag:ipxe,x86PC,"iPXE",http://matchbox.example.com:8080/boot.ipxe \
+  --pxe-service=tag:#ipxe,X86-64_EFI,"PXE chainload to iPXE UEFI",ipxe.efi \
+  --pxe-service=tag:ipxe,X86-64_EFI,"iPXE UEFI",http:///matchbox.example.com:8080/boot.ipxe \
   --log-queries \
   --log-dhcp
 ```
