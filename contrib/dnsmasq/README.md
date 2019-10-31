@@ -23,7 +23,7 @@ sudo docker run --rm --cap-add=NET_ADMIN --net=host quay.io/poseidon/dnsmasq \
   --dhcp-boot=tag:efi64,ipxe.efi \
   --dhcp-userclass=set:ipxe,iPXE \
   --dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe \
-  --address=/matchbox.example/192.168.1.2 \
+  --address=/matchbox.example.com/192.168.1.2 \
   --log-queries \
   --log-dhcp
 ```
