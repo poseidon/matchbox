@@ -19,6 +19,8 @@ cp README.md $DEST
 # scripts
 mkdir -p $SCRIPTS/tls
 cp scripts/get-coreos $SCRIPTS
+cp scripts/get-coreos $SCRIPTS
+cp scripts/get-coreos $SCRIPTS
 cp scripts/tls/README.md $SCRIPTS/tls
 cp scripts/tls/cert-gen $SCRIPTS/tls
 cp scripts/tls/openssl.conf $SCRIPTS/tls
@@ -33,5 +35,5 @@ cp -r examples/{cloud,groups,ignition,profiles,README.md} $DEST/examples
 
 # docs
 mkdir -p $DEST/docs
-cp -r Documentation $DEST/docs
+cp -r docs $DEST/docs
 

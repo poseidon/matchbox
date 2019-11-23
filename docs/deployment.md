@@ -237,7 +237,7 @@ For large production environments, use a cache proxy or mirror suitable for your
 
 ## Network
 
-Review [network setup](https://github.com/poseidon/matchbox/blob/master/Documentation/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network. At a high level, your goals are to:
+Review [network setup](https://github.com/poseidon/matchbox/blob/master/docs/network-setup.md) with your network administrator to set up DHCP, TFTP, and DNS services on your network. At a high level, your goals are to:
 
 * Chainload PXE firmwares to iPXE
 * Point iPXE client machines to the `matchbox` iPXE HTTP endpoint `http://matchbox.example.com:8080/boot.ipxe`

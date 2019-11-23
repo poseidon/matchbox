@@ -1,6 +1,6 @@
 ## gRPC TLS Generation
 
-The Matchbox gRPC API allows clients (`terraform-provider-matchbox`) to create and update Matchbox resources. TLS credentials are used for client authentication and to establish a secure communication channel. When the gRPC API is [enabled](../../Documentation/deployment.md#customization), the server requires a TLS server certificate, key, and CA certificate ([locations](../../Documentation/config.md#files-and-directories)).
+The Matchbox gRPC API allows clients (`terraform-provider-matchbox`) to create and update Matchbox resources. TLS credentials are used for client authentication and to establish a secure communication channel. When the gRPC API is [enabled](../../docs/deployment.md#customization), the server requires a TLS server certificate, key, and CA certificate ([locations](../../docs/config.md#files-and-directories)).
 
 The `cert-gen` helper script generates a self-signed CA, server certificate, and client certificate. **Prefer your organization's PKI, if possible**
 
@@ -39,7 +39,7 @@ $ sudo cp ca.crt server.crt server.key /etc/matchbox
 
 Save `client.crt`, `client.key`, and `ca.crt` for later use (e.g. `~/.matchbox`).
 
-*If you are using the local Matchbox [development environment](../../Documentation/getting-started-docker.md), move server credentials to `examples/etc/matchbox`.*
+*If you are using the local Matchbox [development environment](../../docs/getting-started-docker.md), move server credentials to `examples/etc/matchbox`.*
 
 ## Inspect
 

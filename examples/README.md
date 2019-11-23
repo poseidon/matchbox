@@ -13,7 +13,7 @@ These examples use [Terraform](https://www.terraform.io/intro/) as a client to M
 
 ### Customization
 
-You are encouraged to look through the examples and Terraform modules. Implement your own profiles or package them as modules to meet your needs. We've just provided a starting point. Learn more about [matchbox](../Documentation/matchbox.md) and [Container Linux configs](../Documentation/container-linux-config.md).
+You are encouraged to look through the examples and Terraform modules. Implement your own profiles or package them as modules to meet your needs. We've just provided a starting point. Learn more about [matchbox](../docs/matchbox.md) and [Container Linux configs](../docs/container-linux-config.md).
 
 ## Manual Examples
 

@@ -4,15 +4,15 @@ The `etcd3-install` example shows how to use matchbox to network boot and provis
 
 ## Requirements
 
-Follow the getting started [tutorial](../../../Documentation/getting-started.md) to learn about matchbox and set up an environment that meets the requirements:
+Follow the getting started [tutorial](../../../docs/getting-started.md) to learn about matchbox and set up an environment that meets the requirements:
 
-* Matchbox v0.6+ [installation](../../../Documentation/deployment.md) with gRPC API enabled
+* Matchbox v0.6+ [installation](../../../docs/deployment.md) with gRPC API enabled
 * Matchbox provider credentials `client.crt`, `client.key`, and `ca.crt`
-* PXE [network boot](../../../Documentation/network-setup.md) environment
+* PXE [network boot](../../../docs/network-setup.md) environment
 * Terraform v0.9+ and [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox) installed locally on your system
 * 3 machines with known DNS names and MAC addresses
 
-If you prefer to provision QEMU/KVM VMs on your local Linux machine, set up the matchbox [development environment](../../../Documentation/getting-started-docker.md).
+If you prefer to provision QEMU/KVM VMs on your local Linux machine, set up the matchbox [development environment](../../../docs/getting-started-docker.md).
 
 ```sh
 sudo ./scripts/devnet create
@@ -37,7 +37,7 @@ ssh_authorized_key = "ADD ME"
 
 Configs in `etcd3-install` configure the matchbox provider, define profiles (e.g. `cached-container-linux-install`, `etcd3`), and define 3 groups which match machines by MAC address to a profile. These resources declare that the machines should PXE boot, install Container Linux to disk, and provision themselves into peers in a 3-node etcd3 cluster.
 
-Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/poseidon/matchbox/blob/master/Documentation/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
+Note: The `cached-container-linux-install` profile will PXE boot and install Container Linux from matchbox [assets](https://github.com/poseidon/matchbox/blob/master/docs/api.md#assets). If you have not populated the assets cache, use the `container-linux-install` profile to use public images (slower).
 
 ### Optional
 
@@ -100,4 +100,4 @@ $ etcdctl get /message
 
 ## Going Further
 
-Learn more about [matchbox](../../../Documentation/matchbox.md) or explore the other [example](../) clusters.
+Learn more about [matchbox](../../../docs/matchbox.md) or explore the other [example](../) clusters.
