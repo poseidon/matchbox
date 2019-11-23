@@ -25,7 +25,7 @@ Container Linux Config templates can be added to the `/var/lib/matchbox/ignition
 
 ## Referencing in Profiles
 
-Profiles can include a Container Linux Config for provisioning machines. Specify the Container Linux Config in a [Profile](matchbox.md#profiles) with `ignition_id`. When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `matchbox` [Ignition endpoint](api.md#ignition-config).
+Profiles can include a Container Linux Config for provisioning machines. Specify the Container Linux Config in a [Profile](matchbox.md#profiles) with `ignition_id`. When PXE booting, use the kernel option `coreos.first_boot=1` and `coreos.config.url` to point to the `matchbox` [Ignition endpoint](api-http.md#ignition-config).
 
 ## Examples
 

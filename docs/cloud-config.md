@@ -1,7 +1,7 @@
+# Cloud Config
 
-# Cloud config
-
-**Note:** Please migrate to [Container Linux Configs](container-linux-config.md). Cloud-Config support will be removed in the future.
+!!! warning
+    Migrate to [Container Linux Configs](container-linux-config.md). Cloud-Config support will be removed in the future.
 
 CoreOS Cloud-Config is a system for configuring machines with a Cloud-Config file or executable script from user-data. Cloud-Config runs in userspace on each boot and implements a subset of the [cloud-init spec](http://cloudinit.readthedocs.org/en/latest/topics/format.html#cloud-config-data). See the cloud-config [docs](https://coreos.com/os/docs/latest/cloud-config.html) for details.
 
@@ -18,13 +18,12 @@ Cloud-Config template files can be added in `/var/lib/matchbox/cloud` or in a `c
 
 ## Reference
 
-Reference a Cloud-Config in a [Profile](matchbox.md#profiles) with `cloud_id`. When PXE booting, use the kernel option `cloud-config-url` to point to `matchbox` [cloud-config endpoint](api.md#cloud-config).
+Reference a Cloud-Config in a [Profile](matchbox.md#profiles) with `cloud_id`. When PXE booting, use the kernel option `cloud-config-url` to point to `matchbox` [cloud-config endpoint](api-http.md#cloud-config).
 
 ## Examples
 
 Here is an example Cloud-Config which starts some units and writes a file.
 
-<!-- {% raw %} -->
 ```yaml
 #cloud-config
 coreos:
@@ -40,7 +39,6 @@ write_files:
     content: |
       {{.greeting}}
 ```
-<!-- {% endraw %} -->
 
 The Cloud-Config [Validator](https://coreos.com/validate/) is also useful for checking your Cloud-Config files for errors.
 

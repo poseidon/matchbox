@@ -1,0 +1,60 @@
+site_name: 'matchbox'
+site_description: 'Network boot and provision bare-metal clusters' 
+site_author: 'Dalton Hubble'
+repo_name: 'poseidon/matchbox'
+repo_url: 'https://github.com/poseidon/matchbox'
+theme:
+  name: 'material'
+  palette:
+    primary: 'red'
+    accent: 'orange'
+  font:
+    text: 'Roboto Slab'
+    code: 'Roboto Mono'
+extra:
+  social:
+    - type: 'github'
+      link: 'https://github.com/poseidon'
+    - type: 'twitter'
+      link: 'https://twitter.com/typhoon8s'
+nav:
+  - Home: 'index.md'
+  - 'Matchbox':
+    - 'Concepts': 'matchbox.md'
+    - 'Container Linux Config': 'container-linux-config.md'
+    - 'Cloud-Config': 'cloud-config.md'
+    - 'HTTP API': 'api-http.md'
+    - 'gRPC API': 'api-grpc.md'
+    - 'OpenPGP Signing': 'openpgp.md'
+  - 'Tutorials':
+    - 'getting-started.md'
+    - 'getting-started-docker.md'
+    - 'Network Boot Environment': 'network-booting.md' 
+    - 'Machine Lifecycle': 'machine-lifecycle.md'
+  - 'Install':
+    - 'Network Setup': 'network-setup.md'
+    - 'Deployment': 'deployment.md'
+    - 'Configuration': 'config.md'
+    - 'Troubleshooting': 'troubleshooting.md'
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+

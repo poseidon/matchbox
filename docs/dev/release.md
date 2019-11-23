@@ -49,7 +49,7 @@ Verify the reported version.
 
 ## Signing
 
-Release tarballs are signed by Dalton Hubble's GPG [Key](Documentation/deployment.md#download)
+Release tarballs are signed by Dalton Hubble's GPG [Key](/docs/deployment.md#download)
 
 ```sh
 cd _output

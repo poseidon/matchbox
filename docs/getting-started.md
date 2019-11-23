@@ -98,7 +98,7 @@ provider "matchbox" {
 
 #### Profiles
 
-Machine profiles specify the kernel, initrd, kernel args, Container Linux Config, Cloud-config, or other configs used to network boot and provision a bare-metal machine. This profile will PXE boot machines using the current stable Container Linux kernel and initrd (see [assets](api.md#assets) to learn about caching for speed) and supply a Container Linux Config specifying that a disk install and reboot should be performed. Learn more about [Container Linux configs](https://coreos.com/os/docs/latest/configuration.html).
+Machine profiles specify the kernel, initrd, kernel args, Container Linux Config, Cloud-config, or other configs used to network boot and provision a bare-metal machine. This profile will PXE boot machines using the current stable Container Linux kernel and initrd (see [assets](api-http.md#assets) to learn about caching for speed) and supply a Container Linux Config specifying that a disk install and reboot should be performed. Learn more about [Container Linux configs](https://coreos.com/os/docs/latest/configuration.html).
 
 ```hcl
 // Create a CoreOS-install profile
@@ -191,7 +191,7 @@ To re-provision the machine for another purpose, run `terraform apply` and PXE b
 
 ## Going Further
 
-Matchbox can be used to provision multi-node Container Linux clusters at one or many on-premise sites if deployed in an HA way. Machines can be matched individually by MAC address, UUID, region, or other labels you choose. Installs can be made much faster by caching images in the built-in HTTP [assets](api.md#assets) server.
+Matchbox can be used to provision multi-node Container Linux clusters at one or many on-premise sites if deployed in an HA way. Machines can be matched individually by MAC address, UUID, region, or other labels you choose. Installs can be made much faster by caching images in the built-in HTTP [assets](api-http.md#assets) server.
 
 [Container Linux configs](https://coreos.com/os/docs/latest/configuration.html) can be used to partition disks and filesystems, write systemd units, write networkd configs or regular files, and create users. Container Linux nodes can be provisioned into a system that meets your needs. Checkout the examples which create a 3 node [etcd](../examples/terraform/etcd3-install) cluster or a 3 node [Kubernetes](../examples/terraform/bootkube-install) cluster.
 

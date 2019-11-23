@@ -1,43 +1,37 @@
 # matchbox [![Build Status](https://travis-ci.org/poseidon/matchbox.svg?branch=master)](https://travis-ci.org/poseidon/matchbox) [![GoDoc](https://godoc.org/github.com/poseidon/matchbox?status.svg)](https://godoc.org/github.com/poseidon/matchbox) [![Docker Repository on Quay](https://quay.io/repository/poseidon/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/poseidon/matchbox)
 
-`matchbox` is a service that matches bare-metal machines (based on labels like MAC, UUID, etc.) to profiles that PXE boot and provision Container Linux clusters. Profiles specify the kernel/initrd, kernel arguments, iPXE config, GRUB config, [Container Linux Config][cl-config], or other configs a machine should use. Matchbox can be [installed](Documentation/deployment.md) as a binary, RPM, container image, or deployed on a Kubernetes cluster and it provides an authenticated gRPC API for clients like [Terraform][terraform].
+`matchbox` is a service that matches bare-metal machines to profiles that PXE boot and provision clusters. Machines are matched by labels like MAC or UUID during PXE and profiles specify a kernel/initrd, iPXE config, and Container Linux or Fedora CoreOS config.
 
-* [Documentation][docs]
-* [matchbox Service](Documentation/matchbox.md)
-* [Profiles](Documentation/matchbox.md#profiles)
-* [Groups](Documentation/matchbox.md#groups)
-* Config Templates
-  * [Container Linux Config][cl-config]
-  * [Cloud-Config][cloud-config]
-* [Configuration](Documentation/config.md)
-* [HTTP API](Documentation/api.md) / [gRPC API](https://godoc.org/github.com/poseidon/matchbox/matchbox/client)
-* [Background: Machine Lifecycle](Documentation/machine-lifecycle.md)
-* [Background: PXE Booting](Documentation/network-booting.md)
+## Features
 
-### Installation
+* Chainload via iPXE and match hardware labels
+* Provision Container Linux and Fedora CoreOS (powered by [Ignition](https://github.com/coreos/ignition))
+* Authenticated gRPC API for clients (e.g. Terraform)
 
-* Installation
-  * Installing on [Container Linux / other distros](Documentation/deployment.md)
-  * Installing on [Kubernetes](Documentation/deployment.md#kubernetes)
-  * Running with [docker](Documentation/deployment.md#docker)
-* [Network Setup](Documentation/network-setup.md)
+## Documentation
 
-### Tutorials
+* [Docs](https://matchbox.psdn.io/)
+* [Configuration](docs/config.md)
+* [HTTP API](docs/api-http.md) / [gRPC API](docs/grpc-api.md)
 
-* [Getting Started](Documentation/getting-started.md) - provision physical machines with Container Linux
+## Installation
+
+Matchbox can be installed from a binary or a container image.
+
+* Install Matchbox on [Kubernetes](docs/deployment.md#kubernetes), on a [Linux](docs/deployment.md) host, or as a [container](docs/deployment.md#docker)
+* Setup a PXE-enabled [network](docs/network-setup.md)
+
+## Tutorials
+
+[Getting started](docs/getting-started.md) provisioning machines with Container Linux.
+
 * Local QEMU/KVM
-  * [matchbox with Docker](Documentation/getting-started-docker.md)
+    * [matchbox with Docker](docs/getting-started-docker.md)
 * Clusters
-  * [etcd3](Documentation/getting-started-docker.md) - Install a 3-node etcd3 cluster
-* Clusters (Terraform-based)
-  * [etcd3](examples/terraform/etcd3-install/README.md) - Install a 3-node etcd3 cluster
+    * [etcd3](docs/getting-started-docker.md) - Install a 3-node etcd3 cluster
+    * [etcd3](https://github.com/poseidon/matchbox/tree/master/examples/terraform/etcd3-install) - Install a 3-node etcd3 cluster (terraform-based)
 
 ## Contrib
 
 * [dnsmasq](contrib/dnsmasq/README.md) - Run DHCP, TFTP, and DNS services as a container
 * [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox) - Terraform provider plugin for Matchbox
-
-[docs]: https://coreos.com/matchbox/docs/latest
-[terraform]: https://github.com/poseidon/terraform-provider-matchbox
-[cl-config]: Documentation/container-linux-config.md
-[cloud-config]: Documentation/cloud-config.md

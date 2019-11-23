@@ -208,7 +208,7 @@ $ sudo firewall-cmd --add-service=dhcp --add-service=tftp --add-service=dns
 
 ### Development
 
-Install the dependencies for [QEMU with UEFI](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU). Walk through the [getting-started-with-docker](getting-started-with-docker.md) tutorial. Launch client VMs using `create-uefi`.
+Install the dependencies for [QEMU with UEFI](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU). Walk through the [getting-started-with-docker](getting-started-docker.md) tutorial. Launch client VMs using `create-uefi`.
 
 Create UEFI QEMU/KVM VMs attached to the `docker0` bridge.
 

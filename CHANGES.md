@@ -4,6 +4,7 @@ Notable changes between releases.
 
 ## Latest
 
+* Publish docs to [https://matchbox.psdn.io](https://matchbox.psdn.io/)
 * Add `get-fedora-coreos` script ([#763](https://github.com/poseidon/matchbox/pull/763))
 * Update container image base from `alpine:3.9` to `alpine:3.10` ([#761](https://github.com/poseidon/matchbox/pull/761))
 * Build matchbox with Go v1.12.10 for images and binaries ([#766](https://github.com/poseidon/matchbox/pull/766))

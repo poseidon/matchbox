@@ -121,4 +121,4 @@ $ sudo ./scripts/libvirt destroy
 
 ## Going further
 
-Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters. Try the [k8s example](bootkube.md) to produce a TLS-authenticated Kubernetes cluster you can access locally with `kubectl`.
+Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters.

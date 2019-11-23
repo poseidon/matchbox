@@ -66,7 +66,7 @@ boot
 
 A TFTP server is used only to provide the `undionly.kpxe` boot program to older PXE firmware in order to bootstrap into iPXE.
 
-CoreOS `matchbox` can render signed iPXE scripts to machines based on their hardware attributes. Setup involves configuring your DHCP server to point iPXE clients to the `matchbox` [iPXE endpoint](api.md#ipxe).
+CoreOS `matchbox` can render signed iPXE scripts to machines based on their hardware attributes. Setup involves configuring your DHCP server to point iPXE clients to the `matchbox` [iPXE endpoint](api-http.md#ipxe).
 
 ## DHCP
 

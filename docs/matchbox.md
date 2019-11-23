@@ -18,7 +18,7 @@ See [configuration](config.md) flags and variables.
 
 ## API
 
-* [HTTP API](api.md)
+* [HTTP API](api-http.md)
 * [gRPC API](https://godoc.org/github.com/poseidon/matchbox/matchbox/client)
 
 ## Data
@@ -76,9 +76,9 @@ Profiles reference an Ignition config, Cloud-Config, and/or generic config by na
 
 The `"boot"` settings will be used to render configs to network boot programs such as iPXE or GRUB. You may reference remote kernel and initrd assets or [local assets](#assets).
 
-To use Ignition, set the `coreos.config.url` kernel option to reference the `matchbox` [Ignition endpoint](api.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
+To use Ignition, set the `coreos.config.url` kernel option to reference the `matchbox` [Ignition endpoint](api-http.md#ignition-config), which will render the `ignition_id` file. Be sure to add the `coreos.first_boot` option as well.
 
-To use cloud-config, set the `cloud-config-url` kernel option to reference the `matchbox` [Cloud-Config endpoint](api.md#cloud-config), which will render the `cloud_id` file.
+To use cloud-config, set the `cloud-config-url` kernel option to reference the `matchbox` [Cloud-Config endpoint](api-http.md#cloud-config), which will render the `cloud_id` file.
 
 ### Groups
 
@@ -172,7 +172,7 @@ matchbox.foo/assets/
 
 For example, a `Profile` might refer to a local asset `/assets/coreos/VERSION/coreos_production_pxe.vmlinuz` instead of `http://stable.release.core-os.net/amd64-usr/VERSION/coreos_production_pxe.vmlinuz`.
 
-See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download, verify, and place Container Linux assets.
+See the [get-coreos](https://github.com/poseidon/matchbox/blob/master/scripts/get-coreos) script to quickly download, verify, and place Container Linux assets.
 
 ## Network
 
@@ -181,5 +181,5 @@ See the [get-coreos](../scripts/README.md#get-coreos) script to quickly download
 ## Going further
 
 * [gRPC API Usage](config.md#grpc-api)
-* [Metadata](api.md#metadata)
-* OpenPGP [Signing](api.md#openpgp-signatures)
+* [Metadata](api-http.md#metadata)
+* OpenPGP [Signing](api-http.md#openpgp-signatures)

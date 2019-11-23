@@ -54,7 +54,7 @@ $ sudo docker run -p 8080:8080 --rm -v $PWD/examples/assets:/var/lib/matchbox/as
 
 ### With examples
 
-Mount `examples` to pre-load the [example](../examples/README.md) machine groups and profiles. Run the container.
+Mount `examples` to pre-load the example machine groups and profiles. Run the container.
 
 ```sh
 $ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
