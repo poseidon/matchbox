@@ -17,6 +17,8 @@ build: clean bin/matchbox
 
 bin/%:
 	git describe --tags --match=v* --always --dirty --debug
+	git status
+	git diff
 	@go build -o bin/$* -ldflags $(LD_FLAGS) $(REPO)/cmd/$*
 
 .PHONY: test
