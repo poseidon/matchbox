@@ -8,8 +8,8 @@ github.com/alecthomas/units
 github.com/coreos/container-linux-config-transpiler/config
 github.com/coreos/container-linux-config-transpiler/config/astyaml
 github.com/coreos/container-linux-config-transpiler/config/platform
-github.com/coreos/container-linux-config-transpiler/config/types
 github.com/coreos/container-linux-config-transpiler/config/templating
+github.com/coreos/container-linux-config-transpiler/config/types
 github.com/coreos/container-linux-config-transpiler/config/types/util
 github.com/coreos/container-linux-config-transpiler/internal/util
 # github.com/coreos/coreos-cloudinit v1.13.0
@@ -19,30 +19,34 @@ github.com/coreos/go-semver/semver
 # github.com/coreos/go-systemd v0.0.0-20160826104600-43e4800a6165
 github.com/coreos/go-systemd/unit
 # github.com/coreos/ignition v0.31.0
-github.com/coreos/ignition/config/v2_2
-github.com/coreos/ignition/config/v2_2/types
-github.com/coreos/ignition/config/validate
-github.com/coreos/ignition/config/validate/astnode
-github.com/coreos/ignition/config/validate/report
 github.com/coreos/ignition/config/shared/errors
-github.com/coreos/ignition/config/util
-github.com/coreos/ignition/config/v2_1
-github.com/coreos/ignition/config/v2_1/types
 github.com/coreos/ignition/config/shared/validations
-github.com/coreos/ignition/config/validate/astjson
-github.com/coreos/ignition/config/v2_4_experimental/types
-github.com/coreos/ignition/config/v2_0
-github.com/coreos/ignition/config/v2_0/types
+github.com/coreos/ignition/config/util
 github.com/coreos/ignition/config/v1
 github.com/coreos/ignition/config/v1/types
+github.com/coreos/ignition/config/v2_0
+github.com/coreos/ignition/config/v2_0/types
+github.com/coreos/ignition/config/v2_1
+github.com/coreos/ignition/config/v2_1/types
+github.com/coreos/ignition/config/v2_2
+github.com/coreos/ignition/config/v2_2/types
+github.com/coreos/ignition/config/v2_4_experimental/types
+github.com/coreos/ignition/config/validate
+github.com/coreos/ignition/config/validate/astjson
+github.com/coreos/ignition/config/validate/astnode
+github.com/coreos/ignition/config/validate/report
 # github.com/coreos/pkg v0.0.0-20160221035341-66fe44ad037c
 github.com/coreos/pkg/flagutil
 # github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269
 github.com/coreos/yaml
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/golang/protobuf v0.0.0-20170331031902-2bba0603135d
+# github.com/golang/protobuf v1.3.2
 github.com/golang/protobuf/proto
+github.com/golang/protobuf/ptypes
+github.com/golang/protobuf/ptypes/any
+github.com/golang/protobuf/ptypes/duration
+github.com/golang/protobuf/ptypes/timestamp
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
 # github.com/konsorten/go-windows-terminal-sequences v1.0.1
@@ -62,34 +66,66 @@ github.com/stretchr/testify/assert
 github.com/vincent-petithory/dataurl
 # go4.org v0.0.0-20160314031811-03efcb870d84
 go4.org/errorutil
-# golang.org/x/crypto v0.0.0-20180904163835-0709b304e793
+# golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+golang.org/x/crypto/cast5
 golang.org/x/crypto/openpgp
-golang.org/x/crypto/ssh/terminal
 golang.org/x/crypto/openpgp/armor
+golang.org/x/crypto/openpgp/elgamal
 golang.org/x/crypto/openpgp/errors
 golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
-golang.org/x/crypto/cast5
-golang.org/x/crypto/openpgp/elgamal
-# golang.org/x/net v0.0.0-20160412225635-fb93926129b8
+golang.org/x/crypto/ssh/terminal
+# golang.org/x/net v0.0.0-20191119073136-fc4aabc6c914
 golang.org/x/net/context
+golang.org/x/net/http/httpguts
 golang.org/x/net/http2
-golang.org/x/net/trace
 golang.org/x/net/http2/hpack
+golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
-# golang.org/x/sys v0.0.0-20190209173611-3b5209105503
+golang.org/x/net/trace
+# golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# google.golang.org/grpc v1.2.1
+# golang.org/x/text v0.3.2
+golang.org/x/text/secure/bidirule
+golang.org/x/text/transform
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+# google.golang.org/genproto v0.0.0-20191115221424-83cc0476cb11
+google.golang.org/genproto/googleapis/rpc/status
+# google.golang.org/grpc v1.25.1
 google.golang.org/grpc
-google.golang.org/grpc/credentials
+google.golang.org/grpc/backoff
+google.golang.org/grpc/balancer
+google.golang.org/grpc/balancer/base
+google.golang.org/grpc/balancer/roundrobin
+google.golang.org/grpc/binarylog/grpc_binarylog_v1
 google.golang.org/grpc/codes
+google.golang.org/grpc/connectivity
+google.golang.org/grpc/credentials
+google.golang.org/grpc/credentials/internal
+google.golang.org/grpc/encoding
+google.golang.org/grpc/encoding/proto
 google.golang.org/grpc/grpclog
 google.golang.org/grpc/internal
+google.golang.org/grpc/internal/backoff
+google.golang.org/grpc/internal/balancerload
+google.golang.org/grpc/internal/binarylog
+google.golang.org/grpc/internal/buffer
+google.golang.org/grpc/internal/channelz
+google.golang.org/grpc/internal/envconfig
+google.golang.org/grpc/internal/grpcrand
+google.golang.org/grpc/internal/grpcsync
+google.golang.org/grpc/internal/resolver/dns
+google.golang.org/grpc/internal/resolver/passthrough
+google.golang.org/grpc/internal/syscall
+google.golang.org/grpc/internal/transport
 google.golang.org/grpc/keepalive
 google.golang.org/grpc/metadata
 google.golang.org/grpc/naming
 google.golang.org/grpc/peer
+google.golang.org/grpc/resolver
+google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
+google.golang.org/grpc/status
 google.golang.org/grpc/tap
-google.golang.org/grpc/transport
