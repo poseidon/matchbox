@@ -4,7 +4,7 @@ Notable changes between releases.
 
 ## Latest
 
-## v0.8.2
+## v0.8.3
 
 * Publish docs to [https://matchbox.psdn.io](https://matchbox.psdn.io/) ([#769](https://github.com/poseidon/matchbox/pull/769))
 * Update Go version from v1.11.7 to v1.13.4 ([#766](https://github.com/poseidon/matchbox/pull/766), [#770](https://github.com/poseidon/matchbox/pull/770))
@@ -13,9 +13,12 @@ Notable changes between releases.
 * Remove Kubernetes provisioning examples ([#759](https://github.com/poseidon/matchbox/pull/759))
 * Remove rkt tutorials and docs ([#765](https://github.com/poseidon/matchbox/pull/765))
 
-## v0.8.1
+## v0.8.1 - v0.8.2
 
-This release was not built correctly and is skipped.
+Releases `v0.8.1` and `v0.8.2` were not built cleanly
+
+* Release tags and container images have been removed
+* Caused by go get golint (module-aware) mutating `go.mod` on Travis (see [#775](https://github.com/poseidon/matchbox/pull/775))
 
 ## v0.8.0
 
