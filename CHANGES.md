@@ -4,7 +4,7 @@ Notable changes between releases.
 
 ## Latest
 
-## v0.8.1
+## v0.8.2
 
 * Publish docs to [https://matchbox.psdn.io](https://matchbox.psdn.io/) ([#769](https://github.com/poseidon/matchbox/pull/769))
 * Update Go version from v1.11.7 to v1.13.4 ([#766](https://github.com/poseidon/matchbox/pull/766), [#770](https://github.com/poseidon/matchbox/pull/770))
@@ -12,6 +12,10 @@ Notable changes between releases.
 * Include `get-fedora-coreos` convenience script ([#763](https://github.com/poseidon/matchbox/pull/763))
 * Remove Kubernetes provisioning examples ([#759](https://github.com/poseidon/matchbox/pull/759))
 * Remove rkt tutorials and docs ([#765](https://github.com/poseidon/matchbox/pull/765))
+
+## v0.8.1
+
+This release was not built correctly and is skipped.
 
 ## v0.8.0
 
