@@ -18,7 +18,7 @@ Notable changes between releases.
 Releases `v0.8.1` and `v0.8.2` were not built cleanly
 
 * Release tags and container images have been removed
-* Caused by go get golint (module-aware) mutating `go.mod` on Travis (see [#775](https://github.com/poseidon/matchbox/pull/775))
+* Caused by go get golint (module-aware) mutating `go.mod` on Travis (see [#775](https://github.com/poseidon/matchbox/pull/775), [#777](https://github.com/poseidon/matchbox/pull/777))
 
 ## v0.8.0
 
