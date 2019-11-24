@@ -2,6 +2,7 @@ export CGO_ENABLED:=0
 export GO111MODULE=on
 export GOFLAGS=-mod=vendor
 
+DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 VERSION=$(shell git describe --tags --match=v* --always --dirty)
 LD_FLAGS="-w -X github.com/poseidon/matchbox/matchbox/version.Version=$(VERSION)"
 
@@ -55,18 +56,17 @@ update:
 vendor:
 	@go mod vendor
 
-.PHONY: codegen
-codegen: tools
-	@./scripts/dev/codegen
+protoc/%:
+	podman run --security-opt label=disable \
+		-u root \
+		--mount type=bind,src=$(DIR),target=/mnt/code \
+		quay.io/dghubble/protoc:v3.10.1 \
+		--go_out=plugins=grpc,paths=source_relative:. $*
 
-.PHONY: tools
-tools: bin/protoc bin/protoc-gen-go
-
-bin/protoc:
-	@./scripts/dev/get-protoc
-
-bin/protoc-gen-go:
-	@go build -o bin/protoc-gen-go $(REPO)/vendor/github.com/golang/protobuf/protoc-gen-go
+codegen: \
+	protoc/matchbox/storage/storagepb/*.proto \
+	protoc/matchbox/server/serverpb/*.proto \
+	protoc/matchbox/rpc/rpcpb/*.proto
 
 clean:
 	@rm -rf bin

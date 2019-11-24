@@ -1,7 +1,9 @@
 syntax = "proto3";
 package rpcpb;
 
-import "github.com/coreos/matchbox/matchbox/server/serverpb/messages.proto";
+import "matchbox/server/serverpb/messages.proto";
+
+option go_package = "github.com/poseidon/matchbox/matchbox/rpc/rpcpb";
 
 service Groups {
   // Create a Group.

@@ -1,7 +1,9 @@
 syntax = "proto3";
 package serverpb;
 
-import "github.com/coreos/matchbox/matchbox/storage/storagepb/storage.proto";
+import "matchbox/storage/storagepb/storage.proto";
+
+option go_package = "github.com/poseidon/matchbox/matchbox/server/serverpb";
 
 // Selects
 
