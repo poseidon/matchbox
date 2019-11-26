@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: matchbox
-          image: quay.io/poseidon/matchbox:v0.8.0
+          image: quay.io/poseidon/matchbox:v0.8.3
           env:
             - name: MATCHBOX_ADDRESS
               value: "0.0.0.0:8080"
