@@ -14,11 +14,11 @@ github.com/coreos/container-linux-config-transpiler/config/types/util
 github.com/coreos/container-linux-config-transpiler/internal/util
 # github.com/coreos/coreos-cloudinit v1.13.0
 github.com/coreos/coreos-cloudinit/config
-# github.com/coreos/go-semver v0.0.0-20170209201757-5e3acbb5668c
+# github.com/coreos/go-semver v0.2.0
 github.com/coreos/go-semver/semver
 # github.com/coreos/go-systemd v0.0.0-20160826104600-43e4800a6165
 github.com/coreos/go-systemd/unit
-# github.com/coreos/ignition v0.31.0
+# github.com/coreos/ignition v0.33.0
 github.com/coreos/ignition/config/shared/errors
 github.com/coreos/ignition/config/shared/validations
 github.com/coreos/ignition/config/util
@@ -35,7 +35,7 @@ github.com/coreos/ignition/config/validate
 github.com/coreos/ignition/config/validate/astjson
 github.com/coreos/ignition/config/validate/astnode
 github.com/coreos/ignition/config/validate/report
-# github.com/coreos/pkg v0.0.0-20160221035341-66fe44ad037c
+# github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f
 github.com/coreos/pkg/flagutil
 # github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269
 github.com/coreos/yaml
@@ -49,24 +49,24 @@ github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
-# github.com/konsorten/go-windows-terminal-sequences v1.0.1
+# github.com/konsorten/go-windows-terminal-sequences v1.0.2
 github.com/konsorten/go-windows-terminal-sequences
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/sirupsen/logrus v1.3.0
+# github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
 github.com/sirupsen/logrus/hooks/test
-# github.com/spf13/cobra v0.0.0-20160208220627-65a708cee0a4
+# github.com/spf13/cobra v0.0.5
 github.com/spf13/cobra
-# github.com/spf13/pflag v0.0.0-20151218134703-7f60f83a2c81
+# github.com/spf13/pflag v1.0.5
 github.com/spf13/pflag
-# github.com/stretchr/testify v1.3.0
+# github.com/stretchr/testify v1.4.0
 github.com/stretchr/testify/assert
 # github.com/vincent-petithory/dataurl v0.0.0-20160330182126-9a301d65acbb
 github.com/vincent-petithory/dataurl
 # go4.org v0.0.0-20160314031811-03efcb870d84
 go4.org/errorutil
-# golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+# golang.org/x/crypto v0.0.0-20191122220453-ac88ee75c92c
 golang.org/x/crypto/cast5
 golang.org/x/crypto/openpgp
 golang.org/x/crypto/openpgp/armor
@@ -74,7 +74,6 @@ golang.org/x/crypto/openpgp/elgamal
 golang.org/x/crypto/openpgp/errors
 golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
-golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20191119073136-fc4aabc6c914
 golang.org/x/net/context
 golang.org/x/net/http/httpguts
@@ -85,7 +84,6 @@ golang.org/x/net/internal/timeseries
 golang.org/x/net/trace
 # golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e
 golang.org/x/sys/unix
-golang.org/x/sys/windows
 # golang.org/x/text v0.3.2
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
@@ -129,3 +127,5 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
+# gopkg.in/yaml.v2 v2.2.7
+gopkg.in/yaml.v2

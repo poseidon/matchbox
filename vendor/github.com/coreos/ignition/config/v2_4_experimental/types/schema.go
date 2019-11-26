@@ -71,6 +71,7 @@ type Group string
 
 type Ignition struct {
 	Config   IgnitionConfig `json:"config,omitempty"`
+	Proxy    Proxy          `json:"proxy,omitempty"`
 	Security Security       `json:"security,omitempty"`
 	Timeouts Timeouts       `json:"timeouts,omitempty"`
 	Version  string         `json:"version,omitempty"`
@@ -117,6 +118,8 @@ type Networkdunit struct {
 	Dropins  []NetworkdDropin `json:"dropins,omitempty"`
 	Name     string           `json:"name"`
 }
+
+type NoProxyItem string
 
 type Node struct {
 	Filesystem string     `json:"filesystem"`
@@ -178,6 +181,12 @@ type PasswdUser struct {
 	UID               *int               `json:"uid,omitempty"`
 }
 
+type Proxy struct {
+	HTTPProxy  string        `json:"httpProxy,omitempty"`
+	HTTPSProxy string        `json:"httpsProxy,omitempty"`
+	NoProxy    []NoProxyItem `json:"noProxy,omitempty"`
+}
+
 type Raid struct {
 	Devices []Device     `json:"devices"`
 	Level   string       `json:"level"`
@@ -191,7 +200,7 @@ type RaidOption string
 type SSHAuthorizedKey string
 
 type Security struct {
-	TLS `json:"tls,omitempty"`
+	TLS TLS `json:"tls,omitempty"`
 }
 
 type Storage struct {
