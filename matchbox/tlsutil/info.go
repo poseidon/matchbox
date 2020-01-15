@@ -37,12 +37,6 @@ func (info *TLSInfo) ClientConfig() (*tls.Config, error) {
 
 // ServerConfig returns a tls.Config for server use.
 func (info *TLSInfo) ServerConfig() (*tls.Config, error) {
-	// server certificate to present to clients
-	cert, err := tls.LoadX509KeyPair(info.CertFile, info.KeyFile)
-	if err != nil {
-		return nil, err
-	}
-
 	// CA for authenticating clients
 	pool, err := NewCertPool([]string{info.CAFile})
 	if err != nil {
@@ -51,8 +45,8 @@ func (info *TLSInfo) ServerConfig() (*tls.Config, error) {
 
 	return &tls.Config{
 		MinVersion: tls.VersionTLS12,
-		// Certificates the server should present to clients
-		Certificates: []tls.Certificate{cert},
+		// Call function to load certificate
+		GetCertificate: info.GetLoadCertificateFunc(),
 		// Client Authentication (required)
 		ClientAuth: tls.RequireAndVerifyClientCert,
 		// CA for verifying and authorizing client certificates
@@ -64,4 +58,17 @@ func (info *TLSInfo) ServerConfig() (*tls.Config, error) {
 			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
 		},
 	}, nil
+}
+
+// GetLoadCertificateFunc returns a function to load the certificate and private key from disk to allow
+// cert/key rotation without requiring the daemon to be restarted
+func (info *TLSInfo) GetLoadCertificateFunc() func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+	return func(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
+		cert, err := tls.LoadX509KeyPair(info.CertFile, info.KeyFile)
+		if err != nil {
+			return nil, err
+		}
+
+		return &cert, nil
+	}
 }
