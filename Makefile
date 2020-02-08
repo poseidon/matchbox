@@ -35,6 +35,20 @@ lint:
 fmt:
 	@test -z $$(go fmt ./...)
 
+.PHONY: image
+image:
+	@buildah bud -t $(LOCAL_REPO):$(VERSION) .
+	@buildah tag $(LOCAL_REPO):$(VERSION) $(LOCAL_REPO):latest
+
+.PHONY: push
+push:
+	@buildah tag $(LOCAL_REPO):$(VERSION) $(IMAGE_REPO):$(VERSION)
+	@buildah tag $(LOCAL_REPO):$(VERSION) $(IMAGE_REPO):latest
+	@buildah push docker://$(IMAGE_REPO):$(VERSION)
+	@buildah push docker://$(IMAGE_REPO):latest
+
+# for travis only
+
 .PHONY: docker-image
 docker-image:
 	@sudo docker build --rm=true -t $(LOCAL_REPO):$(VERSION) .
