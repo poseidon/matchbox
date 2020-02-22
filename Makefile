@@ -100,6 +100,7 @@ bin/linux-amd64/matchbox: GOARGS = GOOS=linux GOARCH=amd64
 bin/linux-arm/matchbox: GOARGS = GOOS=linux GOARCH=arm GOARM=6
 bin/linux-arm64/matchbox: GOARGS = GOOS=linux GOARCH=arm64
 bin/darwin-amd64/matchbox: GOARGS = GOOS=darwin GOARCH=amd64
+bin/linux-ppc64le/matchbox: GOARGS = GOOS=linux GOARCH=ppc64le
 
 bin/%/matchbox:
 	$(GOARGS) go build -o $@ -ldflags $(LD_FLAGS) -a $(REPO)/cmd/matchbox
