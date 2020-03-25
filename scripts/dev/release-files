@@ -29,6 +29,10 @@ cp scripts/tls/openssl.conf $SCRIPTS/tls
 mkdir -p $CONTRIB/systemd
 cp -r contrib/systemd/* $CONTRIB/systemd
 
+# k8s manifests
+mkdir -p $CONTRIB/k8s
+cp -r contrib/k8s/* $CONTRIB/k8s
+
 # examples
 mkdir -p $DEST/examples
 cp -r examples/{cloud,groups,ignition,profiles,README.md} $DEST/examples
