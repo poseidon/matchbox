@@ -2,7 +2,7 @@
 
 This guide shows how to create a DHCP/TFTP/DNS network boot environment to boot and provision BIOS/PXE, iPXE, or UEFI client machines.
 
-Matchbox serves iPXE scripts over HTTP to serve as the entrypoint for provisioning clusters. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, configure your network environment to point to Matchbox or use the convenient [poseidon/dnsmasq](../contrib/dnsmasq) container image (used in local QEMU/KVM setup).
+Matchbox serves iPXE scripts over HTTP to serve as the entrypoint for provisioning clusters. It does not implement or exec a DHCP, TFTP, or DNS server. Instead, configure your network environment to point to Matchbox or use the convenient [quay.io/poseidon/dnsmasq](https://quay.io/repository/poseidon/matchbox) container image (used in local QEMU/KVM setup).
 
 *Note*: These are just suggestions. Your network administrator or system administrator should choose the right network setup for your company.
 
@@ -158,7 +158,7 @@ Add ipxe.lkrn to `/var/lib/tftpboot` (see [iPXE docs](http://ipxe.org/embed)).
 
 ## poseidon/dnsmasq
 
-The [quay.io/poseidon/dnsmasq](https://quay.io/repository/poseidon/dnsmasq) container image can run DHCP, TFTP, and DNS services via docker. The image bundles `ipxe.efi`, `undionly.kpxe`, and `grub.efi` for convenience. See [contrib/dnsmasq](../contrib/dnsmasq) for details.
+The [quay.io/poseidon/dnsmasq](https://quay.io/repository/poseidon/dnsmasq) container image can run DHCP, TFTP, and DNS services via docker. The image bundles `ipxe.efi`, `undionly.kpxe`, and `grub.efi` for convenience. See [contrib/dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) for details.
 
 Run DHCP, TFTP, and DNS on the host's network:
 
