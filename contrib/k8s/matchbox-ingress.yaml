@@ -15,7 +15,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: matchbox
+  name: matchbox-rpc
   annotations:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:

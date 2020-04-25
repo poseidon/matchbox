@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: matchbox
@@ -7,11 +7,15 @@ spec:
   strategy:
     rollingUpdate:
       maxUnavailable: 1
+  selector:
+      matchLabels:
+        app: matchbox
   template:
     metadata:
       labels:
         name: matchbox
         phase: prod
+        app: matchbox
     spec:
       containers:
         - name: matchbox
