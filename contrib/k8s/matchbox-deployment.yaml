@@ -9,13 +9,12 @@ spec:
       maxUnavailable: 1
   selector:
       matchLabels:
-        app: matchbox
+        name: matchbox
   template:
     metadata:
       labels:
         name: matchbox
         phase: prod
-        app: matchbox
     spec:
       containers:
         - name: matchbox
