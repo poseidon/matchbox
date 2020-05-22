@@ -1,22 +1,24 @@
-site_name: 'matchbox'
-site_description: 'Network boot and provision bare-metal clusters' 
-site_author: 'Dalton Hubble'
-repo_name: 'poseidon/matchbox'
-repo_url: 'https://github.com/poseidon/matchbox'
+site_name: matchbox
+site_description: Network boot and provision bare-metal clusters
+site_author: Dalton Hubble
+repo_name: poseidon/matchbox
+repo_url: https://github.com/poseidon/matchbox
 theme:
-  name: 'material'
+  name: material
+  icon:
+    repo: fontawesome/brands/github-alt
   palette:
-    primary: 'red'
-    accent: 'orange'
+    primary: red
+    accent: orange
   font:
-    text: 'Roboto Slab'
-    code: 'Roboto Mono'
+    text: Roboto Slab
+    code: Roboto Mono
 extra:
   social:
-    - type: 'github'
-      link: 'https://github.com/poseidon'
-    - type: 'twitter'
-      link: 'https://twitter.com/typhoon8s'
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/poseidon
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/typhoon8s
 nav:
   - Home: 'index.md'
   - 'Matchbox':
@@ -29,7 +31,7 @@ nav:
   - 'Tutorials':
     - 'getting-started.md'
     - 'getting-started-docker.md'
-    - 'Network Boot Environment': 'network-booting.md' 
+    - 'Network Boot Environment': 'network-booting.md'
     - 'Machine Lifecycle': 'machine-lifecycle.md'
   - 'Install':
     - 'Network Setup': 'network-setup.md'
