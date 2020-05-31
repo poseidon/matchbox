@@ -28,7 +28,7 @@ A clear and concise description of what you expected to happen.
 * OS: fedora-coreos, flatcar-linux (include release version)
 * Release: Matchbox version or Git SHA (reporting latest is **not** helpful)
 
-### Possible Solution
+**Possible Solution**
 
 <!-- Most bug reports should have some inkling about solutions. Otherwise, your report may be less of a bug and more of a support request (see top).-->
 
