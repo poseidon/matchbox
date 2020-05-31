@@ -7,6 +7,9 @@ Notable changes between releases.
 * Update Matchbox container image publishing ([#795](https://github.com/poseidon/matchbox/pull/795))
   * Publish Matchbox images from internal infra to Quay (`quay.io/poseidon/matchbox`)
   * Update Go version from v1.13.4 to v1.13.11
+* Update base image from `alpine:3.10` to `alpine:3.11` ([#784](https://github.com/poseidon/matchbox/pull/784))
+* Update Kubernetes manifests ([#791](https://github.com/poseidon/matchbox/pull/791))
+* Include `contrib/k8s` in release tarballs ([#788](https://github.com/poseidon/matchbox/pull/788))
 
 ## v0.8.3
 
