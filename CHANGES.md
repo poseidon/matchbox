@@ -4,6 +4,10 @@ Notable changes between releases.
 
 ## Latest
 
+* Update Matchbox container image publishing ([#795](https://github.com/poseidon/matchbox/pull/795))
+  * Publish Matchbox images from internal infra to Quay (`quay.io/poseidon/matchbox`)
+  * Update Go version from v1.13.4 to v1.13.11
+
 ## v0.8.3
 
 * Publish docs to [https://matchbox.psdn.io](https://matchbox.psdn.io/) ([#769](https://github.com/poseidon/matchbox/pull/769))
@@ -97,7 +101,7 @@ Note: Release signing key [has changed](https://github.com/poseidon/matchbox/blo
 * Use etcd3 by default in all clusters (remove etcd2 clusters)
 * Add Terraform examples for etcd3 and self-hosted Kubernetes 1.6.1
 
-## v0.5.0 (2017-01-23) 
+## v0.5.0 (2017-01-23)
 
 * Rename project to CoreOS `matchbox`!
 * Add Profile `args` field to list kernel args

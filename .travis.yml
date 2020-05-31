@@ -13,12 +13,6 @@ script:
   - make
 deploy:
   - provider: script
-    script: scripts/dev/travis-docker-push
-    skip_cleanup: true
-    on:
-      branch: master
-      go: '1.13.4'
-  - provider: script
     script: contrib/dnsmasq/travis-deploy
     skip_cleanup: true
     on:
