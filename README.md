@@ -5,7 +5,7 @@
 ## Features
 
 * Chainload via iPXE and match hardware labels
-* Provision Container Linux and Fedora CoreOS (powered by [Ignition](https://github.com/coreos/ignition))
+* Provision Fedora CoreOS and Flatcar Linux (powered by [Ignition](https://github.com/coreos/ignition))
 * Authenticated gRPC API for clients (e.g. Terraform)
 
 ## Documentation
@@ -23,7 +23,7 @@ Matchbox can be installed from a binary or a container image.
 
 ## Tutorials
 
-[Getting started](docs/getting-started.md) provisioning machines with Container Linux.
+[Getting started](docs/getting-started.md) provisioning machines with Flatcar Linux.
 
 * Local QEMU/KVM
     * [matchbox with Docker](docs/getting-started-docker.md)
