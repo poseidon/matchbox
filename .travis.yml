@@ -10,13 +10,5 @@ install:
   - GO111MODULE=off go get golang.org/x/lint/golint
 script:
   - make
-deploy:
-  - provider: script
-    script: contrib/dnsmasq/travis-deploy
-    skip_cleanup: true
-    on:
-      branch: dnsmasq
-      # pick one, so travis deploys once
-      go: '1.13.x'
 notifications:
   email: change
