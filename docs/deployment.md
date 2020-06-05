@@ -1,6 +1,6 @@
 # Installation
 
-This guide walks through deploying the `matchbox` service on a Linux host (via RPM, docker, or binary) or on a Kubernetes cluster.
+This guide walks through deploying the `matchbox` service on a Linux host (as a binary or container image) or on a Kubernetes cluster.
 
 ## Provisoner
 
@@ -9,7 +9,6 @@ This guide walks through deploying the `matchbox` service on a Linux host (via R
 Choose one of the supported installation options:
 
 * [CoreOS Container Linux](#coreos-container-linux)
-* [RPM-based](#rpm-based-distro)
 * [Generic Linux (binary)](#generic-linux)
 * [With docker](#docker)
 * [Kubernetes Service](#kubernetes)
@@ -39,17 +38,6 @@ $ cd matchbox-v0.8.3-linux-amd64
 ```
 
 ## Install
-
-### RPM-based distro
-
-On an RPM-based provisioner (Fedora 24+), install the `matchbox` RPM from the Copr [repository](https://copr.fedorainfracloud.org/coprs/g/CoreOS/matchbox/) using `dnf`.
-
-```sh
-dnf copr enable @CoreOS/matchbox
-dnf install matchbox
-```
-
-RPMs are not currently available for CentOS and RHEL (due to Go version). CentOS and RHEL users should follow the Generic Linux section below.
 
 ### Generic Linux
 
@@ -245,9 +233,9 @@ Review [network setup](https://github.com/poseidon/matchbox/blob/master/docs/net
 
 Poseidon provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/poseidon/dnsmasq`.
 
-## Docker
+## Container Image
 
-Run the container image with docker.
+Run the container image.
 
 ```sh
 $ mkdir -p /var/lib/matchbox/assets

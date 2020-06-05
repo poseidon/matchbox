@@ -10,6 +10,7 @@ Notable changes between releases.
 * Update base image from `alpine:3.10` to `alpine:3.12` ([#784](https://github.com/poseidon/matchbox/pull/784))
 * Update Kubernetes manifests ([#791](https://github.com/poseidon/matchbox/pull/791))
 * Include `contrib/k8s` in release tarballs ([#788](https://github.com/poseidon/matchbox/pull/788))
+* Remove RPM spec file (Copr publishing stopped in v0.6)
 
 ## v0.8.3
 
