@@ -4,7 +4,7 @@ resource "matchbox_group" "default" {
   profile = "${matchbox_profile.coreos-install.name}"
 
   # no selector means all machines can be matched
-  metadata {
+  metadata = {
     ignition_endpoint  = "${var.matchbox_http_endpoint}/ignition"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
@@ -15,11 +15,11 @@ resource "matchbox_group" "node1" {
   name    = "node1"
   profile = "${matchbox_profile.simple.name}"
 
-  selector {
+  selector = {
     os = "installed"
   }
 
-  metadata {
+  metadata = {
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
