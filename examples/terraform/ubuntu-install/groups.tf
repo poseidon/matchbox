@@ -1,11 +1,13 @@
-resource "matchbox_group" "vmware" {
-  name = "vmware"
+resource "matchbox_group" "foobar" {
+  name = "foobar"
   profile = "${matchbox_profile.ubuntu-18.04-netboot-install.name}"
 
   selector = {
     mac = "00:50:56:29:54:97"
   }
   metadata = {
-    foo = "bar"
+    fullname = "vagrant"
+    password = "vagrant"
+    username = "vagrant"
   }
 }

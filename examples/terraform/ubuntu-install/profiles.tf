@@ -6,28 +6,50 @@ resource "matchbox_profile" "ubuntu-18.04-netboot-install" {
   initrd = [
     "http://archive.ubuntu.com/ubuntu/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz"
   ]
-  # Note the configuration is intentionally split between args = [], and generic/preseed.cfg for demonstration purposes.
-  # You could choose to use one or the other or a mixture of both.
   # preseed.cfg is based on the preseed.cfg examples in chef/bento github repo
+  # Hostnames should be assigned from DHCP https://askubuntu.com/a/675620/172065
   args = [
+    "console-setup/ask_detect=false",
+    "console-setup/layoutcode=us",
+    "debconf/frontend=noninteractive",
+    "debian-installer=en_US.UTF-8",
+    "fb=false",
     "initrd=initrd.gz",
+    "kbd-chooser/method=us",
+    "keyboard-configuration/layo ut=USA",
+    "keyboard-configuration/variant=USA",
     "locale=en_US.UTF-8",
-    "keyboard-configuration/layoutcode=us",
-    "hostname=foobar",
-    "preseed/url=http://matchbox.example.com:8080/assets/ubuntu/bionic/preseed.cfg"
+    "netcfg/get_domain=unassigned-domain",
+    "netcfg/get_hostname=unassigned-hostname",
+    "preseed/url=${var.matchbox_http_endpoint }/generic?mac=$${mac:hexhyp}"
   ]
+    generic_config = "${file("./generic/ubuntu/bionic/preseed.cfg")}"
 }
 
 # This uses cached assets generated with `scripts/get-ubuntu bionic`
-# You will need to manually deploy preseed.cfg to /var/lib/matchbox/assets/ubuntu/bionic/preseed.cfg
 resource "matchbox_profile" "ubuntu-18.04-asset-install" {
   name = "ubuntu-18.04-asset-install"
   kernel = "${var.matchbox_http_endpoint}/asset/ubuntu/bionic/linux"
   initrd = [
     "${var.matchbox_http_endpoint}/asset/ubuntu/bionic/initrd.gz"
   ]
+  # preseed.cfg is based on the preseed.cfg examples in chef/bento github repo
+  # Hostnames should be assigned from DHCP https://askubuntu.com/a/675620/172065
   args = [
+    "console-setup/ask_detect=false",
+    "console-setup/layoutcode=us",
+    "debconf/frontend=noninteractive",
+    "debian-installer=en_US.UTF-8",
+    "fb=false",
     "initrd=initrd.gz",
-    "preseed/url=http://matchbox.example.com:8080/assets/ubuntu/bionic/preseed.cfg"
+    "kbd-chooser/method=us",
+    "keyboard-configuration/layo ut=USA",
+    "keyboard-configuration/variant=USA",
+    "locale=en_US.UTF-8",
+    "netcfg/get_domain=unassigned-domain",
+    "netcfg/get_hostname=unassigned-hostname",
+    "preseed/url=${var.matchbox_http_endpoint }/generic?mac=$${mac:hexhyp}"
   ]
+    generic_config = "${file("./generic/ubuntu/bionic/preseed.cfg")}"
+
 }
