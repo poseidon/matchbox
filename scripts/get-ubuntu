@@ -8,7 +8,7 @@ set -eou pipefail
 
 GPG=${GPG:-/usr/bin/gpg}
 
-VERSION=${1:-"focal"}
+VERSION=${1:-"bionic"}
 DEST_DIR=${2:-"$PWD/examples/assets"}
 DEST=$DEST_DIR/ubuntu/$VERSION
 BASE_URL=http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/images/netboot/
@@ -20,12 +20,8 @@ fi
 
 # PXE kernel
 echo "vmlinuz"
-curl -# http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/legacy-images/hd-media/vmlinuz -o $DEST/vmlinuz
+curl -# $BASE_URL/ubuntu-installer/amd64/linux -o $DEST/linux
 
 # PXE initrd
 echo "initrd.gz"
-curl -# http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/legacy-images/hd-media/initrd.gz -o $DEST/initrd.gz
-
-# Install image
-echo "boot.img.gz"
-curl -# http://archive.ubuntu.com/ubuntu/dists/$VERSION/main/installer-amd64/current/legacy-images/hd-media/boot.img.gz -o $DEST/boot.img.gz
+curl -# $BASE_URL/ubuntu-installer/amd64/initrd.gz -o $DEST/initrd.gz
