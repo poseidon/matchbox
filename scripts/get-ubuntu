@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # USAGE: ./scripts/get-ubuntu
-# USAGE: ./scripts/get-coreos version dest
+# USAGE: ./scripts/get-ubuntu version dest
 #
 # ENV VARS:
 # - OEM_ID - specify OEM image id to download, alongside the default one
