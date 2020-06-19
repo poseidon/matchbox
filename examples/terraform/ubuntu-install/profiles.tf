@@ -1,20 +1,15 @@
-resource "matchbox_profile" "ubuntu-install" {
-  name = "ubuntu-20.04-install"
-  kernel = "http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/hd-media/vmlinuz"
+resource "matchbox_profile" "ubuntu-18.04-install" {
+  name = "ubuntu-18.04-install"
+  kernel = "http://archive.ubuntu.com/ubuntu/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/linux"
   initrd = [
-    "http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/hd-media/initrd.gz"
+    "http://archive.ubuntu.com/ubuntu/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz"
   ]
   args = [
-    // "initrd=pxe/ubuntu/ubuntu-20.04-x86_64.img",
-    "console-setup/ask_detect=false",
+    "initrd=initrd.gz",
     "locale=en_US.UTF-8",
     "keyboard-configuration/layoutcode=us",
-    "hostname=unassigned",
-    "debian-installer=en_US.UTF-8",
-    "kbd-chooser/method=us",
-    "keyboard-configuration/layout=USA",
-    "keyboard-configuration/variant=USA",
-    "preseed/url=http://localhost:8080/assets/preseed.cfg"
+    "hostname=foobar",
+    "preseed/url=http://matchbox.example.com:8080/assets/preseed.cfg"
   ]
   generic_config = "${file("./generic/preseed.cfg")}"
 }
