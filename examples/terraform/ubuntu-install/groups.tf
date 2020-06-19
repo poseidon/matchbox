@@ -1,6 +1,6 @@
 resource "matchbox_group" "foobar" {
   name = "foobar"
-  profile = "${matchbox_profile.ubuntu-18.04-netboot-install.name}"
+  profile = "${matchbox_profile.ubuntu-bionic-netboot-install.name}"
 
   selector = {
     mac = "00:50:56:29:54:97"

@@ -1,7 +1,7 @@
 # Uses the ubuntu 'netboot' install option where ubuntu downloads needed packages durring install.
 # You will need to manually deploy preseed.cfg to /var/lib/matchbox/assets/ubuntu/bionic/preseed.cfg
-resource "matchbox_profile" "ubuntu-18.04-netboot-install" {
-  name = "ubuntu-18.04-install"
+resource "matchbox_profile" "ubuntu-bionic-netboot-install" {
+  name = "ubuntu-bionic-install"
   kernel = "http://archive.ubuntu.com/ubuntu/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/linux"
   initrd = [
     "http://archive.ubuntu.com/ubuntu/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64/initrd.gz"
@@ -16,7 +16,7 @@ resource "matchbox_profile" "ubuntu-18.04-netboot-install" {
     "fb=false",
     "initrd=initrd.gz",
     "kbd-chooser/method=us",
-    "keyboard-configuration/layo ut=USA",
+    "keyboard-configuration/layout=USA",
     "keyboard-configuration/variant=USA",
     "locale=en_US.UTF-8",
     "netcfg/get_domain=unassigned-domain",
@@ -27,11 +27,11 @@ resource "matchbox_profile" "ubuntu-18.04-netboot-install" {
 }
 
 # This uses cached assets generated with `scripts/get-ubuntu bionic`
-resource "matchbox_profile" "ubuntu-18.04-asset-install" {
-  name = "ubuntu-18.04-asset-install"
-  kernel = "${var.matchbox_http_endpoint}/asset/ubuntu/bionic/linux"
+resource "matchbox_profile" "ubuntu-bionic-asset-install" {
+  name = "ubuntu-bionic-asset-install"
+  kernel = "${var.matchbox_http_endpoint}/assets/ubuntu/bionic/linux"
   initrd = [
-    "${var.matchbox_http_endpoint}/asset/ubuntu/bionic/initrd.gz"
+    "${var.matchbox_http_endpoint}/assets/ubuntu/bionic/initrd.gz"
   ]
   # preseed.cfg is based on the preseed.cfg examples in chef/bento github repo
   # Hostnames should be assigned from DHCP https://askubuntu.com/a/675620/172065
@@ -43,7 +43,7 @@ resource "matchbox_profile" "ubuntu-18.04-asset-install" {
     "fb=false",
     "initrd=initrd.gz",
     "kbd-chooser/method=us",
-    "keyboard-configuration/layo ut=USA",
+    "keyboard-configuration/layout=USA",
     "keyboard-configuration/variant=USA",
     "locale=en_US.UTF-8",
     "netcfg/get_domain=unassigned-domain",
