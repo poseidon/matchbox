@@ -1,6 +1,7 @@
 site_name: matchbox
 site_description: Network boot and provision bare-metal clusters
 site_author: Dalton Hubble
+copyright: Poseidon Labs
 repo_name: poseidon/matchbox
 repo_url: https://github.com/poseidon/matchbox
 theme:
