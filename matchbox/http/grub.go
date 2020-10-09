@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/Masterminds/sprig"
 	"github.com/sirupsen/logrus"
 )
 
-var grubTemplate = template.Must(template.New("GRUB2 config").Parse(`default=0
+var grubTemplate = template.Must(template.New("GRUB2 config").Funcs(sprig.TxtFuncMap()).Parse(`default=0
 fallback=1
 timeout=1
 menuentry "CoreOS (EFI)" {

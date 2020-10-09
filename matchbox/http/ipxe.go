@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/Masterminds/sprig"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ const ipxeBootstrap = `#!ipxe
 chain ipxe?uuid=${uuid}&mac=${mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
 `
 
-var ipxeTemplate = template.Must(template.New("iPXE config").Parse(`#!ipxe
+var ipxeTemplate = template.Must(template.New("iPXE config").Funcs(sprig.TxtFuncMap()).Parse(`#!ipxe
 kernel {{.Kernel}}{{range $arg := .Args}} {{$arg}}{{end}}
 {{- range $element := .Initrd }}
 initrd {{$element}}
