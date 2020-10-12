@@ -1,4 +1,4 @@
-# matchbox [![Build Status](https://travis-ci.org/poseidon/matchbox.svg?branch=master)](https://travis-ci.org/poseidon/matchbox) [![GoDoc](https://godoc.org/github.com/poseidon/matchbox?status.svg)](https://godoc.org/github.com/poseidon/matchbox) [![Docker Repository on Quay](https://quay.io/repository/poseidon/matchbox/status "Docker Repository on Quay")](https://quay.io/repository/poseidon/matchbox)
+# matchbox [![Build Status](https://github.com/poseidon/matchbox/workflows/test/badge.svg)](https://github.com/poseidon/matchbox/actions?query=workflow%3Atest+branch%3Amaster) [![GoDoc](https://godoc.org/github.com/poseidon/matchbox?status.svg)](https://godoc.org/github.com/poseidon/matchbox) [![Quay](https://img.shields.io/badge/container-quay-green)](https://quay.io/repository/poseidon/matchbox)
 
 `matchbox` is a service that matches bare-metal machines to profiles that PXE boot and provision clusters. Machines are matched by labels like MAC or UUID during PXE and profiles specify a kernel/initrd, iPXE config, and Container Linux or Fedora CoreOS config.
 
