@@ -1,0 +1,20 @@
+{
+  "id": "fedora-coreos",
+  "name": "Fedora CoreOS",
+  "boot": {
+    "kernel": "/assets/fedora-coreos/fedora-coreos-32.20200923.3.0-live-kernel-x86_64",
+    "initrd": [
+      "/assets/fedora-coreos/fedora-coreos-32.20200923.3.0-live-initramfs.x86_64.img",
+      "/assets/fedora-coreos/fedora-coreos-32.20200923.3.0-live-rootfs.x86_64.img"
+    ],
+    "args": [
+      "ignition.firstboot",
+      "ignition.platform.id=metal",
+      "ignition.config.url=http://matchbox.example.com:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
+      "systemd.unified_cgroup_hierarchy=0",
+      "console=tty0",
+      "console=ttyS0"
+    ]
+  },
+  "ignition_id": "fedora-coreos.ign"
+}

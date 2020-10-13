@@ -1,11 +1,11 @@
 # matchbox [![Build Status](https://github.com/poseidon/matchbox/workflows/test/badge.svg)](https://github.com/poseidon/matchbox/actions?query=workflow%3Atest+branch%3Amaster) [![GoDoc](https://godoc.org/github.com/poseidon/matchbox?status.svg)](https://godoc.org/github.com/poseidon/matchbox) [![Quay](https://img.shields.io/badge/container-quay-green)](https://quay.io/repository/poseidon/matchbox)
 
-`matchbox` is a service that matches bare-metal machines to profiles that PXE boot and provision clusters. Machines are matched by labels like MAC or UUID during PXE and profiles specify a kernel/initrd, iPXE config, and Container Linux or Fedora CoreOS config.
+`matchbox` is a service that matches bare-metal machines to profiles that PXE boot and provision clusters. Machines are matched by labels like MAC or UUID during PXE and profiles specify a kernel/initrd, iPXE config, and Ignition config.
 
 ## Features
 
 * Chainload via iPXE and match hardware labels
-* Provision Fedora CoreOS and Flatcar Linux (powered by [Ignition](https://github.com/coreos/ignition))
+* Provision Fedora CoreOS or Flatcar Linux (powered by [Ignition](https://github.com/coreos/ignition))
 * Authenticated gRPC API for clients (e.g. Terraform)
 
 ## Documentation
@@ -23,10 +23,11 @@ Matchbox can be installed from a binary or a container image.
 
 ## Tutorials
 
-[Getting started](docs/getting-started.md) provisioning machines with Flatcar Linux.
+[Getting started](docs/getting-started.md) provisioning machines with Fedora CoreOS or Flatcar Linux.
 
-* Local QEMU/KVM
-    * [matchbox with Docker](docs/getting-started-docker.md)
+* [Local QEMU/KVM](docs/getting-started-docker.md)
+    * Fedora CoreOS (live PXE or PXE install to disk)
+    * Flatcar Linux (live PXE or PXE install to disk)
 * Clusters
     * [etcd3](docs/getting-started-docker.md) - Install a 3-node etcd3 cluster
     * [etcd3](https://github.com/poseidon/matchbox/tree/master/examples/terraform/etcd3-install) - Install a 3-node etcd3 cluster (terraform-based)

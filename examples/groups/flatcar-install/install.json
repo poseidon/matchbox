@@ -1,0 +1,11 @@
+{
+  "id": "stage-0",
+  "name": "Flatcar Linux install",
+  "profile": "flatcar-install",
+  "metadata": {
+    "os_channel": "stable",
+    "os_version": "2605.6.0",
+    "ignition_endpoint": "http://matchbox.example.com:8080/ignition",
+    "baseurl": "http://matchbox.example.com:8080/assets/flatcar"
+  }
+}

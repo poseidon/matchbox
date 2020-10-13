@@ -1,25 +1,48 @@
-
 # Scripts
 
-## get-coreos
+## get-fedora-coreos
 
-Run the `get-coreos` script to download CoreOS Container Linux images, verify them, and move them into `examples/assets`.
+Run the `get-fedora-coreos` script to download Fedora CoreOS images, verify them, and move them into `examples/assets`.
 
-    ./scripts/get-coreos
-    ./scripts/get-coreos channel version
+```
+./scripts/get-fedora-coreos
+./scripts/get-fedora-coreos stream version dest
+```
 
 This will create:
 
-    examples/assets/
-    └── coreos
-        └── 1153.0.0
-            ├── CoreOS_Image_Signing_Key.asc
-            ├── coreos_production_image.bin.bz2
-            ├── coreos_production_image.bin.bz2.sig
-            ├── coreos_production_pxe_image.cpio.gz
-            ├── coreos_production_pxe_image.cpio.gz.sig
-            ├── coreos_production_pxe.vmlinuz
-            └── coreos_production_pxe.vmlinuz.sig
+```
+examples/assets/fedora-coreos/
+├── fedora-coreos-32.20200923.3.0-live-initramfs.x86_64.img
+├── fedora-coreos-32.20200923.3.0-live-kernel-x86_64
+├── fedora-coreos-32.20200923.3.0-live-rootfs.x86_64.img
+├── fedora-coreos-32.20200923.3.0-metal.x86_64.raw.xz
+└── fedora-coreos-32.20200923.3.0-metal.x86_64.raw.xz.sig
+```
+
+## get-flatcar
+
+Run the `get-flatcar` script to download Flatcar Linux images, verify them, and move them into `examples/assets`.
+
+```
+./scripts/get-flatcar
+./scripts/get-flatcar channel version dest
+```
+
+This will create:
+
+```
+examples/assets/flatcar/
+└── 2605.6.0
+    ├── Flatcar_Image_Signing_Key.asc
+    ├── flatcar_production_image.bin.bz2
+    ├── flatcar_production_image.bin.bz2.sig
+    ├── flatcar_production_pxe_image.cpio.gz
+    ├── flatcar_production_pxe_image.cpio.gz.sig
+    ├── flatcar_production_pxe.vmlinuz
+    ├── flatcar_production_pxe.vmlinuz.sig
+    └── version.txt
+```
 
 ## libvirt
 

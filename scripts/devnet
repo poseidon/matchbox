@@ -81,7 +81,7 @@ function docker_create {
     # Mount the given EXAMPLE
     DATA_MOUNT="-v $PWD/examples:/var/lib/matchbox:Z -v $DIR/../examples/groups/$EXAMPLE:/var/lib/matchbox/groups:Z"
   fi
-  
+
   docker run --name matchbox \
     -d \
     -p 8080:8080 \

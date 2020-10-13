@@ -1,0 +1,7 @@
+{
+  "id": "default",
+  "name": "Fedora CoreOS",
+  "profile": "fedora-coreos",
+  "selector": {},
+  "metadata": {}
+}

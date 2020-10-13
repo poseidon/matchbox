@@ -1,12 +1,12 @@
 # Getting started
 
-In this tutorial, we'll show how to use terraform with `matchbox` to provision Container Linux machines.
+In this tutorial, we'll use `matchbox` with Terraform to provision Container Linux machines.
 
-You'll install the `matchbox` service, setup a PXE network boot environment, and then use terraform configs to describe your infrastructure and the terraform CLI to create those resources on `matchbox`.
+We'll install the `matchbox` service, setup a PXE network boot environment, and use Terraform configs to declare infrastructure and apply resources on `matchbox`.
 
 ## matchbox
 
-Install `matchbox` on a dedicated server or Kubernetes cluster. Generate TLS credentials and enable the gRPC API as directed. Save the `ca.crt`, `client.crt`, and `client.key` on your local machine (e.g. `~/.matchbox`).
+Install `matchbox` on a host server or Kubernetes cluster. Generate TLS credentials and enable the gRPC API as directed. Save the `ca.crt`, `client.crt`, and `client.key` on your local machine (e.g. `~/.matchbox`).
 
 * Installing on [Container Linux / other distros](deployment.md)
 * Installing on [Kubernetes](deployment.md#kubernetes)

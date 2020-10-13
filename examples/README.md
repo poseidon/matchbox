@@ -13,41 +13,51 @@ These examples use [Terraform](https://www.terraform.io/intro/) as a client to M
 
 ### Customization
 
-You are encouraged to look through the examples and Terraform modules. Implement your own profiles or package them as modules to meet your needs. We've just provided a starting point. Learn more about [matchbox](../docs/matchbox.md) and [Container Linux configs](../docs/container-linux-config.md).
+Look through the examples and Terraform modules and use them as a starting point. Learn more about [matchbox](../docs/matchbox.md) and [Container Linux configs](../docs/container-linux-config.md).
 
 ## Manual Examples
 
 These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/matchbox/` directory.
 
-| Name       | Description | CoreOS Container Linux Version | FS | Docs |
-|------------|-------------|----------------|----|-----------|
-| simple | CoreOS Container Linux with autologin, using iPXE | stable/1967.3.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| simple-install | CoreOS Container Linux Install, using iPXE | stable/1967.3.0 | RAM | [reference](https://coreos.com/os/docs/latest/booting-with-ipxe.html) |
-| grub | CoreOS Container Linux via GRUB2 Netboot | stable/1967.3.0 | RAM | NA |
-| etcd3 | PXE boot a 3-node etcd3 cluster with proxies | stable/1967.3.0 | RAM | None |
-| etcd3-install | Install a 3-node etcd3 cluster to disk | stable/1967.3.0 | Disk | None |
+| Name          | Description                  | FS  | Docs  |
+|---------------|------------------------------|-----|-------|
+| fedora-coreos | Fedora CoreOS live PXE       | RAM | [docs](https://docs.fedoraproject.org/en-US/fedora-coreos/live-booting-ipxe/) |
+| fedora-coreos-install | Fedora CoreOS install | Disk | [docs](https://docs.fedoraproject.org/en-US/fedora-coreos/bare-metal/) |
+| flatcar       | Flatcar Linux live PXE       | RAM | [docs](https://docs.flatcar-linux.org/os/booting-with-ipxe/) |
+| flatcar-install | Flatcar Linux install      | Disk | [docs](https://docs.flatcar-linux.org/os/booting-with-ipxe/) |
 
 ### Customization
 
-#### Autologin
+For Fedora CoreOS, add an SSH authorized key to Fedora CoreOS Config (`ignition/fedora-coreos.yaml`) and regenerate the Ignition Config.
 
-Example profiles pass the `coreos.autologin` kernel argument. This skips the password prompt for development and troubleshooting and should be removed **before production**.
+```
+variant: fcos
+version: 1.1.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-rsa pub-key-goes-here
+```
 
-## SSH Keys
+```
+podman run -i --rm quay.io/coreos/fcct:release --pretty --strict < fedora-coreos.yaml > fedora-coreos.ign
+```
 
-Example groups allow `ssh_authorized_keys` to be added for the `core` user as metadata. You might also include this directly in your Ignition.
+For Flatcar Linux, add a Matchbox variable to a Group to set the SSH authorized key (or directly update the Container Linux Config).
 
-    # /var/lib/matchbox/groups/default.json
-    {
-        "name": "Example Machine Group",
-        "profile": "pxe",
-        "metadata": {
-            "ssh_authorized_keys": ["ssh-rsa pub-key-goes-here"]
-        }
-    }
+```
+# groups/flatcar-install/flatcar.json
+{
+  "id": "stage-1",
+  "name": "Flatcar Linux",
+  "profile": "flatcar",
+  "selector": {
+    "os": "installed"
+  },
+  "metadata": {
+    "ssh_authorized_keys": ["ssh-rsa pub-key-goes-here"]
+  }
+}
+```
 
-#### Conditional Variables
-
-**"pxe"**
-
-Some examples check the `pxe` variable to determine whether to create a `/dev/sda1` filesystem and partition for PXEing with `root=/dev/sda1` ("pxe":"true") or to write files to the existing filesystem on `/dev/disk/by-label/ROOT` ("pxe":"false").

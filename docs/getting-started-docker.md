@@ -1,8 +1,9 @@
 # Getting started with Docker
 
-In this tutorial, we'll run `matchbox` on your Linux machine with Docker to network boot and provision a cluster of QEMU/KVM Container Linux machines locally. You'll be able to create Kubernetes clusters, etcd3 clusters, and test network setups.
+In this tutorial, we'll run `matchbox` on a Linux machine with Docker to network boot and provision local QEMU/KVM machines as Fedora CoreOS or Flatcar Linux machines. You'll be able to test network setups and Ignition provisioning.
 
-*Note*: To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
+!!! note
+    To provision physical machines, see [network setup](network-setup.md) and [deployment](deployment.md).
 
 ## Requirements
 
@@ -25,10 +26,11 @@ $ git clone https://github.com/poseidon/matchbox.git
 $ cd matchbox
 ```
 
-Download CoreOS Container Linux image assets referenced by the `etcd3` [example](../examples) to `examples/assets`.
+Download Fedora CoreOS or Flatcar Linux image assets to `examples/assets`.
 
 ```sh
-$ ./scripts/get-coreos stable 1967.3.0 ./examples/assets
+$ ./scripts/get-fedora-coreos stable 32.20200923.3.0 ./examples/assets
+$ ./scripts/get-flatcar stable 2605.6.0 ./examples/assets
 ```
 
 For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name.
@@ -45,10 +47,10 @@ For development convenience, add `/etc/hosts` entries for nodes so they may be r
 
 Run the `matchbox` and `dnsmasq` services on the `docker0` bridge. `dnsmasq` will run DHCP, DNS and TFTP services to create a suitable network boot environment. `matchbox` will serve configs to machines as they PXE boot.
 
-The `devnet` convenience script can start these services and accepts the name of any example cluster in [examples](../examples).
+The `devnet` convenience script can start these services and accepts the name of any example in [examples](https://github.com/poseidon/matchbox/tree/master/examples).
 
 ```sh
-$ sudo ./scripts/devnet create etcd3
+$ sudo ./scripts/devnet create fedora-coreos
 ```
 
 Inspect the logs.
@@ -57,7 +59,7 @@ Inspect the logs.
 $ sudo ./scripts/devnet status
 ```
 
-Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of how machines are mapped to Profiles. Explore some endpoints exposed by the service, say for QEMU/KVM node1.
+Inspect the examples and Matchbox endpoints to see how machines (e.g. node1 with MAC `52:54:00:a1:9c:ae`) are mapped to Profiles, and therefore iPXE and Ignition configs.
 
 * iPXE [http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ipxe?mac=52:54:00:a1:9c:ae)
 * Ignition [http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae](http://127.0.0.1:8080/ignition?mac=52:54:00:a1:9c:ae)
@@ -68,7 +70,7 @@ Take a look at the [etcd3 groups](../examples/groups/etcd3) to get an idea of ho
 If you prefer to start the containers yourself, instead of using `devnet`,
 
 ```sh
-$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd3:/var/lib/matchbox/groups:Z quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/fedora-coreos:/var/lib/matchbox/groups:Z quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 $ sudo docker run --name dnsmasq --cap-add=NET_ADMIN -v $PWD/contrib/dnsmasq/docker0.conf:/etc/dnsmasq.conf:Z quay.io/poseidon/dnsmasq -d
 ```
 
@@ -101,15 +103,12 @@ $ sudo ./scripts/libvirt [start|reboot|shutdown|poweroff|destroy]
 
 ## Verify
 
-The VMs should network boot and provision themselves into a three node etcd3 cluster, with other nodes behaving as etcd3 gateways.
+The VMs should network boot and provision themselves as declared.
 
-The example profile added autologin so you can verify that etcd3 works between nodes.
-
-```sh
-$ systemctl status etcd-member
-$ etcdctl set /message hello
-$ etcdctl get /message
 ```
+cat /etc/os-release
+```
+
 ## Clean up
 
 Clean up the containers and VM machines.
@@ -119,6 +118,13 @@ $ sudo ./scripts/devnet destroy
 $ sudo ./scripts/libvirt destroy
 ```
 
-## Going further
+## Going Further
 
-Learn more about [matchbox](matchbox.md) or explore the other [example](../examples) clusters.
+Learn more about [matchbox](matchbox.md) or explore the other [examples](https://github.com/poseidon/matchbox/tree/master/examples).
+
+Try different examples and Ignition declarations:
+
+* Declare an SSH authorized public key (see examples README)
+* Declare a systemd unit
+* Declare file or directory content
+

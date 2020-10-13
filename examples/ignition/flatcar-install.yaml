@@ -21,7 +21,12 @@ storage:
         inline: |
           #!/bin/bash -ex
           curl --retry 10 --fail "{{.ignition_endpoint}}?{{.request.raw_query}}&os=installed" -o ignition.json
-          coreos-install -d /dev/sda -C {{.coreos_channel}} -V {{.coreos_version}} -i ignition.json {{if index . "baseurl"}}-b {{.baseurl}}{{end}}
+          flatcar-install \
+            -d /dev/sda \
+            -C {{.os_channel}} \
+            -V {{.os_version}} \
+            {{- if index . "baseurl"}}-b {{.baseurl}} \{{end}}
+            -i ignition.json
           udevadm settle
           systemctl reboot
 

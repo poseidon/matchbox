@@ -1,0 +1,7 @@
+{
+  "id": "default",
+  "name": "Flatcar Linux",
+  "profile": "flatcar",
+  "selector": {},
+  "metadata": {}
+}
