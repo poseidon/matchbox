@@ -20,13 +20,12 @@ storage:
       contents:
         inline: |
           #!/bin/bash -ex
-          curl --retry 10 "${ignition_endpoint}?{{.request.raw_query}}&os=installed" -o ignition.json
-          coreos-install \
-            -d ${install_disk} \
-            -C ${container_linux_channel} \
-            -V ${container_linux_version} \
-            -o "${container_linux_oem}" \
-            ${baseurl_flag} \
+          curl --retry 10 "{{.ignition_endpoint}}?{{.request.raw_query}}&os=installed" -o ignition.json
+          flatcar-install \
+            -d /dev/sda \
+            -C stable \
+            -V current \
+            {{- if index . "baseurl"}}-b {{.baseurl}} \{{end}}
             -i ignition.json
           udevadm settle
           systemctl reboot
@@ -35,4 +34,3 @@ passwd:
     - name: core
       ssh_authorized_keys:
         - {{.ssh_authorized_key}}
-

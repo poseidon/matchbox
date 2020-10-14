@@ -17,14 +17,14 @@ Matchbox can be installed from a binary or a container image.
 
 ## Tutorials
 
-[Getting started](getting-started.md) provisioning machines with Fedora CoreOS or Flatcar Linux.
+Start provisioning machines with Fedora CoreOS or Flatcar Linux.
 
+* [Terraform Usage](getting-started.md)
+  * Fedora CoreOS (live PXE or PXE install to disk)
+  * Flatcar Linux (live PXE or PXE install to disk)
 * [Local QEMU/KVM](getting-started-docker.md)
     * Fedora CoreOS (live PXE or PXE install to disk)
     * Flatcar Linux (live PXE or PXE install to disk)
-* Clusters
-    * [etcd3](getting-started-docker.md) - Install a 3-node etcd3 cluster
-    * [etcd3](https://github.com/poseidon/matchbox/tree/master/examples/terraform/etcd3-install) - Install a 3-node etcd3 cluster (terraform-based)
 
 ## Related
 

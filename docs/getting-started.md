@@ -1,6 +1,6 @@
 # Getting started
 
-In this tutorial, we'll use `matchbox` with Terraform to provision Container Linux machines.
+In this tutorial, we'll use `matchbox` with Terraform to provision Fedora CoreOS or Flatcar Linux machines.
 
 We'll install the `matchbox` service, setup a PXE network boot environment, and use Terraform configs to declare infrastructure and apply resources on `matchbox`.
 
@@ -8,7 +8,7 @@ We'll install the `matchbox` service, setup a PXE network boot environment, and 
 
 Install `matchbox` on a host server or Kubernetes cluster. Generate TLS credentials and enable the gRPC API as directed. Save the `ca.crt`, `client.crt`, and `client.key` on your local machine (e.g. `~/.matchbox`).
 
-* Installing on [Container Linux / other distros](deployment.md)
+* Installing on a [Linux distro](deployment.md)
 * Installing on [Kubernetes](deployment.md#kubernetes)
 * Running with [docker](deployment.md#docker)
 
@@ -30,115 +30,139 @@ $ openssl s_client -connect matchbox.example.com:8081 \
 
 ## Terraform
 
-Install [Terraform][terraform-dl] v0.11+ on your system.
+Install [Terraform][https://www.terraform.io/downloads.html] v0.13+ on your system.
 
 ```sh
 $ terraform version
-Terraform v0.11.13
+Terraform v0.13.3
 ```
 
-Add the [terraform-provider-matchbox](https://github.com/poseidon/terraform-provider-matchbox) plugin binary for your system to `~/.terraform.d/plugins/`, noting the final name.
+### Examples
 
-```sh
-wget https://github.com/poseidon/terraform-provider-matchbox/releases/download/v0.2.3/terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
-tar xzf terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
-mv terraform-provider-matchbox-v0.2.3-linux-amd64/terraform-provider-matchbox ~/.terraform.d/plugins/terraform-provider-matchbox_v0.2.3
-```
-
-```sh
-$ wget https://github.com/poseidon/terraform-provider-matchbox/releases/download/v0.2.3/terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
-$ tar xzf terraform-provider-matchbox-v0.2.3-linux-amd64.tar.gz
-```
-
-## First cluster
-
-Clone the matchbox source and take a look at the Terraform examples.
+Clone the matchbox source.
 
 ```sh
 $ git clone https://github.com/poseidon/matchbox.git
 $ cd matchbox/examples/terraform
 ```
 
-Let's start with the `simple-install` example. With `simple-install`, any machines which PXE boot from matchbox will install Container Linux to `dev/sda`, reboot, and have your SSH key set. Its not much of a cluster, but we'll get to that later.
+Select from the Terraform [examples](https://github.com/poseidon/matchbox/tree/master/examples/terraform). For example,
+
+* `fedora-coreos-install` - PXE boot, install Fedora CoreOS to disk, reboot, and machines come up with your SSH authorized key set
+* `flatcar-install` - PXE boot, install Flatcar Linux to disk, reboot, and machines come up with your SSH authorized key set
+
+These aren't exactly full clusters, but they show declarations and network provisioning.
 
 ```sh
-$ cd simple-install
+$ cd fedora-coreos-install    # or flatcar-install
 ```
 
-Configure the variables in `variables.tf` by creating a `terraform.tfvars` file.
+!!! note
+    Fedora CoreOS images are only served via HTTPS, so your iPXE firmware must be compiled to support HTTPS downloads.
 
-```hcl
+Let's review the terraform config and learn a bit about Matchbox.
+
+### Provider
+
+Matchbox is configured as a provider platform for bare-metal resources.
+
+```tf
+// Configure the matchbox provider
+provider "matchbox" {
+  endpoint    = var.matchbox_rpc_endpoint
+  client_cert = file("~/.matchbox/client.crt")
+  client_key  = file("~/.matchbox/client.key")
+  ca          = file("~/.matchbox/ca.crt")
+}
+
+terraform {
+  required_providers {
+    ct = {
+      source  = "poseidon/ct"
+      version = "0.6.1"
+    }
+    matchbox = {
+      source = "poseidon/matchbox"
+      version = "0.4.1"
+    }
+  }
+}
+```
+
+### Profiles
+
+Machine profiles specify the kernel, initrd, kernel args, Ignition Config, and other configs (e.g. templated Container Linux Config, Cloud-config, generic) used to network boot and provision a bare-metal machine. The profile below would PXE boot machines using a Fedora CoreOS kernel and initrd (see [assets](api-http.md#assets) to learn about caching for speed), perform a disk install, reboot (first boot from disk), and use a [Fedora CoreOS Config](https://github.com/coreos/fcct/blob/master/docs/configuration-v1_1.md) to generate an Ignition config to provision.
+
+```tf
+// Fedora CoreOS profile
+resource "matchbox_profile" "fedora-coreos-install" {
+  name  = "worker"
+  kernel = "https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-kernel-x86_64"
+  initrd = [
+    "https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-initramfs.x86_64.img",
+    "https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-rootfs.x86_64.img"
+  ]
+
+  args = [
+    "rd.neednet=1",
+    "coreos.inst.install_dev=/dev/sda",
+    "coreos.inst.ignition_url=${var.matchbox_http_endpoint}/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
+    "coreos.inst.image_url=https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-metal.x86_64.raw.xz",
+    "console=tty0",
+    "console=ttyS0",
+  ]
+
+  raw_ignition = data.ct_config.worker-ignition.rendered
+}
+
+data "ct_config" "worker-ignition" {
+  content  = data.template_file.worker-config.rendered
+  strict   = true
+}
+
+data "template_file" "worker-config" {
+  template = file("fcc/fedora-coreos.yaml")
+  vars = {
+    ssh_authorized_key     = var.ssh_authorized_key
+  }
+}
+```
+
+### Groups
+
+Matcher groups match machines based on labels like MAC, UUID, etc. to different profiles and templates in machine-specific values. The group below does not have a `selector` block, so any machines which network boot from Matchbox will match this group and be provisioned using the `fedora-coreos-install` profile. Machines are matched to the most specific matching group.
+
+```tf
+// Default matcher group for machines
+resource "matchbox_group" "default" {
+  name    = "default"
+  profile = matchbox_profile.fedora-coreos-install.name
+}
+```
+
+### Variables
+
+Some Terraform [variables](https://www.terraform.io/docs/configuration/variables.html) are used in the examples. A quick way to set their value is by creating a `terraform.tfvars` file.
+
+```
+cp terraform.tfvars.example terraform.tfvars
+```
+
+```tf
 matchbox_http_endpoint = "http://matchbox.example.com:8080"
 matchbox_rpc_endpoint = "matchbox.example.com:8081"
 ssh_authorized_key = "YOUR_SSH_KEY"
 ```
 
-Terraform can now interact with the matchbox service and create resources.
-
-```sh
-$ terraform plan
-Plan: 4 to add, 0 to change, 0 to destroy.
-```
-
-Let's review the terraform config and learn a bit about matchbox.
-
-#### Provider
-
-Matchbox is configured as a provider platform for bare-metal resources.
-
-```hcl
-// Configure the matchbox provider
-provider "matchbox" {
-  endpoint = "${var.matchbox_rpc_endpoint}"
-  client_cert = "${file("~/.matchbox/client.crt")}"
-  client_key = "${file("~/.matchbox/client.key")}"
-  ca         = "${file("~/.matchbox/ca.crt")}"
-}
-```
-
-#### Profiles
-
-Machine profiles specify the kernel, initrd, kernel args, Container Linux Config, Cloud-config, or other configs used to network boot and provision a bare-metal machine. This profile will PXE boot machines using the current stable Container Linux kernel and initrd (see [assets](api-http.md#assets) to learn about caching for speed) and supply a Container Linux Config specifying that a disk install and reboot should be performed. Learn more about [Container Linux configs](https://coreos.com/os/docs/latest/configuration.html).
-
-```hcl
-// Create a CoreOS-install profile
-resource "matchbox_profile" "coreos-install" {
-  name = "coreos-install"
-  kernel = "https://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz"
-  initrd = [
-    "https://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz"
-  ]
-  args = [
-    "coreos.config.url=${var.matchbox_http_endpoint}/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
-    "coreos.first_boot=yes",
-    "console=tty0",
-    "console=ttyS0",
-  ]
-  container_linux_config = "${file("./cl/coreos-install.yaml.tmpl")}"
-}
-```
-
-#### Groups
-
-Matcher groups match machines based on labels like MAC, UUID, etc. to different profiles and templates in machine-specific values. This group does not have a `selector` block, so any machines which network boot from matchbox will match this group and be provisioned using the `coreos-install` profile. Machines are matched to the most specific matching group.
-
-```hcl
-resource "matchbox_group" "default" {
-  name = "default"
-  profile = "${matchbox_profile.coreos-install.name}"
-  # no selector means all machines can be matched
-  metadata {
-    ignition_endpoint = "${var.matchbox_http_endpoint}/ignition"
-    ssh_authorized_key = "${var.ssh_authorized_key}"
-  }
-}
-```
-
 ### Apply
 
-Apply the terraform configuration.
+Initialize the Terraform workspace. Then plan and apply the resources.
 
-```sh
+```
+terraform init
+```
+
+```
 $ terraform apply
 Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 ```
@@ -148,13 +172,12 @@ Matchbox serves configs to machines and respects query parameters, if you're int
 * iPXE default - [/ipxe](http://matchbox.example.com:8080/ipxe)
 * Ignition default - [/ignition](http://matchbox.example.com:8080/ignition)
 * Ignition post-install - [/ignition?os=installed](http://matchbox.example.com:8080/ignition?os=installed)
-* GRUB default - [/grub](http://matchbox.example.com:8080/grub)
 
 ## Network
 
-Matchbox can integrate with many on-premise network setups. It does not seek to be the DHCP server, TFTP server, or DNS server for the network. Instead, matchbox serves iPXE scripts and GRUB configs as the entrypoint for provisioning network booted machines. PXE clients are supported by chainloading iPXE firmware.
+Matchbox can integrate with many on-premise network setups. It does not seek to be the DHCP server, TFTP server, or DNS server for the network. Instead, matchbox serves iPXE scripts as the entrypoint for provisioning network booted machines. PXE clients are supported by chainloading iPXE firmware.
 
-In the simplest case, an iPXE-enabled network can chain to matchbox,
+In the simplest case, an iPXE-enabled network can chain to Matchbox,
 
 ```
 # /var/www/html/ipxe/default.ipxe
@@ -179,20 +202,19 @@ $ ipmitool -H node1.example.com -U USER -P PASS chassis bootdev pxe
 $ ipmitool -H node1.example.com -U USER -P PASS power on
 ```
 
-Each machine should chainload iPXE, delegate to `matchbox`, receive its iPXE config (or other supported configs) and begin the provisioning process. The `simple-install` example assumes your machines are configured to boot from disk first and PXE only when requested, but you can write profiles for different cases.
+Each machine should chainload iPXE, delegate to Matchbox, receive its iPXE config (or other supported configs) and begin the provisioning process. The examples assume machines are configured to boot from disk first and PXE only when requested, but you can write profiles for different cases.
 
-Once the Container Linux install completes and the machine reboots you can SSH,
+Once the install completes and the machine reboots, you can SSH.
 
 ```ssh
 $ ssh core@node1.example.com
 ```
 
-To re-provision the machine for another purpose, run `terraform apply` and PXE boot it again.
+To re-provision the machine for another purpose, run `terraform apply` and PXE boot machines again.
 
 ## Going Further
 
-Matchbox can be used to provision multi-node Container Linux clusters at one or many on-premise sites if deployed in an HA way. Machines can be matched individually by MAC address, UUID, region, or other labels you choose. Installs can be made much faster by caching images in the built-in HTTP [assets](api-http.md#assets) server.
+Matchbox can be used to provision multi-node Fedora CoreOS or Flatcar Linux clusters at one or many on-premise sites if deployed in an HA way. Machines can be matched individually by MAC address, UUID, region, or other labels you choose. Installs can be made much faster by caching images in the built-in HTTP [assets](api-http.md#assets) server.
 
-[Container Linux configs](https://coreos.com/os/docs/latest/configuration.html) can be used to partition disks and filesystems, write systemd units, write networkd configs or regular files, and create users. Container Linux nodes can be provisioned into a system that meets your needs. Checkout the examples which create a 3 node [etcd](../examples/terraform/etcd3-install) cluster or a 3 node [Kubernetes](../examples/terraform/bootkube-install) cluster.
+[Ignition](https://github.com/coreos/ignition) can be used to partition disks and filesystems, write systemd units, write networkd configs or regular files, and create users. Nodes can be network provisioned into a complete cluster system that meets your needs. For example, see [Typhoon](https://typhoon.psdn.io/fedora-coreos/bare-metal/).
 
-[terraform-dl]: https://www.terraform.io/downloads.html

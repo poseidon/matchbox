@@ -1,14 +1,26 @@
 variable "matchbox_http_endpoint" {
-  type        = "string"
+  type        = string
   description = "Matchbox HTTP read-only endpoint (e.g. http://matchbox.example.com:8080)"
 }
 
 variable "matchbox_rpc_endpoint" {
-  type        = "string"
+  type        = string
   description = "Matchbox gRPC API endpoint, without the protocol (e.g. matchbox.example.com:8081)"
 }
 
+variable "os_stream" {
+  type        = string
+  description = "Fedora CoreOS release stream (e.g. testing, stable)"
+  default     = "stable"
+}
+
+variable "os_version" {
+  type        = string
+  description = "Fedora CoreOS version to PXE and install (e.g. 32.20200923.3.0)"
+}
+
 variable "ssh_authorized_key" {
-  type        = "string"
+  type        = string
   description = "SSH public key to set as an authorized_key on machines"
 }
+

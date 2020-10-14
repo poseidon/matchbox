@@ -8,10 +8,9 @@ This guide walks through deploying the `matchbox` service on a Linux host (as a 
 
 Choose one of the supported installation options:
 
-* [CoreOS Container Linux](#coreos-container-linux)
 * [Generic Linux (binary)](#generic-linux)
-* [With docker](#docker)
 * [Kubernetes Service](#kubernetes)
+* [With docker](#docker)
 
 ## Download
 
@@ -118,7 +117,7 @@ Export `SAN` to set the Subject Alt Names which should be used in certificates. 
 
 ```sh
 # DNS or IP Subject Alt Names where matchbox runs
-$ export SAN=DNS.1:matchbox.example.com,IP.1:172.18.0.2
+$ export SAN=DNS.1:matchbox.example.com,IP.1:172.17.0.2
 ```
 
 Generate a `ca.crt`, `server.crt`, `server.key`, `client.crt`, and `client.key`.
