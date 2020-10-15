@@ -12,7 +12,7 @@ Matchbox is a service that matches bare-metal machines to profiles that PXE boot
 
 Matchbox can be installed from a binary or a container image.
 
-* Install Matchbox on [Kubernetes](deployment.md#kubernetes), on a [Linux](deployment.md) host, or as a [container](deployment.md#docker)
+* Install Matchbox as a [binary](deployment.md#matchbox-binary), as a [container image](deployment.md#container-image), or on [Kubernetes](deployment.md#kubernetes)
 * Setup a PXE-enabled [network](network-setup.md)
 
 ## Tutorials

@@ -172,7 +172,7 @@ matchbox.foo/assets/
 
 For example, a `Profile` might refer to a local asset `/assets/coreos/VERSION/coreos_production_pxe.vmlinuz` instead of `http://stable.release.core-os.net/amd64-usr/VERSION/coreos_production_pxe.vmlinuz`.
 
-See the [get-coreos](https://github.com/poseidon/matchbox/blob/master/scripts/get-coreos) script to quickly download, verify, and place Container Linux assets.
+See the [get-fedora-coreos](https://github.com/poseidon/matchbox/blob/master/scripts/get-fedora-coreos) or [get-flatcar](https://github.com/poseidon/matchbox/blob/master/scripts/get-flatcar) scripts to quickly download, verify, and place image assets.
 
 ## Network
 

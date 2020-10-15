@@ -18,9 +18,8 @@ cp README.md $DEST
 
 # scripts
 mkdir -p $SCRIPTS/tls
-cp scripts/get-coreos $SCRIPTS
-cp scripts/get-coreos $SCRIPTS
-cp scripts/get-coreos $SCRIPTS
+cp scripts/get-fedora-coreos $SCRIPTS
+cp scripts/get-flatcar $SCRIPTS
 cp scripts/tls/README.md $SCRIPTS/tls
 cp scripts/tls/cert-gen $SCRIPTS/tls
 cp scripts/tls/openssl.conf $SCRIPTS/tls

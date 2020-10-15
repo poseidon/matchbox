@@ -1,12 +1,12 @@
 [Unit]
-Description=CoreOS matchbox Server
-Documentation=https://github.com/coreos/matchbox
+Description=Matchbox Server
+Documentation=https://github.com/poseidon/matchbox
 
 [Service]
 User=matchbox
 Group=matchbox
 Environment="MATCHBOX_ADDRESS=0.0.0.0:8080"
-ExecStart=/usr/bin/matchbox
+ExecStart=/usr/local/bin/matchbox
 
 # systemd.exec
 ProtectHome=yes

@@ -2,15 +2,22 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: matchbox
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: public
+  # tls ... optional
   rules:
     - host: matchbox.example.com
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: matchbox
-              servicePort: 8080
+              service:
+                name: matchbox
+                port:
+                  number: 8080
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -19,6 +26,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
+  ingressClassName: public
   tls:
     - hosts:
         - matchbox-rpc.example.com
@@ -27,6 +35,9 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: matchbox
-              servicePort: 8081
+              service:
+                name: matchbox
+                port:
+                  number: 8081

@@ -6,7 +6,6 @@ spec:
   type: ClusterIP
   selector:
     name: matchbox
-    phase: prod
   ports:
     - name: http
       protocol: TCP

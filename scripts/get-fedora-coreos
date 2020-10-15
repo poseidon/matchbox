@@ -5,7 +5,7 @@
 set -eou pipefail
 
 STREAM=${1:-"stable"}
-VERSION=${2:-"31.20200113.3.1"}
+VERSION=${2:-"32.20200923.3.0"}
 DEST_DIR=${3:-"$PWD/examples/assets"}
 DEST=$DEST_DIR/fedora-coreos
 BASE_URL=https://builds.coreos.fedoraproject.org/prod/streams/$STREAM/builds/$VERSION/x86_64

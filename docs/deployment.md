@@ -4,41 +4,43 @@ This guide walks through deploying the `matchbox` service on a Linux host (as a 
 
 ## Provisoner
 
-`matchbox` is a service for network booting and provisioning machines to create CoreOS Container Linux clusters. `matchbox` should be installed on a provisioner machine (Container Linux or any Linux distribution) or cluster (Kubernetes) which can serve configs to client machines in a lab or datacenter.
+Matchbox is a service for network booting and provisioning machines to create Fedora CoreOS or Flatcar Linux clusters. Matchbox may installed on a host server or Kubernetes cluster that can serve configs to client machines in a lab or datacenter.
 
 Choose one of the supported installation options:
 
-* [Generic Linux (binary)](#generic-linux)
-* [Kubernetes Service](#kubernetes)
-* [With docker](#docker)
+* [Matchbox binary](#matchbox-binary)
+* [Container image](#container-image)
+* [Kubernetes manifests](#kubernetes)
 
 ## Download
 
-Download the latest matchbox [release](https://github.com/poseidon/matchbox/releases) to the provisioner host.
+Download the latest Matchbox [release](https://github.com/poseidon/matchbox/releases).
 
 ```sh
-$ wget https://github.com/poseidon/matchbox/releases/download/v0.8.3/matchbox-v0.8.3-linux-amd64.tar.gz
-$ wget https://github.com/poseidon/matchbox/releases/download/v0.8.3/matchbox-v0.8.3-linux-amd64.tar.gz.asc
+$ wget https://github.com/poseidon/matchbox/releases/download/v0.9.0/matchbox-v0.9.0-linux-amd64.tar.gz
+$ wget https://github.com/poseidon/matchbox/releases/download/v0.9.0/matchbox-v0.9.0-linux-amd64.tar.gz.asc
 ```
 
 Verify the release has been signed by Dalton Hubble's GPG [Key](https://keyserver.ubuntu.com/pks/lookup?search=0x8F515AD1602065C8&op=vindex)'s signing subkey.
 
 ```sh
 $ gpg --keyserver keyserver.ubuntu.com --recv-key 2E3D92BF07D9DDCCB3BAE4A48F515AD1602065C8
-$ gpg --verify matchbox-v0.8.3-linux-amd64.tar.gz.asc matchbox-v0.8.3-linux-amd64.tar.gz
+$ gpg --verify matchbox-v0.9.0-linux-amd64.tar.gz.asc matchbox-v0.9.0-linux-amd64.tar.gz
 gpg: Good signature from "Dalton Hubble <dghubble@gmail.com>"
 ```
 
 Untar the release.
 
 ```sh
-$ tar xzvf matchbox-v0.8.3-linux-amd64.tar.gz
-$ cd matchbox-v0.8.3-linux-amd64
+$ tar xzvf matchbox-v0.9.0-linux-amd64.tar.gz
+$ cd matchbox-v0.9.0-linux-amd64
 ```
 
 ## Install
 
-### Generic Linux
+Run Matchbox as a binary, a container image, or on Kubernetes.
+
+### Matchbox Binary
 
 Pre-built binaries are available for generic Linux distributions. Copy the `matchbox` static binary to an appropriate location on the host.
 
@@ -61,12 +63,12 @@ $ sudo chown -R matchbox:matchbox /var/lib/matchbox
 Copy the provided `matchbox` systemd unit file.
 
 ```sh
-$ sudo cp contrib/systemd/matchbox-local.service /etc/systemd/system/matchbox.service
+$ sudo cp contrib/systemd/matchbox.service /etc/systemd/system/matchbox.service
 ```
 
-## Customization
+#### systemd dropins
 
-Customize matchbox by editing the systemd unit or adding a systemd dropin. Find the complete set of `matchbox` flags and environment variables at [config](config.md).
+Customize Matchbox by editing the systemd unit or adding a systemd dropin. Find the complete set of `matchbox` flags and environment variables at [config](config.md).
 
 ```sh
 $ sudo systemctl edit matchbox
@@ -91,6 +93,70 @@ Environment="MATCHBOX_RPC_ADDRESS=0.0.0.0:8081"
 ```
 
 Customize `matchbox` to suit your preferences.
+
+#### Start
+
+Start the Matchbox service and enable it if you'd like it to start on every boot.
+
+```
+$ sudo systemctl daemon-reload
+$ sudo systemctl start matchbox
+$ sudo systemctl enable matchbox
+```
+
+### Container Image
+
+Run the container image with Podman,
+
+```
+mkdir -p /var/lib/matchbox/assets
+podman run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:v0.9.0 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+```
+
+Or with Docker,
+
+```
+mkdir -p /var/lib/matchbox/assets
+sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:v0.9.0 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+```
+
+Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.
+
+### Kubernetes
+
+Install Matchbox on a Kubernetes cluster with the example manifests.
+
+```sh
+$ kubectl apply -R -f contrib/k8s
+$ kubectl get services
+NAME                 CLUSTER-IP   EXTERNAL-IP   PORT(S)             AGE
+matchbox             10.3.0.145   <none>        8080/TCP,8081/TCP   46m
+```
+
+Example manifests in [contrib/k8s](../contrib/k8s) enable the gRPC API to allow client apps to update matchbox objects. Generate TLS server credentials for `matchbox-rpc.example.com` [as shown](#generate-tls-credentials) and create a Kubernetes secret. Alternately, edit the example manifests if you don't need the gRPC API enabled.
+
+```sh
+$ kubectl create secret generic matchbox-rpc --from-file=ca.crt --from-file=server.crt --from-file=server.key
+```
+
+Create an Ingress resource to expose the HTTP read-only and gRPC API endpoints. The Ingress example requires the cluster to have a functioning [Nginx Ingress Controller](https://github.com/kubernetes/ingress).
+
+```sh
+$ kubectl create -f contrib/k8s/matchbox-ingress.yaml
+$ kubectl get ingress
+NAME      HOSTS                                          ADDRESS            PORTS     AGE
+matchbox       matchbox.example.com                      10.128.0.3,10...   80        29m
+matchbox-rpc   matchbox-rpc.example.com                  10.128.0.3,10...   80, 443   29m
+```
+
+Add DNS records `matchbox.example.com` and `matchbox-rpc.example.com` to route traffic to the Ingress Controller.
+
+Verify `http://matchbox.example.com` responds with the text "matchbox" and verify gRPC clients can connect to `matchbox-rpc.example.com:443`.
+
+```sh
+$ curl http://matchbox.example.com
+$ openssl s_client -connect matchbox-rpc.example.com:443 -CAfile ca.crt -cert client.crt -key client.key
+```
 
 ## Firewall
 
@@ -141,22 +207,12 @@ $ mkdir -p ~/.matchbox
 $ cp client.crt client.key ca.crt ~/.matchbox/
 ```
 
-## Start matchbox
-
-Start the `matchbox` service and enable it if you'd like it to start on every boot.
-
-```sh
-$ sudo systemctl daemon-reload
-$ sudo systemctl start matchbox
-$ sudo systemctl enable matchbox
-```
-
 ## Verify
 
 Verify the matchbox service is running and can be reached by client machines (those being provisioned).
 
 ```sh
-$ systemctl status matchbox
+$ systemctl status matchbox   # Matchbox binary method
 $ dig matchbox.example.com
 ```
 
@@ -184,43 +240,47 @@ Certificate chain
 ....
 ```
 
-## Download Container Linux (optional)
+## Download Images (optional)
 
-`matchbox` can serve Container Linux images in development or lab environments to reduce bandwidth usage and increase the speed of Container Linux PXE boots and installs to disk.
+Matchbox can serve OS images in development or lab environments to reduce bandwidth usage and increase the speed of PXE boots and installs to disk.
 
-Download a recent Container Linux [release](https://coreos.com/releases/) with signatures.
+Download a recent Fedora CoreOS or Flatcar Linux release.
 
-```sh
-$ ./scripts/get-coreos stable 1967.3.0 .     # note the "." 3rd argument
+```
+$ ./scripts/get-fedora-coreos stable 32.20200923.3.0 .
+$ ./scripts/get-flatcar stable 2605.6.0 .
 ```
 
 Move the images to `/var/lib/matchbox/assets`,
 
-```sh
-$ sudo cp -r coreos /var/lib/matchbox/assets
 ```
+/var/lib/matchbox/assets/fedora-coreos/
+├── fedora-coreos-32.20200923.3.0-live-initramfs.x86_64.img
+├── fedora-coreos-32.20200923.3.0-live-kernel-x86_64
+├── fedora-coreos-32.20200923.3.0-live-rootfs.x86_64.img
+├── fedora-coreos-32.20200923.3.0-metal.x86_64.raw.xz
+└── fedora-coreos-32.20200923.3.0-metal.x86_64.raw.xz.sig
 
-```
-/var/lib/matchbox/assets/
-├── coreos
-│   └── 1967.3.0
-│       ├── CoreOS_Image_Signing_Key.asc
-│       ├── coreos_production_image.bin.bz2
-│       ├── coreos_production_image.bin.bz2.sig
-│       ├── coreos_production_pxe_image.cpio.gz
-│       ├── coreos_production_pxe_image.cpio.gz.sig
-│       ├── coreos_production_pxe.vmlinuz
-│       └── coreos_production_pxe.vmlinuz.sig
+/var/lib/matchbox/assets/flatcar/
+└── 2605.6.0
+    ├── Flatcar_Image_Signing_Key.asc
+    ├── flatcar_production_image.bin.bz2
+    ├── flatcar_production_image.bin.bz2.sig
+    ├── flatcar_production_pxe_image.cpio.gz
+    ├── flatcar_production_pxe_image.cpio.gz.sig
+    ├── flatcar_production_pxe.vmlinuz
+    ├── flatcar_production_pxe.vmlinuz.sig
+    └── version.txt
 ```
 
 and verify the images are acessible.
 
 ```sh
-$ curl http://matchbox.example.com:8080/assets/coreos/1967.3.0/
+$ curl http://matchbox.example.com:8080/assets/fedora-coreos/
 <pre>...
 ```
 
-For large production environments, use a cache proxy or mirror suitable for your environment to serve Container Linux images.
+For large production environments, use a cache proxy or mirror suitable for your environment to serve images.
 
 ## Network
 
@@ -232,63 +292,17 @@ Review [network setup](https://github.com/poseidon/matchbox/blob/master/docs/net
 
 Poseidon provides [dnsmasq](https://github.com/poseidon/matchbox/tree/master/contrib/dnsmasq) as `quay.io/poseidon/dnsmasq`.
 
-## Container Image
+# TLS
 
-Run the container image.
+Matchbox can serve the read-only HTTP API with TLS.
 
-```sh
-$ mkdir -p /var/lib/matchbox/assets
-$ sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:latest -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
-```
+| Name           | Type   | Description |
+|----------------|--------|-------------|
+| -web-ssl       | bool   | true/false  |
+| -web-cert-file | string | Path to the server TLS certificate file |
+| -web-key-file  | string | Path to the server TLS key file |
 
-Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.
-
-## Kubernetes
-
-Install `matchbox` on a Kubernetes cluster by creating a deployment and service.
-
-```sh
-$ kubectl apply -f contrib/k8s/matchbox-deployment.yaml
-$ kubectl apply -f contrib/k8s/matchbox-service.yaml
-$ kubectl get services
-NAME                 CLUSTER-IP   EXTERNAL-IP   PORT(S)             AGE
-matchbox             10.3.0.145   <none>        8080/TCP,8081/TCP   46m
-```
-
-Example manifests in [contrib/k8s](../contrib/k8s) enable the gRPC API to allow client apps to update matchbox objects. Generate TLS server credentials for `matchbox-rpc.example.com` [as shown](#generate-tls-credentials) and create a Kubernetes secret. Alternately, edit the example manifests if you don't need the gRPC API enabled.
-
-```sh
-$ kubectl create secret generic matchbox-rpc --from-file=ca.crt --from-file=server.crt --from-file=server.key
-```
-
-Create an Ingress resource to expose the HTTP read-only and gRPC API endpoints. The Ingress example requires the cluster to have a functioning [Nginx Ingress Controller](https://github.com/kubernetes/ingress).
-
-```sh
-$ kubectl create -f contrib/k8s/matchbox-ingress.yaml
-$ kubectl get ingress
-NAME      HOSTS                                          ADDRESS            PORTS     AGE
-matchbox       matchbox.example.com                      10.128.0.3,10...   80        29m
-matchbox-rpc   matchbox-rpc.example.com                  10.128.0.3,10...   80, 443   29m
-```
-
-Add DNS records `matchbox.example.com` and `matchbox-rpc.example.com` to route traffic to the Ingress Controller.
-
-Verify `http://matchbox.example.com` responds with the text "matchbox" and verify gRPC clients can connect to `matchbox-rpc.example.com:443`.
-
-```sh
-$ curl http://matchbox.example.com
-$ openssl s_client -connect matchbox-rpc.example.com:443 -CAfile ca.crt -cert client.crt -key client.key
-```
-
-# HTTPS - The read-only Matchbox API is also available with HTTPS
-
-To start matchbox in this mode you will need the following flags set:
-
-| Name           | Type   | Description                                                   |
-|----------------|--------|---------------------------------------------------------------|
-| -web-ssl       | bool   | true/false                                                    |
-| -web-cert-file | string | Path to the server TLS certificate file                       |
-| -web-key-file  | string | Path to the server TLS key file                               |
+However, it is more common to use an Ingress Controller (Kubernetes) to terminate TLS.
 
 ### Operational notes
 

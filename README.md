@@ -18,7 +18,7 @@
 
 Matchbox can be installed from a binary or a container image.
 
-* Install Matchbox on [Kubernetes](docs/deployment.md#kubernetes), on a [Linux](docs/deployment.md) host, or as a [container](docs/deployment.md#docker)
+* Install Matchbox as a [binary](docs/deployment.md#matchbox-binary), as a [container image](docs/deployment.md#container-image), or on [Kubernetes](docs/deployment.md#kubernetes)
 * Setup a PXE-enabled [network](docs/network-setup.md)
 
 ## Tutorials
