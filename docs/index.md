@@ -20,8 +20,8 @@ Matchbox can be installed from a binary or a container image.
 Start provisioning machines with Fedora CoreOS or Flatcar Linux.
 
 * [Terraform Usage](getting-started.md)
-  * Fedora CoreOS (live PXE or PXE install to disk)
-  * Flatcar Linux (live PXE or PXE install to disk)
+    * Fedora CoreOS (live PXE or PXE install to disk)
+    * Flatcar Linux (live PXE or PXE install to disk)
 * [Local QEMU/KVM](getting-started-docker.md)
     * Fedora CoreOS (live PXE or PXE install to disk)
     * Flatcar Linux (live PXE or PXE install to disk)
