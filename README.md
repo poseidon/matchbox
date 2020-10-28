@@ -12,7 +12,7 @@
 
 * [Docs](https://matchbox.psdn.io/)
 * [Configuration](docs/config.md)
-* [HTTP API](docs/api-http.md) / [gRPC API](docs/grpc-api.md)
+* [HTTP API](docs/api-http.md) / [gRPC API](docs/api-grpc.md)
 
 ## Installation
 
