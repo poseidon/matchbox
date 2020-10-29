@@ -4,6 +4,8 @@ Notable changes between releases.
 
 ## Latest
 
+* Build multi-arch container images (amd64, arm64) ([#823](https://github.com/poseidon/matchbox/pull/823))
+
 ## v0.9.0
 
 * Refresh docs and examples for Fedora CoreOS and Flatcar Linux ([#815](https://github.com/poseidon/matchbox/pull/815), [#816](https://github.com/poseidon/matchbox/pull/816))
