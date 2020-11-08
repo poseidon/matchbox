@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # USAGE: ./scripts/get-flatcar
-# USAGE: ./scripts/get-flatcar channel version dest
+# USAGE: ./scripts/get-flatcar channel version dest arch
 #
 # ENV VARS:
 # - OEM_ID - specify OEM image id to download, alongside the default one
@@ -11,13 +11,14 @@ GPG=${GPG:-/usr/bin/gpg}
 CHANNEL=${1:-"stable"}
 VERSION=${2:-"current"}
 DEST_DIR=${3:-"$PWD/examples/assets"}
+ARCH=${4:-"amd64"}
 OEM_ID=${OEM_ID:-""}
 DEST=$DEST_DIR/flatcar/$VERSION
-BASE_URL=https://$CHANNEL.release.flatcar-linux.net/amd64-usr/$VERSION
+BASE_URL=https://$CHANNEL.release.flatcar-linux.net/$ARCH-usr/$VERSION
 
 # check channel/version exist based on the header response
 if ! curl -s -I "${BASE_URL}/flatcar_production_pxe.vmlinuz" | grep -q -E '^HTTP/[0-9.]+ [23][0-9][0-9]'; then
-  echo "Channel or Version not found"
+  echo "Channel, Arch, or Version not found"
   exit 1
 fi
 
