@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Manage VM nodes which have a specific set of hardware attributes.
 
-VM_MEMORY=${VM_MEMORY:-2048}
+VM_MEMORY=${VM_MEMORY:-3048}
 VM_DISK=${VM_DISK:-10}
 
 if [ "$EUID" -ne 0 ]
@@ -49,10 +49,10 @@ NODE3_MAC=52:54:00:c3:61:77
 function create_docker {
   virt-install --name $NODE1_NAME --network=bridge:docker0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE2_NAME --network=bridge:docker0,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,network
-  virt-install --name $NODE3_NAME --network=bridge:docker0,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,network
+  # virt-install --name $NODE3_NAME --network=bridge:docker0,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,network
 }
 
-nodes=(node1 node2 node3)
+nodes=(node1 node2)
 
 function start {
   for node in ${nodes[@]}; do

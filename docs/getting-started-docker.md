@@ -29,7 +29,7 @@ $ cd matchbox
 Download Fedora CoreOS or Flatcar Linux image assets to `examples/assets`.
 
 ```sh
-$ ./scripts/get-fedora-coreos stable 32.20200923.3.0 ./examples/assets
+$ ./scripts/get-fedora-coreos stable 33.20210117.3.2 ./examples/assets
 $ ./scripts/get-flatcar stable 2605.6.0 ./examples/assets
 ```
 

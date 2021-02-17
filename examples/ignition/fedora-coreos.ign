@@ -7,7 +7,7 @@
       {
         "name": "core",
         "sshAuthorizedKeys": [
-          "ssh-rsa SET_PUBKEY_HERE"
+          "ssh-ed25519 SET_PUBKEY_HERE"
         ]
       }
     ]
