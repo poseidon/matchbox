@@ -16,7 +16,7 @@ require (
 	go4.org v0.0.0-20160314031811-03efcb870d84 // indirect
 	golang.org/x/crypto v0.0.0-20210317152858-513c2a44f670
 	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4
-	google.golang.org/grpc v1.37.0
+	google.golang.org/grpc v1.37.1
 )
 
 go 1.13
