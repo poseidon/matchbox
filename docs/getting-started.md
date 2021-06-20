@@ -30,7 +30,7 @@ $ openssl s_client -connect matchbox.example.com:8081 \
 
 ## Terraform
 
-Install [Terraform][https://www.terraform.io/downloads.html] v0.13+ on your system.
+Install [Terraform](https://www.terraform.io/downloads.html) v0.13+ on your system.
 
 ```sh
 $ terraform version
