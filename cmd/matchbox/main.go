@@ -29,6 +29,7 @@ func main() {
 		rpcAddress   string
 		dataPath     string
 		assetsPath   string
+        filesDir     string
 		logLevel     string
 		grpcCAFile   string
 		grpcCertFile string
@@ -44,6 +45,9 @@ func main() {
 	flag.StringVar(&flags.rpcAddress, "rpc-address", "", "RPC listen address")
 	flag.StringVar(&flags.dataPath, "data-path", "/var/lib/matchbox", "Path to data directory")
 	flag.StringVar(&flags.assetsPath, "assets-path", "/var/lib/matchbox/assets", "Path to static assets")
+
+    // From ct: local files dir
+    flag.StringVar(&flags.filesDir, "files-dir", "/var/lib/matchbox/files", "Directory to read local files from")
 
 	// Log levels https://github.com/sirupsen/logrus/blob/master/logrus.go#L36
 	flag.StringVar(&flags.logLevel, "log-level", "info", "Set the logging level")
