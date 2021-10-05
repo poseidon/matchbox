@@ -1,5 +1,7 @@
 module github.com/poseidon/matchbox
 
+go 1.16
+
 require (
 	github.com/ajeddeloh/go-json v0.0.0-20160803184958-73d058cf8437 // indirect
 	github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd // indirect
@@ -20,5 +22,3 @@ require (
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 	google.golang.org/grpc v1.41.0
 )
-
-go 1.13
