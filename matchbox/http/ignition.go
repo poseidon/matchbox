@@ -5,9 +5,13 @@ import (
 	"net/http"
 	"strings"
 
-	ct "github.com/coreos/container-linux-config-transpiler/config"
+	ct "github.com/coreos/butane/config"
+	"github.com/coreos/butane/config/common"
+	"github.com/coreos/go-semver/semver"
 	ignition "github.com/coreos/ignition/config/v2_2"
+	flatcar_ct "github.com/kinvolk/container-linux-config-transpiler/config"
 	"github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v3"
 
 	"github.com/poseidon/matchbox/matchbox/server"
 	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
@@ -88,24 +92,59 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 			return
 		}
 
-		// Parse bytes into a Container Linux Config
-		config, ast, report := ct.Parse(buf.Bytes())
-		if report.IsFatal() {
-			s.logger.Errorf("error parsing Container Linux config: %s", report.String())
+		// translate Container Linux Config
+		// TODO - hand off variant: * and version: 3.x+ configs to butane
+		b := buf.Bytes()
+		ignitionVersion := &struct {
+			Version string `yaml:"version"`
+			Variant string `yaml:"variant"`
+		}{}
+		err = yaml.Unmarshal(b, ignitionVersion)
+		if err != nil {
+			s.logger.Errorf("error decoding ignition version/variant from Container Linux config: %s", err.Error())
 			http.NotFound(w, req)
 			return
 		}
-
-		// Convert Container Linux Config into an Ignition Config
-		ign, report := ct.Convert(config, "", ast)
-		if report.IsFatal() {
-			s.logger.Errorf("error converting Container Linux config: %s", report.String())
-			http.NotFound(w, req)
-			return
+		var parsedIgnitionVersion *semver.Version
+		if len(ignitionVersion.Version) > 0 {
+			parsedIgnitionVersion, err = semver.NewVersion(ignitionVersion.Version)
+			if err != nil {
+				s.logger.Errorf("error parsing ignition version from Container Linux config: %s", err.Error())
+				http.NotFound(w, req)
+				return
+			}
 		}
 
-		s.renderJSON(w, ign)
-		return
+		if parsedIgnitionVersion == nil ||
+			ignitionVersion.Variant == "flatcar" {
+			// assume flatcar
+			config, ast, report := flatcar_ct.Parse(b)
+			if report.IsFatal() {
+				s.logger.Errorf("error converting Container Linux config: %s", report.String())
+				http.NotFound(w, req)
+				return
+			}
+			ign, report := flatcar_ct.Convert(config, "", ast)
+			if report.IsFatal() {
+				s.logger.Errorf("error converting Container Linux config: %s", report.String())
+				http.NotFound(w, req)
+				return
+			}
+			s.renderJSON(w, ign)
+		} else {
+			// assume FCOS
+			ign, report, err := ct.TranslateBytes(b, common.TranslateBytesOptions{})
+			if report.IsFatal() {
+				s.logger.Errorf("error converting Container Linux config: %s", report.String())
+				http.NotFound(w, req)
+				return
+			} else if err != nil {
+				s.logger.Errorf("error converting Container Linux config: %s", err.Error())
+				http.NotFound(w, req)
+				return
+			}
+			s.writeJSON(w, ign)
+		}
 	}
 	return http.HandlerFunc(fn)
 }

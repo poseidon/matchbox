@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"context"
+
 	logtest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
@@ -64,6 +65,31 @@ func TestIgnitionHandler_V2_2_JSON(t *testing.T) {
 	assert.Equal(t, content, w.Body.String())
 }
 
+func TestIgnitionHandler_V3_0_JSON(t *testing.T) {
+	content := `{"ignition":{"version":"3.0.0"},"storage":{"directories":[{"path":"/var/lib/docker","mode":493}]}}`
+	profile := &storagepb.Profile{
+		Id:         fake.Group.Profile,
+		IgnitionId: "file.ign",
+	}
+	store := &fake.FixedStore{
+		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: profile},
+		IgnitionConfigs: map[string]string{"file.ign": content},
+	}
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(c)
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	h.ServeHTTP(w, req.WithContext(ctx))
+	// assert that:
+	// - raw Ignition config served directly
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, content, w.Body.String())
+}
+
 func TestIgnitionHandler_CL_YAML(t *testing.T) {
 	// exercise templating features, not a realistic Container Linux Config template
 	content := `
@@ -77,7 +103,39 @@ systemd:
       enable: true
       contents: {{.request.raw_query}}
 `
-	expectedIgnition := `{"ignition":{"config":{},"security":{"tls":{}},"timeouts":{},"version":"2.2.0"},"networkd":{},"passwd":{},"storage":{},"systemd":{"units":[{"enable":true,"name":"etcd2.service"},{"enable":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enable":true,"name":"some-param.service"}]}}`
+	expectedIgnition := `{"ignition":{"config":{},"security":{"tls":{}},"timeouts":{},"version":"2.3.0"},"networkd":{},"passwd":{},"storage":{},"systemd":{"units":[{"enable":true,"name":"etcd2.service"},{"enable":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enable":true,"name":"some-param.service"}]}}`
+	store := &fake.FixedStore{
+		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
+		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
+	}
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	c := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(c)
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/?foo=some-param&bar=b", nil)
+	h.ServeHTTP(w, req.WithContext(ctx))
+	// assert that:
+	// - Container Linux Config template rendered with Group selectors, metadata, and query variables
+	// - Transformed to an Ignition config (JSON)
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, expectedIgnition, w.Body.String())
+}
+
+func TestIgnitionHandler_CL_3_0_YAML(t *testing.T) {
+	// exercise templating features, not a realistic Container Linux Config template
+	content := `
+variant: fcos
+version: 1.0.0
+
+storage:
+  directories:
+    - path: /var/lib/{{.service_name}}
+      mode: 0755
+`
+	expectedIgnition := `{"ignition":{"version":"3.0.0"},"storage":{"directories":[{"path":"/var/lib/etcd2","mode":493}]}}`
 	store := &fake.FixedStore{
 		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
 		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
