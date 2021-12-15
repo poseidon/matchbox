@@ -19,5 +19,5 @@ require (
 	go4.org v0.0.0-20160314031811-03efcb870d84 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.43.0
 )
