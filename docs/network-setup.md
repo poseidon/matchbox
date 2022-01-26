@@ -88,7 +88,7 @@ dhcp-boot=tag:ipxe,http://matchbox.example.com:8080/boot.ipxe
 log-queries
 log-dhcp
 
-# static DNS assignements
+# static DNS assignments
 address=/matchbox.example.com/192.168.1.100
 
 # (optional) disable DNS and specify alternate
@@ -138,7 +138,7 @@ $ sudo firewall-cmd --add-service=dhcp --add-service=tftp [--add-service=dns]
 $ sudo firewall-cmd --list-services
 ```
 
-See [dnsmasq](#coreosdnsmasq) below to run dnsmasq with a container.
+See [dnsmasq](#poseidon/dnsmasq) below to run dnsmasq with a container.
 
 ### Configurable TFTP
 

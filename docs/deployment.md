@@ -133,7 +133,7 @@ NAME                 CLUSTER-IP   EXTERNAL-IP   PORT(S)             AGE
 matchbox             10.3.0.145   <none>        8080/TCP,8081/TCP   46m
 ```
 
-Example manifests in [contrib/k8s](../contrib/k8s) enable the gRPC API to allow client apps to update matchbox objects. Generate TLS server credentials for `matchbox-rpc.example.com` [as shown](#generate-tls-credentials) and create a Kubernetes secret. Alternately, edit the example manifests if you don't need the gRPC API enabled.
+Example manifests in [contrib/k8s](../contrib/k8s) enable the gRPC API to allow client apps to update matchbox objects. Generate TLS server certificates for `matchbox-rpc.example.com` [as shown](#generate-tls-certificates) and create a Kubernetes secret. Alternately, edit the example manifests if you don't need the gRPC API enabled.
 
 ```sh
 $ kubectl create secret generic matchbox-rpc --from-file=ca.crt --from-file=server.crt --from-file=server.key
@@ -273,7 +273,7 @@ Move the images to `/var/lib/matchbox/assets`,
     └── version.txt
 ```
 
-and verify the images are acessible.
+and verify the images are accessible.
 
 ```sh
 $ curl http://matchbox.example.com:8080/assets/fedora-coreos/

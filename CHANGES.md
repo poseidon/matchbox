@@ -193,7 +193,7 @@ Note: Release signing key [has changed](https://github.com/poseidon/matchbox/blo
     * Allow Fuze YAML template files for Ignition 2.0.0 (#141)
     * Stop requiring Ignition templates to use file extensions (#176)
 * Logging Improvements:
-    * Add structured loggging with Logrus (#254, #268)
+    * Add structured logging with Logrus (#254, #268)
     * Log requests for bootcfg assets (#214)
     * Show `bootcfg` message at the home path `/`
     * Fix http package log messages (#173)
