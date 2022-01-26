@@ -194,7 +194,7 @@ If you've never setup a PXE-enabled network before or you're trying to setup a h
 
 ## Boot
 
-Its time to network boot your machines. Use the BMC's remote management capablities (may be vendor-specific) to set the boot device (on the next boot only) to PXE and power on each machine.
+Its time to network boot your machines. Use the BMC's remote management capabilities (may be vendor-specific) to set the boot device (on the next boot only) to PXE and power on each machine.
 
 ```sh
 $ ipmitool -H node1.example.com -U USER -P PASS power off
@@ -216,5 +216,5 @@ To re-provision the machine for another purpose, run `terraform apply` and PXE b
 
 Matchbox can be used to provision multi-node Fedora CoreOS or Flatcar Linux clusters at one or many on-premise sites if deployed in an HA way. Machines can be matched individually by MAC address, UUID, region, or other labels you choose. Installs can be made much faster by caching images in the built-in HTTP [assets](api-http.md#assets) server.
 
-[Ignition](https://github.com/coreos/ignition) can be used to partition disks and filesystems, write systemd units, write networkd configs or regular files, and create users. Nodes can be network provisioned into a complete cluster system that meets your needs. For example, see [Typhoon](https://typhoon.psdn.io/fedora-coreos/bare-metal/).
+[Ignition](https://github.com/coreos/ignition) can be used to partition disks, create file systems, write systemd units, write networkd configs or regular files, and create users. Nodes can be network provisioned into a complete cluster system that meets your needs. For example, see [Typhoon](https://typhoon.psdn.io/fedora-coreos/bare-metal/).
 
