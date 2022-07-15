@@ -2,15 +2,15 @@
   "id": "fedora-coreos-install",
   "name": "Fedora CoreOS install to disk",
   "boot": {
-    "kernel": "/assets/fedora-coreos/fedora-coreos-33.20210117.3.2-live-kernel-x86_64",
+    "kernel": "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-kernel-x86_64",
     "initrd": [
-      "/assets/fedora-coreos/fedora-coreos-33.20210117.3.2-live-initramfs.x86_64.img",
-      "/assets/fedora-coreos/fedora-coreos-33.20210117.3.2-live-rootfs.x86_64.img"
+      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img",
+      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img"
     ],
     "args": [
       "coreos.inst.install_dev=/dev/sda",
       "coreos.inst.ignition_url=http://matchbox.example.com:8080/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
-      "coreos.inst.image_url=http://matchbox.example.com:8080/assets/fedora-coreos/fedora-coreos-33.20210117.3.2-metal.x86_64.raw.xz",
+      "coreos.inst.image_url=http://matchbox.example.com:8080/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-metal.x86_64.raw.xz",
       "console=tty0",
       "console=ttyS0"
     ]

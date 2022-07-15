@@ -2,10 +2,10 @@
   "id": "fedora-coreos",
   "name": "Fedora CoreOS",
   "boot": {
-    "kernel": "/assets/fedora-coreos/fedora-coreos-33.20210117.3.2-live-kernel-x86_64",
+    "kernel": "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-kernel-x86_64",
     "initrd": [
-      "/assets/fedora-coreos/fedora-coreos-33.20210117.3.2-live-initramfs.x86_64.img",
-      "/assets/fedora-coreos/fedora-coreos-33.20210117.3.2-live-rootfs.x86_64.img"
+      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img",
+      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img"
     ],
     "args": [
       "ignition.firstboot",

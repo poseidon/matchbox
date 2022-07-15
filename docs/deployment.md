@@ -247,7 +247,7 @@ Matchbox can serve OS images in development or lab environments to reduce bandwi
 Download a recent Fedora CoreOS or Flatcar Linux release.
 
 ```
-$ ./scripts/get-fedora-coreos stable 32.20200923.3.0 .
+$ ./scripts/get-fedora-coreos stable 36.20220618.3.1 .
 $ ./scripts/get-flatcar stable 2605.6.0 .
 ```
 
@@ -255,11 +255,11 @@ Move the images to `/var/lib/matchbox/assets`,
 
 ```
 /var/lib/matchbox/assets/fedora-coreos/
-├── fedora-coreos-32.20200923.3.0-live-initramfs.x86_64.img
-├── fedora-coreos-32.20200923.3.0-live-kernel-x86_64
-├── fedora-coreos-32.20200923.3.0-live-rootfs.x86_64.img
-├── fedora-coreos-32.20200923.3.0-metal.x86_64.raw.xz
-└── fedora-coreos-32.20200923.3.0-metal.x86_64.raw.xz.sig
+├── fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img
+├── fedora-coreos-36.20220618.3.1-live-kernel-x86_64
+├── fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img
+├── fedora-coreos-36.20220618.3.1-metal.x86_64.raw.xz
+└── fedora-coreos-36.20220618.3.1-metal.x86_64.raw.xz.sig
 
 /var/lib/matchbox/assets/flatcar/
 └── 2605.6.0
