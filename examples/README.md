@@ -21,7 +21,7 @@ These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/mat
 
 | Name          | Description                  | FS  | Docs  |
 |---------------|------------------------------|-----|-------|
-| fedora-coreos | Fedora CoreOS live PXE       | RAM | [docs](https://docs.fedoraproject.org/en-US/fedora-coreos/live-booting-ipxe/) |
+| fedora-coreos | Fedora CoreOS live PXE       | RAM | [docs](https://docs.fedoraproject.org/en-US/fedora-coreos/live-booting/) |
 | fedora-coreos-install | Fedora CoreOS install | Disk | [docs](https://docs.fedoraproject.org/en-US/fedora-coreos/bare-metal/) |
 | flatcar       | Flatcar Linux live PXE       | RAM | [docs](https://docs.flatcar-linux.org/os/booting-with-ipxe/) |
 | flatcar-install | Flatcar Linux install      | Disk | [docs](https://docs.flatcar-linux.org/os/booting-with-ipxe/) |
