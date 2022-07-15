@@ -10,7 +10,6 @@
     "args": [
       "coreos.inst.install_dev=/dev/sda",
       "coreos.inst.ignition_url=http://matchbox.example.com:8080/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
-      "coreos.inst.image_url=http://matchbox.example.com:8080/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-metal.x86_64.raw.xz",
       "console=tty0",
       "console=ttyS0"
     ]
