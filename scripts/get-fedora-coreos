@@ -34,10 +34,3 @@ curl -# $BASE_URL/fedora-coreos-$VERSION-live-initramfs.x86_64.img -o $DEST/fedo
 # rootfs
 echo "fedora-coreos-$VERSION-live-rootfs.x86_64.img"
 curl -# $BASE_URL/fedora-coreos-$VERSION-live-rootfs.x86_64.img -o $DEST/fedora-coreos-$VERSION-live-rootfs.x86_64.img
-
-# Install image
-echo "fedora-coreos-$VERSION-metal.x86_64.raw.xz"
-curl -# $BASE_URL/fedora-coreos-$VERSION-metal.x86_64.raw.xz -o $DEST/fedora-coreos-$VERSION-metal.x86_64.raw.xz
-echo "fedora-coreos-$VERSION-metal.x86_64.raw.xz.sig"
-curl -# $BASE_URL/fedora-coreos-$VERSION-metal.x86_64.raw.xz.sig -o $DEST/fedora-coreos-$VERSION-metal.x86_64.raw.xz.sig
-

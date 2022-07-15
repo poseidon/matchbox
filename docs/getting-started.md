@@ -107,7 +107,6 @@ resource "matchbox_profile" "fedora-coreos-install" {
     "rd.neednet=1",
     "coreos.inst.install_dev=/dev/sda",
     "coreos.inst.ignition_url=${var.matchbox_http_endpoint}/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
-    "coreos.inst.image_url=https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-metal.x86_64.raw.xz",
     "console=tty0",
     "console=ttyS0",
   ]

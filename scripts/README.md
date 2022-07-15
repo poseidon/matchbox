@@ -16,8 +16,6 @@ examples/assets/fedora-coreos/
 ├── fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img
 ├── fedora-coreos-36.20220618.3.1-live-kernel-x86_64
 ├── fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img
-├── fedora-coreos-36.20220618.3.1-metal.x86_64.raw.xz
-└── fedora-coreos-36.20220618.3.1-metal.x86_64.raw.xz.sig
 ```
 
 ## get-flatcar
