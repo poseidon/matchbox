@@ -4,10 +4,10 @@
   "boot": {
     "kernel": "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-kernel-x86_64",
     "initrd": [
-      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img",
-      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img"
+      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img"
     ],
     "args": [
+      "coreos.live.rootfs_url=http://matchbox.example.com:8080/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img",
       "ignition.firstboot",
       "ignition.platform.id=metal",
       "ignition.config.url=http://matchbox.example.com:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
