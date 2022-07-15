@@ -11,7 +11,6 @@
       "ignition.firstboot",
       "ignition.platform.id=metal",
       "ignition.config.url=http://matchbox.example.com:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
-      "systemd.unified_cgroup_hierarchy=0",
       "console=tty0",
       "console=ttyS0"
     ]
