@@ -4,14 +4,13 @@
   "boot": {
     "kernel": "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-kernel-x86_64",
     "initrd": [
-      "/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img"
+      "--name main /assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img"
     ],
     "args": [
+      "initrd=main",
       "coreos.live.rootfs_url=http://matchbox.example.com:8080/assets/fedora-coreos/fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img",
-      "coreos.inst.install_dev=/dev/sda",
-      "coreos.inst.ignition_url=http://matchbox.example.com:8080/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
-      "console=tty0",
-      "console=ttyS0"
+      "coreos.inst.install_dev=/dev/vda",
+      "coreos.inst.ignition_url=http://matchbox.example.com:8080/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}"
     ]
   },
   "ignition_id": "fedora-coreos.ign"

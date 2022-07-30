@@ -226,7 +226,7 @@ matchbox
 If you enabled the gRPC API,
 
 ```sh
-$ openssl s_client -connect matchbox.example.com:8081 -CAfile /etc/matchbox/ca.crt -cert scripts/tls/client.crt -key scripts/tls/client.key
+$ openssl s_client -connect matchbox.example.com:8081 -CAfile scripts/tls/ca.crt -cert scripts/tls/client.crt -key scripts/tls/client.key
 CONNECTED(00000003)
 depth=1 CN = fake-ca
 verify return:1

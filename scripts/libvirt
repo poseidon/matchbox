@@ -35,7 +35,7 @@ function usage {
   echo -e "\tdestroy\t\tdestroy the QEMU/KVM nodes"
 }
 
-COMMON_VIRT_OPTS="--memory=${VM_MEMORY} --vcpus=1 --disk pool=default,size=${VM_DISK} --os-type=linux --os-variant=generic --noautoconsole --events on_poweroff=preserve"
+COMMON_VIRT_OPTS="--memory=${VM_MEMORY} --vcpus=1 --disk pool=default,size=${VM_DISK} --os-variant=fedora-coreos-stable --noautoconsole"
 
 NODE1_NAME=node1
 NODE1_MAC=52:54:00:a1:9c:ae

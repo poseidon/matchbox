@@ -11,23 +11,14 @@ resource "matchbox_profile" "fedora-coreos-install" {
     "coreos.live.rootfs_url=https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-rootfs.x86_64.img",
     "coreos.inst.install_dev=/dev/sda",
     "coreos.inst.ignition_url=${var.matchbox_http_endpoint}/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
-    "console=tty0",
-    "console=ttyS0",
   ]
 
-  raw_ignition = data.ct_config.worker-ignition.rendered
+  raw_ignition = data.ct_config.worker.rendered
 }
 
-data "ct_config" "worker-ignition" {
-  content = data.template_file.worker-config.rendered
-  strict  = true
-}
-
-data "template_file" "worker-config" {
-  template = file("fcc/fedora-coreos.yaml")
-  vars = {
+data "ct_config" "worker" {
+  content = templatefile("fcc/fedora-coreos.yaml", {
     ssh_authorized_key = var.ssh_authorized_key
-  }
+  })
+  strict = true
 }
-
-

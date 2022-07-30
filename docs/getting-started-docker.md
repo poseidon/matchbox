@@ -82,11 +82,16 @@ Create QEMU/KVM VMs which have known hardware attributes. The nodes will be atta
 $ sudo ./scripts/libvirt create
 ```
 
-You can connect to the serial console of any node (ctrl+] to exit). If you provisioned nodes with an SSH key, you can SSH after bring-up.
+If you provisioned nodes with an SSH key, you can SSH after bring-up.
 
 ```sh
-$ sudo virsh console node1
 $ ssh core@node1.example.com
+```
+
+If you set a `console=ttyS0` kernel arg, you can connect to the serial console of any node (ctrl+] to exit).
+
+```
+$ sudo virsh console node1
 ```
 
 You can also use `virt-manager` to watch the console.

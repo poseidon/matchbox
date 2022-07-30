@@ -34,7 +34,7 @@ Install [Terraform](https://www.terraform.io/downloads.html) v0.13+ on your syst
 
 ```sh
 $ terraform version
-Terraform v0.13.3
+Terraform v1.1.8
 ```
 
 ### Examples
@@ -79,11 +79,11 @@ terraform {
   required_providers {
     ct = {
       source  = "poseidon/ct"
-      version = "0.7.1"
+      version = "0.10.0"
     }
     matchbox = {
       source = "poseidon/matchbox"
-      version = "0.4.1"
+      version = "0.5.0"
     }
   }
 }
@@ -98,31 +98,26 @@ Machine profiles specify the kernel, initrd, kernel args, Ignition Config, and o
 resource "matchbox_profile" "fedora-coreos-install" {
   name  = "worker"
   kernel = "https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-kernel-x86_64"
+
   initrd = [
-    "https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-initramfs.x86_64.img"
+    "--name main https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-initramfs.x86_64.img"
   ]
 
   args = [
+    "initrd=main",
     "coreos.live.rootfs_url=https://builds.coreos.fedoraproject.org/prod/streams/${var.os_stream}/builds/${var.os_version}/x86_64/fedora-coreos-${var.os_version}-live-rootfs.x86_64.img",
     "coreos.inst.install_dev=/dev/sda",
-    "coreos.inst.ignition_url=${var.matchbox_http_endpoint}/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
-    "console=tty0",
-    "console=ttyS0",
+    "coreos.inst.ignition_url=${var.matchbox_http_endpoint}/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}"
   ]
 
-  raw_ignition = data.ct_config.worker-ignition.rendered
+  raw_ignition = data.ct_config.worker.rendered
 }
 
-data "ct_config" "worker-ignition" {
-  content  = data.template_file.worker-config.rendered
-  strict   = true
-}
-
-data "template_file" "worker-config" {
-  template = file("fcc/fedora-coreos.yaml")
-  vars = {
-    ssh_authorized_key     = var.ssh_authorized_key
-  }
+data "ct_config" "worker" {
+  content = templatefile("fcc/fedora-coreos.yaml", {
+    ssh_authorized_key = var.ssh_authorized_key
+  })
+  strict = true
 }
 ```
 
@@ -148,8 +143,9 @@ cp terraform.tfvars.example terraform.tfvars
 
 ```tf
 matchbox_http_endpoint = "http://matchbox.example.com:8080"
-matchbox_rpc_endpoint = "matchbox.example.com:8081"
-ssh_authorized_key = "YOUR_SSH_KEY"
+matchbox_rpc_endpoint  = "matchbox.example.com:8081"
+os_version             = "36.20220618.3.1"
+ssh_authorized_key     = "YOUR_SSH_KEY"
 ```
 
 ### Apply

@@ -55,17 +55,3 @@ Create QEMU/KVM VMs which are configured to boot from the network. The `scripts/
         shutdown    shutdown the QEMU/KVM nodes
         poweroff    poweroff the QEMU/KVM nodes
         destroy     destroy the QEMU/KVM nodes
-
-## k8s-certgen
-
-Generate TLS certificates needed for a multi-node Kubernetes cluster. See the [examples](../examples/README.md#assets).
-
-    $ ./scripts/tls/k8s-certgen -h
-    Usage: k8s-certgen
-    Options:
-      -d DEST     Destination for generated files (default: .examples/assets/tls)
-      -s SERVER   Reachable Server IP for kubeconfig (e.g. node1.example.com)
-      -m MASTERS  Controller Node Names/Addresses in SAN format (e.g. IP.1=10.3.0.1,DNS.1=node1.example.com)
-      -w WORKERS  Worker Node Names/Addresses in SAN format (e.g. DNS.1=node2.example.com,DNS.2=node3.example.com)
-      -h          Show help
-

@@ -6,7 +6,7 @@ rm -f ca.key ca.crt server.key server.csr server.crt client.key client.csr clien
 rm -rf certs crl newcerts
 
 if [ -z $SAN ]
-  then echo "Set SAN with a DNS or IP for matchbox (e.g. export SAN=DNS.1:matchbox.example.com,IP.1:192.168.1.42)."
+  then echo "Set SAN with a DNS or IP for matchbox (e.g. export SAN=DNS.1:matchbox.example.com,IP.1:172.17.0.2)."
   exit 1
 fi
 
