@@ -26,36 +26,37 @@ These examples mount raw Matchbox objects into a Matchbox server's `/var/lib/mat
 | flatcar       | Flatcar Linux live PXE       | RAM | [docs](https://docs.flatcar-linux.org/os/booting-with-ipxe/) |
 | flatcar-install | Flatcar Linux install      | Disk | [docs](https://docs.flatcar-linux.org/os/booting-with-ipxe/) |
 
-### Customization
+### SSH Access
 
-For Fedora CoreOS, add an SSH authorized key to Fedora CoreOS Config (`ignition/fedora-coreos.yaml`) and regenerate the Ignition Config.
+For Fedora CoreOS, add an SSH authorized key to the Butane Config (`ignition/fedora-coreos.yaml`) and regenerate the Ignition Config.
 
 ```yaml
 variant: fcos
-version: 1.1.0
+version: 1.4.0
 passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        - ssh-rsa pub-key-goes-here
+        - ssh-ed25519 SET_PUBKEY_HERE
 ```
 
 ```
 podman run -i --rm quay.io/coreos/fcct:release --pretty --strict < fedora-coreos.yaml > fedora-coreos.ign
 ```
 
-For Flatcar Linux, add a Matchbox variable to a Group (`groups/flatcar-install/flatcar.json`) to set the SSH authorized key (or directly update the Container Linux Config).
+For Flatcar Linux, add an SSH authorized key to the Butane config (`ignition/flatcar.yaml` or `ignition/flatcar-install.yaml`) and regenerate the Ignition Config.
 
-```json
-{
-  "id": "stage-1",
-  "name": "Flatcar Linux",
-  "profile": "flatcar",
-  "selector": {
-    "os": "installed"
-  },
-  "metadata": {
-    "ssh_authorized_keys": ["ssh-rsa pub-key-goes-here"]
-  }
-}
+```yaml
+variant: flatcar
+version: 1.0.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-ed25519 SET_PUBKEY_HERE
+```
+
+```
+podman run -i --rm quay.io/coreos/fcct:release --pretty --strict < flatcar.yaml > flatcar.ign
+podman run -i --rm quay.io/coreos/fcct:release --pretty --strict < flatcar-install.yaml > flatcar-install.ign
 ```

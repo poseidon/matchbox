@@ -1,0 +1,36 @@
+{
+  "ignition": {
+    "version": "3.3.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-ed25519 SET_PUBKEY_HERE"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/opt/installer",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/4SOsU4DMRBEe3/FEmrbx1EQRUIU/AMVzdrecEZrb+TdnC5/T3GhoaF8mhnNe3yIqfaYUBfwtLl8HQzeD7Jxg6cJvD9jZTgsZpdTjA0tL0m2QBu2C1PI0k7H6TjF+tWrVelvoq+1qyEzlQN4gd8kfKt0d2a0jMPfO/DpAHyBWGiNa8Gd30ENE9NOH/A8zy9hDtPOCf61QVUyjfezfVb/mFwLrVgaKJkxOb2pUcvGMCiJmPsJAAD//1GtasgbAQAA"
+        },
+        "mode": 320
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nRequires=network-online.target\nAfter=network-online.target\n[Service]\nType=simple\nExecStart=/opt/installer\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "installer.service"
+      }
+    ]
+  }
+}

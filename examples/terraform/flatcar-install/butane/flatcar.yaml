@@ -1,6 +1,8 @@
 ---
+variant: flatcar
+version: 1.0.0
 passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        - {{.ssh_authorized_key}}
+        - ${ssh_authorized_key}

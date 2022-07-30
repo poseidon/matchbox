@@ -31,7 +31,7 @@ This will create:
 
 ```
 examples/assets/flatcar/
-└── 2605.6.0
+└── 3227.2.0
     ├── Flatcar_Image_Signing_Key.asc
     ├── flatcar_production_image.bin.bz2
     ├── flatcar_production_image.bin.bz2.sig

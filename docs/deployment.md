@@ -248,7 +248,7 @@ Download a recent Fedora CoreOS or Flatcar Linux release.
 
 ```
 $ ./scripts/get-fedora-coreos stable 36.20220618.3.1 .
-$ ./scripts/get-flatcar stable 2605.6.0 .
+$ ./scripts/get-flatcar stable 3227.2.0 .
 ```
 
 Move the images to `/var/lib/matchbox/assets`,
@@ -260,7 +260,7 @@ Move the images to `/var/lib/matchbox/assets`,
 ├── fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img
 
 /var/lib/matchbox/assets/flatcar/
-└── 2605.6.0
+└── 3227.2.0
     ├── Flatcar_Image_Signing_Key.asc
     ├── flatcar_production_image.bin.bz2
     ├── flatcar_production_image.bin.bz2.sig

@@ -1,0 +1,15 @@
+{
+  "ignition": {
+    "version": "3.3.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-ed25519 SET_PUBKEY_HERE"
+        ]
+      }
+    ]
+  }
+}

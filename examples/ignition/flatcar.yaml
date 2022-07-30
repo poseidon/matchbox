@@ -1,10 +1,7 @@
----
-{{ if index . "ssh_authorized_keys" }}
+variant: flatcar
+version: 1.0.0
 passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        {{ range $element := .ssh_authorized_keys }}
-        - {{$element}}
-        {{end}}
-{{end}}
+        - ssh-ed25519 SET_PUBKEY_HERE

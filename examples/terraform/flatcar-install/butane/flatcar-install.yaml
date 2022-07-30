@@ -1,8 +1,10 @@
 ---
+variant: flatcar
+version: 1.0.0
 systemd:
   units:
     - name: installer.service
-      enable: true
+      enabled: true
       contents: |
         [Unit]
         Requires=network-online.target
@@ -15,17 +17,14 @@ systemd:
 storage:
   files:
     - path: /opt/installer
-      filesystem: root
       mode: 0500
       contents:
         inline: |
           #!/bin/bash -ex
-          curl --retry 10 "{{.ignition_endpoint}}?{{.request.raw_query}}&os=installed" -o ignition.json
+          curl --retry 10 "${matchbox_http_endpoint}/ignition?os=installed" -o ignition.json
           flatcar-install \
-            -d /dev/sda \
-            -C stable \
-            -V current \
-            {{- if index . "baseurl"}}-b {{.baseurl}} \{{end}}
+            -d /dev/vda \
+            -b ${matchbox_http_endpoint}/assets/flatcar \
             -i ignition.json
           udevadm settle
           systemctl reboot
@@ -33,4 +32,4 @@ passwd:
   users:
     - name: core
       ssh_authorized_keys:
-        - {{.ssh_authorized_key}}
+        - ${ssh_authorized_key}

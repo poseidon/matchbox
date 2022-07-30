@@ -2,18 +2,16 @@
   "id": "flatcar",
   "name": "Flatcar Linux",
   "boot": {
-    "kernel": "/assets/flatcar/2605.6.0/flatcar_production_pxe.vmlinuz",
+    "kernel": "/assets/flatcar/3227.2.0/flatcar_production_pxe.vmlinuz",
     "initrd": [
-      "/assets/flatcar/2605.6.0/flatcar_production_pxe_image.cpio.gz"
+      "/assets/flatcar/3227.2.0/flatcar_production_pxe_image.cpio.gz"
     ],
     "args": [
       "initrd=flatcar_production_pxe_image.cpio.gz",
       "flatcar.config.url=http://matchbox.example.com:8080/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
       "flatcar.first_boot=yes",
-      "console=tty0",
-      "console=ttyS0",
       "flatcar.autologin"
     ]
   },
-  "ignition_id": "flatcar.yaml"
+  "ignition_id": "flatcar.ign"
 }

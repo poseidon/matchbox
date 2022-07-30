@@ -30,7 +30,7 @@ Download Fedora CoreOS or Flatcar Linux image assets to `examples/assets`.
 
 ```sh
 $ ./scripts/get-fedora-coreos stable 36.20220618.3.1 ./examples/assets
-$ ./scripts/get-flatcar stable 2605.6.0 ./examples/assets
+$ ./scripts/get-flatcar stable 3227.2.0 ./examples/assets
 ```
 
 For development convenience, add `/etc/hosts` entries for nodes so they may be referenced by name.
