@@ -4,7 +4,22 @@ Notable changes between releases.
 
 ## Latest
 
+## v0.9.1
+
+* Add dependabot Go module update automation ([#833](https://github.com/poseidon/matchbox/pull/833))
 * Build multi-arch container images (amd64, arm64) ([#823](https://github.com/poseidon/matchbox/pull/823))
+* Update Go version (v1.18.4) and alpine base image (v3.16.1)
+* Move `dnsmasq` container image to its own [repo](https://github.com/poseidon/dnsmasq) ([#840](https://github.com/poseidon/matchbox/pull/840))
+* Deprecate rendering Container Linux Configs
+  * Please migrate to serving CoreOS Ignition directly
+  * Use tools like [poseidon/ct](https://github.com/poseidon/terraform-provider-ct) or [butane](https://coreos.github.io/butane/getting-started/) to validate and convert a Butane Config (`focs` or `flatcar`) to Ignition (for Matchbox to serve)
+
+### Docs/Examples
+
+* Migrate docs website to GitHub Pages ([#976](https://github.com/poseidon/matchbox/pull/976))
+* Update Fedora CoreOS images and configuration ([#972](https://github.com/poseidon/matchbox/pull/972))
+* Update Fedora CoreOS initrd karg for UEFI ([#978](https://github.com/poseidon/matchbox/pull/978))
+* Update Flatcar Linux examples to use Ignition v3.3.0 ([#980](https://github.com/poseidon/matchbox/pull/980))
 
 ## v0.9.0
 

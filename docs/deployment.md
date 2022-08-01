@@ -17,23 +17,23 @@ Choose one of the supported installation options:
 Download the latest Matchbox [release](https://github.com/poseidon/matchbox/releases).
 
 ```sh
-$ wget https://github.com/poseidon/matchbox/releases/download/v0.9.0/matchbox-v0.9.0-linux-amd64.tar.gz
-$ wget https://github.com/poseidon/matchbox/releases/download/v0.9.0/matchbox-v0.9.0-linux-amd64.tar.gz.asc
+$ wget https://github.com/poseidon/matchbox/releases/download/v0.9.1/matchbox-v0.9.1-linux-amd64.tar.gz
+$ wget https://github.com/poseidon/matchbox/releases/download/v0.9.1/matchbox-v0.9.1-linux-amd64.tar.gz.asc
 ```
 
 Verify the release has been signed by Dalton Hubble's GPG [Key](https://keyserver.ubuntu.com/pks/lookup?search=0x8F515AD1602065C8&op=vindex)'s signing subkey.
 
 ```sh
 $ gpg --keyserver keyserver.ubuntu.com --recv-key 2E3D92BF07D9DDCCB3BAE4A48F515AD1602065C8
-$ gpg --verify matchbox-v0.9.0-linux-amd64.tar.gz.asc matchbox-v0.9.0-linux-amd64.tar.gz
+$ gpg --verify matchbox-v0.9.1-linux-amd64.tar.gz.asc matchbox-v0.9.1-linux-amd64.tar.gz
 gpg: Good signature from "Dalton Hubble <dghubble@gmail.com>"
 ```
 
 Untar the release.
 
 ```sh
-$ tar xzvf matchbox-v0.9.0-linux-amd64.tar.gz
-$ cd matchbox-v0.9.0-linux-amd64
+$ tar xzvf matchbox-v0.9.1-linux-amd64.tar.gz
+$ cd matchbox-v0.9.1-linux-amd64
 ```
 
 ## Install
@@ -110,14 +110,14 @@ Run the container image with Podman,
 
 ```
 mkdir -p /var/lib/matchbox/assets
-podman run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:v0.9.0 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+podman run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:v0.9.1 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Or with Docker,
 
 ```
 mkdir -p /var/lib/matchbox/assets
-sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:v0.9.0 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
+sudo docker run --net=host --rm -v /var/lib/matchbox:/var/lib/matchbox:Z -v /etc/matchbox:/etc/matchbox:Z,ro quay.io/poseidon/matchbox:v0.9.1 -address=0.0.0.0:8080 -rpc-address=0.0.0.0:8081 -log-level=debug
 ```
 
 Create machine profiles, groups, or Ignition configs by adding files to `/var/lib/matchbox`.

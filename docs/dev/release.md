@@ -8,7 +8,7 @@ This guide covers releasing new versions of matchbox.
 Create a release commit which updates old version references.
 
 ```sh
-$ export VERSION=v0.9.0
+$ export VERSION=v0.9.1
 ```
 
 ## Tag
@@ -44,7 +44,7 @@ $ make release
 Verify the reported version.
 
 ```
-./_output/matchbox-v0.9.0-linux-amd64/matchbox -version
+./_output/matchbox-v0.9.1-linux-amd64/matchbox -version
 ```
 
 ## Signing
