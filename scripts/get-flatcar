@@ -39,7 +39,7 @@ fi
 echo "Downloading Flatcar Linux $CHANNEL $VERSION images and sigs to $DEST"
 
 echo "Flatcar Linux Image Signing Key"
-curl -# https://www.flatcar-linux.org/security/image-signing-key/Flatcar_Image_Signing_Key.asc -o "${DEST}/Flatcar_Image_Signing_Key.asc"
+curl -# https://www.flatcar.org/security/image-signing-key/Flatcar_Image_Signing_Key.asc -o "${DEST}/Flatcar_Image_Signing_Key.asc"
 $GPG --import <"$DEST/Flatcar_Image_Signing_Key.asc" || true
 
 # Version
