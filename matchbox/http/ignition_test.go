@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"context"
+
 	logtest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
@@ -14,7 +15,8 @@ import (
 	fake "github.com/poseidon/matchbox/matchbox/storage/testfakes"
 )
 
-func TestIgnitionHandler_V2_1_JSON(t *testing.T) {
+/*
+func TestIgnitionHandler_V21(t *testing.T) {
 	content := `{"ignition":{"version":"2.1.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
 	profile := &storagepb.Profile{
 		Id:         fake.Group.Profile,
@@ -26,16 +28,17 @@ func TestIgnitionHandler_V2_1_JSON(t *testing.T) {
 	}
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
-	c := server.NewServer(&server.Config{Store: store})
-	h := srv.ignitionHandler(c)
+	core := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(core)
+
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(w, req.WithContext(ctx))
+	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
+	h.ServeHTTP(w, req)
 	// assert that:
 	// - raw Ignition config served directly
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
 	assert.Equal(t, content, w.Body.String())
 }
 
@@ -53,17 +56,58 @@ func TestIgnitionHandler_V2_2_JSON(t *testing.T) {
 	srv := NewServer(&Config{Logger: logger})
 	c := server.NewServer(&server.Config{Store: store})
 	h := srv.ignitionHandler(c)
+
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(w, req.WithContext(ctx))
+	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
+	h.ServeHTTP(w, req)
 	// assert that:
 	// - raw Ignition config served directly
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
 	assert.Equal(t, content, w.Body.String())
 }
+*/
 
+func TestIgnitionHandler_V33(t *testing.T) {
+	const content = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.3.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
+	profile := &storagepb.Profile{
+		Id:         fake.Group.Profile,
+		IgnitionId: "file.ign",
+	}
+	store := &fake.FixedStore{
+		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: profile},
+		IgnitionConfigs: map[string]string{"file.ign": content},
+	}
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	core := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(core)
+
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
+	h.ServeHTTP(w, req)
+	// assert that:
+	// - raw Ignition config served directly
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
+	assert.Equal(t, content, w.Body.String())
+}
+func TestIgnitionHandler_MissingIgnition(t *testing.T) {
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	core := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.ignitionHandler(core)
+
+	ctx := withProfile(context.Background(), fake.Profile)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
+	h.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
+/*
 func TestIgnitionHandler_CL_YAML(t *testing.T) {
 	// exercise templating features, not a realistic Container Linux Config template
 	content := `
@@ -108,19 +152,9 @@ func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
+*/
 
-func TestIgnitionHandler_MissingIgnitionConfig(t *testing.T) {
-	logger, _ := logtest.NewNullLogger()
-	srv := NewServer(&Config{Logger: logger})
-	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := srv.ignitionHandler(c)
-	ctx := withProfile(context.Background(), fake.Profile)
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(w, req.WithContext(ctx))
-	assert.Equal(t, http.StatusNotFound, w.Code)
-}
-
+/*
 func TestIgnitionHandler_MissingTemplateMetadata(t *testing.T) {
 	content := `
 ignition_version: 1
@@ -146,3 +180,4 @@ systemd:
 	// present in the template variables
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
+*/

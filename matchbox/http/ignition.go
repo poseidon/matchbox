@@ -1,12 +1,10 @@
 package http
 
 import (
-	"bytes"
 	"net/http"
 	"strings"
 
-	ct "github.com/coreos/container-linux-config-transpiler/config"
-	ignition "github.com/coreos/ignition/config/v2_2"
+	ignition "github.com/coreos/ignition/v2/config/v3_3"
 	"github.com/sirupsen/logrus"
 
 	"github.com/poseidon/matchbox/matchbox/server"
@@ -60,51 +58,53 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 			"profile": profile.Id,
 		}).Debug("Matched an Ignition or Container Linux Config template")
 
-		// Skip rendering if raw Ignition JSON is provided
+		// Serve Ignition (e.g. *.ign) content directly
 		if isIgnition(profile.IgnitionId) {
-			_, report, err := ignition.Parse([]byte(contents))
+			ign, report, err := ignition.ParseCompatibleVersion([]byte(contents))
 			if err != nil {
-				s.logger.Warningf("warning parsing Ignition JSON: %s", report.String())
+				s.logger.Warningf("warning parsing Ignition: %s", report.String())
 			}
-			s.writeJSON(w, []byte(contents))
+			s.renderJSON(w, ign)
 			return
 		}
 
 		// Container Linux Config template
+		/*
 
-		// collect data for rendering
-		data, err := collectVariables(req, group)
-		if err != nil {
-			s.logger.Errorf("error collecting variables: %v", err)
-			http.NotFound(w, req)
-			return
-		}
+			// collect data for rendering
+			data, err := collectVariables(req, group)
+			if err != nil {
+				s.logger.Errorf("error collecting variables: %v", err)
+				http.NotFound(w, req)
+				return
+			}
 
-		// render the template for an Ignition config with data
-		var buf bytes.Buffer
-		err = s.renderTemplate(&buf, data, contents)
-		if err != nil {
-			http.NotFound(w, req)
-			return
-		}
+			// render the template for an Ignition config with data
+			var buf bytes.Buffer
+			err = s.renderTemplate(&buf, data, contents)
+			if err != nil {
+				http.NotFound(w, req)
+				return
+			}
 
-		// Parse bytes into a Container Linux Config
-		config, ast, report := ct.Parse(buf.Bytes())
-		if report.IsFatal() {
-			s.logger.Errorf("error parsing Container Linux config: %s", report.String())
-			http.NotFound(w, req)
-			return
-		}
+			// Parse bytes into a Container Linux Config
+			config, ast, report := ct.Parse(buf.Bytes())
+			if report.IsFatal() {
+				s.logger.Errorf("error parsing Container Linux config: %s", report.String())
+				http.NotFound(w, req)
+				return
+			}
 
-		// Convert Container Linux Config into an Ignition Config
-		ign, report := ct.Convert(config, "", ast)
-		if report.IsFatal() {
-			s.logger.Errorf("error converting Container Linux config: %s", report.String())
-			http.NotFound(w, req)
-			return
-		}
+			// Convert Container Linux Config into an Ignition Config
+			ign, report := ct.Convert(config, "", ast)
+			if report.IsFatal() {
+				s.logger.Errorf("error converting Container Linux config: %s", report.String())
+				http.NotFound(w, req)
+				return
+			}
 
-		s.renderJSON(w, ign)
+			s.renderJSON(w, ign)
+		*/
 		return
 	}
 	return http.HandlerFunc(fn)
