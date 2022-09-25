@@ -91,7 +91,7 @@ terraform {
 
 ### Profiles
 
-Machine profiles specify the kernel, initrd, kernel args, Ignition Config, and other configs (e.g. templated Container Linux Config, Cloud-config, generic) used to network boot and provision a bare-metal machine. The profile below would PXE boot machines using a Fedora CoreOS kernel and initrd (see [assets](api-http.md#assets) to learn about caching for speed), perform a disk install, reboot (first boot from disk), and use a [Fedora CoreOS Config](https://github.com/coreos/fcct/blob/master/docs/configuration-v1_1.md) to generate an Ignition config to provision.
+Machine profiles specify the kernel, initrd, kernel args, Ignition Config, or other configs (e.g. templated Butane Config, generic) used to network boot and provision a bare-metal machine. The profile below would PXE boot machines using a Fedora CoreOS kernel and initrd (see [assets](api-http.md#assets) to learn about caching for speed), perform a disk install, reboot (first boot from disk), and use a [Fedora CoreOS Config](https://github.com/coreos/fcct/blob/master/docs/configuration-v1_1.md) to generate an Ignition config to provision.
 
 ```tf
 // Fedora CoreOS profile

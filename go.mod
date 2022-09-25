@@ -3,6 +3,7 @@ module github.com/poseidon/matchbox
 go 1.16
 
 require (
+	github.com/coreos/butane v0.15.0
 	github.com/coreos/coreos-cloudinit v1.14.0
 	github.com/coreos/ignition/v2 v2.14.0
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f
@@ -17,5 +18,4 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
 	google.golang.org/grpc v1.49.0
-	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )

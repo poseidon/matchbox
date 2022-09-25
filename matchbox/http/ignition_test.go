@@ -15,60 +15,6 @@ import (
 	fake "github.com/poseidon/matchbox/matchbox/storage/testfakes"
 )
 
-/*
-func TestIgnitionHandler_V21(t *testing.T) {
-	content := `{"ignition":{"version":"2.1.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
-	profile := &storagepb.Profile{
-		Id:         fake.Group.Profile,
-		IgnitionId: "file.ign",
-	}
-	store := &fake.FixedStore{
-		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: profile},
-		IgnitionConfigs: map[string]string{"file.ign": content},
-	}
-	logger, _ := logtest.NewNullLogger()
-	srv := NewServer(&Config{Logger: logger})
-	core := server.NewServer(&server.Config{Store: store})
-	h := srv.ignitionHandler(core)
-
-	ctx := withGroup(context.Background(), fake.Group)
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
-	h.ServeHTTP(w, req)
-	// assert that:
-	// - raw Ignition config served directly
-	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
-	assert.Equal(t, content, w.Body.String())
-}
-
-func TestIgnitionHandler_V2_2_JSON(t *testing.T) {
-	content := `{"ignition":{"version":"2.2.0","config":{}},"storage":{},"systemd":{"units":[{"name":"etcd2.service","enable":true}]},"networkd":{},"passwd":{}}`
-	profile := &storagepb.Profile{
-		Id:         fake.Group.Profile,
-		IgnitionId: "file.ign",
-	}
-	store := &fake.FixedStore{
-		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: profile},
-		IgnitionConfigs: map[string]string{"file.ign": content},
-	}
-	logger, _ := logtest.NewNullLogger()
-	srv := NewServer(&Config{Logger: logger})
-	c := server.NewServer(&server.Config{Store: store})
-	h := srv.ignitionHandler(c)
-
-	ctx := withGroup(context.Background(), fake.Group)
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
-	h.ServeHTTP(w, req)
-	// assert that:
-	// - raw Ignition config served directly
-	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
-	assert.Equal(t, content, w.Body.String())
-}
-*/
-
 func TestIgnitionHandler_V33(t *testing.T) {
 	const content = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.3.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
 	profile := &storagepb.Profile{
@@ -89,11 +35,44 @@ func TestIgnitionHandler_V33(t *testing.T) {
 	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
 	h.ServeHTTP(w, req)
 	// assert that:
-	// - raw Ignition config served directly
+	// - serve Ignition JSON
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
 	assert.Equal(t, content, w.Body.String())
 }
+
+func TestIgnitionHandler_V31(t *testing.T) {
+	const ign31 = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.1.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
+	const ign33 = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.3.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
+	profile := &storagepb.Profile{
+		Id:         fake.Group.Profile,
+		IgnitionId: "file.ign",
+	}
+	store := &fake.FixedStore{
+		Profiles: map[string]*storagepb.Profile{
+			fake.Group.Profile: profile,
+		},
+		IgnitionConfigs: map[string]string{
+			"file.ign": ign31,
+		},
+	}
+	logger, _ := logtest.NewNullLogger()
+	srv := NewServer(&Config{Logger: logger})
+	core := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(core)
+
+	ctx := withGroup(context.Background(), fake.Group)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
+	h.ServeHTTP(w, req)
+	// assert that:
+	// - older Ignition v3.x converted to compatible latest version (e.g. v3.3)
+	// - serve Ignition JSON
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
+	assert.Equal(t, ign33, w.Body.String())
+}
+
 func TestIgnitionHandler_MissingIgnition(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
@@ -107,77 +86,86 @@ func TestIgnitionHandler_MissingIgnition(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
-/*
-func TestIgnitionHandler_CL_YAML(t *testing.T) {
-	// exercise templating features, not a realistic Container Linux Config template
-	content := `
+func TestIgnitionHandler_Butane(t *testing.T) {
+	// exercise templating features, not a realistic Butane template
+	butane := `
+variant: flatcar
+version: 1.0.0
 systemd:
   units:
-    - name: {{.service_name}}.service
-      enable: true
     - name: {{.uuid}}.service
-      enable: true
+      enabled: true
+      contents: {{.pod_network}}
     - name: {{.request.query.foo}}.service
-      enable: true
+      enabled: true
       contents: {{.request.raw_query}}
 `
-	expectedIgnition := `{"ignition":{"config":{},"security":{"tls":{}},"timeouts":{},"version":"2.2.0"},"networkd":{},"passwd":{},"storage":{},"systemd":{"units":[{"enable":true,"name":"etcd2.service"},{"enable":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enable":true,"name":"some-param.service"}]}}`
+	expectedIgnition := `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.3.0"},"kernelArguments":{},"passwd":{},"storage":{},"systemd":{"units":[{"contents":"10.2.0.0/16","enabled":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enabled":true,"name":"some-param.service"}]}}`
+
 	store := &fake.FixedStore{
-		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: testProfileIgnitionYAML},
-		IgnitionConfigs: map[string]string{testProfileIgnitionYAML.IgnitionId: content},
+		Profiles: map[string]*storagepb.Profile{
+			fake.Group.Profile: testProfileWithButane,
+		},
+		IgnitionConfigs: map[string]string{
+			testProfileWithButane.IgnitionId: butane,
+		},
 	}
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
-	c := server.NewServer(&server.Config{Store: store})
-	h := srv.ignitionHandler(c)
+	core := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(core)
+
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/?foo=some-param&bar=b", nil)
-	h.ServeHTTP(w, req.WithContext(ctx))
+	req, _ := http.NewRequestWithContext(ctx, "GET", "/?foo=some-param&bar=b", nil)
+	h.ServeHTTP(w, req)
 	// assert that:
-	// - Container Linux Config template rendered with Group selectors, metadata, and query variables
-	// - Transformed to an Ignition config (JSON)
+	// - Template rendered with Group selectors, metadata, and query variables
+	// - Butane translated to an Ignition config
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
 	assert.Equal(t, expectedIgnition, w.Body.String())
 }
 
 func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
-	c := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
-	h := srv.ignitionHandler(c)
+	core := server.NewServer(&server.Config{Store: &fake.EmptyStore{}})
+	h := srv.ignitionHandler(core)
+
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
-*/
 
-/*
 func TestIgnitionHandler_MissingTemplateMetadata(t *testing.T) {
-	content := `
-ignition_version: 1
+	butane := `
+variant: flatcar
+version: 1.0.0
 systemd:
   units:
     - name: {{.missing_key}}
-      enable: true
+      enabled: true
 `
 	store := &fake.FixedStore{
-		Profiles:        map[string]*storagepb.Profile{fake.Group.Profile: fake.Profile},
-		IgnitionConfigs: map[string]string{fake.Profile.IgnitionId: content},
+		Profiles: map[string]*storagepb.Profile{
+			fake.Group.Profile: fake.Profile,
+		},
+		IgnitionConfigs: map[string]string{
+			fake.Profile.IgnitionId: butane,
+		},
 	}
 	logger, _ := logtest.NewNullLogger()
 	srv := NewServer(&Config{Logger: logger})
-	c := server.NewServer(&server.Config{Store: store})
-	h := srv.ignitionHandler(c)
+	core := server.NewServer(&server.Config{Store: store})
+	h := srv.ignitionHandler(core)
+
 	ctx := withGroup(context.Background(), fake.Group)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
-	h.ServeHTTP(w, req.WithContext(ctx))
+	req, _ := http.NewRequestWithContext(ctx, "GET", "/", nil)
+	h.ServeHTTP(w, req)
 	// assert that:
-	// - Ignition template rendering errors because "missing_key" is not
-	// present in the template variables
+	// - Template rendering errors because "missing_key" is not present
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
-*/

@@ -4,6 +4,24 @@ Notable changes between releases.
 
 ## Latest
 
+* Upgrade Ignition from v0.35.0 (spec v2.x) to v2.14.0 (spec v3.x)
+* Parse Ignition and render forward to the current Ignition spec version
+  * Ignition is [forward](https://github.com/coreos/ignition/blob/main/config/v3_3/config.go#L61) compatible (a `v3.1` spec can be rendered as `v3.3` safely)
+* Recommend preparing Ignition externally (**action required**)
+  * Use Terraform with [poseidon/terraform-provider-ct](https://github.com/poseidon/terraform-provider-ct)
+  * For a CLI, use Butane
+* Remove support for Container Linux Configs (**action required**)
+  * Flatcar Linux now supports Ignition v2 (spec v3.x)
+  * Butane is a suitable YAML format that renders Ignition v2 (spec v3.x)
+* Add limited support for Matchbox rendering Butane configs
+
+For those still templating Container Linux Configs, you may be able to convert to Butane by prepending:
+
+```yaml
+variant: flatcar
+version: 1.0.0
+```
+
 ## v0.9.1
 
 * Add dependabot Go module update automation ([#833](https://github.com/poseidon/matchbox/pull/833))

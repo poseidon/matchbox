@@ -1,9 +1,12 @@
 package http
 
 import (
+	"bytes"
 	"net/http"
 	"strings"
 
+	butane "github.com/coreos/butane/config"
+	"github.com/coreos/butane/config/common"
 	ignition "github.com/coreos/ignition/v2/config/v3_3"
 	"github.com/sirupsen/logrus"
 
@@ -68,44 +71,38 @@ func (s *Server) ignitionHandler(core server.Server) http.Handler {
 			return
 		}
 
-		// Container Linux Config template
-		/*
+		// Butane Config template (discouraged)
 
-			// collect data for rendering
-			data, err := collectVariables(req, group)
-			if err != nil {
-				s.logger.Errorf("error collecting variables: %v", err)
-				http.NotFound(w, req)
-				return
-			}
+		// collect data for rendering
+		data, err := collectVariables(req, group)
+		if err != nil {
+			s.logger.Errorf("error collecting variables: %v", err)
+			http.NotFound(w, req)
+			return
+		}
 
-			// render the template for an Ignition config with data
-			var buf bytes.Buffer
-			err = s.renderTemplate(&buf, data, contents)
-			if err != nil {
-				http.NotFound(w, req)
-				return
-			}
+		// render the template
+		var buf bytes.Buffer
+		err = s.renderTemplate(&buf, data, contents)
+		if err != nil {
+			http.NotFound(w, req)
+			return
+		}
 
-			// Parse bytes into a Container Linux Config
-			config, ast, report := ct.Parse(buf.Bytes())
-			if report.IsFatal() {
-				s.logger.Errorf("error parsing Container Linux config: %s", report.String())
-				http.NotFound(w, req)
-				return
-			}
+		// translate to Ignition
+		ignBytes, report, err := butane.TranslateBytes(buf.Bytes(), common.TranslateBytesOptions{})
+		if err != nil {
+			s.logger.Errorf("error translating Butane Config: %s", report.String())
+			http.NotFound(w, req)
+			return
+		}
 
-			// Convert Container Linux Config into an Ignition Config
-			ign, report := ct.Convert(config, "", ast)
-			if report.IsFatal() {
-				s.logger.Errorf("error converting Container Linux config: %s", report.String())
-				http.NotFound(w, req)
-				return
-			}
-
-			s.renderJSON(w, ign)
-		*/
-		return
+		// validate
+		ign, report, err := ignition.ParseCompatibleVersion(ignBytes)
+		if err != nil {
+			s.logger.Warningf("warning parsing Ignition: %s", report.String())
+		}
+		s.renderJSON(w, ign)
 	}
 	return http.HandlerFunc(fn)
 }

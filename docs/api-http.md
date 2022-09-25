@@ -101,9 +101,9 @@ coreos:
       command: start
 ```
 
-## Container Linux Config / Ignition Config
+## Ignition Config
 
-Finds the profile matching the machine and renders the corresponding Ignition Config with group metadata, selectors, and query params.
+Finds the profile matching the machine and renders the corresponding Ignition for machine consumption.
 
 ```
 GET http://matchbox.foo/ignition?label=value
@@ -121,11 +121,11 @@ GET http://matchbox.foo/ignition?label=value
 
 ```json
 {
-  "ignition": { "version": "2.0.0" },
+  "ignition": { "version": "3.3.0" },
   "systemd": {
     "units": [{
       "name": "example.service",
-      "enable": true,
+      "enabled": true,
       "contents": "[Service]\nType=oneshot\nExecStart=/usr/bin/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
     }]
   }

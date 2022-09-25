@@ -33,9 +33,9 @@ Prepare `/var/lib/matchbox` with `groups`, `profile`, `ignition`, `cloud`, and `
  │   ├── cloud.yaml.tmpl
  │   └── worker.sh.tmpl
  ├── ignition
- │   └── raw.ign
- │   └── etcd.yaml.tmpl
- │   └── simple.yaml.tmpl
+ │   └── worker.ign
+ │   └── butane.yaml.tmpl
+ │   └── butane.yaml
  ├── generic
  │   └── config.yaml
  │   └── setup.cfg
@@ -53,14 +53,14 @@ The [examples](../examples) directory is a valid data directory with some pre-de
 
 ### Profiles
 
-Profiles reference an Ignition config, Cloud-Config, and/or generic config by name and define network boot settings.
+Profiles reference an Ignition config, Butane Config, Cloud-Config, and/or generic config by name and define network boot settings.
 
 ```json
 {
   "id": "etcd",
   "name": "Container Linux with etcd2",
   "cloud_id": "",
-  "ignition_id": "etcd.yaml",
+  "ignition_id": "worker.ign",
   "generic_id": "some-service.cfg",
   "boot": {
     "kernel": "/assets/coreos/1967.3.0/coreos_production_pxe.vmlinuz",
@@ -128,16 +128,16 @@ Group selectors can use any key/value pairs you find useful. However, several la
 
 ### Config templates
 
-Profiles can reference various templated configs. Ignition JSON configs can be generated from [Container Linux Config](https://github.com/coreos/container-linux-config-transpiler/blob/master/doc/configuration.md) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files can be used to render arbitrary untyped configs (experimental). Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with machine group metadata, selectors, and query params.
+Profiles can reference various templated configs. Ignition configs can be provided directly or rendered fro [Butane Config](https://coreos.github.io/butane/) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files can be used to render arbitrary untyped configs (experimental). Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with machine group metadata, selectors, and query params.
 
 For details and examples:
 
-* [Container Linux Config](container-linux-config.md)
+* [Ignition (or Butane)](ignition.md)
 * [Cloud-Config](cloud-config.md)
 
 #### Variables
 
-Within Container Linux Config templates, Cloud-Config templates, or generic templates, you can use group metadata, selectors, or request-scoped query params. For example, a request `/generic?mac=52-54-00-89-d8-10&foo=some-param&bar=b` would match the `node1.json` machine group shown above. If the group's profile ("etcd") referenced a generic template, the following variables could be used.
+Within Butane Config templates, Cloud-Config templates, or generic templates, you can use group metadata, selectors, or request-scoped query params. For example, a request `/generic?mac=52-54-00-89-d8-10&foo=some-param&bar=b` would match the `node1.json` machine group shown above. If the group's profile ("etcd") referenced a generic template, the following variables could be used.
 
 <!-- {% raw %} -->
 ```

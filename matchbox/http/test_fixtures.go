@@ -7,9 +7,9 @@ import (
 var (
 	validMACStr = "52:da:00:89:d8:10"
 
-	testProfileIgnitionYAML = &storagepb.Profile{
+	testProfileWithButane = &storagepb.Profile{
 		Id:         "g1h2i3j4",
-		IgnitionId: "ignition.yaml",
+		IgnitionId: "butane.yaml",
 	}
 
 	testProfileGeneric = &storagepb.Profile{
