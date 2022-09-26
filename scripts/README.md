@@ -13,9 +13,9 @@ This will create:
 
 ```
 examples/assets/fedora-coreos/
-├── fedora-coreos-36.20220618.3.1-live-initramfs.x86_64.img
-├── fedora-coreos-36.20220618.3.1-live-kernel-x86_64
-├── fedora-coreos-36.20220618.3.1-live-rootfs.x86_64.img
+├── fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+├── fedora-coreos-36.20220906.3.2-live-kernel-x86_64
+├── fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img
 ```
 
 ## get-flatcar

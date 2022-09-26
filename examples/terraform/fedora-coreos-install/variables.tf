@@ -16,7 +16,7 @@ variable "os_stream" {
 
 variable "os_version" {
   type        = string
-  description = "Fedora CoreOS version to PXE and install (e.g. 36.20220618.3.1)"
+  description = "Fedora CoreOS version to PXE and install (e.g. 36.20220906.3.2)"
 }
 
 variable "ssh_authorized_key" {

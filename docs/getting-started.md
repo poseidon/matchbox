@@ -144,7 +144,7 @@ cp terraform.tfvars.example terraform.tfvars
 ```tf
 matchbox_http_endpoint = "http://matchbox.example.com:8080"
 matchbox_rpc_endpoint  = "matchbox.example.com:8081"
-os_version             = "36.20220618.3.1"
+os_version             = "36.20220906.3.2"
 ssh_authorized_key     = "YOUR_SSH_KEY"
 ```
 
