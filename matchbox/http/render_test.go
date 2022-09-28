@@ -15,11 +15,11 @@ func TestRenderJSON(t *testing.T) {
 	srv := NewServer(&Config{Logger: logger})
 	w := httptest.NewRecorder()
 	data := map[string][]string{
-		"a": []string{"b", "c"},
+		"a": {"b", "c"},
 	}
 	srv.renderJSON(w, data)
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, jsonContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
 	assert.Equal(t, `{"a":["b","c"]}`, w.Body.String())
 }
 

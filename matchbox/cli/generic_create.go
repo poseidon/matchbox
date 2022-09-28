@@ -1,10 +1,11 @@
 package cli
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"context"
+
 	"github.com/spf13/cobra"
 
 	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
@@ -36,7 +37,7 @@ func runGenericPutCmd(cmd *cobra.Command, args []string) {
 	}
 
 	client := mustClientFromCmd(cmd)
-	config, err := ioutil.ReadFile(flagFilename)
+	config, err := os.ReadFile(flagFilename)
 	if err != nil {
 		exitWithError(ExitError, err)
 	}

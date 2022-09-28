@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -21,7 +20,7 @@ func TestDir(t *testing.T) {
 		{"d/e/ff", "d/e/ff"},
 		{"d/e/ff/../gg", "d/e/gg"},
 	}
-	tdir, err := ioutil.TempDir("", "matchbox")
+	tdir, err := os.MkdirTemp("", "matchbox")
 	assert.Nil(t, err)
 	defer os.RemoveAll(tdir)
 
@@ -29,7 +28,8 @@ func TestDir(t *testing.T) {
 	dir := Dir(tdir)
 	// write files rooted in the dir
 	for _, c := range cases {
-		dir.writeFile(c.path, []byte(c.expected))
+		err = dir.writeFile(c.path, []byte(c.expected))
+		assert.Nil(t, err)
 	}
 	// ensure expected files were created
 	for _, c := range cases {

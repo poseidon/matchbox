@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"context"
+
 	logtest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 
@@ -49,7 +50,7 @@ func TestMetadataHandler(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	// convert response (random order) to map (tests compare in order)
 	assert.Equal(t, expectedLines, metadataToMap(w.Body.String()))
-	assert.Equal(t, plainContentType, w.HeaderMap.Get(contentType))
+	assert.Equal(t, plainContentType, w.Header().Get(contentType))
 }
 
 func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
@@ -75,7 +76,7 @@ func TestMetadataHandler_MetadataEdgeCases(t *testing.T) {
 		// - key/value pairs are newline separated
 		assert.Equal(t, http.StatusOK, w.Code)
 		assert.Contains(t, w.Body.String(), c.expected)
-		assert.Equal(t, plainContentType, w.HeaderMap.Get(contentType))
+		assert.Equal(t, plainContentType, w.Header().Get(contentType))
 	}
 }
 

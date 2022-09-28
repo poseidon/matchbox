@@ -25,7 +25,7 @@ boot
 // client machine data and chainload to the ipxeHandler.
 func ipxeInspect() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, ipxeBootstrap)
+		fmt.Fprint(w, ipxeBootstrap)
 	}
 	return http.HandlerFunc(fn)
 }

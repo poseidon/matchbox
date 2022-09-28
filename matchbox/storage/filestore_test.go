@@ -2,7 +2,6 @@ package storage
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -244,7 +243,7 @@ func TestCloudGet(t *testing.T) {
 // for testing. Returns the directory tree root. The caller must remove the
 // temp directory when finished.
 func setup(fixedStore *fake.FixedStore) (root string, err error) {
-	root, err = ioutil.TempDir("", "data")
+	root, err = os.MkdirTemp("", "data")
 	if err != nil {
 		return "", err
 	}
@@ -264,7 +263,7 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 		if err != nil {
 			return root, err
 		}
-		err = ioutil.WriteFile(profileFile, []byte(data), defaultFileMode)
+		err = os.WriteFile(profileFile, []byte(data), defaultFileMode)
 		if err != nil {
 			return root, err
 		}
@@ -279,28 +278,28 @@ func setup(fixedStore *fake.FixedStore) (root string, err error) {
 		if err != nil {
 			return root, err
 		}
-		err = ioutil.WriteFile(groupFile, []byte(data), defaultFileMode)
+		err = os.WriteFile(groupFile, []byte(data), defaultFileMode)
 		if err != nil {
 			return root, err
 		}
 	}
 	for name, content := range fixedStore.IgnitionConfigs {
 		ignitionFile := filepath.Join(ignitionDir, name)
-		err = ioutil.WriteFile(ignitionFile, []byte(content), defaultFileMode)
+		err = os.WriteFile(ignitionFile, []byte(content), defaultFileMode)
 		if err != nil {
 			return root, err
 		}
 	}
 	for name, content := range fixedStore.GenericConfigs {
 		genericFile := filepath.Join(genericDir, name)
-		err = ioutil.WriteFile(genericFile, []byte(content), defaultFileMode)
+		err = os.WriteFile(genericFile, []byte(content), defaultFileMode)
 		if err != nil {
 			return root, err
 		}
 	}
 	for name, content := range fixedStore.CloudConfigs {
 		cloudConfigFile := filepath.Join(cloudDir, name)
-		err = ioutil.WriteFile(cloudConfigFile, []byte(content), defaultFileMode)
+		err = os.WriteFile(cloudConfigFile, []byte(content), defaultFileMode)
 		if err != nil {
 			return root, err
 		}

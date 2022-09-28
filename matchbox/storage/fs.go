@@ -2,7 +2,7 @@ package storage
 
 import (
 	"errors"
-	"io/ioutil"
+	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
@@ -28,17 +28,17 @@ func (d Dir) readFile(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ioutil.ReadFile(path)
+	return os.ReadFile(path)
 }
 
 // readDir reads the directory named by the given path and returns a list of
 // sorted directory entries. Restricted to a specified directory tree.
-func (d Dir) readDir(dirname string) ([]os.FileInfo, error) {
+func (d Dir) readDir(dirname string) ([]fs.DirEntry, error) {
 	path, err := d.sanitize(dirname)
 	if err != nil {
 		return nil, err
 	}
-	return ioutil.ReadDir(path)
+	return os.ReadDir(path)
 }
 
 // writeFile writes the data as a file at given path, restricted to a specific
@@ -52,7 +52,7 @@ func (d Dir) writeFile(path string, data []byte) error {
 	if err := os.MkdirAll(filepath.Dir(path), defaultDirectoryMode); err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, data, defaultFileMode)
+	return os.WriteFile(path, data, defaultFileMode)
 }
 
 // deleteFile removes the file at the given path, restricted to a specific

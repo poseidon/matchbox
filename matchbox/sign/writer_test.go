@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -30,7 +29,7 @@ func TestSignatureHandler(t *testing.T) {
 	h.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, expectedBody, w.Body.String())
-	assert.NotEqual(t, "application/json", w.HeaderMap.Get("Content-Type"))
+	assert.NotEqual(t, "application/json", w.Header().Get("Content-Type"))
 }
 
 func TestSignatureHandler_ErrorStatusCode(t *testing.T) {
@@ -75,7 +74,7 @@ func TestSignatureHandler_SignatureError(t *testing.T) {
 type upperSigner struct{}
 
 func (s *upperSigner) Sign(w io.Writer, message io.Reader) error {
-	b, err := ioutil.ReadAll(message)
+	b, err := io.ReadAll(message)
 	if err != nil {
 		return err
 	}
