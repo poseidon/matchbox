@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
-	google.golang.org/grpc v1.49.0
+	google.golang.org/grpc v1.50.0
 )
 
 require (
