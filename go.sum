@@ -57,6 +57,8 @@ github.com/coreos/go-json v0.0.0-20220810161552-7cce03887f34 h1:14qC8Go5ArRXeK4n
 github.com/coreos/go-json v0.0.0-20220810161552-7cce03887f34/go.mod h1:jdmhE6D2v5tisGyVw92x7/r3USTNm2VAkdRZ4ZydKQk=
 github.com/coreos/go-semver v0.3.0 h1:wkHLiw0WNATZnSG7epLsujiMCgPAc9xhjJ4tgnAxmfM=
 github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
+github.com/coreos/go-semver v0.3.1-0.20220328174955-167f5da54033 h1:EFU0eBaol9U5CfTrmhCtr9Q1xv+mmwrDwF5yHSrMYyw=
+github.com/coreos/go-semver v0.3.1-0.20220328174955-167f5da54033/go.mod h1:5Y3UAMJpoC9iTP3pIpwQLVMpi9ZtX30wiA6ZThmZmFs=
 github.com/coreos/go-systemd/v22 v22.0.0/go.mod h1:xO0FLkIi5MaZafQlIrOotqXZ90ih+1atmu1JpKERPPk=
 github.com/coreos/go-systemd/v22 v22.4.0 h1:y9YHcjnjynCd/DVbg5j9L/33jQM3MxJlbj/zWskzfGU=
 github.com/coreos/go-systemd/v22 v22.4.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=

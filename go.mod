@@ -20,7 +20,7 @@ require (
 	github.com/aws/aws-sdk-go v1.30.28 // indirect
 	github.com/clarketm/json v1.17.1 // indirect
 	github.com/coreos/go-json v0.0.0-20220810161552-7cce03887f34 // indirect
-	github.com/coreos/go-semver v0.3.0 // indirect
+	github.com/coreos/go-semver v0.3.1-0.20220328174955-167f5da54033 // indirect
 	github.com/coreos/go-systemd/v22 v22.4.0 // indirect
 	github.com/coreos/vcontext v0.0.0-20220810162454-88bd546c634c // indirect
 	github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269 // indirect
