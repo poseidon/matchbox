@@ -55,7 +55,6 @@ github.com/coreos/coreos-cloudinit v1.14.0/go.mod h1:hV3swhSwq+bRX5apuk57gG+3fsQ
 github.com/coreos/go-json v0.0.0-20211020211907-c63f628265de/go.mod h1:lryFBkhadOfv8Jue2Vr/f/Yviw8h1DQPQojbXqEChY0=
 github.com/coreos/go-json v0.0.0-20220810161552-7cce03887f34 h1:14qC8Go5ArRXeK4neVu4GwD/2KZcLsRotqGW7eBRqwk=
 github.com/coreos/go-json v0.0.0-20220810161552-7cce03887f34/go.mod h1:jdmhE6D2v5tisGyVw92x7/r3USTNm2VAkdRZ4ZydKQk=
-github.com/coreos/go-semver v0.3.0 h1:wkHLiw0WNATZnSG7epLsujiMCgPAc9xhjJ4tgnAxmfM=
 github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
 github.com/coreos/go-semver v0.3.1-0.20220328174955-167f5da54033 h1:EFU0eBaol9U5CfTrmhCtr9Q1xv+mmwrDwF5yHSrMYyw=
 github.com/coreos/go-semver v0.3.1-0.20220328174955-167f5da54033/go.mod h1:5Y3UAMJpoC9iTP3pIpwQLVMpi9ZtX30wiA6ZThmZmFs=
@@ -435,9 +434,7 @@ gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 h1:YR8cESwS4TdDjEe65xsg0ogRM/Nc3DYOhEAlW+xobZo=
 gopkg.in/errgo.v2 v2.1.0/go.mod h1:hNsd1EY+bozCKY1Ytp96fpM3vjJbqLJn88ws8XvfDNI=
-gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
-gopkg.in/yaml.v2 v2.2.3 h1:fvjTMHxHEw/mxHbtzPi3JCcKXQRAnQTBRo6YCJSVHKI=
-gopkg.in/yaml.v2 v2.2.3/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
+gopkg.in/yaml.v2 v2.4.0/go.mod h1:RDklbk79AGWmwhnvt/jBztapEOGDOx6ZbXqjP6csGnQ=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
