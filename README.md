@@ -1,6 +1,10 @@
 # matchbox
-
-[![GoDoc](https://pkg.go.dev/badge/github.com/poseidon/matchbox.svg)](https://pkg.go.dev/github.com/poseidon/matchbox) [![Quay](https://img.shields.io/badge/container-quay-green)](https://quay.io/repository/poseidon/matchbox) [![Workflow](https://github.com/poseidon/matchbox/actions/workflows/test.yaml/badge.svg)](https://github.com/poseidon/matchbox/actions/workflows/test.yaml?query=branch%3Amain) ![Downloads](https://img.shields.io/github/downloads/poseidon/matchbox/total) [![Sponsors](https://img.shields.io/github/sponsors/poseidon?logo=github)](https://github.com/sponsors/poseidon) [![Twitter](https://img.shields.io/badge/follow-news-1da1f2?logo=twitter)](https://twitter.com/poseidonlabs)
+[![GoDoc](https://pkg.go.dev/badge/github.com/poseidon/matchbox.svg)](https://pkg.go.dev/github.com/poseidon/matchbox)
+[![Quay](https://img.shields.io/badge/container-quay-green)](https://quay.io/repository/poseidon/matchbox)
+[![Workflow](https://github.com/poseidon/matchbox/actions/workflows/test.yaml/badge.svg)](https://github.com/poseidon/matchbox/actions/workflows/test.yaml?query=branch%3Amain)
+![Downloads](https://img.shields.io/github/downloads/poseidon/matchbox/total)
+[![Sponsors](https://img.shields.io/github/sponsors/poseidon?logo=github)](https://github.com/sponsors/poseidon)
+[![Mastodon](https://img.shields.io/badge/follow-news-6364ff?logo=mastodon)](https://fosstodon.org/@poseidon)
 
 `matchbox` is a service that matches bare-metal machines to profiles that PXE boot and provision clusters. Machines are matched by labels like MAC or UUID during PXE and profiles specify a kernel/initrd, iPXE config, and Ignition config.
 

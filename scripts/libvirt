@@ -35,7 +35,9 @@ function usage {
   echo -e "\tdestroy\t\tdestroy the QEMU/KVM nodes"
 }
 
-COMMON_VIRT_OPTS="--memory=${VM_MEMORY} --vcpus=1 --disk pool=default,size=${VM_DISK} --os-variant=fedora-coreos-stable --noautoconsole"
+# --install=no_install=yes is a workaround for a virt-manager 4.1.0 regression
+# https://github.com/virt-manager/virt-manager/issues/426
+COMMON_VIRT_OPTS="--memory=${VM_MEMORY} --vcpus=2 --disk pool=default,size=${VM_DISK} --os-variant=fedora-coreos-stable --noautoconsole --install=no_install=yes"
 
 NODE1_NAME=node1
 NODE1_MAC=52:54:00:a1:9c:ae
