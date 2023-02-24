@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/coreos/pkg/flagutil"
 	web "github.com/poseidon/matchbox/matchbox/http"
@@ -23,26 +24,36 @@ var (
 	log = logrus.New()
 )
 
-func main() {
-	flags := struct {
+type CliFlags struct {
 		address      string
 		rpcAddress   string
 		dataPath     string
 		assetsPath   string
+		etcdEndpoints string
 		logLevel     string
 		grpcCAFile   string
 		grpcCertFile string
 		grpcKeyFile  string
+		storageType  string
 		tlsCertFile  string
 		tlsKeyFile   string
 		tlsEnabled   bool
 		keyRingPath  string
 		version      bool
 		help         bool
-	}{}
+}
+
+
+func main() {
+	var flags CliFlags
+
 	flag.StringVar(&flags.address, "address", "127.0.0.1:8080", "HTTP listen address")
 	flag.StringVar(&flags.rpcAddress, "rpc-address", "", "RPC listen address")
+
 	flag.StringVar(&flags.dataPath, "data-path", "/var/lib/matchbox", "Path to data directory")
+	flag.StringVar(&flags.storageType, "storage-type", "file", "Type of storage to use for data (file, etcd)")
+	flag.StringVar(&flags.etcdEndpoints, "etcd-endpoints", "127.0.0.1:2380", "Comme-separated list of host:port etcd endpoints")
+
 	flag.StringVar(&flags.assetsPath, "assets-path", "/var/lib/matchbox/assets", "Path to static assets")
 
 	// Log levels https://github.com/sirupsen/logrus/blob/master/logrus.go#L36
@@ -86,8 +97,10 @@ func main() {
 	}
 
 	// validate arguments
-	if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
-		log.Fatal("A valid -data-path is required")
+	if flags.storageType == "file" {
+		if finfo, err := os.Stat(flags.dataPath); err != nil || !finfo.IsDir() {
+			log.Fatal("A valid -data-path is required")
+		}
 	}
 	if flags.assetsPath != "" {
 		if finfo, err := os.Stat(flags.assetsPath); err != nil || !finfo.IsDir() {
@@ -133,10 +146,7 @@ func main() {
 	}
 
 	// storage
-	store := storage.NewFileStore(&storage.Config{
-		Root:   flags.dataPath,
-		Logger: log,
-	})
+	store := createStore(&flags, log)
 
 	// core logic
 	server := server.NewServer(&server.Config{
@@ -194,4 +204,21 @@ func main() {
 		}
 	}
 
+}
+
+func createStore(flags *CliFlags, logger *logrus.Logger) storage.Store {
+	var store storage.Store
+
+	switch flags.storageType {
+	case "file":
+		store = storage.NewFileStore(&storage.Config{
+			Root:   flags.dataPath,
+			Logger: log,
+		})
+	case "etcd":
+		endPoints := strings.Split(flags.etcdEndpoints, ",")
+		store = storage.NewEtcdStore(endPoints,logger)
+	}
+
+	return store
 }
