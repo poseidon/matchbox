@@ -8,7 +8,7 @@ This guide covers releasing new versions of matchbox.
 Create a release commit which updates old version references.
 
 ```sh
-$ export VERSION=v0.9.1
+$ export VERSION=v0.10.0
 ```
 
 ## Tag
@@ -18,7 +18,7 @@ Tag, sign the release version, and push it to Github.
 ```sh
 $ git tag -s vX.Y.Z -m 'vX.Y.Z'
 $ git push origin --tags
-$ git push origin master
+$ git push origin main
 ```
 
 ## Images
@@ -44,7 +44,7 @@ $ make release
 Verify the reported version.
 
 ```
-./_output/matchbox-v0.9.1-linux-amd64/matchbox -version
+./_output/matchbox-v0.10.0-linux-amd64/matchbox -version
 ```
 
 ## Signing
@@ -52,20 +52,13 @@ Verify the reported version.
 Release tarballs are signed by Dalton Hubble's GPG [Key](/docs/deployment.md#download)
 
 ```sh
-cd _output
-gpg2 --armor --detach-sign matchbox-$VERSION-linux-amd64.tar.gz
-gpg2 --armor --detach-sign matchbox-$VERSION-darwin-amd64.tar.gz
-gpg2 --armor --detach-sign matchbox-$VERSION-linux-arm.tar.gz
-gpg2 --armor --detach-sign matchbox-$VERSION-linux-arm64.tar.gz
+make release-sign
 ```
 
 Verify the signatures.
 
 ```sh
-gpg2 --verify matchbox-$VERSION-linux-amd64.tar.gz.asc matchbox-$VERSION-linux-amd64.tar.gz
-gpg2 --verify matchbox-$VERSION-darwin-amd64.tar.gz.asc matchbox-$VERSION-darwin-amd64.tar.gz
-gpg2 --verify matchbox-$VERSION-linux-arm.tar.gz.asc matchbox-$VERSION-linux-arm.tar.gz
-gpg2 --verify matchbox-$VERSION-linux-arm64.tar.gz.asc matchbox-$VERSION-linux-arm64.tar.gz
+make release-verify
 ```
 
 ## Publish

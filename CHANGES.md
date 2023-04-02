@@ -4,18 +4,23 @@ Notable changes between releases.
 
 ## Latest
 
-* Upgrade Ignition from v0.35.0 (spec v2.x) to v2.14.0 (spec v3.x)
-* Parse Ignition and render forward to the current Ignition spec version
-  * Ignition is [forward](https://github.com/coreos/ignition/blob/main/config/v3_3/config.go#L61) compatible (a `v3.1` spec can be rendered as `v3.3` safely)
-* Recommend preparing Ignition externally (**action required**)
-  * Use Terraform with [poseidon/terraform-provider-ct](https://github.com/poseidon/terraform-provider-ct)
-  * For a CLI, use Butane
+## v0.10.0
+
+* Remove support for Ignition v0.35.0 (Ignition spec v2.x)
 * Remove support for Container Linux Configs (**action required**)
+  * Container Linux Configs were a YAML format that rendered to Ignition (spec v2.x)
   * Flatcar Linux now supports Ignition v2 (spec v3.x)
   * Butane is a suitable YAML format that renders Ignition v2 (spec v3.x)
-* Add limited support for Matchbox rendering Butane configs
+* Upgrade Ignition from v0.35.0 (spec v2.x) to v2.14.0 (spec v3.x)
+* Update Go version (v1.20.2) and alpine base image (v3.17.3)
+* Add limited support for Matchbox rendering Butane configs ([#997](https://github.com/poseidon/matchbox/pull/997))
+* Recommend writing Butane via external tools (**action required**)
+  * For Terraform, use [poseidon/terraform-provider-ct](https://github.com/poseidon/terraform-provider-ct)
+  * For a CLI, use [`butane`](https://github.com/coreos/butane)
+* Parse Ignition and render forward to Ignition v2 (spec v3.3)
+  * Ignition is [forward](https://github.com/coreos/ignition/blob/main/config/v3_3/config.go#L61) compatible (e.g. a `v3.1` spec can be rendered as `v3.3` safely)
 
-For those still templating Container Linux Configs, you may be able to convert to Butane by prepending:
+If you still template Container Linux Configs via Matchbox, [migrate](https://www.flatcar.org/docs/latest/provisioning/config-transpiler/) to Butane by prepending:
 
 ```yaml
 variant: flatcar

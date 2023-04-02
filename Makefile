@@ -88,3 +88,15 @@ _output/matchbox-%.tar.gz: bin/%/matchbox
 .PHONY: all build clean test release
 .SECONDARY: _output/matchbox-linux-amd64 _output/matchbox-darwin-amd64
 
+release-sign:
+	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-linux-amd64.tar.gz
+	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-linux-arm.tar.gz
+	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-linux-arm64.tar.gz
+	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-darwin-amd64.tar.gz
+
+release-verify: NAME=_output/matchbox
+release-verify:
+	gpg2 --verify $(NAME)-$(VERSION)-linux-amd64.tar.gz.asc $(NAME)-$(VERSION)-linux-amd64.tar.gz
+	gpg2 --verify $(NAME)-$(VERSION)-linux-arm.tar.gz.asc $(NAME)-$(VERSION)-linux-arm.tar.gz
+	gpg2 --verify $(NAME)-$(VERSION)-linux-arm64.tar.gz.asc $(NAME)-$(VERSION)-linux-arm64.tar.gz
+	gpg2 --verify $(NAME)-$(VERSION)-darwin-amd64.tar.gz.asc $(NAME)-$(VERSION)-darwin-amd64.tar.gz
