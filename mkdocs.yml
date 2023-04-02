@@ -24,7 +24,7 @@ nav:
   - Home: 'index.md'
   - 'Matchbox':
     - 'Concepts': 'matchbox.md'
-    - 'Container Linux Config': 'container-linux-config.md'
+    - 'Ignition': 'ignition.md'
     - 'Cloud-Config': 'cloud-config.md'
     - 'HTTP API': 'api-http.md'
     - 'gRPC API': 'api-grpc.md'

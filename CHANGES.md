@@ -13,7 +13,7 @@ Notable changes between releases.
   * Butane is a suitable YAML format that renders Ignition v2 (spec v3.x)
 * Upgrade Ignition from v0.35.0 (spec v2.x) to v2.14.0 (spec v3.x)
 * Update Go version (v1.20.2) and alpine base image (v3.17.3)
-* Add limited support for Matchbox rendering Butane configs ([#997](https://github.com/poseidon/matchbox/pull/997))
+* Add limited support for Matchbox rendering Butane configs ([#997](https://github.com/poseidon/matchbox/pull/997)) ([docs](https://matchbox.psdn.io/ignition/#matchbox-rendering))
 * Recommend writing Butane via external tools (**action required**)
   * For Terraform, use [poseidon/terraform-provider-ct](https://github.com/poseidon/terraform-provider-ct)
   * For a CLI, use [`butane`](https://github.com/coreos/butane)
