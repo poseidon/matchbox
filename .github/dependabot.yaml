@@ -4,20 +4,11 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  pull-request-branch-name:
-    separator: "-"
-  open-pull-requests-limit: 3
 - package-ecosystem: docker
   directory: "/"
   schedule:
     interval: daily
-  pull-request-branch-name:
-    separator: "-"
-  open-pull-requests-limit: 3
 - package-ecosystem: pip
   directory: "/"
   schedule:
     interval: weekly
-  pull-request-branch-name:
-    separator: "-"
-  open-pull-requests-limit: 3

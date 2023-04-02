@@ -1,5 +1,4 @@
 export CGO_ENABLED:=0
-export GO111MODULE=on
 
 DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 VERSION=$(shell git describe --tags --match=v* --always --dirty)
@@ -10,13 +9,11 @@ LOCAL_REPO=poseidon/matchbox
 IMAGE_REPO=quay.io/poseidon/matchbox
 
 .PHONY: all
-all: build test vet lint fmt
+all: build test vet fmt
 
 .PHONY: build
-build: clean bin/matchbox
-
-bin/%:
-	@go build -o bin/$* -ldflags $(LD_FLAGS) $(REPO)/cmd/$*
+build:
+	@go build -o bin/matchbox -ldflags $(LD_FLAGS) $(REPO)/cmd/matchbox
 
 .PHONY: test
 test:
@@ -26,13 +23,13 @@ test:
 vet:
 	@go vet -all ./...
 
-.PHONY: lint
-lint:
-	@golint -set_exit_status `go list ./... | grep -v pb`
-
 .PHONY: fmt
 fmt:
 	@test -z $$(go fmt ./...)
+
+.PHONY: lint
+lint:
+	@golangci-lint run ./...
 
 .PHONY: image
 image: \
