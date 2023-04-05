@@ -54,7 +54,7 @@ Define a Butane config for Fedora CoreOS or Flatcar Linux:
 
 ```yaml
 variant: fcos
-version: 1.4.0
+version: 1.5.0
 passwd:
   users:
     - name: core
@@ -64,7 +64,7 @@ passwd:
 
 ```yaml
 variant: flatcar
-version: 1.0.0
+version: 1.1.0
 passwd:
   users:
     - name: core
@@ -137,7 +137,7 @@ Here is an example Butane config with Matchbox template elements. Template files
 
 ```yaml
 variant: flatcar
-version: 1.0.0
+version: 1.1.0
 storage:
   files:
     - path: /var/home/core/foo

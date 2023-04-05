@@ -32,7 +32,7 @@ For Fedora CoreOS, add an SSH authorized key to the Butane Config (`ignition/fed
 
 ```yaml
 variant: fcos
-version: 1.4.0
+version: 1.5.0
 passwd:
   users:
     - name: core
@@ -48,7 +48,7 @@ For Flatcar Linux, add an SSH authorized key to the Butane config (`ignition/fla
 
 ```yaml
 variant: flatcar
-version: 1.0.0
+version: 1.1.0
 passwd:
   users:
     - name: core

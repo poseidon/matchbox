@@ -15,8 +15,8 @@ import (
 	fake "github.com/poseidon/matchbox/matchbox/storage/testfakes"
 )
 
-func TestIgnitionHandler_V33(t *testing.T) {
-	const content = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.3.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
+func TestIgnitionHandler_v3_4(t *testing.T) {
+	const content = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.4.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
 	profile := &storagepb.Profile{
 		Id:         fake.Group.Profile,
 		IgnitionId: "file.ign",
@@ -41,9 +41,9 @@ func TestIgnitionHandler_V33(t *testing.T) {
 	assert.Equal(t, content, w.Body.String())
 }
 
-func TestIgnitionHandler_V31(t *testing.T) {
+func TestIgnitionHandler_v3_1(t *testing.T) {
 	const ign31 = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.1.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
-	const ign33 = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.3.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
+	const ign34 = `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.4.0"},"kernelArguments":{},"passwd":{"users":[{"name":"core","sshAuthorizedKeys":["key"]}]},"storage":{},"systemd":{"units":[{"enabled":false,"name":"docker.service"}]}}`
 	profile := &storagepb.Profile{
 		Id:         fake.Group.Profile,
 		IgnitionId: "file.ign",
@@ -70,7 +70,7 @@ func TestIgnitionHandler_V31(t *testing.T) {
 	// - serve Ignition JSON
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, jsonContentType, w.Header().Get(contentType))
-	assert.Equal(t, ign33, w.Body.String())
+	assert.Equal(t, ign34, w.Body.String())
 }
 
 func TestIgnitionHandler_MissingIgnition(t *testing.T) {
@@ -90,7 +90,7 @@ func TestIgnitionHandler_Butane(t *testing.T) {
 	// exercise templating features, not a realistic Butane template
 	butane := `
 variant: flatcar
-version: 1.0.0
+version: 1.1.0
 systemd:
   units:
     - name: {{.uuid}}.service
@@ -100,7 +100,7 @@ systemd:
       enabled: true
       contents: {{.request.raw_query}}
 `
-	expectedIgnition := `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.3.0"},"kernelArguments":{},"passwd":{},"storage":{},"systemd":{"units":[{"contents":"10.2.0.0/16","enabled":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enabled":true,"name":"some-param.service"}]}}`
+	expectedIgnition := `{"ignition":{"config":{"replace":{"verification":{}}},"proxy":{},"security":{"tls":{}},"timeouts":{},"version":"3.4.0"},"kernelArguments":{},"passwd":{},"storage":{},"systemd":{"units":[{"contents":"10.2.0.0/16","enabled":true,"name":"a1b2c3d4.service"},{"contents":"foo=some-param\u0026bar=b","enabled":true,"name":"some-param.service"}]}}`
 
 	store := &fake.FixedStore{
 		Profiles: map[string]*storagepb.Profile{
@@ -142,7 +142,7 @@ func TestIgnitionHandler_MissingCtxProfile(t *testing.T) {
 func TestIgnitionHandler_MissingTemplateMetadata(t *testing.T) {
 	butane := `
 variant: flatcar
-version: 1.0.0
+version: 1.1.0
 systemd:
   units:
     - name: {{.missing_key}}
