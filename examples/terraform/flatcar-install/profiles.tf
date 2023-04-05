@@ -8,7 +8,7 @@ resource "matchbox_profile" "flatcar-install" {
 
   args = [
     "initrd=flatcar_production_pxe_image.cpio.gz",
-    "flatcar.config.url=${var.matchbox_http_endpoint}/ignition?uuid=$${uuid}&mac=$${mac:hexhyp}",
+    "flatcar.config.url=${var.matchbox_http_endpoint}/ignition?uuid=${uuid}&mac=${mac:hexhyp}",
     "flatcar.first_boot=yes",
   ]
 
