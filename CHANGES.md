@@ -4,10 +4,10 @@ Notable changes between releases.
 
 ## Latest
 
-* Update butane from v0.17.0 to v0.18.0
+* Update butane from v0.17.0 to v0.18.0 ([#1079](https://github.com/poseidon/matchbox/pull/1079))
   * Add support for `fcos` [v1.5.0](https://coreos.github.io/butane/config-fcos-v1_5/) Butane Configs
   * Add support for `flatcar` [v1.1.0](https://coreos.github.io/butane/config-flatcar-v1_1/) Butane Configs
-* Render Ignition as Ignition spec [v3.4.0](https://coreos.github.io/ignition/configuration-v3_4/)
+  * Render Ignition as Ignition spec [v3.4.0](https://coreos.github.io/ignition/configuration-v3_4/)
 
 ## v0.10.0
 
