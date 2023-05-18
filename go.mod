@@ -8,7 +8,7 @@ require (
 	github.com/coreos/ignition/v2 v2.15.0
 	github.com/coreos/pkg v0.0.0-20220810130054-c7d1c02cb6cf
 	github.com/golang/protobuf v1.5.3
-	github.com/sirupsen/logrus v1.9.1
+	github.com/sirupsen/logrus v1.9.2
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/crypto v0.9.0
