@@ -1,6 +1,0 @@
-name: test
-on:
-  push:
-jobs:
-  go:
-    uses: poseidon/.github/.github/workflows/golang-library.yaml@main
