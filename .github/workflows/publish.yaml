@@ -1,0 +1,13 @@
+name: publish
+on:
+  push:
+    branches:
+      - release-docs
+jobs:
+  mkdocs:
+    name: mkdocs
+    uses: ./.github/workflows/mkdocs-pages.yaml
+    # Add content write for GitHub Pages
+    permissions:
+      contents: write
+
