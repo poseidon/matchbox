@@ -81,12 +81,14 @@ release: \
 	_output/matchbox-linux-amd64.tar.gz \
 	_output/matchbox-linux-arm.tar.gz \
 	_output/matchbox-linux-arm64.tar.gz \
-	_output/matchbox-darwin-amd64.tar.gz
+	_output/matchbox-darwin-amd64.tar.gz \
+	_output/matchbox-darwin-arm64.tar.gz
 
 bin/linux-amd64/matchbox: GOARGS = GOOS=linux GOARCH=amd64
 bin/linux-arm/matchbox: GOARGS = GOOS=linux GOARCH=arm GOARM=6
 bin/linux-arm64/matchbox: GOARGS = GOOS=linux GOARCH=arm64
 bin/darwin-amd64/matchbox: GOARGS = GOOS=darwin GOARCH=amd64
+bin/darwin-arm64/matchbox: GOARGS = GOOS=darwin GOARCH=arm64
 bin/linux-ppc64le/matchbox: GOARGS = GOOS=linux GOARCH=ppc64le
 
 bin/%/matchbox:
@@ -108,6 +110,7 @@ release-sign:
 	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-linux-arm.tar.gz
 	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-linux-arm64.tar.gz
 	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-darwin-amd64.tar.gz
+	gpg2 --armor --detach-sign _output/matchbox-$(VERSION)-darwin-arm64.tar.gz
 
 release-verify: NAME=_output/matchbox
 release-verify:
@@ -115,3 +118,4 @@ release-verify:
 	gpg2 --verify $(NAME)-$(VERSION)-linux-arm.tar.gz.asc $(NAME)-$(VERSION)-linux-arm.tar.gz
 	gpg2 --verify $(NAME)-$(VERSION)-linux-arm64.tar.gz.asc $(NAME)-$(VERSION)-linux-arm64.tar.gz
 	gpg2 --verify $(NAME)-$(VERSION)-darwin-amd64.tar.gz.asc $(NAME)-$(VERSION)-darwin-amd64.tar.gz
+	gpg2 --verify $(NAME)-$(VERSION)-darwin-arm64.tar.gz.asc $(NAME)-$(VERSION)-darwin-arm64.tar.gz
