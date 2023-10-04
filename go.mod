@@ -3,7 +3,7 @@ module github.com/poseidon/matchbox
 go 1.19
 
 require (
-	github.com/coreos/butane v0.18.0
+	github.com/coreos/butane v0.19.0
 	github.com/coreos/coreos-cloudinit v1.14.0
 	github.com/coreos/ignition/v2 v2.16.2
 	github.com/coreos/pkg v0.0.0-20220810130054-c7d1c02cb6cf
