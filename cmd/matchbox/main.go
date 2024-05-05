@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/coreos/pkg/flagutil"
 	web "github.com/poseidon/matchbox/matchbox/http"
 	"github.com/poseidon/matchbox/matchbox/rpc"
 	"github.com/poseidon/matchbox/matchbox/server"
@@ -69,7 +68,7 @@ func main() {
 
 	// parse command-line and environment variable arguments
 	flag.Parse()
-	if err := flagutil.SetFlagsFromEnv(flag.CommandLine, "MATCHBOX"); err != nil {
+	if err := SetFlagsFromEnv(flag.CommandLine, "MATCHBOX"); err != nil {
 		log.Fatal(err.Error())
 	}
 	// restrict OpenPGP passphrase to pass via environment variable only

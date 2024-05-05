@@ -6,7 +6,6 @@ require (
 	github.com/coreos/butane v0.20.0
 	github.com/coreos/coreos-cloudinit v1.14.0
 	github.com/coreos/ignition/v2 v2.18.0
-	github.com/coreos/pkg v0.0.0-20220810130054-c7d1c02cb6cf
 	github.com/golang/protobuf v1.5.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
