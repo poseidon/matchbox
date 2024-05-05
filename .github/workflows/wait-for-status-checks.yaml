@@ -1,0 +1,16 @@
+name: wait-for-status-checks
+on:
+  workflow_call:
+jobs:
+  status-checks:
+    runs-on: [self-hosted, Linux, X64]
+    permissions:
+      checks: read
+    steps:
+      - name: GitHub Checks
+        uses: poseidon/wait-for-status-checks@5fc55bcf5e80b8beab24f45ec6ed96b133d89e42 # v0.4.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # wait-for-status-checks ignores it's own check name, but it does
+          # not know the full name when used inside a reusable workflow
+          ignore: "enforce / status-checks"

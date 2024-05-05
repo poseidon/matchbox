@@ -1,0 +1,8 @@
+name: summary
+on:
+  pull_request:
+jobs:
+  enforce:
+    uses: ./.github/workflows/wait-for-status-checks.yaml
+    permissions:
+      checks: read
