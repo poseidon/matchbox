@@ -8,7 +8,7 @@ jobs:
       checks: read
     steps:
       - name: GitHub Checks
-        uses: poseidon/wait-for-status-checks@5fc55bcf5e80b8beab24f45ec6ed96b133d89e42 # v0.4.1
+        uses: poseidon/wait-for-status-checks@6988432d64ad3f9c2608db4ca16fded1b7d36ead # v0.5.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           # wait-for-status-checks ignores it's own check name, but it does
