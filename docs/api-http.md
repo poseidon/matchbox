@@ -97,8 +97,6 @@ coreos:
   units:
     - name: etcd2.service
       command: start
-    - name: fleet.service
-      command: start
 ```
 
 ## Ignition Config

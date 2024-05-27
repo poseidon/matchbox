@@ -30,8 +30,6 @@ coreos:
   units:
     - name: etcd2.service
       command: start
-    - name: fleet.service
-      command: start
 write_files:
   - path: "/home/core/welcome"
     owner: "core"
