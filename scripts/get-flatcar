@@ -39,37 +39,37 @@ fi
 echo "Downloading Flatcar Linux $CHANNEL $VERSION images and sigs to $DEST"
 
 echo "Flatcar Linux Image Signing Key"
-curl -# https://www.flatcar.org/security/image-signing-key/Flatcar_Image_Signing_Key.asc -o "${DEST}/Flatcar_Image_Signing_Key.asc"
+curl -f# https://www.flatcar.org/security/image-signing-key/Flatcar_Image_Signing_Key.asc -o "${DEST}/Flatcar_Image_Signing_Key.asc"
 $GPG --import <"$DEST/Flatcar_Image_Signing_Key.asc" || true
 
 # Version
 echo "version.txt"
-curl -# "${BASE_URL}/version.txt" -o "${DEST}/version.txt"
+curl -f# "${BASE_URL}/version.txt" -o "${DEST}/version.txt"
 
 # PXE kernel and sig
 echo "flatcar_production_pxe.vmlinuz..."
-curl -# "${BASE_URL}/flatcar_production_pxe.vmlinuz" -o "${DEST}/flatcar_production_pxe.vmlinuz"
+curl -f# "${BASE_URL}/flatcar_production_pxe.vmlinuz" -o "${DEST}/flatcar_production_pxe.vmlinuz"
 echo "flatcar_production_pxe.vmlinuz.sig"
-curl -# "${BASE_URL}/flatcar_production_pxe.vmlinuz.sig" -o "${DEST}/flatcar_production_pxe.vmlinuz.sig"
+curl -f# "${BASE_URL}/flatcar_production_pxe.vmlinuz.sig" -o "${DEST}/flatcar_production_pxe.vmlinuz.sig"
 
 # PXE initrd and sig
 echo "flatcar_production_pxe_image.cpio.gz"
-curl -# "${BASE_URL}/flatcar_production_pxe_image.cpio.gz" -o "${DEST}/flatcar_production_pxe_image.cpio.gz"
+curl -f# "${BASE_URL}/flatcar_production_pxe_image.cpio.gz" -o "${DEST}/flatcar_production_pxe_image.cpio.gz"
 echo "flatcar_production_pxe_image.cpio.gz.sig"
-curl -# "${BASE_URL}/flatcar_production_pxe_image.cpio.gz.sig" -o "${DEST}/flatcar_production_pxe_image.cpio.gz.sig"
+curl -f# "${BASE_URL}/flatcar_production_pxe_image.cpio.gz.sig" -o "${DEST}/flatcar_production_pxe_image.cpio.gz.sig"
 
 # Install image
 echo "flatcar_production_image.bin.bz2"
-curl -# "${BASE_URL}/flatcar_production_image.bin.bz2" -o "${DEST}/flatcar_production_image.bin.bz2"
+curl -f# "${BASE_URL}/flatcar_production_image.bin.bz2" -o "${DEST}/flatcar_production_image.bin.bz2"
 echo "flatcar_production_image.bin.bz2.sig"
-curl -# "${BASE_URL}/flatcar_production_image.bin.bz2.sig" -o "${DEST}/flatcar_production_image.bin.bz2.sig"
+curl -f# "${BASE_URL}/flatcar_production_image.bin.bz2.sig" -o "${DEST}/flatcar_production_image.bin.bz2.sig"
 
 # Install oem image
 if [[ -n "${IMAGE_NAME-}" ]]; then
   echo "${IMAGE_NAME}"
-  curl -# "${BASE_URL}/${IMAGE_NAME}" -o "${DEST}/${IMAGE_NAME}"
+  curl -f# "${BASE_URL}/${IMAGE_NAME}" -o "${DEST}/${IMAGE_NAME}"
   echo "${IMAGE_NAME}.sig"
-  curl -# "${BASE_URL}/${IMAGE_NAME}.sig" -o "${DEST}/${IMAGE_NAME}.sig"
+  curl -f# "${BASE_URL}/${IMAGE_NAME}.sig" -o "${DEST}/${IMAGE_NAME}.sig"
 fi
 
 # verify signatures
