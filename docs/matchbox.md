@@ -95,7 +95,6 @@ Create a group definition with a `Profile` to be applied, selectors for matching
     "mac": "52:54:00:89:d8:10"
   },
   "metadata": {
-    "fleet_metadata": "role=etcd,name=node1",
     "etcd_name": "node1",
     "etcd_initial_cluster": "node1=http://node1.example.com:2380,node2=http://node2.example.com:2380,node3=http://node3.example.com:2380"
   }
@@ -109,7 +108,6 @@ Meanwhile, `/var/lib/matchbox/groups/proxy.json` acts as the default machine gro
   "name": "etcd-proxy",
   "profile": "etcd-proxy",
   "metadata": {
-    "fleet_metadata": "role=etcd-proxy",
     "etcd_initial_cluster": "node1=http://node1.example.com:2380,node2=http://node2.example.com:2380,node3=http://node3.example.com:2380"
   }
 }
@@ -146,7 +144,6 @@ Within Butane Config templates, Cloud-Config templates, or generic templates, yo
 {{.mac}}                # 52:54:00:89:d8:10 (normalized)
 # Metadata
 {{.etcd_name}}          # node1
-{{.fleet_metadata}}     # role=etcd,name=node1
 # Query
 {{.request.query.mac}}  # 52:54:00:89:d8:10 (normalized)
 {{.request.query.foo}}  # some-param

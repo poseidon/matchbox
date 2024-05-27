@@ -8,7 +8,7 @@ Physical machines [network boot](network-booting.md) in an network boot environm
 
 Container Linux boots ("first boot" from disk) and runs Ignition to provision its disk with systemd units, files, keys, and more to become a cluster node. Systemd units may fetch metadata from a remote source if needed.
 
-Coordinated auto-updates are enabled. Systems like [fleet](https://coreos.com/docs/#fleet) or [Kubernetes](http://kubernetes.io/docs/) coordinate container services. IPMI, vendor utilities, or first-boot are used to re-provision machines into new roles.
+Coordinated auto-updates are enabled. Systems like [Kubernetes](http://kubernetes.io/docs/) coordinate container services. IPMI, vendor utilities, or first-boot are used to re-provision machines into new roles.
 
 ## Machine lifecycle
 
