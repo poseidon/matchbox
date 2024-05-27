@@ -25,12 +25,12 @@ echo "Downloading Fedora CoreOS $STREAM $VERSION images to $DEST"
 
 # PXE kernel
 echo "fedora-coreos-$VERSION-live-kernel-x86_64"
-curl -# $BASE_URL/fedora-coreos-$VERSION-live-kernel-x86_64 -o $DEST/fedora-coreos-$VERSION-live-kernel-x86_64
+curl -f# $BASE_URL/fedora-coreos-$VERSION-live-kernel-x86_64 -o $DEST/fedora-coreos-$VERSION-live-kernel-x86_64
 
 # PXE initrd
 echo "fedora-coreos-$VERSION-live-initramfs.x86_64.img"
-curl -# $BASE_URL/fedora-coreos-$VERSION-live-initramfs.x86_64.img -o $DEST/fedora-coreos-$VERSION-live-initramfs.x86_64.img
+curl -f# $BASE_URL/fedora-coreos-$VERSION-live-initramfs.x86_64.img -o $DEST/fedora-coreos-$VERSION-live-initramfs.x86_64.img
 
 # rootfs
 echo "fedora-coreos-$VERSION-live-rootfs.x86_64.img"
-curl -# $BASE_URL/fedora-coreos-$VERSION-live-rootfs.x86_64.img -o $DEST/fedora-coreos-$VERSION-live-rootfs.x86_64.img
+curl -f# $BASE_URL/fedora-coreos-$VERSION-live-rootfs.x86_64.img -o $DEST/fedora-coreos-$VERSION-live-rootfs.x86_64.img
