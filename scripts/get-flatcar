@@ -50,7 +50,7 @@ curl -f# "${BASE_URL}/version.txt" -o "${DEST}/version.txt"
 echo "flatcar_production_pxe.vmlinuz..."
 curl -f# "${BASE_URL}/flatcar_production_pxe.vmlinuz" -o "${DEST}/flatcar_production_pxe.vmlinuz"
 echo "flatcar_production_pxe.vmlinuz.sig"
-curl -f# "${BASE_URL}/flatcar_production_pxe.vmlinuz.sig" -o "${DEST}/flatcar_production_pxe.vmlinuz.sig"
+curl -f# "${BASE_URL}/flatcar_production_image.vmlinuz.sig" -o "${DEST}/flatcar_production_pxe.vmlinuz.sig"
 
 # PXE initrd and sig
 echo "flatcar_production_pxe_image.cpio.gz"
