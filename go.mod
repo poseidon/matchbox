@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/coreos/butane v0.20.0
 	github.com/coreos/coreos-cloudinit v1.14.0
-	github.com/coreos/ignition/v2 v2.18.0
+	github.com/coreos/ignition/v2 v2.19.0
 	github.com/golang/protobuf v1.5.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.50.25 // indirect
+	github.com/aws/aws-sdk-go v1.53.5 // indirect
 	github.com/clarketm/json v1.17.1 // indirect
 	github.com/coreos/go-json v0.0.0-20230131223807-18775e0fb4fb // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
@@ -32,7 +32,7 @@ require (
 	github.com/vincent-petithory/dataurl v1.0.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240513163218-0867130af1f8 // indirect
+	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
