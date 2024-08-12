@@ -126,7 +126,7 @@ Group selectors can use any key/value pairs you find useful. However, several la
 
 ### Config templates
 
-Profiles can reference various templated configs. Ignition configs can be provided directly or rendered fro [Butane Config](https://coreos.github.io/butane/) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files can be used to render arbitrary untyped configs (experimental). Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with machine group metadata, selectors, and query params.
+Profiles can reference various templated configs. Ignition configs can be provided directly or rendered from [Butane Config](https://coreos.github.io/butane/) template files. Cloud-Config templates files can be used to render a script or Cloud-Config. Generic template files can be used to render arbitrary untyped configs (experimental). Each template may contain [Go template](https://golang.org/pkg/text/template/) elements which will be rendered with machine group metadata, selectors, and query params.
 
 For details and examples:
 
