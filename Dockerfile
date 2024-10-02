@@ -1,4 +1,4 @@
-FROM docker.io/golang:1.23.1 AS builder
+FROM docker.io/golang:1.23.2 AS builder
 COPY . src
 RUN cd src && make build
 
