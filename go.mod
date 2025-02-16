@@ -10,7 +10,7 @@ require (
 	github.com/coreos/ignition/v2 v2.20.0
 	github.com/golang/protobuf v1.5.4
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/cobra v1.8.1
+	github.com/spf13/cobra v1.9.0
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.33.0
 	golang.org/x/net v0.35.0
@@ -30,7 +30,7 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
-	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/vincent-petithory/dataurl v1.0.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
