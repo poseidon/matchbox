@@ -1,6 +1,6 @@
 module github.com/poseidon/matchbox
 
-go 1.22.7
+go 1.23.0
 
 toolchain go1.24.0
 
@@ -12,7 +12,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/crypto v0.33.0
+	golang.org/x/crypto v0.34.0
 	golang.org/x/net v0.35.0
 	google.golang.org/grpc v1.70.0
 )
