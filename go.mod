@@ -14,7 +14,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.35.0
 	golang.org/x/net v0.35.0
-	google.golang.org/grpc v1.70.0
+	google.golang.org/grpc v1.71.0
 )
 
 require (
@@ -34,7 +34,7 @@ require (
 	github.com/vincent-petithory/dataurl v1.0.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241202173237-19429a94021a // indirect
-	google.golang.org/protobuf v1.35.2 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
+	google.golang.org/protobuf v1.36.4 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
