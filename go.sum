@@ -2,8 +2,8 @@ github.com/aws/aws-sdk-go v1.55.6 h1:cSg4pvZ3m8dgYcgqB97MrcdjUmZ1BeMYKUxMMB89IPk
 github.com/aws/aws-sdk-go v1.55.6/go.mod h1:eRwEWoyTWFMVYVQzKMNHWP5/RV4xIUGMQfXQHfHkpNU=
 github.com/clarketm/json v1.17.1 h1:U1IxjqJkJ7bRK4L6dyphmoO840P6bdhPdbbLySourqI=
 github.com/clarketm/json v1.17.1/go.mod h1:ynr2LRfb0fQU34l07csRNBTcivjySLLiY1YzQqKVfdo=
-github.com/coreos/butane v0.23.0 h1:C/005CtsUGilgoPDrODUkPbCbZ8OJDuS3c1ANUSZXro=
-github.com/coreos/butane v0.23.0/go.mod h1:Oeoy3s0qNcJxyMa8kUYpxpJfnNPpAgxEbihwPtQNE1g=
+github.com/coreos/butane v0.24.0 h1:sput//CnGz1ZUNT3TaSpbgjAjlefGC+/Ikiiwl5wO9Q=
+github.com/coreos/butane v0.24.0/go.mod h1:mLu58/AgW6lC116Rf/9N5b+ixj/zdhRtABBZjADHWFo=
 github.com/coreos/coreos-cloudinit v1.14.0 h1:3bQRJaie3QC8EovAVbxiimLQgdxM6DxP1vJfUCEEl9w=
 github.com/coreos/coreos-cloudinit v1.14.0/go.mod h1:hV3swhSwq+bRX5apuk57gG+3fsQacgbrZVxjPTqo0zo=
 github.com/coreos/go-json v0.0.0-20230131223807-18775e0fb4fb h1:rmqyI19j3Z/74bIRhuC59RB442rXUazKNueVpfJPxg4=
