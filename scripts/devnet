@@ -96,7 +96,7 @@ function docker_create {
     -d \
     --cap-add=NET_ADMIN \
     -v $PWD/contrib/dnsmasq/docker0.conf:/etc/dnsmasq.conf:Z \
-    quay.io/poseidon/dnsmasq:f4623c508ff3fbc467285de1ede61126624b91ac -d
+    quay.io/poseidon/dnsmasq:v0.5.0-43-g545c220 -d
 }
 
 function docker_status {
