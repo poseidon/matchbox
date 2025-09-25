@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.25.1
 
 require (
-	github.com/coreos/butane v0.25.0
+	github.com/coreos/butane v0.25.1
 	github.com/coreos/coreos-cloudinit v1.14.0
 	github.com/coreos/ignition/v2 v2.23.0
 	github.com/golang/protobuf v1.5.4
