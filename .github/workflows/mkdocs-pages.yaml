@@ -8,7 +8,7 @@ jobs:
     steps:
       # Checkout repo to GitHub Actions runner
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # Install Python
       - name: Setup Python
