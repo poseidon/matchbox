@@ -3,7 +3,7 @@ on:
   workflow_call:
 jobs:
   status-checks:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-slim
     permissions:
       checks: read
     steps:
