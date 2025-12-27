@@ -7,7 +7,7 @@ toolchain go1.25.5
 require (
 	github.com/coreos/butane v0.25.1
 	github.com/coreos/coreos-cloudinit v1.14.0
-	github.com/coreos/ignition/v2 v2.25.0
+	github.com/coreos/ignition/v2 v2.25.1
 	github.com/golang/protobuf v1.5.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.10.2
@@ -18,7 +18,7 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.40.1 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.41.0 // indirect
 	github.com/clarketm/json v1.17.1 // indirect
 	github.com/coreos/go-json v0.0.0-20230131223807-18775e0fb4fb // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect

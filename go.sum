@@ -1,5 +1,5 @@
-github.com/aws/aws-sdk-go-v2 v1.40.1 h1:difXb4maDZkRH0x//Qkwcfpdg1XQVXEAEs2DdXldFFc=
-github.com/aws/aws-sdk-go-v2 v1.40.1/go.mod h1:MayyLB8y+buD9hZqkCW3kX1AKq07Y5pXxtgB+rRFhz0=
+github.com/aws/aws-sdk-go-v2 v1.41.0 h1:tNvqh1s+v0vFYdA1xq0aOJH+Y5cRyZ5upu6roPgPKd4=
+github.com/aws/aws-sdk-go-v2 v1.41.0/go.mod h1:MayyLB8y+buD9hZqkCW3kX1AKq07Y5pXxtgB+rRFhz0=
 github.com/clarketm/json v1.17.1 h1:U1IxjqJkJ7bRK4L6dyphmoO840P6bdhPdbbLySourqI=
 github.com/clarketm/json v1.17.1/go.mod h1:ynr2LRfb0fQU34l07csRNBTcivjySLLiY1YzQqKVfdo=
 github.com/coreos/butane v0.25.1 h1:Nm2WDRD7h3f6GUpazGlge1o417Z+eIC9bQlkpgVdNms=
@@ -12,8 +12,8 @@ github.com/coreos/go-semver v0.3.1 h1:yi21YpKnrx1gt5R+la8n5WgS0kCrsPp33dmEyHReZr
 github.com/coreos/go-semver v0.3.1/go.mod h1:irMmmIw/7yzSRPWryHsK7EYSg09caPQL03VsM8rvUec=
 github.com/coreos/go-systemd/v22 v22.6.0 h1:aGVa/v8B7hpb0TKl0MWoAavPDmHvobFe5R5zn0bCJWo=
 github.com/coreos/go-systemd/v22 v22.6.0/go.mod h1:iG+pp635Fo7ZmV/j14KUcmEyWF+0X7Lua8rrTWzYgWU=
-github.com/coreos/ignition/v2 v2.25.0 h1:4TboIy9z2ofMZmIv5ypyXCFTeKjPNwE5mQNpgkJLdMM=
-github.com/coreos/ignition/v2 v2.25.0/go.mod h1:L8tzd8rDzGMKtEvJ22Rk41jW5chE50sDK5Rn/8C1JsE=
+github.com/coreos/ignition/v2 v2.25.1 h1:mrXOVwb4ZPlLG1tIki5em604Yiz5oRFlWkISrEYpHds=
+github.com/coreos/ignition/v2 v2.25.1/go.mod h1:Px9MZK4oLhMUM3QMzzRhKbHowc5Hkf+VUu67i0gmsNw=
 github.com/coreos/vcontext v0.0.0-20230201181013-d72178a18687 h1:uSmlDgJGbUB0bwQBcZomBTottKwEDF5fF8UjSwKSzWM=
 github.com/coreos/vcontext v0.0.0-20230201181013-d72178a18687/go.mod h1:Salmysdw7DAVuobBW/LwsKKgpyCPHUhjyJoMJD+ZJiI=
 github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269 h1:/1sjrpK5Mb6IwyFOKd+u7321tXfNAsj0Ci8CivZmSlo=
