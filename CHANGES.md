@@ -4,7 +4,7 @@ Notable changes between releases.
 
 ## Latest
 
-* Render Ignition as Ignition spec [v3.5.0](https://coreos.github.io/ignition/configuration-v3_5/)
+* Support Ignition spec [v3.5.0](https://coreos.github.io/ignition/configuration-v3_5/)
 
 ## v0.11.0
 
