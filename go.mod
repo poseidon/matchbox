@@ -2,7 +2,7 @@ module github.com/poseidon/matchbox
 
 go 1.24.0
 
-toolchain go1.25.5
+toolchain go1.25.6
 
 require (
 	github.com/coreos/butane v0.25.1
