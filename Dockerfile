@@ -2,7 +2,7 @@ FROM docker.io/golang:1.25.6 AS builder
 COPY . src
 RUN cd src && make build
 
-FROM docker.io/alpine:3.23.2
+FROM docker.io/alpine:3.23.3
 LABEL maintainer="Dalton Hubble <dghubble@gmail.com>"
 LABEL org.opencontainers.image.title="Matchbox",
 LABEL org.opencontainers.image.source="https://github.com/poseidon/matchbox"
