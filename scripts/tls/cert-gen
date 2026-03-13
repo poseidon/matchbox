@@ -5,9 +5,21 @@ set -e
 rm -f ca.key ca.crt server.key server.csr server.crt client.key client.csr client.crt index.* serial*
 rm -rf certs crl newcerts
 
-if [ -z $SAN ]
-  then echo "Set SAN with a DNS or IP for matchbox (e.g. export SAN=DNS.1:matchbox.example.com,IP.1:172.17.0.2)."
-  exit 1
+if [ -z "$SAN" ]; then
+  echo "Configure matchbox certificate:"
+  echo -n "FQDN: "
+  read -r FQDN
+  echo -n "IP: "
+  read -r IP
+  
+  if [ -z "$FQDN" ] || [ -z "$IP" ]; then
+    echo "Error: Both FQDN and IP are required"
+    exit 1
+  fi
+  
+  SAN="DNS.1:${FQDN},IP.1:${IP}"
+  export SAN
+  echo "Using SAN: $SAN"
 fi
 
 echo "Creating example CA, server cert/key, and client cert/key..."
