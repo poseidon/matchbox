@@ -18,18 +18,19 @@ $ make test
 
 ## Container image
 
-Build a container image `coreos/matchbox:latest`.
+Build a container image for your host architecture.
 
 ```sh
-$ make docker-image
+$ make image-$(go env GOARCH)
 ```
 
 ## Version
 
 ```sh
 $ ./bin/matchbox -version
-$ sudo docker run coreos/matchbox:latest -version
+$ podman run --rm poseidon/matchbox:$(git describe --tags --match=v* --always --dirty)-$(go env GOARCH) -version
 ```
+
 ## Run
 
 Run the binary.
@@ -38,10 +39,10 @@ Run the binary.
 $ ./bin/matchbox -address=0.0.0.0:8080 -log-level=debug -data-path examples -assets-path examples/assets
 ```
 
-Run the Docker image on `docker0`.
+Run the container image.
 
 ```sh
-$ sudo docker run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
+$ podman run -p 8080:8080 --rm -v $PWD/examples:/var/lib/matchbox:Z -v $PWD/examples/groups/etcd:/var/lib/matchbox/groups:Z poseidon/matchbox:$(git describe --tags --match=v* --always --dirty)-$(go env GOARCH) -address=0.0.0.0:8080 -log-level=debug
 ```
 
 ## bootcmd

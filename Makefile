@@ -8,6 +8,9 @@ REPO=github.com/poseidon/matchbox
 LOCAL_REPO=poseidon/matchbox
 IMAGE_REPO=quay.io/poseidon/matchbox
 
+PLATFORM_amd64=linux/amd64
+PLATFORM_arm64=linux/arm64/v8
+
 .PHONY: all
 all: build test vet fmt
 
@@ -37,25 +40,26 @@ image: \
 	image-arm64
 
 image-%:
-	buildah bud -f Dockerfile \
+	podman build -f Dockerfile \
 	-t $(LOCAL_REPO):$(VERSION)-$* \
-	--arch $* --override-arch $* \
-	--format=docker .
+	--platform $(PLATFORM_$*) .
 
+.PHONY: push
 push: \
-	push-amd64
+	push-amd64 \
 	push-arm64
 
 push-%:
-	buildah tag $(LOCAL_REPO):$(VERSION)-$* $(IMAGE_REPO):$(VERSION)-$*
-	buildah push --format v2s2 $(IMAGE_REPO):$(VERSION)-$*
+	podman tag $(LOCAL_REPO):$(VERSION)-$* $(IMAGE_REPO):$(VERSION)-$*
+	podman push --format v2s2 $(IMAGE_REPO):$(VERSION)-$*
 
+.PHONY: manifest
 manifest:
-	buildah manifest create $(IMAGE_REPO):$(VERSION)
-	buildah manifest add $(IMAGE_REPO):$(VERSION) docker://$(IMAGE_REPO):$(VERSION)-amd64
-	buildah manifest add --variant v8 $(IMAGE_REPO):$(VERSION) docker://$(IMAGE_REPO):$(VERSION)-arm64
-	buildah manifest inspect $(IMAGE_REPO):$(VERSION)
-	buildah manifest push -f v2s2 $(IMAGE_REPO):$(VERSION) docker://$(IMAGE_REPO):$(VERSION)
+	podman manifest create $(IMAGE_REPO):$(VERSION)
+	podman manifest add $(IMAGE_REPO):$(VERSION) docker://$(IMAGE_REPO):$(VERSION)-amd64
+	podman manifest add --variant v8 $(IMAGE_REPO):$(VERSION) docker://$(IMAGE_REPO):$(VERSION)-arm64
+	podman manifest inspect $(IMAGE_REPO):$(VERSION)
+	podman manifest push -f v2s2 $(IMAGE_REPO):$(VERSION) docker://$(IMAGE_REPO):$(VERSION)
 
 protoc/%:
 	podman run --security-opt label=disable \
