@@ -4,6 +4,8 @@ Notable changes between releases.
 
 ## Latest
 
+* Support Ignition spec [v3.5.0](https://coreos.github.io/ignition/configuration-v3_5/)
+
 ## v0.11.0
 
 * Update butane from v0.17.0 to v0.18.0 ([#1079](https://github.com/poseidon/matchbox/pull/1079))
