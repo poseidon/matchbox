@@ -7,7 +7,7 @@ toolchain go1.27.2
 require (
 	github.com/coreos/butane v0.29.0
 	github.com/coreos/coreos-cloudinit v1.14.0
-	github.com/coreos/ignition/v2 v2.27.0
+	github.com/coreos/ignition/v2 v2.28.0
 	github.com/golang/protobuf v1.5.4
 	github.com/sirupsen/logrus v1.10.2
 	github.com/spf13/cobra v1.10.2

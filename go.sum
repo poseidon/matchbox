@@ -12,8 +12,8 @@ github.com/coreos/go-semver v0.3.1 h1:yi21YpKnrx1gt5R+la8n5WgS0kCrsPp33dmEyHReZr
 github.com/coreos/go-semver v0.3.1/go.mod h1:irMmmIw/7yzSRPWryHsK7EYSg09caPQL03VsM8rvUec=
 github.com/coreos/go-systemd/v22 v22.7.0 h1:LAEzFkke61DFROc7zNLX/WA2i5J8gYqe0rSj9KI28KA=
 github.com/coreos/go-systemd/v22 v22.7.0/go.mod h1:xNUYtjHu2EDXbsxz1i41wouACIwT7Ybq9o0BQhMwD0w=
-github.com/coreos/ignition/v2 v2.27.0 h1:kEWbmy7HnDeOAOxQOrZFPcyvL2GPCOZSW6Tu+f7IhTA=
-github.com/coreos/ignition/v2 v2.27.0/go.mod h1:/TFCOigkyeJze8G74Dev5MXB9Zcz4I+GLgHrBr/cTrA=
+github.com/coreos/ignition/v2 v2.28.0 h1:BLnAiFjxosJl68WmVcWrHFlUWnWsrL8I6KS79NTCTW4=
+github.com/coreos/ignition/v2 v2.28.0/go.mod h1:/TFCOigkyeJze8G74Dev5MXB9Zcz4I+GLgHrBr/cTrA=
 github.com/coreos/vcontext v0.0.0-20230201181013-d72178a18687 h1:uSmlDgJGbUB0bwQBcZomBTottKwEDF5fF8UjSwKSzWM=
 github.com/coreos/vcontext v0.0.0-20230201181013-d72178a18687/go.mod h1:Salmysdw7DAVuobBW/LwsKKgpyCPHUhjyJoMJD+ZJiI=
 github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269 h1:/1sjrpK5Mb6IwyFOKd+u7321tXfNAsj0Ci8CivZmSlo=
