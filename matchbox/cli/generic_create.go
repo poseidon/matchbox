@@ -15,15 +15,15 @@ import (
 var (
 	genericPutCmd = &cobra.Command{
 		Use:   "create --file FILENAME",
-		Short: "Create an Generic template",
-		Long:  `Create an Generic template`,
+		Short: "Create a Generic template",
+		Long:  `Create a Generic template`,
 		Run:   runGenericPutCmd,
 	}
 )
 
 func init() {
 	genericCmd.AddCommand(genericPutCmd)
-	genericPutCmd.Flags().StringVarP(&flagFilename, "filename", "f", "", "filename to use to create an Generic template")
+	genericPutCmd.Flags().StringVarP(&flagFilename, "filename", "f", "", "filename to use to create a Generic template")
 	genericPutCmd.MarkFlagRequired("filename")
 }
 
