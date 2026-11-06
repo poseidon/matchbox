@@ -72,7 +72,7 @@ func newClient(config *Config) (*Client, error) {
 	return client, nil
 }
 
-// dialEndpoints attemps to Dial each endpoint in order to establish a
+// dialEndpoints attempts to Dial each endpoint in order to establish a
 // connection.
 func dialEndpoints(config *Config) (conn *grpc.ClientConn, err error) {
 	opts := []grpc.DialOption{

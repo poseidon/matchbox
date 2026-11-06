@@ -49,11 +49,11 @@ type Server interface {
 	// Delete an Ignition template by name.
 	IgnitionDelete(context.Context, *pb.IgnitionDeleteRequest) error
 
-	// Create or update an Generic template.
+	// Create or update a Generic template.
 	GenericPut(context.Context, *pb.GenericPutRequest) (string, error)
-	// Get an Generic template by name.
+	// Get a Generic template by name.
 	GenericGet(context.Context, *pb.GenericGetRequest) (string, error)
-	// Delete an Generic template by name.
+	// Delete a Generic template by name.
 	GenericDelete(context.Context, *pb.GenericDeleteRequest) error
 
 	// Get a Cloud-Config template by name.
@@ -191,7 +191,7 @@ func (s *server) IgnitionDelete(ctx context.Context, req *pb.IgnitionDeleteReque
 	return s.store.IgnitionDelete(req.Name)
 }
 
-// GenericPut creates or updates an Generic template by name.
+// GenericPut creates or updates a Generic template by name.
 func (s *server) GenericPut(ctx context.Context, req *pb.GenericPutRequest) (string, error) {
 	err := s.store.GenericPut(req.Name, req.Config)
 	if err != nil {
@@ -200,12 +200,12 @@ func (s *server) GenericPut(ctx context.Context, req *pb.GenericPutRequest) (str
 	return string(req.Config), err
 }
 
-// GenericGet gets an Generic template by name.
+// GenericGet gets a Generic template by name.
 func (s *server) GenericGet(ctx context.Context, req *pb.GenericGetRequest) (string, error) {
 	return s.store.GenericGet(req.Name)
 }
 
-// GenericDelete deletes an Generic template by name.
+// GenericDelete deletes a Generic template by name.
 func (s *server) GenericDelete(ctx context.Context, req *pb.GenericDeleteRequest) error {
 	return s.store.GenericDelete(req.Name)
 }
