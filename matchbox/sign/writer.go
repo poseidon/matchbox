@@ -11,7 +11,7 @@ import (
 // subsequent writes and flush to reply with a Signer signature and code.
 //
 // Note: Header and WriteHeader(http.StatusOK) calls are ignored. The response
-// is tranformed by signing and has different StatusOK conditions; this is
+// is transformed by signing and has different StatusOK conditions; this is
 // transparent to handlers which write buffered data.
 type signatureResponseWriter struct {
 	w      http.ResponseWriter

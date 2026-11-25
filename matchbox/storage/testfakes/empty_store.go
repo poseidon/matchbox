@@ -69,7 +69,7 @@ func (s *EmptyStore) GenericPut(name string, config []byte) error {
 	return fmt.Errorf("emptyStore does not accept Generic templates")
 }
 
-// GenericGet get returns an Generic template not found error.
+// GenericGet get returns a Generic template not found error.
 func (s *EmptyStore) GenericGet(name string) (string, error) {
 	return "", fmt.Errorf("no Generic template %s", name)
 }

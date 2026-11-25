@@ -15,7 +15,7 @@ type Config struct {
 	Logger *logrus.Logger
 }
 
-// fileStore implements ths Store interface. Queries to the file system
+// fileStore implements the Store interface. Queries to the file system
 // are restricted to the specified directory tree.
 type fileStore struct {
 	root   string
@@ -146,18 +146,18 @@ func (s *fileStore) IgnitionDelete(name string) error {
 	return Dir(s.root).deleteFile(filepath.Join("ignition", name))
 }
 
-// GenericPut creates or updates an Generic template.
+// GenericPut creates or updates a Generic template.
 func (s *fileStore) GenericPut(name string, config []byte) error {
 	return Dir(s.root).writeFile(filepath.Join("generic", name), config)
 }
 
-// GenericGet gets an Generic template by name.
+// GenericGet gets a Generic template by name.
 func (s *fileStore) GenericGet(name string) (string, error) {
 	data, err := Dir(s.root).readFile(filepath.Join("generic", name))
 	return string(data), err
 }
 
-// GenericDelete deletes an Generic template by name.
+// GenericDelete deletes a Generic template by name.
 func (s *fileStore) GenericDelete(name string) error {
 	return Dir(s.root).deleteFile(filepath.Join("generic", name))
 }
